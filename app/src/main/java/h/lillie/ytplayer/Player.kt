@@ -11,6 +11,7 @@ import com.google.common.util.concurrent.MoreExecutors
 
 class Player : AppCompatActivity() {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
+    private lateinit var playerController: MediaController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,6 +23,7 @@ class Player : AppCompatActivity() {
         val sessionToken = SessionToken(this, ComponentName(this, PlayerService::class.java))
         playerControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
         playerControllerFuture.addListener({
+            playerController = playerControllerFuture.get()
         }, MoreExecutors.directExecutor())
     }
 
