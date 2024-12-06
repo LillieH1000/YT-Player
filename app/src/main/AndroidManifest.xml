@@ -11,7 +11,7 @@
         android:theme="@style/MainTheme"
         tools:ignore="DataExtractionRules, MissingApplicationIcon">
         <service
-            android:name=".MainService"
+            android:name=".PlayerService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback">

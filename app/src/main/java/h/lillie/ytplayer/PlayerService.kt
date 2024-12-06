@@ -6,7 +6,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 
-class MainService : MediaSessionService() {
+class PlayerService : MediaSessionService() {
     private lateinit var playerHandler: Handler
     private var playerSession: MediaSession? = null
 
