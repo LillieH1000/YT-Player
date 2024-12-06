@@ -8,6 +8,7 @@
         android:allowBackup="false"
         android:label="@string/title"
         android:supportsRtl="false"
+        android:taskAffinity=""
         android:theme="@style/MainTheme"
         tools:ignore="DataExtractionRules, MissingApplicationIcon">
         <service
