@@ -1,0 +1,25 @@
+# macOS
+.DS_Store
+
+# Gradle
+.gradle/
+build/
+
+# IntelliJ
+*.iml
+.idea/
+
+# Android Studio
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Visual Studio Code
+.vscode/
+
+# Logs
+*.log
+
+# Builds
+app/release/
+app/build/
