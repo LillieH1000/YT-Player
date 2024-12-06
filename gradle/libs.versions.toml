@@ -2,12 +2,14 @@
 appcompatVersion = "1.7.0"
 constraintlayoutVersion = "2.2.0"
 coreVersion = "1.15.0"
+gsonVersion = "2.11.0"
 kotlinxCoroutinesVersion = "1.9.0"
 lifecycleVersion = "2.8.7"
 materialVersion = "1.12.0"
 androidVersion = "8.7.3"
 kotlinVersion = "2.0.21"
 media3ExoplayerVersion = "1.5.0"
+okhttpVersion = "5.0.0-alpha.14"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }
@@ -28,9 +30,11 @@ androidx-media3-extractor = { module = "androidx.media3:media3-extractor", versi
 androidx-media3-session = { module = "androidx.media3:media3-session", version.ref = "media3ExoplayerVersion" }
 androidx-media3-transformer = { module = "androidx.media3:media3-transformer", version.ref = "media3ExoplayerVersion" }
 androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3ExoplayerVersion" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gsonVersion" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesVersion" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesVersion" }
 material = { module = "com.google.android.material:material", version.ref = "materialVersion" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttpVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidVersion" }
