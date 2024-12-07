@@ -10,6 +10,7 @@ import android.os.StrictMode
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MimeTypes
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
@@ -50,6 +51,7 @@ class Player : AppCompatActivity() {
             )
 
             val playerMediaItem: MediaItem = MediaItem.Builder()
+                .setMimeType(MimeTypes.APPLICATION_M3U8)
                 .setUri(Uri.parse(url))
                 .build()
 
