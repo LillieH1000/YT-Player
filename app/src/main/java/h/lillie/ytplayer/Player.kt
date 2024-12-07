@@ -6,7 +6,6 @@ import android.content.ComponentName
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
-import android.os.StrictMode
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.session.MediaController
@@ -14,10 +13,6 @@ import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONObject
 
 @Suppress("Deprecation")
 class Player : AppCompatActivity() {
@@ -27,11 +22,6 @@ class Player : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.player)
-
-        val policy = StrictMode.ThreadPolicy.Builder().permitNetwork().build()
-        StrictMode.setThreadPolicy(policy)
-
-        getInfo()
 
         val sessionToken = SessionToken(this, ComponentName(this, PlayerService::class.java))
         playerControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
@@ -67,40 +57,5 @@ class Player : AppCompatActivity() {
         MediaController.releaseFuture(playerControllerFuture)
         stopService(Intent(this, PlayerService::class.java))
         super.onDestroy()
-    }
-
-    private fun getInfo() {
-        val body = """{
-            "context": {
-                "client": {
-                    "hl": "en",
-                    "gl": "${this.resources.configuration.locales.get(0).country}",
-                    "clientName": "IOS",
-                    "clientVersion": "19.45.4",
-                    "deviceMake": "Apple",
-                    "deviceModel": "iPhone16,2",
-                    "osName": "iPhone",
-                    "osVersion": "18.1.0.22B83"
-                }
-            },
-            "contentCheckOk": true,
-            "racyCheckOk": true,
-            "videoId": "yUw36wY8fMw"
-        }"""
-
-        val requestBody = body.trimIndent().toRequestBody()
-
-        val client: OkHttpClient = OkHttpClient.Builder().build()
-
-        val request = Request.Builder()
-            .method("POST", requestBody)
-            .header("User-Agent", "com.google.ios.youtube/19.45.4 (iPhone16,2; U; CPU iOS 18_1_0 like Mac OS X;)")
-            .url("https://www.youtube.com/youtubei/v1/player?prettyPrint=false")
-            .build()
-
-        val result = client.newCall(request).execute().body.string()
-        val jsonObject = JSONObject(result)
-
-        Application.videoData = jsonObject.getJSONObject("streamingData").optString("hlsManifestUrl")
     }
 }

@@ -2,4 +2,29 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <application
+        android:allowBackup="false"
+        android:label="@string/title"
+        android:name=".Application"
+        android:supportsRtl="false"
+        android:theme="@style/MainTheme"
+        tools:ignore="DataExtractionRules, MissingApplicationIcon">
+        <activity
+            android:name=".Main"
+            android:enabled="true"
+            android:exported="true"
+            android:taskAffinity=""
+            android:launchMode="singleTop"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+    </application>
 </manifest>
