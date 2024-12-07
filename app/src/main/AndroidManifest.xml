@@ -16,6 +16,7 @@
             android:name=".Player"
             android:enabled="true"
             android:exported="true"
+            android:taskAffinity=""
             android:launchMode="singleTop"
             android:supportsPictureInPicture="true"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode">
