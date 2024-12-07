@@ -6,12 +6,13 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.MimeTypes
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
-import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
+import okhttp3.OkHttpClient
 
 @OptIn(UnstableApi::class)
 class PlayerService : MediaSessionService() {
@@ -28,7 +29,7 @@ class PlayerService : MediaSessionService() {
             .setUri(Uri.parse(Application.videoData))
             .build()
 
-        val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
+        val dataSourceFactory: DataSource.Factory = OkHttpDataSource.Factory(OkHttpClient.Builder().build())
         val videoSource: MediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(playerMediaItem)
 
         exoPlayer.setMediaSource(videoSource)
