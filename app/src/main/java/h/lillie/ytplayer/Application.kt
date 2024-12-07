@@ -4,6 +4,9 @@ import android.app.Application
 
 class Application : Application() {
     companion object {
-        var videoData = String()
+        var title = String()
+        var author = String()
+        var artwork = String()
+        var url = String()
     }
 }

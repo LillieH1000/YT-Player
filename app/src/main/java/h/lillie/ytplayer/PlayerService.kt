@@ -3,6 +3,7 @@ package h.lillie.ytplayer
 import android.net.Uri
 import androidx.annotation.OptIn
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.MimeTypes
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
@@ -24,9 +25,16 @@ class PlayerService : MediaSessionService() {
         val exoPlayer = ExoPlayer.Builder(this).build()
         playerSession = MediaSession.Builder(this, exoPlayer).build()
 
+        val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
+            .setTitle(Application.title)
+            .setArtist(Application.author)
+            .setArtworkUri(Uri.parse(Application.artwork))
+            .build()
+
         val playerMediaItem: MediaItem = MediaItem.Builder()
             .setMimeType(MimeTypes.APPLICATION_M3U8)
-            .setUri(Uri.parse(Application.videoData))
+            .setMediaMetadata(playerMediaMetadata)
+            .setUri(Uri.parse(Application.url))
             .build()
 
         val dataSourceFactory: DataSource.Factory = OkHttpDataSource.Factory(OkHttpClient.Builder().build())

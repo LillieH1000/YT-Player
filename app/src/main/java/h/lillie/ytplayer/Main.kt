@@ -52,7 +52,11 @@ class Main : AppCompatActivity() {
 
                         val jsonObject = JSONObject(client.newCall(request).execute().body.string())
 
-                        Application.videoData = jsonObject.getJSONObject("streamingData").optString("hlsManifestUrl")
+                        Application.title = jsonObject.getJSONObject("videoDetails").optString("title")
+                        Application.author = jsonObject.getJSONObject("videoDetails").optString("author")
+                        val artworkArray = jsonObject.getJSONObject("videoDetails").getJSONObject("thumbnail").getJSONArray("thumbnails")
+                        Application.artwork = artworkArray.getJSONObject((artworkArray.length() - 1)).optString("url")
+                        Application.url = jsonObject.getJSONObject("streamingData").optString("hlsManifestUrl")
 
                         startActivity(Intent(this, Player::class.java))
                     }
