@@ -41,6 +41,13 @@ class Player : AppCompatActivity() {
         playerControllerFuture.addListener({
             playerController = playerControllerFuture.get()
 
+            val playerMediaItem: MediaItem = MediaItem.Builder()
+                .setMimeType(MimeTypes.APPLICATION_M3U8)
+                .setUri(Uri.parse(url))
+                .build()
+
+            playerController.addMediaItem(playerMediaItem)
+
             val playerView: PlayerView = findViewById(R.id.playerView)
             playerView.player = playerController
 
@@ -51,12 +58,6 @@ class Player : AppCompatActivity() {
                     .build()
             )
 
-            val playerMediaItem: MediaItem = MediaItem.Builder()
-                .setMimeType(MimeTypes.APPLICATION_M3U8)
-                .setUri(Uri.parse(url))
-                .build()
-
-            playerController.addMediaItem(playerMediaItem)
             playerController.playWhenReady = true
             playerController.prepare()
         }, MoreExecutors.directExecutor())
