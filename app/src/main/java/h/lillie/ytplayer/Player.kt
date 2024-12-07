@@ -63,11 +63,6 @@ class Player : AppCompatActivity() {
         }, MoreExecutors.directExecutor())
     }
 
-    override fun onStop() {
-        super.onStop()
-        MediaController.releaseFuture(playerControllerFuture)
-    }
-
     @SuppressLint("SwitchIntDef")
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
@@ -82,6 +77,7 @@ class Player : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        MediaController.releaseFuture(playerControllerFuture)
         stopService(Intent(this, PlayerService::class.java))
         super.onDestroy()
     }
