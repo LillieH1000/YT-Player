@@ -5,13 +5,10 @@ import android.app.PictureInPictureParams
 import android.content.ComponentName
 import android.content.Intent
 import android.content.res.Configuration
-import android.net.Uri
 import android.os.Bundle
 import android.os.StrictMode
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.media3.common.MediaItem
-import androidx.media3.common.MimeTypes
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
@@ -34,19 +31,12 @@ class Player : AppCompatActivity() {
         val policy = StrictMode.ThreadPolicy.Builder().permitNetwork().build()
         StrictMode.setThreadPolicy(policy)
 
-        val url = getInfo()
+        getInfo()
 
         val sessionToken = SessionToken(this, ComponentName(this, PlayerService::class.java))
         playerControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
         playerControllerFuture.addListener({
             playerController = playerControllerFuture.get()
-
-            val playerMediaItem: MediaItem = MediaItem.Builder()
-                .setMimeType(MimeTypes.APPLICATION_M3U8)
-                .setUri(Uri.parse(url))
-                .build()
-
-            playerController.addMediaItem(playerMediaItem)
 
             val playerView: PlayerView = findViewById(R.id.playerView)
             playerView.player = playerController
@@ -57,9 +47,6 @@ class Player : AppCompatActivity() {
                     .setSeamlessResizeEnabled(true)
                     .build()
             )
-
-            playerController.playWhenReady = true
-            playerController.prepare()
         }, MoreExecutors.directExecutor())
     }
 
@@ -82,7 +69,7 @@ class Player : AppCompatActivity() {
         super.onDestroy()
     }
 
-    private fun getInfo() : String {
+    private fun getInfo() {
         val body = """{
             "context": {
                 "client": {
@@ -114,6 +101,6 @@ class Player : AppCompatActivity() {
         val result = client.newCall(request).execute().body.string()
         val jsonObject = JSONObject(result)
 
-        return jsonObject.getJSONObject("streamingData").optString("hlsManifestUrl")
+        Application.videoData = jsonObject.getJSONObject("streamingData").optString("hlsManifestUrl")
     }
 }

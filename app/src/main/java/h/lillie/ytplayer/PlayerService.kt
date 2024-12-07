@@ -1,9 +1,19 @@
 package h.lillie.ytplayer
 
+import android.net.Uri
+import androidx.annotation.OptIn
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MimeTypes
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.DataSource
+import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.hls.HlsMediaSource
+import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 
+@OptIn(UnstableApi::class)
 class PlayerService : MediaSessionService() {
     private var playerSession: MediaSession? = null
 
@@ -12,6 +22,18 @@ class PlayerService : MediaSessionService() {
 
         val exoPlayer = ExoPlayer.Builder(this).build()
         playerSession = MediaSession.Builder(this, exoPlayer).build()
+
+        val playerMediaItem: MediaItem = MediaItem.Builder()
+            .setMimeType(MimeTypes.APPLICATION_M3U8)
+            .setUri(Uri.parse(Application.videoData))
+            .build()
+
+        val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
+        val videoSource: MediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(playerMediaItem)
+
+        exoPlayer.setMediaSource(videoSource)
+        exoPlayer.playWhenReady = true
+        exoPlayer.prepare()
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? {
