@@ -3,6 +3,7 @@ package h.lillie.ytplayer
 import android.annotation.SuppressLint
 import android.app.PictureInPictureParams
 import android.content.ComponentName
+import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
@@ -77,6 +78,11 @@ class Player : AppCompatActivity() {
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
             }
         }
+    }
+
+    override fun onDestroy() {
+        stopService(Intent(this, PlayerService::class.java))
+        super.onDestroy()
     }
 
     private fun getInfo() : String {
