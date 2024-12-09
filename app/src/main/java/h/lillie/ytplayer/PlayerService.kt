@@ -1,5 +1,9 @@
 package h.lillie.ytplayer
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import androidx.annotation.OptIn
 import androidx.media3.common.MediaItem
@@ -17,32 +21,15 @@ import okhttp3.OkHttpClient
 
 @OptIn(UnstableApi::class)
 class PlayerService : MediaSessionService() {
+    private lateinit var exoPlayer: ExoPlayer
     private var playerSession: MediaSession? = null
 
     override fun onCreate() {
         super.onCreate()
 
-        val exoPlayer = ExoPlayer.Builder(this).build()
+        exoPlayer = ExoPlayer.Builder(this).build()
         playerSession = MediaSession.Builder(this, exoPlayer).build()
-
-        val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
-            .setTitle(Application.title)
-            .setArtist(Application.author)
-            .setArtworkUri(Uri.parse(Application.artwork))
-            .build()
-
-        val playerMediaItem: MediaItem = MediaItem.Builder()
-            .setMimeType(MimeTypes.APPLICATION_M3U8)
-            .setMediaMetadata(playerMediaMetadata)
-            .setUri(Uri.parse(Application.url))
-            .build()
-
-        val dataSourceFactory: DataSource.Factory = OkHttpDataSource.Factory(OkHttpClient.Builder().build())
-        val videoSource: MediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(playerMediaItem)
-
-        exoPlayer.setMediaSource(videoSource)
-        exoPlayer.playWhenReady = true
-        exoPlayer.prepare()
+        registerReceiver(playerBroadcastReceiver, IntentFilter("h.lillie.ytplayer.info"), RECEIVER_NOT_EXPORTED)
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? {
@@ -51,10 +38,36 @@ class PlayerService : MediaSessionService() {
 
     override fun onDestroy() {
         playerSession?.run {
+            unregisterReceiver(playerBroadcastReceiver)
             player.release()
             release()
             playerSession = null
         }
         super.onDestroy()
+    }
+
+    private val playerBroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == "h.lillie.ytplayer.info") {
+                val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
+                    .setTitle(intent.getStringExtra("title"))
+                    .setArtist(intent.getStringExtra("author"))
+                    .setArtworkUri(Uri.parse(intent.getStringExtra("artwork")))
+                    .build()
+
+                val playerMediaItem: MediaItem = MediaItem.Builder()
+                    .setMimeType(MimeTypes.APPLICATION_M3U8)
+                    .setMediaMetadata(playerMediaMetadata)
+                    .setUri(Uri.parse(intent.getStringExtra("url")))
+                    .build()
+
+                val dataSourceFactory: DataSource.Factory = OkHttpDataSource.Factory(OkHttpClient.Builder().build())
+                val videoSource: MediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(playerMediaItem)
+
+                exoPlayer.setMediaSource(videoSource)
+                exoPlayer.playWhenReady = true
+                exoPlayer.prepare()
+            }
+        }
     }
 }
