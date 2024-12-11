@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.common)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.media3.cast)
     implementation(libs.androidx.media3.common)
     implementation(libs.androidx.media3.container)
     implementation(libs.androidx.media3.database)

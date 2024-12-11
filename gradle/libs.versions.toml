@@ -17,6 +17,7 @@ androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayo
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreVersion" }
 androidx-lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", version.ref = "lifecycleVersion" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleVersion" }
+androidx-media3-cast = { module = "androidx.media3:media3-cast", version.ref = "media3ExoplayerVersion" }
 androidx-media3-common = { module = "androidx.media3:media3-common", version.ref = "media3ExoplayerVersion" }
 androidx-media3-container = { module = "androidx.media3:media3-container", version.ref = "media3ExoplayerVersion" }
 androidx-media3-database = { module = "androidx.media3:media3-database", version.ref = "media3ExoplayerVersion" }
