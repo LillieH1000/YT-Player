@@ -23,6 +23,7 @@ import org.json.JSONObject
 class Player : AppCompatActivity() {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
     private lateinit var playerController: MediaController
+    private lateinit var playerHandler: Handler
 
     @SuppressLint("SwitchIntDef")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +45,11 @@ class Player : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -109,6 +115,8 @@ class Player : AppCompatActivity() {
 
             val jsonObject = JSONObject(client.newCall(request).execute().body.string())
 
+            supportActionBar?.title = Html.fromHtml("<small>${jsonObject.getJSONObject("videoDetails").optString("title")}</small>", Html.FROM_HTML_MODE_LEGACY)
+
             val sessionToken = SessionToken(this, ComponentName(this, PlayerService::class.java))
             playerControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
             playerControllerFuture.addListener({
@@ -124,6 +132,9 @@ class Player : AppCompatActivity() {
                         .build()
                 )
 
+                playerHandler = Handler(Looper.getMainLooper())
+                playerHandler.post(playerTask)
+
                 val broadcastIntent = Intent("h.lillie.ytplayer.info")
                 broadcastIntent.setPackage(this.packageName)
                 broadcastIntent.putExtra("title", jsonObject.getJSONObject("videoDetails").optString("title"))
@@ -133,6 +144,19 @@ class Player : AppCompatActivity() {
                 broadcastIntent.putExtra("url", jsonObject.getJSONObject("streamingData").optString("hlsManifestUrl"))
                 sendBroadcast(broadcastIntent)
             }, MoreExecutors.directExecutor())
+        }
+    }
+
+    private val playerTask = object : Runnable {
+        @OptIn(UnstableApi::class)
+        override fun run() {
+            val playerView: PlayerView = findViewById(R.id.playerView)
+            if (playerView.isControllerFullyVisible) {
+                supportActionBar?.show()
+            } else {
+                supportActionBar?.hide()
+            }
+            playerHandler.post(this)
         }
     }
 }
