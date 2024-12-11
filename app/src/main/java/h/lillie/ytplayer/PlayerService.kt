@@ -19,7 +19,6 @@ import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import okhttp3.OkHttpClient
 
-@OptIn(UnstableApi::class)
 class PlayerService : MediaSessionService() {
     private lateinit var exoPlayer: ExoPlayer
     private var playerSession: MediaSession? = null
@@ -47,6 +46,7 @@ class PlayerService : MediaSessionService() {
     }
 
     private val playerBroadcastReceiver = object : BroadcastReceiver() {
+        @OptIn(UnstableApi::class)
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == "h.lillie.ytplayer.info") {
                 val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
