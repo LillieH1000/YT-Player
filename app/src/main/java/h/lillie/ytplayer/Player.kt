@@ -30,6 +30,7 @@ class Player : AppCompatActivity() {
     private lateinit var playerController: MediaController
     private lateinit var playerHandler: Handler
 
+    @Suppress("Deprecation")
     @SuppressLint("SwitchIntDef")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
