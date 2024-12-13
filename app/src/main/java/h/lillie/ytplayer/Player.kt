@@ -84,6 +84,18 @@ class Player : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (this::playerHandler.isInitialized) {
+            playerHandler.post(playerTask)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        playerHandler.removeCallbacksAndMessages(null)
+    }
+
     override fun onDestroy() {
         MediaController.releaseFuture(playerControllerFuture)
         stopService(Intent(this, PlayerService::class.java))
@@ -169,7 +181,7 @@ class Player : AppCompatActivity() {
             } else {
                 supportActionBar?.hide()
             }
-            playerHandler.post(this)
+            playerHandler.postDelayed(this, 1000)
         }
     }
 }
