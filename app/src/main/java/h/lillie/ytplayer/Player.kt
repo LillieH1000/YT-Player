@@ -26,7 +26,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
-import java.util.concurrent.Executors
 
 class Player : AppCompatActivity() {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
