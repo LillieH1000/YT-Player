@@ -70,6 +70,7 @@ dependencies {
     implementation(libs.androidx.media3.extractor)
     implementation(libs.androidx.media3.session)
     implementation(libs.androidx.media3.ui)
+    implementation(libs.androidx.mediarouter)
     implementation(libs.gson)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
