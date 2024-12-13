@@ -48,6 +48,8 @@ class Player : AppCompatActivity() {
                             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
                         }
                     }
+                    playerHandler = Handler(Looper.getMainLooper())
+                    playerHandler.post(playerTask)
                     broadcast(intent)
                 }
             }
@@ -162,9 +164,6 @@ class Player : AppCompatActivity() {
                         .setSeamlessResizeEnabled(true)
                         .build()
                 )
-
-                playerHandler = Handler(Looper.getMainLooper())
-                playerHandler.post(playerTask)
 
                 val broadcastIntent = Intent("h.lillie.ytplayer.info")
                 broadcastIntent.setPackage(this.packageName)
