@@ -19,7 +19,6 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
 import com.google.android.gms.cast.framework.CastButtonFactory
-import com.google.android.gms.cast.framework.CastContext
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import okhttp3.OkHttpClient
@@ -37,8 +36,6 @@ class Player : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.player)
-
-        val castContext = CastContext.getSharedInstance(this, MoreExecutors.directExecutor()).result
 
         when {
             intent?.action == Intent.ACTION_SEND -> {
