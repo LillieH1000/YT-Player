@@ -98,6 +98,7 @@ class Player : AppCompatActivity() {
         super.onDestroy()
     }
 
+    @OptIn(UnstableApi::class)
     private fun broadcast(intent: Intent) {
         val youtubeRegex = Regex("^.*(?:(?:youtu\\.be\\/|v\\/|vi\\/|u\\/\\w\\/|embed\\/|shorts\\/|live\\/)|(?:(?:watch)?\\?v(?:i)?=|\\&v(?:i)?=))([^#\\&\\?]*).*")
         if (youtubeRegex.containsMatchIn(intent.getStringExtra(Intent.EXTRA_TEXT)!!)) {
@@ -136,6 +137,15 @@ class Player : AppCompatActivity() {
 
             val jsonObject = JSONObject(client.newCall(request).execute().body.string())
 
+            // Experimental Cast Variable
+            var audioUrl = ""
+            val adaptiveFormats = jsonObject.getJSONObject("streamingData").getJSONArray("adaptiveFormats")
+            for (i in 0 until adaptiveFormats.length()) {
+                if (adaptiveFormats.getJSONObject(i).optString("mimeType").contains("audio/mp4") && adaptiveFormats.getJSONObject(i).optString("audioQuality") == "AUDIO_QUALITY_MEDIUM") {
+                    audioUrl = adaptiveFormats.getJSONObject(i).optString("url")
+                }
+            }
+
             supportActionBar?.title = Html.fromHtml("<small>${jsonObject.getJSONObject("videoDetails").optString("title")}</small>", Html.FROM_HTML_MODE_LEGACY)
 
             val sessionToken = SessionToken(this, ComponentName(this, PlayerService::class.java))
@@ -158,11 +168,14 @@ class Player : AppCompatActivity() {
 
                 val broadcastIntent = Intent("h.lillie.ytplayer.info")
                 broadcastIntent.setPackage(this.packageName)
+                broadcastIntent.putExtra("package", this.packageName)
                 broadcastIntent.putExtra("title", jsonObject.getJSONObject("videoDetails").optString("title"))
                 broadcastIntent.putExtra("author", jsonObject.getJSONObject("videoDetails").optString("author"))
                 val artworkArray = jsonObject.getJSONObject("videoDetails").getJSONObject("thumbnail").getJSONArray("thumbnails")
                 broadcastIntent.putExtra("artwork", artworkArray.getJSONObject((artworkArray.length() - 1)).optString("url"))
-                broadcastIntent.putExtra("url", jsonObject.getJSONObject("streamingData").optString("hlsManifestUrl"))
+                // Experimental Cast Variable
+                broadcastIntent.putExtra("audioUrl", audioUrl)
+                broadcastIntent.putExtra("hlsUrl", jsonObject.getJSONObject("streamingData").optString("hlsManifestUrl"))
                 sendBroadcast(broadcastIntent)
             }, MoreExecutors.directExecutor())
         }
