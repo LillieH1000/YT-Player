@@ -94,6 +94,7 @@ class Player : AppCompatActivity() {
         playerHandler.removeCallbacksAndMessages(null)
     }
 
+    @OptIn(UnstableApi::class)
     override fun onDestroy() {
         MediaController.releaseFuture(playerControllerFuture)
         stopService(Intent(this, PlayerService::class.java))
