@@ -1,0 +1,88 @@
+name: Generate Apks
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: "21"
+
+      - name: Chmod Gradle
+        run: chmod +x ./gradlew
+
+      - name: Build Gradle
+        run: ./gradlew build
+
+      - name: Assemble Debug Apks
+        run: |
+          ./gradlew assembleAppDebug
+          ./gradlew assembleWatchDebug
+          ./gradlew assembleTvDebug
+
+      - name: Assemble Release Apks
+        run: |
+          ./gradlew assembleAppRelease
+          ./gradlew assembleWatchRelease
+          ./gradlew assembleTvRelease
+
+      - name: Download Apk Signer
+        run: curl -L -o uber-apk-signer.jar https://github.com/patrickfav/uber-apk-signer/releases/download/v1.3.0/uber-apk-signer-1.3.0.jar
+
+      - name: Sign Release Apks
+        run: |
+          java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/app/release/app-app-release-unsigned.apk
+          java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/watch/release/app-watch-release-unsigned.apk
+          java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/tv/release/app-tv-release-unsigned.apk
+
+      - name: Upload Debug App Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: debugApp
+          path: ./app/build/outputs/apk/app/debug/*.apk
+
+      - name: Upload Release App Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: releaseApp
+          path: ./app/build/outputs/apk/app/release/*.apk
+
+      - name: Upload Debug Watch Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: debugWatch
+          path: ./app/build/outputs/apk/watch/debug/*.apk
+
+      - name: Upload Release Watch Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: releaseWatch
+          path: ./app/build/outputs/apk/watch/release/*.apk
+
+      - name: Upload Debug Tv Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: debugTv
+          path: ./app/build/outputs/apk/tv/debug/*.apk
+
+      - name: Upload Release Tv Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: releaseTv
+          path: ./app/build/outputs/apk/tv/release/*.apk
+
+      - name: Merge Artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: apks
+          delete-merged: true
