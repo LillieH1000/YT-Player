@@ -23,13 +23,12 @@ import com.google.android.gms.cast.framework.CastContext
 import com.google.common.util.concurrent.MoreExecutors
 import okhttp3.OkHttpClient
 
-@UnstableApi
+@OptIn(UnstableApi::class)
 class PlayerService : MediaSessionService() {
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var castPlayer: CastPlayer
     private var playerSession: MediaSession? = null
 
-    @OptIn(UnstableApi::class)
     override fun onCreate() {
         super.onCreate()
 
@@ -86,7 +85,6 @@ class PlayerService : MediaSessionService() {
     }
 
     private val playerBroadcastReceiver = object : BroadcastReceiver() {
-        @OptIn(UnstableApi::class)
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == "h.lillie.ytplayer.info") {
                 if (playerSession?.player == castPlayer) {

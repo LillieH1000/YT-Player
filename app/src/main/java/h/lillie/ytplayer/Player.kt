@@ -27,13 +27,15 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 
+@OptIn(UnstableApi::class)
+@Suppress("Deprecation")
+@SuppressLint("SwitchIntDef")
 class Player : AppCompatActivity() {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
     private lateinit var playerController: MediaController
     private lateinit var playerHandler: Handler
 
-    @Suppress("Deprecation")
-    @SuppressLint("SwitchIntDef")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.player)
@@ -69,8 +71,6 @@ class Player : AppCompatActivity() {
         broadcast(intent!!)
     }
 
-    @Suppress("Deprecation")
-    @SuppressLint("SwitchIntDef")
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         when (newConfig.orientation) {
@@ -95,7 +95,6 @@ class Player : AppCompatActivity() {
         playerHandler.removeCallbacksAndMessages(null)
     }
 
-    @OptIn(UnstableApi::class)
     override fun onDestroy() {
         MediaController.releaseFuture(playerControllerFuture)
         stopService(Intent(this, PlayerService::class.java))
@@ -114,7 +113,6 @@ class Player : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    @OptIn(UnstableApi::class)
     private fun broadcast(intent: Intent) {
         val youtubeRegex = Regex("^.*(?:(?:youtu\\.be\\/|v\\/|vi\\/|u\\/\\w\\/|embed\\/|shorts\\/|live\\/)|(?:(?:watch)?\\?v(?:i)?=|\\&v(?:i)?=))([^#\\&\\?]*).*")
         if (youtubeRegex.containsMatchIn(intent.getStringExtra(Intent.EXTRA_TEXT)!!)) {
@@ -191,7 +189,6 @@ class Player : AppCompatActivity() {
     }
 
     private val playerTask = object : Runnable {
-        @OptIn(UnstableApi::class)
         override fun run() {
             val playerView: PlayerView = findViewById(R.id.playerView)
             if (playerView.isControllerFullyVisible) {
