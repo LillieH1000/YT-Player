@@ -29,10 +29,6 @@ class PlayerService : MediaSessionService() {
     private lateinit var castPlayer: CastPlayer
     private var playerSession: MediaSession? = null
 
-    // Experimental Cast Variables
-    private var audioUrl: String? = null
-    private var packageName: String? = null
-
     @OptIn(UnstableApi::class)
     override fun onCreate() {
         super.onCreate()
@@ -40,27 +36,37 @@ class PlayerService : MediaSessionService() {
         exoPlayer = ExoPlayer.Builder(this).build()
         playerSession = MediaSession.Builder(this, exoPlayer).build()
 
-        val intentFilter = IntentFilter()
-        intentFilter.addAction("h.lillie.ytplayer.info")
-        intentFilter.addAction("h.lillie.ytplayer.cast")
-        registerReceiver(playerBroadcastReceiver, intentFilter, RECEIVER_NOT_EXPORTED)
+        registerReceiver(playerBroadcastReceiver, IntentFilter("h.lillie.ytplayer.info"), RECEIVER_NOT_EXPORTED)
 
-        // Experimental Cast Player
         castPlayer = CastPlayer(CastContext.getSharedInstance(this, MoreExecutors.directExecutor()).result)
         castPlayer.setSessionAvailabilityListener(object : SessionAvailabilityListener {
             override fun onCastSessionAvailable() {
                 exoPlayer.stop()
                 playerSession?.player = castPlayer
 
-                val broadcastIntent = Intent("h.lillie.ytplayer.cast")
-                broadcastIntent.setPackage(packageName)
-                sendBroadcast(broadcastIntent)
+                val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
+                    .setTitle(Application.title)
+                    .setArtist(Application.author)
+                    .setArtworkUri(Uri.parse(Application.artwork))
+                    .build()
+
+                val playerMediaItem: MediaItem = MediaItem.Builder()
+                    .setMimeType(MimeTypes.AUDIO_MP4)
+                    .setMediaMetadata(playerMediaMetadata)
+                    .setUri(Uri.parse(Application.audioUrl))
+                    .build()
+
+                castPlayer.setMediaItem(playerMediaItem, exoPlayer.currentPosition)
+                castPlayer.playWhenReady = true
+                castPlayer.prepare()
             }
 
             override fun onCastSessionUnavailable() {
                 castPlayer.stop()
                 playerSession?.player = exoPlayer
-                exoPlayer.play()
+                exoPlayer.seekTo(castPlayer.currentPosition)
+                exoPlayer.playWhenReady = true
+                exoPlayer.prepare()
             }
         })
     }
@@ -83,20 +89,21 @@ class PlayerService : MediaSessionService() {
         @OptIn(UnstableApi::class)
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == "h.lillie.ytplayer.info") {
-                // Experimental Cast Variables
-                audioUrl = intent.getStringExtra("audioUrl")
-                packageName = intent.getStringExtra("package")
+                if (playerSession?.player == castPlayer) {
+                    castPlayer.stop()
+                    playerSession?.player = exoPlayer
+                }
 
                 val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
-                    .setTitle(intent.getStringExtra("title"))
-                    .setArtist(intent.getStringExtra("author"))
-                    .setArtworkUri(Uri.parse(intent.getStringExtra("artwork")))
+                    .setTitle(Application.title)
+                    .setArtist(Application.author)
+                    .setArtworkUri(Uri.parse(Application.artwork))
                     .build()
 
                 val playerMediaItem: MediaItem = MediaItem.Builder()
                     .setMimeType(MimeTypes.APPLICATION_M3U8)
                     .setMediaMetadata(playerMediaMetadata)
-                    .setUri(Uri.parse(intent.getStringExtra("hlsUrl")))
+                    .setUri(Uri.parse(Application.hlsUrl))
                     .build()
 
                 val dataSourceFactory: DataSource.Factory = OkHttpDataSource.Factory(OkHttpClient.Builder().build())
@@ -105,20 +112,6 @@ class PlayerService : MediaSessionService() {
                 exoPlayer.setMediaSource(videoSource)
                 exoPlayer.playWhenReady = true
                 exoPlayer.prepare()
-                return
-            }
-
-            // Experimental Cast Receiver
-            if (intent?.action == "h.lillie.ytplayer.cast") {
-                val playerMediaItem: MediaItem = MediaItem.Builder()
-                    .setMimeType(MimeTypes.AUDIO_MP4)
-                    .setUri(Uri.parse(audioUrl))
-                    .build()
-
-                castPlayer.setMediaItem(playerMediaItem)
-                castPlayer.playWhenReady = true
-                castPlayer.prepare()
-                return
             }
         }
     }
