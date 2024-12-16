@@ -10,6 +10,7 @@ build/
 .idea/
 
 # Android Studio
+local.properties
 captures/
 .externalNativeBuild/
 .cxx/
