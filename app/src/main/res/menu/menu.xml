@@ -8,4 +8,9 @@
         app:actionProviderClass="androidx.mediarouter.app.MediaRouteActionProvider"
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction, MenuTitle" />
+    <item
+        android:id="@+id/share"
+        android:icon="@drawable/media3_icon_share"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction, MenuTitle" />
 </menu>
