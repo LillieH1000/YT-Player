@@ -59,12 +59,6 @@ class Player : AppCompatActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu, menu)
-        CastButtonFactory.setUpMediaRouteButton(this, menu!!, R.id.cast)
-        return super.onCreateOptionsMenu(menu)
-    }
-
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         setIntent(intent)
@@ -151,7 +145,6 @@ class Player : AppCompatActivity() {
 
             val jsonObject = JSONObject(client.newCall(request).execute().body.string())
 
-            supportActionBar?.title = Html.fromHtml("<small>${jsonObject.getJSONObject("videoDetails").optString("title")}</small>", Html.FROM_HTML_MODE_LEGACY)
 
             Application.id = jsonObject.getJSONObject("videoDetails").optString("videoId")
             Application.title = jsonObject.getJSONObject("videoDetails").optString("title")
@@ -190,12 +183,6 @@ class Player : AppCompatActivity() {
 
     private val playerTask = object : Runnable {
         override fun run() {
-            val playerView: PlayerView = findViewById(R.id.playerView)
-            if (playerView.isControllerFullyVisible) {
-                supportActionBar?.show()
-            } else {
-                supportActionBar?.hide()
-            }
             playerHandler.postDelayed(this, 1000)
         }
     }
