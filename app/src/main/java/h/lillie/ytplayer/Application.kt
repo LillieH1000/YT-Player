@@ -4,6 +4,7 @@ import android.app.Application
 
 class Application : Application() {
     companion object {
+        var id = String()
         var title = String()
         var author = String()
         var artwork = String()

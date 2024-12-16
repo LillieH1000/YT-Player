@@ -11,6 +11,7 @@ import android.os.Looper
 import android.os.StrictMode
 import android.text.Html
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
@@ -101,6 +102,18 @@ class Player : AppCompatActivity() {
         super.onDestroy()
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.share) {
+            startActivity(Intent.createChooser(Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, "https://youtu.be/${Application.id}")
+                type = "text/plain"
+            }, null))
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     @OptIn(UnstableApi::class)
     private fun broadcast(intent: Intent) {
         val youtubeRegex = Regex("^.*(?:(?:youtu\\.be\\/|v\\/|vi\\/|u\\/\\w\\/|embed\\/|shorts\\/|live\\/)|(?:(?:watch)?\\?v(?:i)?=|\\&v(?:i)?=))([^#\\&\\?]*).*")
@@ -142,6 +155,7 @@ class Player : AppCompatActivity() {
 
             supportActionBar?.title = Html.fromHtml("<small>${jsonObject.getJSONObject("videoDetails").optString("title")}</small>", Html.FROM_HTML_MODE_LEGACY)
 
+            Application.id = jsonObject.getJSONObject("videoDetails").optString("videoId")
             Application.title = jsonObject.getJSONObject("videoDetails").optString("title")
             Application.author = jsonObject.getJSONObject("videoDetails").optString("author")
             val artworkArray = jsonObject.getJSONObject("videoDetails").getJSONObject("thumbnail").getJSONArray("thumbnails")
