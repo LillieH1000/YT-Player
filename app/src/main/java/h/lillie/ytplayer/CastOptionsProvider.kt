@@ -2,7 +2,6 @@ package h.lillie.ytplayer
 
 import android.content.Context
 import androidx.annotation.OptIn
-import androidx.media3.cast.DefaultCastOptionsProvider
 import androidx.media3.common.util.UnstableApi
 import com.google.android.gms.cast.framework.CastOptions
 import com.google.android.gms.cast.framework.OptionsProvider
@@ -19,7 +18,7 @@ class CastOptionsProvider : OptionsProvider {
                 .setNotificationOptions(null)
                 .build())
             .setEnableReconnectionService(false)
-            .setReceiverApplicationId(DefaultCastOptionsProvider.APP_ID_DEFAULT_RECEIVER_WITH_DRM)
+            .setReceiverApplicationId("8A965F92")
             .setResumeSavedSession(false)
             .setStopReceiverApplicationWhenEndingSession(true)
             .build()
