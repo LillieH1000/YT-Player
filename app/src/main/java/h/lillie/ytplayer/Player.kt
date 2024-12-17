@@ -9,9 +9,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.StrictMode
-import android.text.Html
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
@@ -19,7 +16,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
-import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import okhttp3.OkHttpClient
@@ -95,18 +91,6 @@ class Player : AppCompatActivity() {
         super.onDestroy()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.share) {
-            startActivity(Intent.createChooser(Intent().apply {
-                action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, "https://youtu.be/${Application.id}")
-                type = "text/plain"
-            }, null))
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
     private fun broadcast(intent: Intent) {
         val youtubeRegex = Regex("^.*(?:(?:youtu\\.be\\/|v\\/|vi\\/|u\\/\\w\\/|embed\\/|shorts\\/|live\\/)|(?:(?:watch)?\\?v(?:i)?=|\\&v(?:i)?=))([^#\\&\\?]*).*")
         if (youtubeRegex.containsMatchIn(intent.getStringExtra(Intent.EXTRA_TEXT)!!)) {
@@ -144,7 +128,6 @@ class Player : AppCompatActivity() {
                 .build()
 
             val jsonObject = JSONObject(client.newCall(request).execute().body.string())
-
 
             Application.id = jsonObject.getJSONObject("videoDetails").optString("videoId")
             Application.title = jsonObject.getJSONObject("videoDetails").optString("title")
