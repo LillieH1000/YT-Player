@@ -32,7 +32,10 @@ class PlayerService : MediaSessionService() {
     override fun onCreate() {
         super.onCreate()
 
-        exoPlayer = ExoPlayer.Builder(this).build()
+        exoPlayer = ExoPlayer.Builder(this)
+            .setSeekBackIncrementMs(15000)
+            .setSeekForwardIncrementMs(15000)
+            .build()
         playerSession = MediaSession.Builder(this, exoPlayer).build()
 
         registerReceiver(playerBroadcastReceiver, IntentFilter("h.lillie.ytplayer.info"), RECEIVER_NOT_EXPORTED)
