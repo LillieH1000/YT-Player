@@ -14,6 +14,7 @@ import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageButton
+import android.widget.RelativeLayout
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.util.UnstableApi
@@ -179,7 +180,15 @@ class Player : AppCompatActivity() {
             }
         })
 
-        val rightView: View = findViewById(R.id.rightView)
+        val middleView: RelativeLayout = findViewById(R.id.middleView)
+        middleView.setOnTouchListener(object : View.OnTouchListener {
+            val gestureDetector = GestureDetector(playerTouchMiddle)
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                return gestureDetector.onTouchEvent(event!!)
+            }
+        })
+
+        val rightView: RelativeLayout = findViewById(R.id.rightView)
         rightView.setOnTouchListener(object : View.OnTouchListener {
             val gestureDetector = GestureDetector(playerTouchRight)
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
@@ -236,6 +245,33 @@ class Player : AppCompatActivity() {
         }
         override fun onDoubleTap(e: MotionEvent): Boolean {
             playerController.seekBack()
+            return true
+        }
+    }
+
+    private val playerTouchMiddle = object : SimpleOnGestureListener() {
+        override fun onDown(e: MotionEvent): Boolean {
+            return true
+        }
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+            val playPauseRestartButton: ImageButton = findViewById(R.id.playPauseRestartButton)
+            if (playPauseRestartButton.visibility == View.GONE) {
+                playPauseRestartButton.visibility = View.VISIBLE
+            } else {
+                playPauseRestartButton.visibility = View.GONE
+            }
+            val castButton: MediaRouteButton = findViewById(R.id.castButton)
+            if (castButton.visibility == View.GONE) {
+                castButton.visibility = View.VISIBLE
+            } else {
+                castButton.visibility = View.GONE
+            }
+            val shareButton: ImageButton = findViewById(R.id.shareButton)
+            if (shareButton.visibility == View.GONE) {
+                shareButton.visibility = View.VISIBLE
+            } else {
+                shareButton.visibility = View.GONE
+            }
             return true
         }
     }
