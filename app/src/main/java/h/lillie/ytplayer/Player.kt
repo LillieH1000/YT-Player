@@ -9,13 +9,19 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.StrictMode
+import android.view.GestureDetector
+import android.view.GestureDetector.SimpleOnGestureListener
+import android.view.MotionEvent
 import android.view.View
+import android.widget.ImageButton
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
+import androidx.mediarouter.app.MediaRouteButton
+import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import okhttp3.OkHttpClient
@@ -25,12 +31,11 @@ import org.json.JSONObject
 
 @OptIn(UnstableApi::class)
 @Suppress("Deprecation")
-@SuppressLint("SwitchIntDef")
+@SuppressLint("ClickableViewAccessibility", "SwitchIntDef")
 class Player : AppCompatActivity() {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
     private lateinit var playerController: MediaController
     private lateinit var playerHandler: Handler
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,9 +52,8 @@ class Player : AppCompatActivity() {
                             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
                         }
                     }
-                    playerHandler = Handler(Looper.getMainLooper())
-                    playerHandler.post(playerTask)
                     broadcast(intent)
+                    ui()
                 }
             }
         }
@@ -164,8 +168,119 @@ class Player : AppCompatActivity() {
         }
     }
 
+    private fun ui() {
+        CastButtonFactory.setUpMediaRouteButton(this, findViewById(R.id.castButton))
+
+        val leftView: View = findViewById(R.id.leftView)
+        leftView.setOnTouchListener(object : View.OnTouchListener {
+            val gestureDetector = GestureDetector(playerTouchLeft)
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                return gestureDetector.onTouchEvent(event!!)
+            }
+        })
+
+        val rightView: View = findViewById(R.id.rightView)
+        rightView.setOnTouchListener(object : View.OnTouchListener {
+            val gestureDetector = GestureDetector(playerTouchRight)
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                return gestureDetector.onTouchEvent(event!!)
+            }
+        })
+
+        val playPauseRestartButton: ImageButton = findViewById(R.id.playPauseRestartButton)
+        playPauseRestartButton.setOnClickListener {
+            if (!playerController.isPlaying) {
+                playerController.play()
+            } else {
+                playerController.pause()
+            }
+        }
+
+        val shareButton: ImageButton = findViewById(R.id.shareButton)
+        shareButton.setOnClickListener {
+            startActivity(Intent.createChooser(Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, "https://youtu.be/${Application.id}")
+                type = "text/plain"
+            }, null))
+        }
+
+        playerHandler = Handler(Looper.getMainLooper())
+        playerHandler.post(playerTask)
+    }
+    
+    private val playerTouchLeft = object : SimpleOnGestureListener() {
+        override fun onDown(e: MotionEvent): Boolean {
+            return true
+        }
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+            val playPauseRestartButton: ImageButton = findViewById(R.id.playPauseRestartButton)
+            if (playPauseRestartButton.visibility == View.GONE) {
+                playPauseRestartButton.visibility = View.VISIBLE
+            } else {
+                playPauseRestartButton.visibility = View.GONE
+            }
+            val castButton: MediaRouteButton = findViewById(R.id.castButton)
+            if (castButton.visibility == View.GONE) {
+                castButton.visibility = View.VISIBLE
+            } else {
+                castButton.visibility = View.GONE
+            }
+            val shareButton: ImageButton = findViewById(R.id.shareButton)
+            if (shareButton.visibility == View.GONE) {
+                shareButton.visibility = View.VISIBLE
+            } else {
+                shareButton.visibility = View.GONE
+            }
+            return true
+        }
+        override fun onDoubleTap(e: MotionEvent): Boolean {
+            playerController.seekBack()
+            return true
+        }
+    }
+
+    private val playerTouchRight = object : SimpleOnGestureListener() {
+        override fun onDown(e: MotionEvent): Boolean {
+            return true
+        }
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+            val playPauseRestartButton: ImageButton = findViewById(R.id.playPauseRestartButton)
+            if (playPauseRestartButton.visibility == View.GONE) {
+                playPauseRestartButton.visibility = View.VISIBLE
+            } else {
+                playPauseRestartButton.visibility = View.GONE
+            }
+            val castButton: MediaRouteButton = findViewById(R.id.castButton)
+            if (castButton.visibility == View.GONE) {
+                castButton.visibility = View.VISIBLE
+            } else {
+                castButton.visibility = View.GONE
+            }
+            val shareButton: ImageButton = findViewById(R.id.shareButton)
+            if (shareButton.visibility == View.GONE) {
+                shareButton.visibility = View.VISIBLE
+            } else {
+                shareButton.visibility = View.GONE
+            }
+            return true
+        }
+        override fun onDoubleTap(e: MotionEvent): Boolean {
+            playerController.seekForward()
+            return true
+        }
+    }
+
     private val playerTask = object : Runnable {
         override fun run() {
+            if (this@Player::playerController.isInitialized) {
+                val playPauseRestartButton: ImageButton = findViewById(R.id.playPauseRestartButton)
+                if (!playerController.isPlaying) {
+                    playPauseRestartButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_play)
+                } else {
+                    playPauseRestartButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_pause)
+                }
+            }
             playerHandler.postDelayed(this, 1000)
         }
     }
