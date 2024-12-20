@@ -246,6 +246,32 @@ class Player : AppCompatActivity() {
         playerHandler = Handler(Looper.getMainLooper())
         playerHandler.post(playerTask)
     }
+
+    private fun time(time: Long) : String {
+        val hours: Int = TimeUnit.MILLISECONDS.toHours(time).toInt()
+        val minutes: Int = (TimeUnit.MILLISECONDS.toMinutes(time) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(time))).toInt()
+        val seconds: Int = (TimeUnit.MILLISECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(time))).toInt()
+        var formatted = ""
+        if (hours != 0) {
+            formatted += "$hours:"
+        }
+        if (formatted != "") {
+            if (minutes >= 10) {
+                formatted += "$minutes:"
+            } else {
+                formatted += "0$minutes:"
+            }
+        }
+        if (formatted == "") {
+            formatted += "$minutes:"
+        }
+        if (seconds >= 10) {
+            formatted += seconds
+        } else {
+            formatted += "0$seconds"
+        }
+        return formatted
+    }
     
     private val playerTouch = object : SimpleOnGestureListener() {
         override fun onDown(e: MotionEvent): Boolean {
@@ -295,54 +321,8 @@ class Player : AppCompatActivity() {
                     progressSlider.valueTo = duration.toFloat()
                     progressSlider.value = position.toFloat()
 
-                    val positionHours: Int = TimeUnit.MILLISECONDS.toHours(position).toInt()
-                    val positionMinutes: Int = (TimeUnit.MILLISECONDS.toMinutes(position) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(position))).toInt()
-                    val positionSeconds: Int = (TimeUnit.MILLISECONDS.toSeconds(position) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(position))).toInt()
-                    var positionFormatted = ""
-                    if (positionHours != 0) {
-                        positionFormatted += "$positionHours:"
-                    }
-                    if (positionFormatted != "") {
-                        if (positionMinutes >= 10) {
-                            positionFormatted += "$positionMinutes:"
-                        } else {
-                            positionFormatted += "0$positionMinutes:"
-                        }
-                    }
-                    if (positionFormatted == "") {
-                        positionFormatted += "$positionMinutes:"
-                    }
-                    if (positionSeconds >= 10) {
-                        positionFormatted += positionSeconds
-                    } else {
-                        positionFormatted += "0$positionSeconds"
-                    }
-
-                    val durationHours: Int = TimeUnit.MILLISECONDS.toHours(duration).toInt()
-                    val durationMinutes: Int = (TimeUnit.MILLISECONDS.toMinutes(duration) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(duration))).toInt()
-                    val durationSeconds: Int = (TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration))).toInt()
-                    var durationFormatted = ""
-                    if (durationHours != 0) {
-                        durationFormatted += "$durationHours:"
-                    }
-                    if (durationFormatted != "") {
-                        if (durationMinutes >= 10) {
-                            durationFormatted += "$durationMinutes:"
-                        } else {
-                            durationFormatted += "0$durationMinutes:"
-                        }
-                    }
-                    if (durationFormatted == "") {
-                        durationFormatted += "$durationMinutes:"
-                    }
-                    if (durationSeconds >= 10) {
-                        durationFormatted += durationSeconds
-                    } else {
-                        durationFormatted += "0$durationSeconds"
-                    }
-
                     val timeView: TextView = findViewById(R.id.timeView)
-                    timeView.text = "$positionFormatted / $durationFormatted"
+                    timeView.text = "${time(position)} / ${time(duration)}"
                 }
             }
             playerHandler.postDelayed(this, 1000)
