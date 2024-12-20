@@ -7,6 +7,7 @@ import android.content.IntentFilter
 import android.net.Uri
 import androidx.annotation.OptIn
 import androidx.media3.cast.CastPlayer
+import androidx.media3.cast.DefaultMediaItemConverter
 import androidx.media3.cast.SessionAvailabilityListener
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
@@ -33,14 +34,14 @@ class PlayerService : MediaSessionService() {
         super.onCreate()
 
         exoPlayer = ExoPlayer.Builder(this)
-            .setSeekBackIncrementMs(15000)
-            .setSeekForwardIncrementMs(15000)
+            .setSeekBackIncrementMs(10000)
+            .setSeekForwardIncrementMs(10000)
             .build()
         playerSession = MediaSession.Builder(this, exoPlayer).build()
 
         registerReceiver(playerBroadcastReceiver, IntentFilter("h.lillie.ytplayer.info"), RECEIVER_NOT_EXPORTED)
 
-        castPlayer = CastPlayer(CastContext.getSharedInstance(this, MoreExecutors.directExecutor()).result)
+        castPlayer = CastPlayer(CastContext.getSharedInstance(this, MoreExecutors.directExecutor()).result, DefaultMediaItemConverter(), 10000, 10000)
         castPlayer.setSessionAvailabilityListener(object : SessionAvailabilityListener {
             override fun onCastSessionAvailable() {
                 exoPlayer.stop()
