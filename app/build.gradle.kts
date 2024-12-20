@@ -12,8 +12,8 @@ android {
         minSdk = 33
         // noinspection OldTargetApi, EditedTargetSdkVersion
         targetSdk = 34
-        versionCode = 6
-        versionName = "1.0.4"
+        versionCode = 10
+        versionName = "1.1.0"
     }
 
     buildTypes {
