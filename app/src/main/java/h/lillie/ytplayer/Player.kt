@@ -15,6 +15,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageButton
 import android.widget.RelativeLayout
+import androidx.activity.addCallback
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.Player
@@ -43,6 +44,8 @@ class Player : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.player)
+
+        onBackPressedDispatcher.addCallback(this) {}
 
         when {
             intent?.action == Intent.ACTION_SEND -> {
