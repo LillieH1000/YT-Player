@@ -228,23 +228,11 @@ class Player : AppCompatActivity() {
             return true
         }
         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-            val playPauseRestartButton: ImageButton = findViewById(R.id.playPauseRestartButton)
-            if (playPauseRestartButton.visibility == View.GONE) {
-                playPauseRestartButton.visibility = View.VISIBLE
+            val overlayView: RelativeLayout = findViewById(R.id.overlayView)
+            if (overlayView.visibility == View.GONE) {
+                overlayView.visibility = View.VISIBLE
             } else {
-                playPauseRestartButton.visibility = View.GONE
-            }
-            val castButton: MediaRouteButton = findViewById(R.id.castButton)
-            if (castButton.visibility == View.GONE) {
-                castButton.visibility = View.VISIBLE
-            } else {
-                castButton.visibility = View.GONE
-            }
-            val shareButton: ImageButton = findViewById(R.id.shareButton)
-            if (shareButton.visibility == View.GONE) {
-                shareButton.visibility = View.VISIBLE
-            } else {
-                shareButton.visibility = View.GONE
+                overlayView.visibility = View.GONE
             }
             return true
         }
