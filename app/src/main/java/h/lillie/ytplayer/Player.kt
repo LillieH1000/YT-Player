@@ -9,9 +9,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.StrictMode
-import android.view.GestureDetector
-import android.view.GestureDetector.SimpleOnGestureListener
-import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageButton
 import android.widget.RelativeLayout
@@ -175,37 +172,18 @@ class Player : AppCompatActivity() {
         }
     }
 
-    private var gestureDirection: Int = 0
-
     private fun ui() {
         CastButtonFactory.setUpMediaRouteButton(this, findViewById(R.id.castButton))
 
-        val leftView: View = findViewById(R.id.leftView)
-        leftView.setOnTouchListener(object : View.OnTouchListener {
-            val gestureDetector = GestureDetector(playerTouch)
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                gestureDirection = 0
-                return gestureDetector.onTouchEvent(event!!)
+        val overlayView: RelativeLayout = findViewById(R.id.overlayView)
+        overlayView.setOnClickListener {
+            val overlayChildView: RelativeLayout = findViewById(R.id.overlayChildView)
+            if (overlayChildView.visibility == View.GONE) {
+                overlayChildView.visibility = View.VISIBLE
+            } else {
+                overlayChildView.visibility = View.GONE
             }
-        })
-
-        val middleView: RelativeLayout = findViewById(R.id.middleView)
-        middleView.setOnTouchListener(object : View.OnTouchListener {
-            val gestureDetector = GestureDetector(playerTouch)
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                gestureDirection = 1
-                return gestureDetector.onTouchEvent(event!!)
-            }
-        })
-
-        val rightView: RelativeLayout = findViewById(R.id.rightView)
-        rightView.setOnTouchListener(object : View.OnTouchListener {
-            val gestureDetector = GestureDetector(playerTouch)
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                gestureDirection = 2
-                return gestureDetector.onTouchEvent(event!!)
-            }
-        })
+        }
 
         val playPauseRestartButton: ImageButton = findViewById(R.id.playPauseRestartButton)
         playPauseRestartButton.setOnClickListener {
@@ -214,6 +192,16 @@ class Player : AppCompatActivity() {
             } else {
                 playerController.pause()
             }
+        }
+
+        val backButton: ImageButton = findViewById(R.id.backButton)
+        backButton.setOnClickListener {
+            playerController.seekBack()
+        }
+
+        val forwardButton: ImageButton = findViewById(R.id.forwardButton)
+        forwardButton.setOnClickListener {
+            playerController.seekForward()
         }
 
         val progressSlider: Slider = findViewById(R.id.progressSlider)
@@ -273,30 +261,6 @@ class Player : AppCompatActivity() {
         return formatted
     }
     
-    private val playerTouch = object : SimpleOnGestureListener() {
-        override fun onDown(e: MotionEvent): Boolean {
-            return true
-        }
-        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-            val overlayView: RelativeLayout = findViewById(R.id.overlayView)
-            if (overlayView.visibility == View.GONE) {
-                overlayView.visibility = View.VISIBLE
-            } else {
-                overlayView.visibility = View.GONE
-            }
-            return true
-        }
-        override fun onDoubleTap(e: MotionEvent): Boolean {
-            if (gestureDirection == 0) {
-                playerController.seekBack()
-            }
-            if (gestureDirection == 2) {
-                playerController.seekForward()
-            }
-            return true
-        }
-    }
-
     private val playerTask = object : Runnable {
         override fun run() {
             if (this@Player::playerController.isInitialized) {
