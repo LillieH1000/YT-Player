@@ -2,7 +2,6 @@
 appcompatVersion = "1.7.0"
 constraintlayoutVersion = "2.2.0"
 coreVersion = "1.15.0"
-gsonVersion = "2.11.0"
 kotlinxCoroutinesVersion = "1.9.0"
 lifecycleVersion = "2.8.7"
 materialVersion = "1.12.0"
@@ -26,15 +25,12 @@ androidx-media3-datasource = { module = "androidx.media3:media3-datasource", ver
 androidx-media3-datasource-okhttp = { module = "androidx.media3:media3-datasource-okhttp", version.ref = "media3ExoplayerVersion" }
 androidx-media3-decoder = { module = "androidx.media3:media3-decoder", version.ref = "media3ExoplayerVersion" }
 androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3ExoplayerVersion" }
-androidx-media3-exoplayer-dash = { module = "androidx.media3:media3-exoplayer-dash", version.ref = "media3ExoplayerVersion" }
 androidx-media3-exoplayer-hls = { module = "androidx.media3:media3-exoplayer-hls", version.ref = "media3ExoplayerVersion" }
-androidx-media3-exoplayer-rtsp = { module = "androidx.media3:media3-exoplayer-rtsp", version.ref = "media3ExoplayerVersion" }
 androidx-media3-exoplayer-smoothstreaming = { module = "androidx.media3:media3-exoplayer-smoothstreaming", version.ref = "media3ExoplayerVersion" }
 androidx-media3-extractor = { module = "androidx.media3:media3-extractor", version.ref = "media3ExoplayerVersion" }
 androidx-media3-session = { module = "androidx.media3:media3-session", version.ref = "media3ExoplayerVersion" }
 androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3ExoplayerVersion" }
 androidx-mediarouter = { module = "androidx.mediarouter:mediarouter", version.ref = "mediarouterVersion" }
-gson = { module = "com.google.code.gson:gson", version.ref = "gsonVersion" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesVersion" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesVersion" }
 material = { module = "com.google.android.material:material", version.ref = "materialVersion" }
