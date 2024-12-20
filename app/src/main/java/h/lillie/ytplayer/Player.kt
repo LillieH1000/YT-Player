@@ -17,12 +17,14 @@ import android.widget.ImageButton
 import android.widget.RelativeLayout
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
 import androidx.mediarouter.app.MediaRouteButton
 import com.google.android.gms.cast.framework.CastButtonFactory
+import com.google.android.material.slider.Slider
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import okhttp3.OkHttpClient
@@ -210,6 +212,24 @@ class Player : AppCompatActivity() {
             }
         }
 
+        val progressSlider: Slider = findViewById(R.id.progressSlider)
+        progressSlider.addOnChangeListener { _, value, fromUser ->
+            val duration = playerController.duration
+            val position = playerController.currentPosition
+            if (fromUser && duration >= 0 && position >= 0 && position <= duration) {
+                playerController.seekTo(value.toLong())
+            }
+        }
+
+        val repeatButton: ImageButton = findViewById(R.id.repeatButton)
+        repeatButton.setOnClickListener {
+            if (playerController.repeatMode == Player.REPEAT_MODE_OFF) {
+                playerController.repeatMode = Player.REPEAT_MODE_ONE
+            } else {
+                playerController.repeatMode = Player.REPEAT_MODE_OFF
+            }
+        }
+
         val shareButton: ImageButton = findViewById(R.id.shareButton)
         shareButton.setOnClickListener {
             startActivity(Intent.createChooser(Intent().apply {
@@ -255,6 +275,21 @@ class Player : AppCompatActivity() {
                     playPauseRestartButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_play)
                 } else {
                     playPauseRestartButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_pause)
+                }
+
+                val repeatButton: ImageButton = findViewById(R.id.repeatButton)
+                if (playerController.repeatMode == Player.REPEAT_MODE_OFF) {
+                    repeatButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_repeat_all)
+                } else {
+                    repeatButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_repeat_one)
+                }
+
+                val duration = playerController.duration
+                val position = playerController.currentPosition
+                if (duration >= 0 && position >= 0 && position <= duration) {
+                    val progressSlider: Slider = findViewById(R.id.progressSlider)
+                    progressSlider.valueTo = duration.toFloat()
+                    progressSlider.value = position.toFloat()
                 }
             }
             playerHandler.postDelayed(this, 1000)
