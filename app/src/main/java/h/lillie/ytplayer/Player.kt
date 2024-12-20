@@ -15,6 +15,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageButton
 import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
@@ -31,10 +32,11 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
+import java.util.concurrent.TimeUnit
 
 @OptIn(UnstableApi::class)
 @Suppress("Deprecation")
-@SuppressLint("ClickableViewAccessibility", "SwitchIntDef")
+@SuppressLint("ClickableViewAccessibility", "SetTextI18n", "SwitchIntDef")
 class Player : AppCompatActivity() {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
     private lateinit var playerController: MediaController
@@ -292,6 +294,55 @@ class Player : AppCompatActivity() {
                     val progressSlider: Slider = findViewById(R.id.progressSlider)
                     progressSlider.valueTo = duration.toFloat()
                     progressSlider.value = position.toFloat()
+
+                    val positionHours: Int = TimeUnit.MILLISECONDS.toHours(position).toInt()
+                    val positionMinutes: Int = (TimeUnit.MILLISECONDS.toMinutes(position) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(position))).toInt()
+                    val positionSeconds: Int = (TimeUnit.MILLISECONDS.toSeconds(position) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(position))).toInt()
+                    var positionFormatted = ""
+                    if (positionHours != 0) {
+                        positionFormatted += "$positionHours:"
+                    }
+                    if (positionFormatted != "") {
+                        if (positionMinutes >= 10) {
+                            positionFormatted += "$positionMinutes:"
+                        } else {
+                            positionFormatted += "0$positionMinutes:"
+                        }
+                    }
+                    if (positionFormatted == "") {
+                        positionFormatted += "$positionMinutes:"
+                    }
+                    if (positionSeconds >= 10) {
+                        positionFormatted += positionSeconds
+                    } else {
+                        positionFormatted += "0$positionSeconds"
+                    }
+
+                    val durationHours: Int = TimeUnit.MILLISECONDS.toHours(duration).toInt()
+                    val durationMinutes: Int = (TimeUnit.MILLISECONDS.toMinutes(duration) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(duration))).toInt()
+                    val durationSeconds: Int = (TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration))).toInt()
+                    var durationFormatted = ""
+                    if (durationHours != 0) {
+                        durationFormatted += "$durationHours:"
+                    }
+                    if (durationFormatted != "") {
+                        if (durationMinutes >= 10) {
+                            durationFormatted += "$durationMinutes:"
+                        } else {
+                            durationFormatted += "0$durationMinutes:"
+                        }
+                    }
+                    if (durationFormatted == "") {
+                        durationFormatted += "$durationMinutes:"
+                    }
+                    if (durationSeconds >= 10) {
+                        durationFormatted += durationSeconds
+                    } else {
+                        durationFormatted += "0$durationSeconds"
+                    }
+
+                    val timeView: TextView = findViewById(R.id.timeView)
+                    timeView.text = "$positionFormatted / $durationFormatted"
                 }
             }
             playerHandler.postDelayed(this, 1000)

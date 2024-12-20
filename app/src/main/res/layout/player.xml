@@ -57,6 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
+            android:paddingBottom="130dp"
             android:valueFrom="0"
             app:haloRadius="0dp"
             app:labelBehavior="gone"
@@ -64,6 +65,15 @@
             app:trackColorActive="@color/lightGrey"
             app:trackColorInactive="@color/darkGrey"
             app:trackHeight="3dp" />
+        <TextView
+            android:id="@+id/timeView"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:paddingLeft="15dp"
+            android:paddingBottom="40dp"
+            android:textColor="@color/white"
+            android:textAllCaps="false" />
         <LinearLayout
             android:layout_width="120dp"
             android:layout_height="match_parent"
