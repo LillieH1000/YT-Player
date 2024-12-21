@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
 import androidx.annotation.OptIn
 import androidx.media3.cast.CastPlayer
 import androidx.media3.cast.DefaultMediaItemConverter
@@ -28,6 +30,7 @@ import okhttp3.OkHttpClient
 class PlayerService : MediaSessionService() {
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var castPlayer: CastPlayer
+    private lateinit var playerHandler: Handler
     private var playerSession: MediaSession? = null
 
     override fun onCreate() {
@@ -72,6 +75,9 @@ class PlayerService : MediaSessionService() {
                 exoPlayer.prepare()
             }
         })
+
+        playerHandler = Handler(Looper.getMainLooper())
+        playerHandler.post(playerTask)
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? {
@@ -80,6 +86,7 @@ class PlayerService : MediaSessionService() {
 
     override fun onDestroy() {
         playerSession?.run {
+            playerHandler.removeCallbacksAndMessages(null)
             unregisterReceiver(playerBroadcastReceiver)
             player.release()
             release()
@@ -115,6 +122,12 @@ class PlayerService : MediaSessionService() {
                 exoPlayer.playWhenReady = true
                 exoPlayer.prepare()
             }
+        }
+    }
+
+    private val playerTask = object : Runnable {
+        override fun run() {
+            playerHandler.postDelayed(this, 1000)
         }
     }
 }
