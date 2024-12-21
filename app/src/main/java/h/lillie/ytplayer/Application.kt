@@ -10,5 +10,6 @@ class Application : Application() {
         var artwork = String()
         var audioUrl = String()
         var hlsUrl = String()
+        var sponsorBlock = String()
     }
 }

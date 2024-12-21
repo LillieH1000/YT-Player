@@ -107,48 +107,8 @@ class Player : AppCompatActivity() {
             val policy = StrictMode.ThreadPolicy.Builder().permitNetwork().build()
             StrictMode.setThreadPolicy(policy)
 
-            val body = """{
-                "context": {
-                    "client": {
-                        "hl": "en",
-                        "gl": "${this.resources.configuration.locales.get(0).country}",
-                        "clientName": "IOS",
-                        "clientVersion": "19.45.4",
-                        "deviceMake": "Apple",
-                        "deviceModel": "iPhone16,2",
-                        "osName": "iPhone",
-                        "osVersion": "18.1.0.22B83"
-                    }
-                },
-                "contentCheckOk": true,
-                "racyCheckOk": true,
-                "videoId": "$result"
-            }"""
-
-            val requestBody = body.trimIndent().toRequestBody()
-
-            val client: OkHttpClient = OkHttpClient.Builder().build()
-
-            val request = Request.Builder()
-                .method("POST", requestBody)
-                .header("User-Agent", "com.google.ios.youtube/19.45.4 (iPhone16,2; U; CPU iOS 18_1_0 like Mac OS X;)")
-                .url("https://www.youtube.com/youtubei/v1/player?prettyPrint=false")
-                .build()
-
-            val jsonObject = JSONObject(client.newCall(request).execute().body.string())
-
-            Application.id = jsonObject.getJSONObject("videoDetails").optString("videoId")
-            Application.title = jsonObject.getJSONObject("videoDetails").optString("title")
-            Application.author = jsonObject.getJSONObject("videoDetails").optString("author")
-            val artworkArray = jsonObject.getJSONObject("videoDetails").getJSONObject("thumbnail").getJSONArray("thumbnails")
-            Application.artwork = artworkArray.getJSONObject((artworkArray.length() - 1)).optString("url")
-            val adaptiveFormats = jsonObject.getJSONObject("streamingData").getJSONArray("adaptiveFormats")
-            for (i in 0 until adaptiveFormats.length()) {
-                if (adaptiveFormats.getJSONObject(i).optString("mimeType").contains("audio/mp4") && adaptiveFormats.getJSONObject(i).optString("audioQuality") == "AUDIO_QUALITY_MEDIUM") {
-                    Application.audioUrl = adaptiveFormats.getJSONObject(i).optString("url")
-                }
-            }
-            Application.hlsUrl = jsonObject.getJSONObject("streamingData").optString("hlsManifestUrl")
+            innertube(result)
+            sponsorBlock(result)
 
             val sessionToken = SessionToken(this, ComponentName(this, PlayerService::class.java))
             playerControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
@@ -170,6 +130,62 @@ class Player : AppCompatActivity() {
                 sendBroadcast(broadcastIntent)
             }, MoreExecutors.directExecutor())
         }
+    }
+
+    private fun innertube(videoId: String) {
+        val body = """{
+                "context": {
+                    "client": {
+                        "hl": "en",
+                        "gl": "${this.resources.configuration.locales.get(0).country}",
+                        "clientName": "IOS",
+                        "clientVersion": "19.45.4",
+                        "deviceMake": "Apple",
+                        "deviceModel": "iPhone16,2",
+                        "osName": "iPhone",
+                        "osVersion": "18.1.0.22B83"
+                    }
+                },
+                "contentCheckOk": true,
+                "racyCheckOk": true,
+                "videoId": "$videoId"
+            }"""
+
+        val requestBody = body.trimIndent().toRequestBody()
+
+        val client: OkHttpClient = OkHttpClient.Builder().build()
+
+        val request = Request.Builder()
+            .method("POST", requestBody)
+            .header("User-Agent", "com.google.ios.youtube/19.45.4 (iPhone16,2; U; CPU iOS 18_1_0 like Mac OS X;)")
+            .url("https://www.youtube.com/youtubei/v1/player?prettyPrint=false")
+            .build()
+
+        val jsonObject = JSONObject(client.newCall(request).execute().body.string())
+
+        Application.id = jsonObject.getJSONObject("videoDetails").optString("videoId")
+        Application.title = jsonObject.getJSONObject("videoDetails").optString("title")
+        Application.author = jsonObject.getJSONObject("videoDetails").optString("author")
+        val artworkArray = jsonObject.getJSONObject("videoDetails").getJSONObject("thumbnail").getJSONArray("thumbnails")
+        Application.artwork = artworkArray.getJSONObject((artworkArray.length() - 1)).optString("url")
+        val adaptiveFormats = jsonObject.getJSONObject("streamingData").getJSONArray("adaptiveFormats")
+        for (i in 0 until adaptiveFormats.length()) {
+            if (adaptiveFormats.getJSONObject(i).optString("mimeType").contains("audio/mp4") && adaptiveFormats.getJSONObject(i).optString("audioQuality") == "AUDIO_QUALITY_MEDIUM") {
+                Application.audioUrl = adaptiveFormats.getJSONObject(i).optString("url")
+            }
+        }
+        Application.hlsUrl = jsonObject.getJSONObject("streamingData").optString("hlsManifestUrl")
+    }
+
+    private fun sponsorBlock(videoId: String) {
+        val client: OkHttpClient = OkHttpClient.Builder().build()
+
+        val request = Request.Builder()
+            .method("GET", null)
+            .url("https://sponsor.ajay.app/api/skipSegments?videoID=$videoId&categories=[\"sponsor\",\"selfpromo\",\"interaction\",\"intro\",\"outro\",\"preview\",\"music_offtopic\"]")
+            .build()
+
+        Application.sponsorBlock = client.newCall(request).execute().body.string()
     }
 
     private fun ui() {
