@@ -1,5 +1,6 @@
 package h.lillie.ytplayer
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -26,8 +27,10 @@ import androidx.media3.session.MediaSessionService
 import com.google.android.gms.cast.framework.CastContext
 import com.google.common.util.concurrent.MoreExecutors
 import okhttp3.OkHttpClient
+import org.json.JSONArray
 
 @OptIn(UnstableApi::class)
+@SuppressLint("DefaultLocale")
 class PlayerService : MediaSessionService() {
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var playerHandler: Handler
@@ -127,6 +130,19 @@ class PlayerService : MediaSessionService() {
 
     private val playerTask = object : Runnable {
         override fun run() {
+            val sponsorBlock: JSONArray? = Application.sponsorBlock
+            if (sponsorBlock != null && playerSession?.player == exoPlayer) {
+                for (i in 0 until sponsorBlock.length()) {
+                    val category: String = sponsorBlock.getJSONObject(i).optString("category")
+                    val segment: JSONArray = sponsorBlock.getJSONObject(i).getJSONArray("segment")
+                    val segment0: Float = String.format("%.3f", segment[0].toString().toDouble()).replace(".", "").toFloat()
+                    val segment1: Float = String.format("%.3f", segment[1].toString().toDouble()).replace(".", "").toFloat()
+                    if (category.contains("sponsor") && exoPlayer.currentPosition >= segment0 && exoPlayer.currentPosition < segment1) {
+                        exoPlayer.seekTo(segment1.toLong())
+                        Toast.makeText(this@PlayerService, "Sponsor Skipped", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
             playerHandler.postDelayed(this, 1000)
         }
     }
