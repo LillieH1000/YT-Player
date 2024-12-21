@@ -7,6 +7,7 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.media3.cast.CastPlayer
 import androidx.media3.cast.DefaultMediaItemConverter
@@ -29,7 +30,6 @@ import okhttp3.OkHttpClient
 @OptIn(UnstableApi::class)
 class PlayerService : MediaSessionService() {
     private lateinit var exoPlayer: ExoPlayer
-    private lateinit var castPlayer: CastPlayer
     private lateinit var playerHandler: Handler
     private var playerSession: MediaSession? = null
 
@@ -44,7 +44,7 @@ class PlayerService : MediaSessionService() {
 
         registerReceiver(playerBroadcastReceiver, IntentFilter("h.lillie.ytplayer.info"), RECEIVER_NOT_EXPORTED)
 
-        castPlayer = CastPlayer(CastContext.getSharedInstance(this, MoreExecutors.directExecutor()).result, DefaultMediaItemConverter(), 10000, 10000)
+        val castPlayer = CastPlayer(CastContext.getSharedInstance(this, MoreExecutors.directExecutor()).result, DefaultMediaItemConverter(), 10000, 10000)
         castPlayer.setSessionAvailabilityListener(object : SessionAvailabilityListener {
             override fun onCastSessionAvailable() {
                 exoPlayer.stop()
@@ -98,9 +98,9 @@ class PlayerService : MediaSessionService() {
     private val playerBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == "h.lillie.ytplayer.info") {
-                if (playerSession?.player == castPlayer) {
-                    castPlayer.stop()
-                    playerSession?.player = exoPlayer
+                if (playerSession?.player != exoPlayer) {
+                    Toast.makeText(this@PlayerService, "Failed", Toast.LENGTH_LONG).show()
+                    return
                 }
 
                 val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
