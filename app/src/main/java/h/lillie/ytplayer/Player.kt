@@ -28,6 +28,8 @@ import com.google.common.util.concurrent.MoreExecutors
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
@@ -187,7 +189,12 @@ class Player : AppCompatActivity() {
             .url("https://sponsor.ajay.app/api/skipSegments?videoID=$videoId&categories=[\"sponsor\",\"selfpromo\",\"interaction\",\"intro\",\"outro\",\"preview\",\"music_offtopic\"]")
             .build()
 
-        Application.sponsorBlock = client.newCall(request).execute().body.string()
+        try {
+            val jsonArray = JSONArray(client.newCall(request).execute().body.string())
+            Application.sponsorBlock = jsonArray
+        } catch (_: JSONException) {
+            Application.sponsorBlock = null
+        }
     }
 
     private fun returnYouTubeDislike(videoId: String) {

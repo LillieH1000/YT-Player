@@ -1,6 +1,7 @@
 package h.lillie.ytplayer
 
 import android.app.Application
+import org.json.JSONArray
 
 class Application : Application() {
     companion object {
@@ -13,6 +14,6 @@ class Application : Application() {
         var dislikes: Int = 0
         var audioUrl = String()
         var hlsUrl = String()
-        var sponsorBlock = String()
+        var sponsorBlock: JSONArray? = JSONArray()
     }
 }
