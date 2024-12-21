@@ -109,6 +109,7 @@ class Player : AppCompatActivity() {
 
             innertube(result)
             sponsorBlock(result)
+            returnYouTubeDislike(result)
 
             val sessionToken = SessionToken(this, ComponentName(this, PlayerService::class.java))
             playerControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
@@ -168,6 +169,7 @@ class Player : AppCompatActivity() {
         Application.author = jsonObject.getJSONObject("videoDetails").optString("author")
         val artworkArray = jsonObject.getJSONObject("videoDetails").getJSONObject("thumbnail").getJSONArray("thumbnails")
         Application.artwork = artworkArray.getJSONObject((artworkArray.length() - 1)).optString("url")
+        Application.views = jsonObject.getJSONObject("videoDetails").optString("viewCount")
         val adaptiveFormats = jsonObject.getJSONObject("streamingData").getJSONArray("adaptiveFormats")
         for (i in 0 until adaptiveFormats.length()) {
             if (adaptiveFormats.getJSONObject(i).optString("mimeType").contains("audio/mp4") && adaptiveFormats.getJSONObject(i).optString("audioQuality") == "AUDIO_QUALITY_MEDIUM") {
@@ -186,6 +188,20 @@ class Player : AppCompatActivity() {
             .build()
 
         Application.sponsorBlock = client.newCall(request).execute().body.string()
+    }
+
+    private fun returnYouTubeDislike(videoId: String) {
+        val client: OkHttpClient = OkHttpClient.Builder().build()
+
+        val request = Request.Builder()
+            .method("GET", null)
+            .url("https://returnyoutubedislikeapi.com/votes?videoId=$videoId")
+            .build()
+
+        val jsonObject = JSONObject(client.newCall(request).execute().body.string())
+
+        Application.likes = jsonObject.optInt("likes")
+        Application.dislikes = jsonObject.optInt("dislikes")
     }
 
     private fun ui() {

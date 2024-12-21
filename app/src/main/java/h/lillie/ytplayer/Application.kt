@@ -8,6 +8,9 @@ class Application : Application() {
         var title = String()
         var author = String()
         var artwork = String()
+        var views = String()
+        var likes: Int = 0
+        var dislikes: Int = 0
         var audioUrl = String()
         var hlsUrl = String()
         var sponsorBlock = String()
