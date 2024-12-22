@@ -4,7 +4,12 @@ import android.annotation.SuppressLint
 import android.app.PictureInPictureParams
 import android.content.ComponentName
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -32,14 +37,16 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
+import kotlin.math.abs
 
 @OptIn(UnstableApi::class)
 @Suppress("Deprecation")
-@SuppressLint("ClickableViewAccessibility", "SetTextI18n", "SwitchIntDef")
-class Player : AppCompatActivity() {
+@SuppressLint("ClickableViewAccessibility", "SetTextI18n", "SourceLockedOrientationActivity", "SwitchIntDef")
+class Player : AppCompatActivity(), SensorEventListener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
     private lateinit var playerController: MediaController
     private lateinit var playerHandler: Handler
+    private var playerSensor: Sensor? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +65,10 @@ class Player : AppCompatActivity() {
                             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
                         }
                     }
+
+                    val sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
+                    playerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+                    sensorManager.registerListener(this, playerSensor, 500 * 1000)
                     broadcast(intent)
                     ui()
                 }
@@ -81,6 +92,23 @@ class Player : AppCompatActivity() {
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
             }
         }
+    }
+
+    override fun onSensorChanged(event: SensorEvent?) {
+        if (event != null && event.sensor == playerSensor) {
+            if ((abs(event.values[1]) > abs(event.values[0])) && event.values[1] > 1) {
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            } else {
+                if (event.values[0] > 1) {
+                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                } else if (event.values[0] < -1) {
+                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
+                }
+            }
+        }
+    }
+
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
     }
 
     override fun onResume() {
