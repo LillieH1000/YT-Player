@@ -199,12 +199,25 @@ class Player : AppCompatActivity(), SensorEventListener {
         val artworkArray = jsonObject.getJSONObject("videoDetails").getJSONObject("thumbnail").getJSONArray("thumbnails")
         Application.artwork = artworkArray.getJSONObject((artworkArray.length() - 1)).optString("url")
         Application.views = jsonObject.getJSONObject("videoDetails").optString("viewCount")
+
+        var audioInfo = 0
+        var audioUrl = ""
         val adaptiveFormats = jsonObject.getJSONObject("streamingData").getJSONArray("adaptiveFormats")
         for (i in 0 until adaptiveFormats.length()) {
-            if (adaptiveFormats.getJSONObject(i).optString("mimeType").contains("audio/mp4") && adaptiveFormats.getJSONObject(i).optString("audioQuality") == "AUDIO_QUALITY_MEDIUM") {
-                Application.audioUrl = adaptiveFormats.getJSONObject(i).optString("url")
+            if (adaptiveFormats.getJSONObject(i).optString("mimeType").contains("audio/mp4") && adaptiveFormats.getJSONObject(i).optString("audioQuality") == "AUDIO_QUALITY_HIGH" && (audioInfo == 0 || audioInfo == 1 || audioInfo == 2)) {
+                audioInfo = 3
+                audioUrl = adaptiveFormats.getJSONObject(i).optString("url")
+            }
+            if (adaptiveFormats.getJSONObject(i).optString("mimeType").contains("audio/mp4") && adaptiveFormats.getJSONObject(i).optString("audioQuality") == "AUDIO_QUALITY_MEDIUM" && (audioInfo == 0 || audioInfo == 1)) {
+                audioInfo = 2
+                audioUrl = adaptiveFormats.getJSONObject(i).optString("url")
+            }
+            if (adaptiveFormats.getJSONObject(i).optString("mimeType").contains("audio/mp4") && adaptiveFormats.getJSONObject(i).optString("audioQuality") == "AUDIO_QUALITY_LOW" && audioInfo == 0) {
+                audioInfo = 1
+                audioUrl = adaptiveFormats.getJSONObject(i).optString("url")
             }
         }
+        Application.audioUrl = audioUrl
         Application.hlsUrl = jsonObject.getJSONObject("streamingData").optString("hlsManifestUrl")
     }
 
