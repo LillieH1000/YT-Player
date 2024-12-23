@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.PictureInPictureParams
 import android.content.ComponentName
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -97,12 +96,12 @@ class Player : AppCompatActivity(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent?) {
         if (event != null && event.sensor == playerSensor) {
             if ((abs(event.values[1]) > abs(event.values[0])) && event.values[1] > 1) {
-                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                // Portrait
             } else {
                 if (event.values[0] > 1) {
-                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                    // Landscape
                 } else if (event.values[0] < -1) {
-                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
+                    // Landscape Reverse
                 }
             }
         }
