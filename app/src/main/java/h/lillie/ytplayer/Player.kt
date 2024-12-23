@@ -15,13 +15,17 @@ import android.os.Looper
 import android.os.StrictMode
 import android.view.View
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlaybackException
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
@@ -41,7 +45,7 @@ import kotlin.math.abs
 @OptIn(UnstableApi::class)
 @Suppress("Deprecation")
 @SuppressLint("ClickableViewAccessibility", "SetTextI18n", "SourceLockedOrientationActivity", "SwitchIntDef")
-class Player : AppCompatActivity(), SensorEventListener {
+class Player : AppCompatActivity(), Player.Listener, SensorEventListener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
     private lateinit var playerController: MediaController
     private lateinit var playerHandler: Handler
@@ -128,6 +132,20 @@ class Player : AppCompatActivity(), SensorEventListener {
         super.onDestroy()
     }
 
+    override fun onPlayerError(error: PlaybackException) {
+        super.onPlayerError(error)
+        if ((error as ExoPlaybackException).type == ExoPlaybackException.TYPE_SOURCE) {
+            val mainView: RelativeLayout = findViewById(R.id.mainView)
+            mainView.visibility = View.GONE
+            val overlayView: RelativeLayout = findViewById(R.id.overlayView)
+            overlayView.visibility = View.GONE
+            val errorView: LinearLayout = findViewById(R.id.errorView)
+            errorView.visibility = View.VISIBLE
+        } else {
+            Toast.makeText(this, "Unknown Error", Toast.LENGTH_LONG).show()
+        }
+    }
+
     private fun broadcast(intent: Intent) {
         val youtubeRegex = Regex("^.*(?:(?:youtu\\.be\\/|v\\/|vi\\/|u\\/\\w\\/|embed\\/|shorts\\/|live\\/)|(?:(?:watch)?\\?v(?:i)?=|\\&v(?:i)?=))([^#\\&\\?]*).*")
         if (youtubeRegex.containsMatchIn(intent.getStringExtra(Intent.EXTRA_TEXT)!!)) {
@@ -144,6 +162,7 @@ class Player : AppCompatActivity(), SensorEventListener {
             playerControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
             playerControllerFuture.addListener({
                 playerController = playerControllerFuture.get()
+                playerController.addListener(this)
 
                 val playerView: PlayerView = findViewById(R.id.playerView)
                 playerView.player = playerController
