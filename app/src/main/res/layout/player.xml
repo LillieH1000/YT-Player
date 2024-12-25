@@ -17,104 +17,93 @@
             android:layout_height="match_parent"
             app:use_controller="false" />
     </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        <View
+            android:id="@+id/leftView"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+        <RelativeLayout
+            android:id="@+id/middleView"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/rightView"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+        </RelativeLayout>
+    </LinearLayout>
     <RelativeLayout
         android:id="@+id/overlayView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <RelativeLayout
-            android:id="@+id/overlayChildView"
+        android:layout_height="match_parent"
+        android:background="@color/dimBlack"
+        android:visibility="gone">
+        <ImageButton
+            android:id="@+id/playPauseRestartButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:scaleType="fitCenter"
+            android:padding="5dp"
+            android:backgroundTint="@color/clear"
+            tools:ignore="ContentDescription" />
+        <com.google.android.material.slider.Slider
+            android:id="@+id/progressSlider"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/dimBlack"
-            android:visibility="gone"
-            tools:ignore="UselessParent">
-            <LinearLayout
-                android:layout_width="180dp"
-                android:layout_height="40dp"
-                android:layout_centerInParent="true"
-                android:orientation="horizontal"
-                android:gravity="center">
-                <ImageButton
-                    android:id="@+id/backButton"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:src="@drawable/media3_icon_skip_back_10"
-                    android:scaleType="fitCenter"
-                    android:padding="5dp"
-                    android:backgroundTint="@color/clear"
-                    tools:ignore="ContentDescription" />
-                <ImageButton
-                    android:id="@+id/playPauseRestartButton"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:scaleType="fitCenter"
-                    android:padding="0dp"
-                    android:backgroundTint="@color/clear"
-                    tools:ignore="ContentDescription" />
-                <ImageButton
-                    android:id="@+id/forwardButton"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:src="@drawable/media3_icon_skip_forward_10"
-                    android:scaleType="fitCenter"
-                    android:padding="5dp"
-                    android:backgroundTint="@color/clear"
-                    tools:ignore="ContentDescription" />
-            </LinearLayout>
-            <com.google.android.material.slider.Slider
-                android:id="@+id/progressSlider"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentBottom="true"
-                android:paddingBottom="130dp"
-                android:valueFrom="0"
-                app:haloRadius="0dp"
-                app:labelBehavior="gone"
-                app:thumbRadius="0dp"
-                app:trackColorActive="@color/lightGrey"
-                app:trackColorInactive="@color/darkGrey"
-                app:trackHeight="3dp" />
-            <TextView
-                android:id="@+id/timeView"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_alignParentBottom="true"
-                android:paddingLeft="15dp"
-                android:paddingBottom="40dp"
-                android:textColor="@color/white"
-                android:textAllCaps="false" />
-            <LinearLayout
-                android:layout_width="120dp"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:paddingRight="10dp"
-                android:orientation="horizontal">
-                <androidx.mediarouter.app.MediaRouteButton
-                    android:id="@+id/castButton"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1" />
-                <ImageButton
-                    android:id="@+id/repeatButton"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/media3_icon_repeat_all"
-                    android:backgroundTint="@color/clear"
-                    tools:ignore="ContentDescription" />
-                <ImageButton
-                    android:id="@+id/shareButton"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/media3_icon_share"
-                    android:backgroundTint="@color/clear"
-                    tools:ignore="ContentDescription" />
-            </LinearLayout>
-        </RelativeLayout>
+            android:layout_alignParentBottom="true"
+            android:paddingBottom="130dp"
+            android:valueFrom="0"
+            app:haloRadius="0dp"
+            app:labelBehavior="gone"
+            app:thumbRadius="0dp"
+            app:trackColorActive="@color/lightGrey"
+            app:trackColorInactive="@color/darkGrey"
+            app:trackHeight="3dp" />
+        <TextView
+            android:id="@+id/timeView"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:paddingLeft="15dp"
+            android:paddingBottom="40dp"
+            android:textColor="@color/white"
+            android:textAllCaps="false" />
+        <LinearLayout
+            android:layout_width="120dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:paddingRight="10dp"
+            android:orientation="horizontal">
+            <androidx.mediarouter.app.MediaRouteButton
+                android:id="@+id/castButton"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1" />
+            <ImageButton
+                android:id="@+id/repeatButton"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:src="@drawable/media3_icon_repeat_all"
+                android:backgroundTint="@color/clear"
+                tools:ignore="ContentDescription" />
+            <ImageButton
+                android:id="@+id/shareButton"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:src="@drawable/media3_icon_share"
+                android:backgroundTint="@color/clear"
+                tools:ignore="ContentDescription" />
+        </LinearLayout>
     </RelativeLayout>
     <LinearLayout
         android:id="@+id/errorView"
