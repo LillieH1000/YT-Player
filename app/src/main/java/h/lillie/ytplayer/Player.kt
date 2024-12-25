@@ -31,6 +31,7 @@ import androidx.media3.exoplayer.ExoPlaybackException
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
+import androidx.mediarouter.app.MediaRouteButton
 import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.material.slider.Slider
 import com.google.common.util.concurrent.ListenableFuture
@@ -75,7 +76,7 @@ class Player : AppCompatActivity(), Player.Listener, SensorEventListener {
                     playerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
                     sensorManager.registerListener(this, playerSensor, 500 * 1000)
                     broadcast(intent)
-                    ui()
+                    createUI()
                 }
             }
         }
@@ -183,6 +184,8 @@ class Player : AppCompatActivity(), Player.Listener, SensorEventListener {
                         .build()
                 )
 
+                updateUI()
+
                 val broadcastIntent = Intent("h.lillie.ytplayer.info")
                 broadcastIntent.setPackage(this.packageName)
                 sendBroadcast(broadcastIntent)
@@ -227,6 +230,7 @@ class Player : AppCompatActivity(), Player.Listener, SensorEventListener {
         val artworkArray = jsonObject.getJSONObject("videoDetails").getJSONObject("thumbnail").getJSONArray("thumbnails")
         Application.artwork = artworkArray.getJSONObject((artworkArray.length() - 1)).optString("url")
         Application.views = jsonObject.getJSONObject("videoDetails").optString("viewCount")
+        Application.live = jsonObject.getJSONObject("videoDetails").optBoolean("isLive")
 
         var audioInfo = 0
         var audioUrl = ""
@@ -281,7 +285,7 @@ class Player : AppCompatActivity(), Player.Listener, SensorEventListener {
 
     private var gestureDirection: Int = 0
 
-    private fun ui() {
+    private fun createUI() {
         CastButtonFactory.setUpMediaRouteButton(this, findViewById(R.id.castButton))
 
         val leftView: View = findViewById(R.id.leftView)
@@ -350,6 +354,20 @@ class Player : AppCompatActivity(), Player.Listener, SensorEventListener {
 
         playerHandler = Handler(Looper.getMainLooper())
         playerHandler.post(playerTask)
+    }
+
+    private fun updateUI() {
+        val castButton: MediaRouteButton = findViewById(R.id.castButton)
+        val repeatButton: ImageButton = findViewById(R.id.repeatButton)
+        if (Application.live) {
+            castButton.visibility = View.GONE
+            repeatButton.visibility = View.GONE
+        } else {
+            castButton.visibility = View.VISIBLE
+            repeatButton.visibility = View.VISIBLE
+        }
+        val menuButtons: LinearLayout = findViewById(R.id.menuButtons)
+        menuButtons.invalidate()
     }
 
     private fun time(time: Long) : String {

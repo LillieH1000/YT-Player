@@ -78,6 +78,7 @@
             android:textColor="@color/white"
             android:textAllCaps="false" />
         <LinearLayout
+            android:id="@+id/menuButtons"
             android:layout_width="120dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
