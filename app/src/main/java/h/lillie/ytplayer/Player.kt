@@ -24,6 +24,7 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
@@ -163,6 +164,11 @@ class Player : AppCompatActivity(), Player.Listener, SensorEventListener {
 
             val policy = StrictMode.ThreadPolicy.Builder().permitNetwork().build()
             StrictMode.setThreadPolicy(policy)
+
+            if (this::playerController.isInitialized && playerController.mediaMetadata.mediaType == MediaMetadata.MEDIA_TYPE_MUSIC) {
+                Toast.makeText(this, "Failed, Please Disable Cast First", Toast.LENGTH_LONG).show()
+                return
+            }
 
             innertube(result)
             sponsorBlock(result)

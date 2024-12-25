@@ -57,6 +57,7 @@ class PlayerService : MediaSessionService() {
                     .setTitle(Application.title)
                     .setArtist(Application.author)
                     .setArtworkUri(Uri.parse(Application.artwork))
+                    .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
                     .build()
 
                 val playerMediaItem: MediaItem = MediaItem.Builder()
@@ -101,15 +102,11 @@ class PlayerService : MediaSessionService() {
     private val playerBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == "h.lillie.ytplayer.info") {
-                if (playerSession?.player != exoPlayer) {
-                    Toast.makeText(this@PlayerService, "Failed", Toast.LENGTH_LONG).show()
-                    return
-                }
-
                 val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
                     .setTitle(Application.title)
                     .setArtist(Application.author)
                     .setArtworkUri(Uri.parse(Application.artwork))
+                    .setMediaType(MediaMetadata.MEDIA_TYPE_VIDEO)
                     .build()
 
                 val playerMediaItem: MediaItem = MediaItem.Builder()
