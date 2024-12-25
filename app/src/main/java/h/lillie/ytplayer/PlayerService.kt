@@ -131,7 +131,7 @@ class PlayerService : MediaSessionService() {
     private val playerTask = object : Runnable {
         override fun run() {
             val sponsorBlock: JSONArray? = Application.sponsorBlock
-            if (sponsorBlock != null && playerSession?.player == exoPlayer) {
+            if (sponsorBlock != null && playerSession?.player == exoPlayer && !Application.live) {
                 for (i in 0 until sponsorBlock.length()) {
                     val category: String = sponsorBlock.getJSONObject(i).optString("category")
                     val segment: JSONArray = sponsorBlock.getJSONObject(i).getJSONArray("segment")
