@@ -183,7 +183,6 @@ class Player : AppCompatActivity(), Player.Listener, SensorEventListener {
                         .setSeamlessResizeEnabled(true)
                         .build()
                 )
-
                 updateUI()
 
                 val broadcastIntent = Intent("h.lillie.ytplayer.info")
@@ -362,6 +361,7 @@ class Player : AppCompatActivity(), Player.Listener, SensorEventListener {
         if (Application.live) {
             castButton.visibility = View.GONE
             repeatButton.visibility = View.GONE
+            playerController.repeatMode = Player.REPEAT_MODE_OFF
         } else {
             castButton.visibility = View.VISIBLE
             repeatButton.visibility = View.VISIBLE
