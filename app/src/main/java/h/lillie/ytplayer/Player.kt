@@ -362,6 +362,9 @@ class Player : AppCompatActivity(), Player.Listener, SensorEventListener {
     }
 
     private fun updateUI() {
+        val titleView: TextView = findViewById(R.id.titleView)
+        titleView.text = Application.title
+
         val castButton: MediaRouteButton = findViewById(R.id.castButton)
         val repeatButton: ImageButton = findViewById(R.id.repeatButton)
         if (Application.live) {
