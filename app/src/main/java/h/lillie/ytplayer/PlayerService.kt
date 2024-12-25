@@ -16,6 +16,7 @@ import androidx.media3.cast.SessionAvailabilityListener
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.MimeTypes
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.okhttp.OkHttpDataSource
@@ -119,6 +120,7 @@ class PlayerService : MediaSessionService() {
                 val videoSource: MediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(playerMediaItem)
 
                 exoPlayer.setMediaSource(videoSource)
+                exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
                 exoPlayer.playWhenReady = true
                 exoPlayer.prepare()
             }
