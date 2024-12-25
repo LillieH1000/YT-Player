@@ -74,6 +74,7 @@
             android:layout_alignParentBottom="true"
             android:paddingLeft="15dp"
             android:paddingBottom="40dp"
+            android:maxLines="1"
             android:textColor="@color/white"
             android:textAllCaps="false" />
         <LinearLayout
