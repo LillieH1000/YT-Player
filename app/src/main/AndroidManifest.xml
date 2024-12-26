@@ -36,5 +36,18 @@
                 <action android:name="androidx.media3.session.MediaSessionService" />
             </intent-filter>
         </service>
+        <activity
+            android:name=".VLCPlayer"
+            android:enabled="true"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:supportsPictureInPicture="false"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>
