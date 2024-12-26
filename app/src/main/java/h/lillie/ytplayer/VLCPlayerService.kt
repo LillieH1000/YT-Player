@@ -118,6 +118,13 @@ class VLCPlayerService : Service() {
             if (intent?.action == "h.lillie.ytplayer.info") {
                 val libVLC = LibVLC(this@VLCPlayerService)
                 libVLCPlayer = MediaPlayer(libVLC)
+                libVLCPlayer.setEventListener(object : MediaPlayer.EventListener {
+                    override fun onEvent(event: MediaPlayer.Event?) {
+                        if (event?.type == MediaPlayer.Event.EndReached) {
+                            libVLCPlayer.media = Media(libVLC, Uri.parse(Application.hlsUrl))
+                        }
+                    }
+                });
                 libVLCPlayer.attachViews(libVLCVideoLayout, null, false, false)
                 libVLCPlayer.media = Media(libVLC, Uri.parse(Application.hlsUrl))
                 libVLCPlayer.play()
