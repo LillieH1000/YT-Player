@@ -1,6 +1,5 @@
 package h.lillie.ytplayer
 
-import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -27,8 +26,6 @@ import org.json.JSONException
 import org.json.JSONObject
 import kotlin.math.abs
 
-@Suppress("Deprecation")
-@SuppressLint("SwitchIntDef")
 class VLCPlayer : AppCompatActivity(), SensorEventListener {
     private lateinit var playerHandler: Handler
     private var playerSensor: Sensor? = null
