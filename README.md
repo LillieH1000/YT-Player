@@ -12,17 +12,7 @@ Usage:
 <br>
 
 Features:
-- No ads
+- No Ads
 - Background Playback
 - Picture In Picture
 - Audio Cast
-
-<br>
-
-Coming Soon:
-- [SponsorBlock](https://sponsor.ajay.app/) integration
-- [Return YouTube Dislike](https://returnyoutubedislike.com/) integration
-- Android TV support
-- Android Wear OS support
-
-And more!
