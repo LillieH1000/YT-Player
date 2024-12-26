@@ -133,7 +133,7 @@ class VLCPlayer : AppCompatActivity(), SensorEventListener {
                 override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
                     (service as VLCPlayerService.LibVLCBinder).setView(findViewById(R.id.playerView))
                     
-                    val broadcastIntent = Intent("h.lillie.ytplayer.vlc.info")
+                    val broadcastIntent = Intent("h.lillie.ytplayer.info")
                     broadcastIntent.setPackage(this@VLCPlayer.packageName)
                     sendBroadcast(broadcastIntent)
                 }

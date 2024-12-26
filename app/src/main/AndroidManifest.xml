@@ -52,7 +52,8 @@
         <service
             android:name=".VLCPlayerService"
             android:enabled="true"
-            android:exported="false">
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback">
         </service>
     </application>
 </manifest>
