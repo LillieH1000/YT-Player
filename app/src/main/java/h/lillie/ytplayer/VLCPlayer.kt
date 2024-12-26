@@ -16,16 +16,12 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.util.UnstableApi
-import androidx.mediarouter.app.MediaRouteButton
-import com.google.android.gms.cast.framework.CastButtonFactory
-import com.google.android.material.slider.Slider
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -35,12 +31,11 @@ import org.json.JSONObject
 import org.videolan.libvlc.LibVLC
 import org.videolan.libvlc.Media
 import org.videolan.libvlc.MediaPlayer
-import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
 @OptIn(UnstableApi::class)
 @Suppress("Deprecation")
-@SuppressLint("ClickableViewAccessibility", "SetTextI18n", "SourceLockedOrientationActivity", "SwitchIntDef")
+@SuppressLint("ClickableViewAccessibility", "SwitchIntDef")
 class VLCPlayer : AppCompatActivity(), SensorEventListener {
     private lateinit var libVLC: LibVLC
     private lateinit var libVLCPlayer: MediaPlayer
@@ -124,6 +119,7 @@ class VLCPlayer : AppCompatActivity(), SensorEventListener {
 
     override fun onDestroy() {
         libVLCPlayer.stop()
+        libVLCPlayer.detachViews()
         libVLCPlayer.release()
         libVLC.release()
         super.onDestroy()
@@ -252,8 +248,6 @@ class VLCPlayer : AppCompatActivity(), SensorEventListener {
     private var gestureDirection: Int = 0
 
     private fun createUI() {
-        CastButtonFactory.setUpMediaRouteButton(this, findViewById(R.id.castButton))
-
         val leftView: View = findViewById(R.id.leftView)
         leftView.setOnTouchListener(object : View.OnTouchListener {
             val gestureDetector = GestureDetector(this@VLCPlayer, playerTouch)
@@ -281,34 +275,6 @@ class VLCPlayer : AppCompatActivity(), SensorEventListener {
             }
         })
 
-
-        val playPauseRestartButton: ImageButton = findViewById(R.id.playPauseRestartButton)
-        playPauseRestartButton.setOnClickListener {
-            if (!libVLCPlayer.isPlaying) {
-                libVLCPlayer.play()
-            } else {
-                libVLCPlayer.pause()
-            }
-        }
-
-        val progressSlider: Slider = findViewById(R.id.progressSlider)
-        progressSlider.addOnChangeListener { _, value, fromUser ->
-            /* val duration = playerController.duration
-            val position = playerController.currentPosition
-            if (fromUser && duration >= 0 && position >= 0 && position <= duration) {
-                playerController.seekTo(value.toLong())
-            } */
-        }
-
-        val repeatButton: ImageButton = findViewById(R.id.repeatButton)
-        repeatButton.setOnClickListener {
-            /* if (playerController.repeatMode == Player.REPEAT_MODE_OFF) {
-                playerController.repeatMode = Player.REPEAT_MODE_ONE
-            } else {
-                playerController.repeatMode = Player.REPEAT_MODE_OFF
-            } */
-        }
-
         val shareButton: ImageButton = findViewById(R.id.shareButton)
         shareButton.setOnClickListener {
             startActivity(Intent.createChooser(Intent().apply {
@@ -325,44 +291,6 @@ class VLCPlayer : AppCompatActivity(), SensorEventListener {
     private fun updateUI() {
         val titleView: TextView = findViewById(R.id.titleView)
         titleView.text = Application.title
-
-        val castButton: MediaRouteButton = findViewById(R.id.castButton)
-        val repeatButton: ImageButton = findViewById(R.id.repeatButton)
-        if (Application.live) {
-            castButton.visibility = View.GONE
-            repeatButton.visibility = View.GONE
-        } else {
-            castButton.visibility = View.VISIBLE
-            repeatButton.visibility = View.VISIBLE
-        }
-        val menuButtons: LinearLayout = findViewById(R.id.menuButtons)
-        menuButtons.invalidate()
-    }
-
-    private fun time(time: Long) : String {
-        val hours: Int = TimeUnit.MILLISECONDS.toHours(time).toInt()
-        val minutes: Int = (TimeUnit.MILLISECONDS.toMinutes(time) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(time))).toInt()
-        val seconds: Int = (TimeUnit.MILLISECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(time))).toInt()
-        var formatted = ""
-        if (hours != 0) {
-            formatted += "$hours:"
-        }
-        if (formatted != "") {
-            if (minutes >= 10) {
-                formatted += "$minutes:"
-            } else {
-                formatted += "0$minutes:"
-            }
-        }
-        if (formatted == "") {
-            formatted += "$minutes:"
-        }
-        if (seconds >= 10) {
-            formatted += seconds
-        } else {
-            formatted += "0$seconds"
-        }
-        return formatted
     }
 
     private val playerTouch = object : GestureDetector.SimpleOnGestureListener() {
@@ -379,12 +307,10 @@ class VLCPlayer : AppCompatActivity(), SensorEventListener {
             return true
         }
         override fun onDoubleTap(e: MotionEvent): Boolean {
-            /* if (gestureDirection == 0) {
-                playerController.seekBack()
+            if (gestureDirection == 0) {
             }
             if (gestureDirection == 2) {
-                playerController.seekForward()
-            } */
+            }
             return true
         }
     }
@@ -398,24 +324,6 @@ class VLCPlayer : AppCompatActivity(), SensorEventListener {
                 } else {
                     playPauseRestartButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_pause)
                 }
-
-                /* val repeatButton: ImageButton = findViewById(R.id.repeatButton)
-                if (playerController.repeatMode == Player.REPEAT_MODE_OFF) {
-                    repeatButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_repeat_all)
-                } else {
-                    repeatButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_repeat_one)
-                }
-
-                val duration = playerController.duration
-                val position = playerController.currentPosition
-                if (duration >= 0 && position >= 0 && position <= duration) {
-                    val progressSlider: Slider = findViewById(R.id.progressSlider)
-                    progressSlider.valueTo = duration.toFloat()
-                    progressSlider.value = position.toFloat()
-
-                    val timeView: TextView = findViewById(R.id.timeView)
-                    timeView.text = "${time(position)} / ${time(duration)}"
-                } */
             }
             playerHandler.postDelayed(this, 1000)
         }
