@@ -27,6 +27,7 @@ class VLCPlayerService : Service() {
     private lateinit var libVLCPlayer: MediaPlayer
     private lateinit var libVLCMediaSession: MediaSessionCompat
     private lateinit var libVLCHandler: Handler
+    private lateinit var libVLC: LibVLC
 
     inner class LibVLCBinder : Binder() {
         fun setView(libVLCVideoLayout: VLCVideoLayout) {
@@ -78,9 +79,10 @@ class VLCPlayerService : Service() {
     }
 
     override fun onDestroy() {
-        stopForeground(true)
         libVLCPlayer.stop()
         libVLCPlayer.release()
+        libVLC.release()
+        stopForeground(true)
         super.onDestroy()
     }
 
@@ -116,7 +118,7 @@ class VLCPlayerService : Service() {
     private val playerBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == "h.lillie.ytplayer.info") {
-                val libVLC = LibVLC(this@VLCPlayerService)
+                libVLC = LibVLC(this@VLCPlayerService)
                 libVLCPlayer = MediaPlayer(libVLC)
                 libVLCPlayer.setEventListener(object : MediaPlayer.EventListener {
                     override fun onEvent(event: MediaPlayer.Event?) {
