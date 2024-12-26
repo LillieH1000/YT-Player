@@ -49,5 +49,10 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+        <service
+            android:name=".VLCPlayerService"
+            android:enabled="true"
+            android:exported="false">
+        </service>
     </application>
 </manifest>

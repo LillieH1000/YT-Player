@@ -1,44 +1,35 @@
 package h.lillie.ytplayer
 
 import android.annotation.SuppressLint
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.content.res.Configuration
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.IBinder
 import android.os.Looper
 import android.os.StrictMode
-import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import android.widget.ImageButton
-import android.widget.RelativeLayout
-import android.widget.TextView
 import androidx.activity.addCallback
-import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
-import androidx.media3.common.util.UnstableApi
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import org.videolan.libvlc.LibVLC
-import org.videolan.libvlc.Media
-import org.videolan.libvlc.MediaPlayer
 import kotlin.math.abs
 
-@OptIn(UnstableApi::class)
 @Suppress("Deprecation")
-@SuppressLint("ClickableViewAccessibility", "SwitchIntDef")
+@SuppressLint("SwitchIntDef")
 class VLCPlayer : AppCompatActivity(), SensorEventListener {
-    private lateinit var libVLC: LibVLC
-    private lateinit var libVLCPlayer: MediaPlayer
     private lateinit var playerHandler: Handler
     private var playerSensor: Sensor? = null
 
@@ -118,10 +109,7 @@ class VLCPlayer : AppCompatActivity(), SensorEventListener {
     }
 
     override fun onDestroy() {
-        libVLCPlayer.stop()
-        libVLCPlayer.detachViews()
-        libVLCPlayer.release()
-        libVLC.release()
+        stopService(Intent(this, VLCPlayerService::class.java))
         super.onDestroy()
     }
 
@@ -143,15 +131,19 @@ class VLCPlayer : AppCompatActivity(), SensorEventListener {
             innertube(result)
             sponsorBlock(result)
             returnYouTubeDislike(result)
-            updateUI()
 
-            libVLC = LibVLC(this)
-            libVLCPlayer = MediaPlayer(libVLC)
-            libVLCPlayer.attachViews(findViewById(R.id.playerView), null, false, false)
+            bindService(Intent(this, VLCPlayerService::class.java), object : ServiceConnection {
+                override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+                    (service as VLCPlayerService.LibVLCBinder).setView(findViewById(R.id.playerView))
+                    
+                    val broadcastIntent = Intent("h.lillie.ytplayer.vlc.info")
+                    broadcastIntent.setPackage(this@VLCPlayer.packageName)
+                    sendBroadcast(broadcastIntent)
+                }
 
-            val media = Media(libVLC, Uri.parse(Application.hlsUrl))
-            libVLCPlayer.media = media
-            libVLCPlayer.play()
+                override fun onServiceDisconnected(name: ComponentName?) {
+                }
+            }, Context.BIND_AUTO_CREATE)
         }
     }
 
@@ -245,86 +237,13 @@ class VLCPlayer : AppCompatActivity(), SensorEventListener {
         Application.dislikes = jsonObject.optInt("dislikes")
     }
 
-    private var gestureDirection: Int = 0
-
     private fun createUI() {
-        val leftView: View = findViewById(R.id.leftView)
-        leftView.setOnTouchListener(object : View.OnTouchListener {
-            val gestureDetector = GestureDetector(this@VLCPlayer, playerTouch)
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                gestureDirection = 0
-                return gestureDetector.onTouchEvent(event!!)
-            }
-        })
-
-        val middleView: RelativeLayout = findViewById(R.id.middleView)
-        middleView.setOnTouchListener(object : View.OnTouchListener {
-            val gestureDetector = GestureDetector(this@VLCPlayer, playerTouch)
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                gestureDirection = 1
-                return gestureDetector.onTouchEvent(event!!)
-            }
-        })
-
-        val rightView: RelativeLayout = findViewById(R.id.rightView)
-        rightView.setOnTouchListener(object : View.OnTouchListener {
-            val gestureDetector = GestureDetector(this@VLCPlayer, playerTouch)
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                gestureDirection = 2
-                return gestureDetector.onTouchEvent(event!!)
-            }
-        })
-
-        val shareButton: ImageButton = findViewById(R.id.shareButton)
-        shareButton.setOnClickListener {
-            startActivity(Intent.createChooser(Intent().apply {
-                action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, "https://youtu.be/${Application.id}")
-                type = "text/plain"
-            }, null))
-        }
-
         playerHandler = Handler(Looper.getMainLooper())
         playerHandler.post(playerTask)
-    }
-
-    private fun updateUI() {
-        val titleView: TextView = findViewById(R.id.titleView)
-        titleView.text = Application.title
-    }
-
-    private val playerTouch = object : GestureDetector.SimpleOnGestureListener() {
-        override fun onDown(e: MotionEvent): Boolean {
-            return true
-        }
-        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-            val overlayView: RelativeLayout = findViewById(R.id.overlayView)
-            if (overlayView.visibility == View.GONE) {
-                overlayView.visibility = View.VISIBLE
-            } else {
-                overlayView.visibility = View.GONE
-            }
-            return true
-        }
-        override fun onDoubleTap(e: MotionEvent): Boolean {
-            if (gestureDirection == 0) {
-            }
-            if (gestureDirection == 2) {
-            }
-            return true
-        }
     }
     
     private val playerTask = object : Runnable {
         override fun run() {
-            if (this@VLCPlayer::libVLCPlayer.isInitialized) {
-                val playPauseRestartButton: ImageButton = findViewById(R.id.playPauseRestartButton)
-                if (!libVLCPlayer.isPlaying) {
-                    playPauseRestartButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_play)
-                } else {
-                    playPauseRestartButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_pause)
-                }
-            }
             playerHandler.postDelayed(this, 1000)
         }
     }
