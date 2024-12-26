@@ -198,11 +198,11 @@ class VLCPlayer : AppCompatActivity(), SensorEventListener {
         var audioUrl = ""
         val adaptiveFormats = jsonObject.getJSONObject("streamingData").getJSONArray("adaptiveFormats")
         for (i in 0 until adaptiveFormats.length()) {
-            if (adaptiveFormats.getJSONObject(i).optString("mimeType").contains("audio/mp4") && adaptiveFormats.getJSONObject(i).optString("audioQuality") == "AUDIO_QUALITY_HIGH" && (audioInfo == 0 || audioInfo == 1 || audioInfo == 2)) {
+            if (adaptiveFormats.getJSONObject(i).optString("mimeType").contains("audio/mp4") && adaptiveFormats.getJSONObject(i).optString("audioQuality") == "AUDIO_QUALITY_HIGH" && audioInfo <= 2) {
                 audioInfo = 3
                 audioUrl = adaptiveFormats.getJSONObject(i).optString("url")
             }
-            if (adaptiveFormats.getJSONObject(i).optString("mimeType").contains("audio/mp4") && adaptiveFormats.getJSONObject(i).optString("audioQuality") == "AUDIO_QUALITY_MEDIUM" && (audioInfo == 0 || audioInfo == 1)) {
+            if (adaptiveFormats.getJSONObject(i).optString("mimeType").contains("audio/mp4") && adaptiveFormats.getJSONObject(i).optString("audioQuality") == "AUDIO_QUALITY_MEDIUM" && audioInfo <= 1) {
                 audioInfo = 2
                 audioUrl = adaptiveFormats.getJSONObject(i).optString("url")
             }
