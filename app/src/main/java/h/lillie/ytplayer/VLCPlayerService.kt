@@ -118,7 +118,9 @@ class VLCPlayerService : Service() {
     private val playerBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == "h.lillie.ytplayer.info") {
-                libVLC = LibVLC(this@VLCPlayerService)
+                val args = mutableListOf<String>()
+                args.add("-vvv")
+                libVLC = LibVLC(this@VLCPlayerService, args)
                 libVLCPlayer = MediaPlayer(libVLC)
                 libVLCPlayer.setEventListener(object : MediaPlayer.EventListener {
                     override fun onEvent(event: MediaPlayer.Event?) {
