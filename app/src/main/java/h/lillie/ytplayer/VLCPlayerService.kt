@@ -79,6 +79,7 @@ class VLCPlayerService : Service() {
     }
 
     override fun onDestroy() {
+        unregisterReceiver(playerBroadcastReceiver)
         libVLCPlayer.stop()
         libVLCPlayer.release()
         libVLC.release()
