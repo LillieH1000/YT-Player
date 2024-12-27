@@ -17,6 +17,7 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.os.StrictMode
+import android.util.Log
 import android.view.MotionEvent
 import android.view.WindowInsets
 import androidx.activity.addCallback
@@ -115,6 +116,11 @@ class VLCPlayer : AppCompatActivity(), SensorEventListener {
 
     override fun onResume() {
         super.onResume()
+        Log.d("YT Player", "Entered Foreground")
+        if (this::playerSource.isInitialized && !playerSource.vlcVout.areViewsAttached()) {
+            Log.d("YT Player", "Attach Views")
+            playerSource.attachViews(findViewById(R.id.playerView), null, false, false)
+        }
         if (this::playerHandler.isInitialized) {
             playerHandler.post(playerTask)
         }
@@ -122,6 +128,8 @@ class VLCPlayer : AppCompatActivity(), SensorEventListener {
 
     override fun onStop() {
         super.onStop()
+        Log.d("YT Player", "Entered Background")
+        playerSource.detachViews()
         playerHandler.removeCallbacksAndMessages(null)
     }
 
