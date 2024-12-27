@@ -16,7 +16,7 @@ import android.os.IBinder
 import android.os.Looper
 import android.os.StrictMode
 import android.view.MotionEvent
-import android.view.View
+import android.view.WindowInsets
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import okhttp3.OkHttpClient
@@ -43,10 +43,14 @@ class VLCPlayer : AppCompatActivity(), SensorEventListener {
                 if (intent.type == "text/plain") {
                     when (resources.configuration.orientation) {
                         Configuration.ORIENTATION_PORTRAIT -> {
-                            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+                            window.insetsController?.apply {
+                                show(WindowInsets.Type.systemBars())
+                            }
                         }
                         Configuration.ORIENTATION_LANDSCAPE -> {
-                            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
+                            window.insetsController?.apply {
+                                hide(WindowInsets.Type.systemBars())
+                            }
                         }
                     }
 
@@ -70,10 +74,14 @@ class VLCPlayer : AppCompatActivity(), SensorEventListener {
         super.onConfigurationChanged(newConfig)
         when (newConfig.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
-                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+                window.insetsController?.apply {
+                    show(WindowInsets.Type.systemBars())
+                }
             }
             Configuration.ORIENTATION_LANDSCAPE -> {
-                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
+                window.insetsController?.apply {
+                    hide(WindowInsets.Type.systemBars())
+                }
             }
         }
     }

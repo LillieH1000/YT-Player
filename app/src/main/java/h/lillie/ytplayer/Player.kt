@@ -16,6 +16,7 @@ import android.os.StrictMode
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import android.view.WindowInsets
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -47,7 +48,6 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
 @OptIn(UnstableApi::class)
-@Suppress("Deprecation")
 @SuppressLint("ClickableViewAccessibility", "SetTextI18n", "SourceLockedOrientationActivity", "SwitchIntDef")
 class Player : AppCompatActivity(), Player.Listener, SensorEventListener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
@@ -66,10 +66,14 @@ class Player : AppCompatActivity(), Player.Listener, SensorEventListener {
                 if (intent.type == "text/plain") {
                     when (resources.configuration.orientation) {
                         Configuration.ORIENTATION_PORTRAIT -> {
-                            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+                            window.insetsController?.apply {
+                                show(WindowInsets.Type.systemBars())
+                            }
                         }
                         Configuration.ORIENTATION_LANDSCAPE -> {
-                            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
+                            window.insetsController?.apply {
+                                hide(WindowInsets.Type.systemBars())
+                            }
                         }
                     }
 
@@ -93,10 +97,14 @@ class Player : AppCompatActivity(), Player.Listener, SensorEventListener {
         super.onConfigurationChanged(newConfig)
         when (newConfig.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
-                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+                window.insetsController?.apply {
+                    show(WindowInsets.Type.systemBars())
+                }
             }
             Configuration.ORIENTATION_LANDSCAPE -> {
-                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
+                window.insetsController?.apply {
+                    hide(WindowInsets.Type.systemBars())
+                }
             }
         }
     }
