@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
@@ -23,18 +24,26 @@ import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.exoplayer.source.MediaSource
+import androidx.media3.session.CommandButton
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
+import androidx.media3.session.SessionCommand
+import androidx.media3.session.SessionResult
 import com.google.android.gms.cast.framework.CastContext
+import com.google.common.collect.ImmutableList
+import com.google.common.util.concurrent.Futures
+import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import okhttp3.OkHttpClient
 import org.json.JSONArray
 
 @OptIn(UnstableApi::class)
 @SuppressLint("DefaultLocale")
-class PlayerService : MediaSessionService() {
+class PlayerService : MediaSessionService(), MediaSession.Callback {
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var playerHandler: Handler
+    private val backCommand = SessionCommand("back", Bundle.EMPTY)
+    private val forwardCommand = SessionCommand("forward", Bundle.EMPTY)
     private var playerSession: MediaSession? = null
 
     override fun onCreate() {
@@ -44,7 +53,23 @@ class PlayerService : MediaSessionService() {
             .setSeekBackIncrementMs(10000)
             .setSeekForwardIncrementMs(10000)
             .build()
-        playerSession = MediaSession.Builder(this, exoPlayer).build()
+
+        val backButton = CommandButton.Builder()
+                .setDisplayName("Seek Back")
+                .setIconResId(androidx.media3.session.R.drawable.media3_icon_skip_back_10)
+                .setSessionCommand(backCommand)
+                .build()
+
+        val forwardButton = CommandButton.Builder()
+            .setDisplayName("Seek Forward")
+            .setIconResId(androidx.media3.session.R.drawable.media3_icon_skip_forward_10)
+            .setSessionCommand(forwardCommand)
+            .build()
+
+        playerSession = MediaSession.Builder(this, exoPlayer)
+            .setCallback(this)
+            .setCustomLayout(ImmutableList.of(backButton, forwardButton))
+            .build()
 
         registerReceiver(playerBroadcastReceiver, IntentFilter("h.lillie.ytplayer.info"), RECEIVER_NOT_EXPORTED)
 
@@ -98,6 +123,34 @@ class PlayerService : MediaSessionService() {
             playerSession = null
         }
         super.onDestroy()
+    }
+
+    override fun onConnect(session: MediaSession, controller: MediaSession.ControllerInfo): MediaSession.ConnectionResult {
+        return MediaSession.ConnectionResult.AcceptedResultBuilder(session)
+            .setAvailablePlayerCommands(MediaSession.ConnectionResult.DEFAULT_PLAYER_COMMANDS.buildUpon()
+                .remove(Player.COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
+                .remove(Player.COMMAND_SEEK_TO_PREVIOUS)
+                .remove(Player.COMMAND_SEEK_TO_NEXT_MEDIA_ITEM)
+                .remove(Player.COMMAND_SEEK_TO_NEXT)
+                .build()
+            )
+            .setAvailableSessionCommands(MediaSession.ConnectionResult.DEFAULT_SESSION_COMMANDS.buildUpon()
+                .add(backCommand)
+                .add(forwardCommand)
+                .build()
+            ).build()
+    }
+
+    override fun onCustomCommand(session: MediaSession, controller: MediaSession.ControllerInfo, customCommand: SessionCommand, args: Bundle): ListenableFuture<SessionResult> {
+        if (customCommand.customAction == "back") {
+            playerSession?.player?.seekBack()
+            return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
+        }
+        if (customCommand.customAction == "forward") {
+            playerSession?.player?.seekForward()
+            return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
+        }
+        return super.onCustomCommand(session, controller, customCommand, args)
     }
 
     private val playerBroadcastReceiver = object : BroadcastReceiver() {
