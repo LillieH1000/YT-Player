@@ -30,6 +30,9 @@ class VLCPlayerService : Service() {
     private lateinit var libVLC: LibVLC
 
     inner class LibVLCBinder : Binder() {
+        fun getPlayer(): MediaPlayer {
+            return libVLCPlayer
+        }
         fun setView(libVLCVideoLayout: VLCVideoLayout) {
             this@VLCPlayerService.libVLCVideoLayout = libVLCVideoLayout
         }
@@ -136,7 +139,11 @@ class VLCPlayerService : Service() {
                         }
                     }
                 })
-                libVLCPlayer.attachViews(libVLCVideoLayout, null, false, false)
+
+                val broadcastIntent = Intent("h.lillie.ytplayer.register")
+                broadcastIntent.setPackage(this@VLCPlayerService.packageName)
+                sendBroadcast(broadcastIntent)
+
                 val media = Media(libVLC, Uri.parse(Application.hlsUrl))
                 media.setHWDecoderEnabled(true, true)
                 libVLCPlayer.media = media

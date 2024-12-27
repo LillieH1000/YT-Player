@@ -1,9 +1,11 @@
 package h.lillie.ytplayer
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.content.res.Configuration
 import android.hardware.Sensor
@@ -25,10 +27,13 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import org.videolan.libvlc.MediaPlayer
 import kotlin.math.abs
 
 @SuppressLint("SwitchIntDef")
 class VLCPlayer : AppCompatActivity(), SensorEventListener {
+    private lateinit var playerServiceBinder: VLCPlayerService.LibVLCBinder
+    private lateinit var playerSource: MediaPlayer
     private lateinit var playerHandler: Handler
     private var playerSensor: Sensor? = null
 
@@ -57,6 +62,11 @@ class VLCPlayer : AppCompatActivity(), SensorEventListener {
                     val sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
                     playerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
                     sensorManager.registerListener(this, playerSensor, 500 * 1000)
+
+                    val intentFilter = IntentFilter()
+                    intentFilter.addAction("h.lillie.ytplayer.register")
+                    registerReceiver(playerBroadcastReceiver, intentFilter, RECEIVER_NOT_EXPORTED)
+
                     broadcast(intent)
                     createUI()
                 }
@@ -116,6 +126,7 @@ class VLCPlayer : AppCompatActivity(), SensorEventListener {
     }
 
     override fun onDestroy() {
+        unregisterReceiver(playerBroadcastReceiver)
         stopService(Intent(this, VLCPlayerService::class.java))
         super.onDestroy()
     }
@@ -141,7 +152,8 @@ class VLCPlayer : AppCompatActivity(), SensorEventListener {
 
             bindService(Intent(this, VLCPlayerService::class.java), object : ServiceConnection {
                 override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-                    (service as VLCPlayerService.LibVLCBinder).setView(findViewById(R.id.playerView))
+                    playerServiceBinder = service as VLCPlayerService.LibVLCBinder
+                    playerServiceBinder.setView(findViewById(R.id.playerView))
                     
                     val broadcastIntent = Intent("h.lillie.ytplayer.info")
                     broadcastIntent.setPackage(this@VLCPlayer.packageName)
@@ -247,6 +259,15 @@ class VLCPlayer : AppCompatActivity(), SensorEventListener {
     private fun createUI() {
         playerHandler = Handler(Looper.getMainLooper())
         playerHandler.post(playerTask)
+    }
+
+    private val playerBroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == "h.lillie.ytplayer.register") {
+                playerSource = playerServiceBinder.getPlayer()
+                playerSource.attachViews(findViewById(R.id.playerView), null, false, false)
+            }
+        }
     }
     
     private val playerTask = object : Runnable {
