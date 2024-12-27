@@ -126,7 +126,7 @@ class VLCPlayerService : Service() {
                             libVLCPlayer.media = Media(libVLC, Uri.parse(Application.hlsUrl))
                         }
                     }
-                });
+                })
                 libVLCPlayer.attachViews(libVLCVideoLayout, null, false, false)
                 libVLCPlayer.media = Media(libVLC, Uri.parse(Application.hlsUrl))
                 libVLCPlayer.play()
