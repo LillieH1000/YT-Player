@@ -161,7 +161,6 @@ class VLCPlayer : AppCompatActivity(), SensorEventListener {
             bindService(Intent(this, VLCPlayerService::class.java), object : ServiceConnection {
                 override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
                     playerServiceBinder = service as VLCPlayerService.LibVLCBinder
-                    playerServiceBinder.setView(findViewById(R.id.playerView))
                     
                     val broadcastIntent = Intent("h.lillie.ytplayer.info")
                     broadcastIntent.setPackage(this@VLCPlayer.packageName)

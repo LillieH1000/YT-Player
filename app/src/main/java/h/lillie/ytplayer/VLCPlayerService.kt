@@ -19,11 +19,9 @@ import androidx.core.app.NotificationCompat
 import org.videolan.libvlc.LibVLC
 import org.videolan.libvlc.Media
 import org.videolan.libvlc.MediaPlayer
-import org.videolan.libvlc.util.VLCVideoLayout
 import java.net.URL
 
 class VLCPlayerService : Service() {
-    private lateinit var libVLCVideoLayout: VLCVideoLayout
     private lateinit var libVLCPlayer: MediaPlayer
     private lateinit var libVLCMediaSession: MediaSessionCompat
     private lateinit var libVLCHandler: Handler
@@ -32,9 +30,6 @@ class VLCPlayerService : Service() {
     inner class LibVLCBinder : Binder() {
         fun getPlayer(): MediaPlayer {
             return libVLCPlayer
-        }
-        fun setView(libVLCVideoLayout: VLCVideoLayout) {
-            this@VLCPlayerService.libVLCVideoLayout = libVLCVideoLayout
         }
     }
 
