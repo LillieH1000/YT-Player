@@ -119,6 +119,7 @@ class VLCPlayerService : Service() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == "h.lillie.ytplayer.info") {
                 val args = mutableListOf<String>()
+                args.add("--aout=opensles")
                 args.add("--avcodec-hw=any")
                 args.add("-vvv")
                 libVLC = LibVLC(this@VLCPlayerService, args)
