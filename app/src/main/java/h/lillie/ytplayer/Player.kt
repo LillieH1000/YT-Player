@@ -129,7 +129,7 @@ class Player : AppCompatActivity(), Player.Listener, SensorEventListener {
     override fun onResume() {
         super.onResume()
         if (this::playerHandler.isInitialized) {
-            playerHandler.post(playerTask)
+            // playerHandler.post(playerTask)
         }
     }
 
@@ -366,7 +366,7 @@ class Player : AppCompatActivity(), Player.Listener, SensorEventListener {
         }
 
         playerHandler = Handler(Looper.getMainLooper())
-        playerHandler.post(playerTask)
+        // playerHandler.post(playerTask)
     }
 
     private fun updateUI() {
