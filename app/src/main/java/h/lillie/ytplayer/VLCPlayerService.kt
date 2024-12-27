@@ -128,12 +128,18 @@ class VLCPlayerService : Service() {
                 libVLCPlayer.setEventListener(object : MediaPlayer.EventListener {
                     override fun onEvent(event: MediaPlayer.Event?) {
                         if (event?.type == MediaPlayer.Event.EndReached) {
-                            libVLCPlayer.media = Media(libVLC, Uri.parse(Application.hlsUrl))
+                            val media = Media(libVLC, Uri.parse(Application.hlsUrl))
+                            media.setHWDecoderEnabled(true, true)
+                            libVLCPlayer.media = media
+                            media.release()
                         }
                     }
                 })
                 libVLCPlayer.attachViews(libVLCVideoLayout, null, false, false)
-                libVLCPlayer.media = Media(libVLC, Uri.parse(Application.hlsUrl))
+                val media = Media(libVLC, Uri.parse(Application.hlsUrl))
+                media.setHWDecoderEnabled(true, true)
+                libVLCPlayer.media = media
+                media.release()
                 libVLCPlayer.play()
                 return
             }
