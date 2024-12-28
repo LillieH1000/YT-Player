@@ -20,7 +20,7 @@
             android:enabled="true"
             android:exported="true"
             android:launchMode="singleInstance"
-            android:screenOrientation="sensor"
+            android:screenOrientation="fullSensor"
             android:supportsPictureInPicture="true"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             tools:ignore="DiscouragedApi">
