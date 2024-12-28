@@ -77,7 +77,6 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_alignParentRight="true"
-                android:src="@drawable/fullscreen"
                 android:scaleType="fitCenter"
                 android:padding="10dp"
                 android:backgroundTint="@color/clear"

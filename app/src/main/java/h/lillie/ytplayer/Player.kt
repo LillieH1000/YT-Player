@@ -65,16 +65,19 @@ class Player : AppCompatActivity(), Player.Listener, SensorEventListener {
         when {
             intent?.action == Intent.ACTION_SEND -> {
                 if (intent.type == "text/plain") {
+                    val fullscreenButton: ImageButton = findViewById(R.id.fullscreenButton)
                     when (resources.configuration.orientation) {
                         Configuration.ORIENTATION_PORTRAIT -> {
                             window.insetsController?.apply {
                                 show(WindowInsets.Type.systemBars())
                             }
+                            fullscreenButton.setImageResource(R.drawable.fullscreen)
                         }
                         Configuration.ORIENTATION_LANDSCAPE -> {
                             window.insetsController?.apply {
                                 hide(WindowInsets.Type.systemBars())
                             }
+                            fullscreenButton.setImageResource(R.drawable.fullexit)
                         }
                     }
 
@@ -96,16 +99,19 @@ class Player : AppCompatActivity(), Player.Listener, SensorEventListener {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
+        val fullscreenButton: ImageButton = findViewById(R.id.fullscreenButton)
         when (newConfig.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
                 window.insetsController?.apply {
                     show(WindowInsets.Type.systemBars())
                 }
+                fullscreenButton.setImageResource(R.drawable.fullscreen)
             }
             Configuration.ORIENTATION_LANDSCAPE -> {
                 window.insetsController?.apply {
                     hide(WindowInsets.Type.systemBars())
                 }
+                fullscreenButton.setImageResource(R.drawable.fullexit)
             }
         }
     }
