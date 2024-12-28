@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.PictureInPictureParams
 import android.content.ComponentName
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -109,15 +110,17 @@ class Player : AppCompatActivity(), Player.Listener, SensorEventListener {
         }
     }
 
+    private var sensorDirection: Int = 0
+
     override fun onSensorChanged(event: SensorEvent?) {
         if (event != null && event.sensor == playerSensor) {
             if ((abs(event.values[1]) > abs(event.values[0])) && event.values[1] > 1) {
-                // Portrait
+                sensorDirection = 0
             } else {
                 if (event.values[0] > 1) {
-                    // Landscape
+                    sensorDirection = 1
                 } else if (event.values[0] < -1) {
-                    // Landscape Reverse
+                    sensorDirection = 2
                 }
             }
         }
@@ -344,6 +347,22 @@ class Player : AppCompatActivity(), Player.Listener, SensorEventListener {
             val position = playerController.currentPosition
             if (fromUser && duration >= 0 && position >= 0 && position <= duration) {
                 playerController.seekTo(value.toLong())
+            }
+        }
+
+        val fullscreenButton: ImageButton = findViewById(R.id.fullscreenButton)
+        fullscreenButton.setOnClickListener {
+            if (sensorDirection == 0) {
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                return@setOnClickListener
+            }
+            if (sensorDirection == 1) {
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                return@setOnClickListener
+            }
+            if (sensorDirection == 2) {
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
+                return@setOnClickListener
             }
         }
 
