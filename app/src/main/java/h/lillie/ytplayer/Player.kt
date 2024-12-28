@@ -4,12 +4,7 @@ import android.annotation.SuppressLint
 import android.app.PictureInPictureParams
 import android.content.ComponentName
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.content.res.Configuration
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -46,15 +41,13 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
-import kotlin.math.abs
 
 @OptIn(UnstableApi::class)
-@SuppressLint("ClickableViewAccessibility", "SetTextI18n", "SourceLockedOrientationActivity", "SwitchIntDef")
-class Player : AppCompatActivity(), Player.Listener, SensorEventListener {
+@SuppressLint("ClickableViewAccessibility", "SetTextI18n", "SwitchIntDef")
+class Player : AppCompatActivity(), Player.Listener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
     private lateinit var playerController: MediaController
     private lateinit var playerHandler: Handler
-    private var playerSensor: Sensor? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,25 +58,19 @@ class Player : AppCompatActivity(), Player.Listener, SensorEventListener {
         when {
             intent?.action == Intent.ACTION_SEND -> {
                 if (intent.type == "text/plain") {
-                    val fullscreenButton: ImageButton = findViewById(R.id.fullscreenButton)
                     when (resources.configuration.orientation) {
                         Configuration.ORIENTATION_PORTRAIT -> {
                             window.insetsController?.apply {
                                 show(WindowInsets.Type.systemBars())
                             }
-                            fullscreenButton.setImageResource(R.drawable.fullscreen)
                         }
                         Configuration.ORIENTATION_LANDSCAPE -> {
                             window.insetsController?.apply {
                                 hide(WindowInsets.Type.systemBars())
                             }
-                            fullscreenButton.setImageResource(R.drawable.fullexit)
                         }
                     }
 
-                    val sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
-                    playerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-                    sensorManager.registerListener(this, playerSensor, 500 * 1000)
                     broadcast(intent)
                     createUI()
                 }
@@ -99,40 +86,18 @@ class Player : AppCompatActivity(), Player.Listener, SensorEventListener {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        val fullscreenButton: ImageButton = findViewById(R.id.fullscreenButton)
         when (newConfig.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
                 window.insetsController?.apply {
                     show(WindowInsets.Type.systemBars())
                 }
-                fullscreenButton.setImageResource(R.drawable.fullscreen)
             }
             Configuration.ORIENTATION_LANDSCAPE -> {
                 window.insetsController?.apply {
                     hide(WindowInsets.Type.systemBars())
                 }
-                fullscreenButton.setImageResource(R.drawable.fullexit)
             }
         }
-    }
-
-    private var sensorDirection: Int = 0
-
-    override fun onSensorChanged(event: SensorEvent?) {
-        if (event != null && event.sensor == playerSensor) {
-            if ((abs(event.values[1]) > abs(event.values[0])) && event.values[1] > 1) {
-                sensorDirection = 0
-            } else {
-                if (event.values[0] > 1) {
-                    sensorDirection = 1
-                } else if (event.values[0] < -1) {
-                    sensorDirection = 2
-                }
-            }
-        }
-    }
-
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
     }
 
     override fun onResume() {
@@ -353,22 +318,6 @@ class Player : AppCompatActivity(), Player.Listener, SensorEventListener {
             val position = playerController.currentPosition
             if (fromUser && duration >= 0 && position >= 0 && position <= duration) {
                 playerController.seekTo(value.toLong())
-            }
-        }
-
-        val fullscreenButton: ImageButton = findViewById(R.id.fullscreenButton)
-        fullscreenButton.setOnClickListener {
-            if (sensorDirection == 0) {
-                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                return@setOnClickListener
-            }
-            if (sensorDirection == 1) {
-                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                return@setOnClickListener
-            }
-            if (sensorDirection == 2) {
-                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
-                return@setOnClickListener
             }
         }
 
