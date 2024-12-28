@@ -39,19 +39,5 @@
                 <action android:name="androidx.media3.session.MediaSessionService" />
             </intent-filter>
         </service>
-        <activity
-            android:name=".VLCPlayer"
-            android:enabled="true"
-            android:exported="true"
-            android:launchMode="singleTask"
-            android:supportsPictureInPicture="false"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode">
-        </activity>
-        <service
-            android:name=".VLCPlayerService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="mediaPlayback">
-        </service>
     </application>
 </manifest>

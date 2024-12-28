@@ -71,7 +71,6 @@ dependencies {
     implementation(libs.androidx.mediarouter)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.libvlc.all)
     implementation(libs.material)
     implementation(libs.okhttp)
 }
