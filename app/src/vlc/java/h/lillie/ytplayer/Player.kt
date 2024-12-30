@@ -30,19 +30,6 @@ class Player : AppCompatActivity() {
         when {
             intent?.action == Intent.ACTION_SEND -> {
                 if (intent.type == "text/plain") {
-                    when (resources.configuration.orientation) {
-                        Configuration.ORIENTATION_PORTRAIT -> {
-                            window.insetsController?.apply {
-                                show(WindowInsets.Type.systemBars())
-                            }
-                        }
-                        Configuration.ORIENTATION_LANDSCAPE -> {
-                            window.insetsController?.apply {
-                                hide(WindowInsets.Type.systemBars())
-                            }
-                        }
-                    }
-
                     val intentFilter = IntentFilter()
                     intentFilter.addAction("h.lillie.ytplayer.register")
                     registerReceiver(playerBroadcastReceiver, intentFilter, RECEIVER_NOT_EXPORTED)
@@ -94,6 +81,24 @@ class Player : AppCompatActivity() {
         unregisterReceiver(playerBroadcastReceiver)
         stopService(Intent(this, PlayerService::class.java))
         super.onDestroy()
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            when (resources.configuration.orientation) {
+                Configuration.ORIENTATION_PORTRAIT -> {
+                    window.insetsController?.apply {
+                        show(WindowInsets.Type.systemBars())
+                    }
+                }
+                Configuration.ORIENTATION_LANDSCAPE -> {
+                    window.insetsController?.apply {
+                        hide(WindowInsets.Type.systemBars())
+                    }
+                }
+            }
+        }
     }
 
     private fun broadcast(intent: Intent) {

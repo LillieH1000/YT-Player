@@ -51,19 +51,6 @@ class Player : AppCompatActivity(), Player.Listener {
         when {
             intent?.action == Intent.ACTION_SEND -> {
                 if (intent.type == "text/plain") {
-                    when (resources.configuration.orientation) {
-                        Configuration.ORIENTATION_PORTRAIT -> {
-                            window.insetsController?.apply {
-                                show(WindowInsets.Type.systemBars())
-                            }
-                        }
-                        Configuration.ORIENTATION_LANDSCAPE -> {
-                            window.insetsController?.apply {
-                                hide(WindowInsets.Type.systemBars())
-                            }
-                        }
-                    }
-
                     broadcast(intent)
                     createUI()
                 }
@@ -137,6 +124,24 @@ class Player : AppCompatActivity(), Player.Listener {
         if (isInPictureInPictureMode) {
             val overlayView: RelativeLayout = findViewById(R.id.overlayView)
             overlayView.visibility = View.GONE
+        }
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            when (resources.configuration.orientation) {
+                Configuration.ORIENTATION_PORTRAIT -> {
+                    window.insetsController?.apply {
+                        show(WindowInsets.Type.systemBars())
+                    }
+                }
+                Configuration.ORIENTATION_LANDSCAPE -> {
+                    window.insetsController?.apply {
+                        hide(WindowInsets.Type.systemBars())
+                    }
+                }
+            }
         }
     }
 
