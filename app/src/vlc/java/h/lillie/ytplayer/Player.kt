@@ -32,8 +32,8 @@ import org.videolan.libvlc.MediaPlayer
 import kotlin.math.abs
 
 @SuppressLint("SwitchIntDef")
-class VLCPlayer : AppCompatActivity(), SensorEventListener {
-    private lateinit var playerServiceBinder: VLCPlayerService.LibVLCBinder
+class Player : AppCompatActivity(), SensorEventListener {
+    private lateinit var playerServiceBinder: PlayerService.LibVLCBinder
     private lateinit var playerSource: MediaPlayer
     private lateinit var playerHandler: Handler
     private var playerSensor: Sensor? = null
@@ -135,7 +135,7 @@ class VLCPlayer : AppCompatActivity(), SensorEventListener {
 
     override fun onDestroy() {
         unregisterReceiver(playerBroadcastReceiver)
-        stopService(Intent(this, VLCPlayerService::class.java))
+        stopService(Intent(this, PlayerService::class.java))
         super.onDestroy()
     }
 
@@ -158,12 +158,12 @@ class VLCPlayer : AppCompatActivity(), SensorEventListener {
             sponsorBlock(result)
             returnYouTubeDislike(result)
 
-            bindService(Intent(this, VLCPlayerService::class.java), object : ServiceConnection {
+            bindService(Intent(this, PlayerService::class.java), object : ServiceConnection {
                 override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-                    playerServiceBinder = service as VLCPlayerService.LibVLCBinder
+                    playerServiceBinder = service as PlayerService.LibVLCBinder
                     
                     val broadcastIntent = Intent("h.lillie.ytplayer.info")
-                    broadcastIntent.setPackage(this@VLCPlayer.packageName)
+                    broadcastIntent.setPackage(this@Player.packageName)
                     sendBroadcast(broadcastIntent)
                 }
 

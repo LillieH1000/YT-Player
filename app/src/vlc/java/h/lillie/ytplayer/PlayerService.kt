@@ -21,7 +21,7 @@ import org.videolan.libvlc.Media
 import org.videolan.libvlc.MediaPlayer
 import java.net.URL
 
-class VLCPlayerService : Service() {
+class PlayerService : Service() {
     private lateinit var libVLCPlayer: MediaPlayer
     private lateinit var libVLCMediaSession: MediaSessionCompat
     private lateinit var libVLCHandler: Handler
@@ -122,7 +122,7 @@ class VLCPlayerService : Service() {
                 args.add("--aout=opensles")
                 args.add("--avcodec-hw=any")
                 args.add("-vvv")
-                libVLC = LibVLC(this@VLCPlayerService, args)
+                libVLC = LibVLC(this@PlayerService, args)
                 libVLCPlayer = MediaPlayer(libVLC)
                 libVLCPlayer.setEventListener(object : MediaPlayer.EventListener {
                     override fun onEvent(event: MediaPlayer.Event?) {
@@ -136,7 +136,7 @@ class VLCPlayerService : Service() {
                 })
 
                 val broadcastIntent = Intent("h.lillie.ytplayer.register")
-                broadcastIntent.setPackage(this@VLCPlayerService.packageName)
+                broadcastIntent.setPackage(this@PlayerService.packageName)
                 sendBroadcast(broadcastIntent)
 
                 val media = Media(libVLC, Uri.parse(Application.hlsUrl))

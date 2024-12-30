@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     <application>
         <activity
-            android:name=".VLCPlayer"
+            android:name=".Player"
             android:enabled="true"
             android:exported="true"
             android:launchMode="singleInstance"
@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <service
-            android:name=".VLCPlayerService"
+            android:name=".PlayerService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback">
