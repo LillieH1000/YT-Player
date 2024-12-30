@@ -34,9 +34,6 @@ android {
         }
         create("vlc") {
             dimension = "android"
-            dependencies {
-                implementation(libs.libvlc.all)
-            }
         }
     }
 
@@ -71,6 +68,7 @@ dependencies {
     implementation(libs.androidx.mediarouter)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
+    "vlcImplementation"(libs.libvlc.all)
     implementation(libs.material)
     implementation(libs.okhttp)
 }

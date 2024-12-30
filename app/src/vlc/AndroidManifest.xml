@@ -1,3 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest>
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <application>
+        <activity
+            android:name=".VLCPlayer"
+            android:enabled="true"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="fullSensor"
+            android:supportsPictureInPicture="false"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            tools:ignore="DiscouragedApi">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+        <service
+            android:name=".VLCPlayerService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback">
+        </service>
+    </application>
 </manifest>

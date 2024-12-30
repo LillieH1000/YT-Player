@@ -14,46 +14,5 @@
         android:supportsRtl="false"
         android:theme="@style/MainTheme"
         tools:ignore="DataExtractionRules">
-        <meta-data android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME" android:value="h.lillie.ytplayer.CastOptionsProvider" />
-        <activity
-            android:name=".Player"
-            android:enabled="true"
-            android:exported="true"
-            android:launchMode="singleInstance"
-            android:screenOrientation="fullSensor"
-            android:supportsPictureInPicture="true"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-            tools:ignore="DiscouragedApi">
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/plain" />
-            </intent-filter>
-        </activity>
-        <service
-            android:name=".PlayerService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="mediaPlayback">
-            <intent-filter>
-                <action android:name="androidx.media3.session.MediaSessionService" />
-            </intent-filter>
-        </service>
-        <activity
-            android:name=".VLCPlayer"
-            android:enabled="true"
-            android:exported="true"
-            android:launchMode="singleInstance"
-            android:screenOrientation="fullSensor"
-            android:supportsPictureInPicture="false"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-            tools:ignore="DiscouragedApi">
-        </activity>
-        <service
-            android:name=".VLCPlayerService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="mediaPlayback">
-        </service>
     </application>
 </manifest>
