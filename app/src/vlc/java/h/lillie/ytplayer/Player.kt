@@ -40,7 +40,7 @@ class Player : AppCompatActivity(), SensorEventListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.vlcplayer)
+        setContentView(R.layout.player)
 
         onBackPressedDispatcher.addCallback(this) {}
 
