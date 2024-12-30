@@ -100,13 +100,13 @@ class PlayerService : Service() {
             .setPriority(NotificationCompat.PRIORITY_LOW)
 
         if (this::libVLCPlayer.isInitialized) {
-            notification.addAction(androidx.media3.cast.R.drawable.cast_ic_notification_rewind10, "Seek Back", backIntent)
+            notification.addAction(androidx.media3.session.R.drawable.media3_icon_skip_back_10, "Seek Back", backIntent)
             if (libVLCPlayer.isPlaying) {
                 notification.addAction(androidx.media3.session.R.drawable.media3_icon_pause, "Pause", pauseIntent)
             } else {
                 notification.addAction(androidx.media3.session.R.drawable.media3_icon_play, "Play", playIntent)
             }
-            notification.addAction(androidx.media3.cast.R.drawable.cast_ic_notification_forward10, "Seek Forward", forwardIntent)
+            notification.addAction(androidx.media3.session.R.drawable.media3_icon_skip_forward_10, "Seek Forward", forwardIntent)
         }
 
         stopForeground(false)
