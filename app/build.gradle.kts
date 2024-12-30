@@ -29,14 +29,14 @@ android {
 
     flavorDimensions += "android"
     productFlavors {
-        create("app") {
+        create("exoplayer") {
             dimension = "android"
         }
-        create("watch") {
+        create("vlc") {
             dimension = "android"
-        }
-        create("tv") {
-            dimension = "android"
+            dependencies {
+                implementation(libs.libvlc.all)
+            }
         }
     }
 
@@ -71,7 +71,6 @@ dependencies {
     implementation(libs.androidx.mediarouter)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.libvlc.all)
     implementation(libs.material)
     implementation(libs.okhttp)
 }
