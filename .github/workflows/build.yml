@@ -2,9 +2,9 @@ name: Generate Apks
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "v1" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "v1" ]
     
 jobs:
   build:
@@ -26,60 +26,45 @@ jobs:
 
       - name: Assemble Debug Apks
         run: |
-          ./gradlew assembleAppDebug
-          ./gradlew assembleWatchDebug
-          ./gradlew assembleTvDebug
+          ./gradlew assembleExoplayerDebug
+          ./gradlew assembleVlcDebug
 
       - name: Assemble Release Apks
         run: |
-          ./gradlew assembleAppRelease
-          ./gradlew assembleWatchRelease
-          ./gradlew assembleTvRelease
+          ./gradlew assembleExoplayerRelease
+          ./gradlew assembleVlcRelease
 
       - name: Download Apk Signer
         run: curl -L -o uber-apk-signer.jar https://github.com/patrickfav/uber-apk-signer/releases/download/v1.3.0/uber-apk-signer-1.3.0.jar
 
       - name: Sign Release Apks
         run: |
-          java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/app/release/app-app-release-unsigned.apk
-          java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/watch/release/app-watch-release-unsigned.apk
-          java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/tv/release/app-tv-release-unsigned.apk
+          java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/exoplayer/release/app-exoplayer-release-unsigned.apk
+          java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/vlc/release/app-vlc-release-unsigned.apk
 
-      - name: Upload Debug App Artifact
+      - name: Upload Debug Exoplayer Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: debugApp
-          path: ./app/build/outputs/apk/app/debug/*.apk
+          name: debugExoplayer
+          path: ./app/build/outputs/apk/exoplayer/debug/*.apk
 
-      - name: Upload Release App Artifact
+      - name: Upload Release Exoplayer Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: releaseApp
-          path: ./app/build/outputs/apk/app/release/*.apk
+          name: releaseExoplayer
+          path: ./app/build/outputs/apk/exoplayer/release/*.apk
 
-      - name: Upload Debug Watch Artifact
+      - name: Upload Debug Vlc Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: debugWatch
-          path: ./app/build/outputs/apk/watch/debug/*.apk
+          name: debugVlc
+          path: ./app/build/outputs/apk/vlc/debug/*.apk
 
-      - name: Upload Release Watch Artifact
+      - name: Upload Release Vlc Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: releaseWatch
-          path: ./app/build/outputs/apk/watch/release/*.apk
-
-      - name: Upload Debug Tv Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: debugTv
-          path: ./app/build/outputs/apk/tv/debug/*.apk
-
-      - name: Upload Release Tv Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: releaseTv
-          path: ./app/build/outputs/apk/tv/release/*.apk
+          name: releaseVlc
+          path: ./app/build/outputs/apk/vlc/release/*.apk
 
       - name: Merge Artifacts
         uses: actions/upload-artifact/merge@v4
