@@ -43,9 +43,11 @@
             android:name=".VLCPlayer"
             android:enabled="true"
             android:exported="true"
-            android:launchMode="singleTask"
+            android:launchMode="singleInstance"
+            android:screenOrientation="fullSensor"
             android:supportsPictureInPicture="false"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode">
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            tools:ignore="DiscouragedApi">
         </activity>
         <service
             android:name=".VLCPlayerService"
