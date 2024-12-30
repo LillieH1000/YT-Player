@@ -27,11 +27,23 @@ android {
         }
     }
 
+    flavorDimensions += "android"
+    productFlavors {
+        create("app") {
+            dimension = "android"
+        }
+        create("watch") {
+            dimension = "android"
+        }
+        create("tv") {
+            dimension = "android"
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
-
     kotlinOptions {
         jvmTarget = "21"
     }
