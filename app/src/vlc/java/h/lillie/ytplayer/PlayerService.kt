@@ -66,10 +66,8 @@ class PlayerService : Service() {
 
         val intentFilter = IntentFilter()
         intentFilter.addAction("h.lillie.ytplayer.info")
-        intentFilter.addAction("h.lillie.ytplayer.back")
         intentFilter.addAction("h.lillie.ytplayer.pause")
         intentFilter.addAction("h.lillie.ytplayer.play")
-        intentFilter.addAction("h.lillie.ytplayer.forward")
         registerReceiver(playerBroadcastReceiver, intentFilter, RECEIVER_EXPORTED)
 
         libVLCHandler = Handler(Looper.getMainLooper())
@@ -146,12 +144,12 @@ class PlayerService : Service() {
                 libVLCPlayer.play()
                 return
             }
-            if (intent?.action == "h.lillie.ytplayer.play") {
-                libVLCPlayer.play()
-                return
-            }
             if (intent?.action == "h.lillie.ytplayer.pause") {
                 libVLCPlayer.pause()
+                return
+            }
+            if (intent?.action == "h.lillie.ytplayer.play") {
+                libVLCPlayer.play()
                 return
             }
         }
