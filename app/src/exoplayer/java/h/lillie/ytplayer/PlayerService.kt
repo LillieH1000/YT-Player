@@ -169,7 +169,18 @@ class PlayerService : MediaSessionService(), MediaSession.Callback {
                     .setUri(Uri.parse(Application.hlsUrl))
                     .build()
 
-                val dataSourceFactory: DataSource.Factory = OkHttpDataSource.Factory(OkHttpClient.Builder().build())
+                val client: OkHttpClient = OkHttpClient.Builder()
+                    .addInterceptor { chain ->
+                        val request = chain.request()
+                        val newRequest = request.newBuilder()
+                            .header("User-Agent", "com.google.ios.youtube/19.45.4 (iPhone16,2; U; CPU iOS 18_1_0 like Mac OS X;)")
+                            .method(request.method, request.body)
+                            .build()
+                        chain.proceed(newRequest)
+                    }
+                    .build()
+
+                val dataSourceFactory: DataSource.Factory = OkHttpDataSource.Factory(client)
                 val videoSource: MediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(playerMediaItem)
 
                 exoPlayer.setMediaSource(videoSource)
