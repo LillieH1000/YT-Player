@@ -1,6 +1,5 @@
 package h.lillie.ytplayer
 
-import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -36,9 +35,9 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import okhttp3.OkHttpClient
 import org.json.JSONArray
+import java.text.DecimalFormat
 
 @OptIn(UnstableApi::class)
-@SuppressLint("DefaultLocale")
 class PlayerService : MediaSessionService(), MediaSession.Callback {
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var playerHandler: Handler
@@ -107,7 +106,7 @@ class PlayerService : MediaSessionService(), MediaSession.Callback {
         })
 
         playerHandler = Handler(Looper.getMainLooper())
-        // playerHandler.post(playerTask)
+        playerHandler.post(playerTask)
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? {
@@ -196,12 +195,17 @@ class PlayerService : MediaSessionService(), MediaSession.Callback {
             val sponsorBlock: JSONArray? = Application.sponsorBlock
             if (sponsorBlock != null && playerSession?.player == exoPlayer && !Application.live) {
                 for (i in 0 until sponsorBlock.length()) {
+                    val decimalFormat = DecimalFormat("#.###")
+
                     val category: String = sponsorBlock.getJSONObject(i).optString("category")
                     val segment: JSONArray = sponsorBlock.getJSONObject(i).getJSONArray("segment")
-                    val segment0: Float = String.format("%.3f", segment[0].toString().toDouble()).replace(".", "").toFloat()
-                    val segment1: Float = String.format("%.3f", segment[1].toString().toDouble()).replace(".", "").toFloat()
-                    if (category.contains("sponsor") && exoPlayer.currentPosition >= segment0 && exoPlayer.currentPosition < segment1) {
-                        exoPlayer.seekTo(segment1.toLong())
+
+                    val position: Double = decimalFormat.format(exoPlayer.currentPosition / 1000.0).toDouble()
+                    val segment0: Double = decimalFormat.format(segment[0]).toDouble()
+                    val segment1: Double = decimalFormat.format(segment[1]).toDouble()
+
+                    if (category.contains("sponsor") && position >= segment0 && position < segment1) {
+                        exoPlayer.seekTo(decimalFormat.format(segment1 * 1000.0).toLong())
                         Toast.makeText(this@PlayerService, "Sponsor Skipped", Toast.LENGTH_SHORT).show()
                     }
                 }
