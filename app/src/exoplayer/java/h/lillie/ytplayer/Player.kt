@@ -35,6 +35,7 @@ import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.material.slider.Slider
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
+import java.text.NumberFormat
 import java.util.concurrent.TimeUnit
 
 @OptIn(UnstableApi::class)
@@ -218,6 +219,28 @@ class Player : AppCompatActivity(), Player.Listener {
             }
         })
 
+        val titleView: TextView = findViewById(R.id.titleView)
+        titleView.setOnClickListener {
+            val infoView: LinearLayout = findViewById(R.id.infoView)
+
+            if (infoView.visibility == View.VISIBLE) {
+                infoView.visibility = View.GONE
+                return@setOnClickListener
+            }
+
+            val numberFormat = NumberFormat.getNumberInstance()
+
+            val infoViews: TextView = findViewById(R.id.infoViews)
+            infoViews.text = "Views: ${numberFormat.format(Application.views.toInt())}"
+
+            val infoLikes: TextView = findViewById(R.id.infoLikes)
+            infoLikes.text = "Likes: ${numberFormat.format(Application.likes)}"
+
+            val infoDislikes: TextView = findViewById(R.id.infoDislikes)
+            infoDislikes.text = "Dislikes: ${numberFormat.format(Application.dislikes)}"
+
+            infoView.visibility = View.VISIBLE
+        }
 
         val playPauseRestartButton: ImageButton = findViewById(R.id.playPauseRestartButton)
         playPauseRestartButton.setOnClickListener {
