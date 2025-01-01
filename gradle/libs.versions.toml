@@ -2,6 +2,7 @@
 appcompatVersion = "1.7.0"
 constraintlayoutVersion = "2.2.0"
 coreVersion = "1.15.0"
+glideVersion = "4.16.0"
 kotlinxCoroutinesVersion = "1.9.0"
 libvlcAllVersion = "3.6.0-eap14"
 lifecycleVersion = "2.8.7"
@@ -32,6 +33,7 @@ androidx-media3-extractor = { module = "androidx.media3:media3-extractor", versi
 androidx-media3-session = { module = "androidx.media3:media3-session", version.ref = "media3ExoplayerVersion" }
 androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3ExoplayerVersion" }
 androidx-mediarouter = { module = "androidx.mediarouter:mediarouter", version.ref = "mediarouterVersion" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glideVersion" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesVersion" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesVersion" }
 libvlc-all = { module = "org.videolan.android:libvlc-all", version.ref = "libvlcAllVersion" }

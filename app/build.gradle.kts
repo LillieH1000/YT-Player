@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.androidx.media3.session)
     "exoplayerImplementation"(libs.androidx.media3.ui)
     "exoplayerImplementation"(libs.androidx.mediarouter)
+    "exoplayerImplementation"(libs.glide)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
     "vlcImplementation"(libs.libvlc.all)
