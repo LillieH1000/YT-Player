@@ -340,10 +340,14 @@ class Player : AppCompatActivity(), Player.Listener {
                 }
 
                 val playPauseRestartButton: ImageButton = findViewById(R.id.playPauseRestartButton)
-                if (!playerController.isPlaying) {
-                    playPauseRestartButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_play)
+                if (playerController.playbackState == Player.STATE_ENDED) {
+                    playPauseRestartButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_skip_back)
                 } else {
-                    playPauseRestartButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_pause)
+                    if (!playerController.isPlaying) {
+                        playPauseRestartButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_play)
+                    } else {
+                        playPauseRestartButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_pause)
+                    }
                 }
 
                 val repeatButton: ImageButton = findViewById(R.id.repeatButton)
