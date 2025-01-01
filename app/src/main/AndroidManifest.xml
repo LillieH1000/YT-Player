@@ -9,10 +9,10 @@
         android:allowBackup="false"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/icon"
-        android:label="@string/title"
+        android:label="YT Player"
         android:name=".Application"
         android:supportsRtl="false"
-        android:theme="@style/MainTheme"
+        android:theme="@style/Theme.MaterialComponents.NoActionBar.Bridge"
         tools:ignore="DataExtractionRules">
     </application>
 </manifest>

@@ -142,9 +142,10 @@
             android:layout_weight="1"
             android:gravity="center_horizontal"
             android:paddingTop="20dp"
-            android:text="@string/notice"
+            android:text="Notice"
             android:textColor="@color/white"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            tools:ignore="HardcodedText" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -152,8 +153,9 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:autoLink="web"
-            android:text="@string/noticeText"
+            android:text="Due to a change on YouTube\'s server end, it appears that your ip has been blocked from direct connections. In order for YT Player to work you will need to use an app such as Cloudflare WARP: https://play.google.com/store/apps/details?id=com.cloudflare.onedotonedotonedotone"
             android:textColor="@color/white"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
 </RelativeLayout>

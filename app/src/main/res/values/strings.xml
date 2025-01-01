@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="title">YT Player</string>
-    <string name="notice">Notice</string>
-    <string name="noticeText">Due to a change on YouTube\'s server end, it appears that your ip has been blocked from direct connections. In order for YT Player to work you will need to use an app such as Cloudflare WARP: https://play.google.com/store/apps/details?id=com.cloudflare.onedotonedotonedotone</string>
-</resources>
