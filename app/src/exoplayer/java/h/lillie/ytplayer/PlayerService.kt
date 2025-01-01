@@ -75,6 +75,7 @@ class PlayerService : MediaSessionService(), MediaSession.Callback {
         val castPlayer = CastPlayer(CastContext.getSharedInstance(this, MoreExecutors.directExecutor()).result, DefaultMediaItemConverter(), 10000, 10000)
         castPlayer.setSessionAvailabilityListener(object : SessionAvailabilityListener {
             override fun onCastSessionAvailable() {
+                Application.castActive = true
                 exoPlayer.stop()
                 playerSession?.player = castPlayer
 
@@ -82,7 +83,6 @@ class PlayerService : MediaSessionService(), MediaSession.Callback {
                     .setTitle(Application.title)
                     .setArtist(Application.author)
                     .setArtworkUri(Uri.parse(Application.artwork))
-                    .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
                     .build()
 
                 val playerMediaItem: MediaItem = MediaItem.Builder()
@@ -97,6 +97,7 @@ class PlayerService : MediaSessionService(), MediaSession.Callback {
             }
 
             override fun onCastSessionUnavailable() {
+                Application.castActive = false
                 castPlayer.stop()
                 playerSession?.player = exoPlayer
                 exoPlayer.seekTo(castPlayer.currentPosition)
@@ -159,7 +160,6 @@ class PlayerService : MediaSessionService(), MediaSession.Callback {
                     .setTitle(Application.title)
                     .setArtist(Application.author)
                     .setArtworkUri(Uri.parse(Application.artwork))
-                    .setMediaType(MediaMetadata.MEDIA_TYPE_VIDEO)
                     .build()
 
                 val playerMediaItem: MediaItem = MediaItem.Builder()

@@ -22,6 +22,7 @@ class Application : Application() {
         var audioUrl = String()
         var hlsUrl = String()
         var sponsorBlock: JSONArray? = JSONArray()
+        var castActive: Boolean = false
         fun requests(videoId: String) {
             val policy = StrictMode.ThreadPolicy.Builder().permitNetwork().build()
             StrictMode.setThreadPolicy(policy)

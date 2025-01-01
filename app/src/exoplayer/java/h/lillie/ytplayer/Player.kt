@@ -153,7 +153,7 @@ class Player : AppCompatActivity(), Player.Listener {
         if (youtubeRegex.containsMatchIn(intent.getStringExtra(Intent.EXTRA_TEXT)!!)) {
             val result = youtubeRegex.findAll(intent.getStringExtra(Intent.EXTRA_TEXT)!!).map { it.groupValues[1] }.joinToString()
 
-            if (this::playerController.isInitialized && playerController.mediaMetadata.mediaType == MediaMetadata.MEDIA_TYPE_MUSIC) {
+            if (Application.castActive) {
                 Toast.makeText(this, "Failed, Please Disable Cast First", Toast.LENGTH_LONG).show()
                 return
             }
@@ -354,7 +354,7 @@ class Player : AppCompatActivity(), Player.Listener {
             if (this@Player::playerController.isInitialized) {
                 val playerView: PlayerView = findViewById(R.id.playerView)
                 val artworkView: ImageView = findViewById(R.id.artworkView)
-                if (playerController.mediaMetadata.mediaType == MediaMetadata.MEDIA_TYPE_MUSIC) {
+                if (Application.castActive) {
                     playerView.visibility = View.GONE
                     artworkView.visibility = View.VISIBLE
                 } else {
