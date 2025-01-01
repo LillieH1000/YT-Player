@@ -96,6 +96,7 @@
                 android:layout_height="match_parent"
                 android:layout_toStartOf="@+id/menuButtons"
                 android:gravity="center_vertical"
+                android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/white"
                 android:textAllCaps="false" />
