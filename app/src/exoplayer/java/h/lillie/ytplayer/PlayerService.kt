@@ -107,7 +107,7 @@ class PlayerService : MediaSessionService(), MediaSession.Callback {
         })
 
         playerHandler = Handler(Looper.getMainLooper())
-        // playerHandler.post(playerTask)
+        playerHandler.post(playerTask)
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? {
