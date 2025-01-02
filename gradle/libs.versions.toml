@@ -1,5 +1,6 @@
 [versions]
 appcompatVersion = "1.7.0"
+chaquopyVersion = "16.0.0"
 constraintlayoutVersion = "2.2.0"
 coreVersion = "1.15.0"
 glideVersion = "4.16.0"
@@ -43,3 +44,4 @@ okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttpVersion"
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidVersion" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVersion" }
+chaquopy-python = { id = "com.chaquo.python", version.ref = "chaquopyVersion" }

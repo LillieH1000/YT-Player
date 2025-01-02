@@ -2,6 +2,8 @@ package h.lillie.ytplayer
 
 import android.app.Application
 import android.os.StrictMode
+import com.chaquo.python.Python
+import com.chaquo.python.android.AndroidPlatform
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -10,6 +12,12 @@ import org.json.JSONException
 import org.json.JSONObject
 
 class Application : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        if (!Python.isStarted()) {
+            Python.start(AndroidPlatform(this));
+        }
+    }
     companion object {
         var id = String()
         var title = String()

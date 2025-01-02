@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.chaquopy.python)
 }
 
 android {
@@ -14,6 +15,9 @@ android {
         targetSdk = 34
         versionCode = 16
         versionName = "1.1.6"
+        ndk {
+            abiFilters += listOf("arm64-v8a", "x86_64")
+        }
     }
 
     buildTypes {
@@ -43,6 +47,14 @@ android {
     }
     kotlinOptions {
         jvmTarget = "21"
+    }
+}
+
+chaquopy {
+    defaultConfig {
+        pip {
+            install("yt-dlp")
+        }
     }
 }
 
