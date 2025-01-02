@@ -2,6 +2,7 @@ package h.lillie.ytplayer
 
 import android.app.Application
 import android.os.StrictMode
+import android.util.Log
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
 import okhttp3.OkHttpClient
@@ -35,10 +36,17 @@ class Application : Application() {
             val policy = StrictMode.ThreadPolicy.Builder().permitNetwork().build()
             StrictMode.setThreadPolicy(policy)
 
+            h.lillie.ytplayer.Application().ytdlp(videoId)
             h.lillie.ytplayer.Application().innertube(videoId)
             h.lillie.ytplayer.Application().sponsorBlock(videoId)
             h.lillie.ytplayer.Application().returnYouTubeDislike(videoId)
         }
+    }
+
+    private fun ytdlp(videoId: String) {
+        val py = Python.getInstance()
+        val ytdlp: String = py.getModule("ytdlp").callAttr("getHls", videoId).toString()
+        Log.d("yt-dlp", ytdlp)
     }
 
     private fun innertube(videoId: String) {
