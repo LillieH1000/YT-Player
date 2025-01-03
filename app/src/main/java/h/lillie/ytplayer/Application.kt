@@ -17,6 +17,7 @@ class Application : Application() {
             Python.start(AndroidPlatform(this));
         }
     }
+
     companion object {
         var id = String()
         var title = String()
