@@ -15,21 +15,6 @@
         android:theme="@style/Theme.MaterialComponents.NoActionBar.Bridge"
         tools:ignore="DataExtractionRules">
         <meta-data android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME" android:value="h.lillie.ytplayer.CastOptionsProvider" />
-        <activity
-            android:name=".Player"
-            android:enabled="true"
-            android:exported="true"
-            android:launchMode="singleInstance"
-            android:screenOrientation="fullSensor"
-            android:supportsPictureInPicture="true"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-            tools:ignore="DiscouragedApi">
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/plain" />
-            </intent-filter>
-        </activity>
         <service
             android:name=".PlayerService"
             android:enabled="true"

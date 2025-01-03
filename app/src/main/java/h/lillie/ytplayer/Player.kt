@@ -2,6 +2,7 @@ package h.lillie.ytplayer
 
 import android.annotation.SuppressLint
 import android.app.PictureInPictureParams
+import android.content.ClipboardManager
 import android.content.ComponentName
 import android.content.Intent
 import android.content.res.Configuration
@@ -51,10 +52,18 @@ class Player : AppCompatActivity(), Player.Listener {
 
         onBackPressedDispatcher.addCallback(this) {}
 
-        when {
-            intent?.action == Intent.ACTION_SEND -> {
+        when (intent?.action) {
+            Intent.ACTION_SEND -> {
                 if (intent.type == "text/plain") {
-                    broadcast(intent)
+                    broadcast(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
+                    createUI()
+                }
+            }
+            Intent.CATEGORY_LAUNCHER -> {
+                val clipManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                val clipData = clipManager.primaryClip
+                if (clipData != null && clipData.itemCount > 0) {
+                    broadcast(clipData.getItemAt(0).text.toString())
                     createUI()
                 }
             }
@@ -64,7 +73,7 @@ class Player : AppCompatActivity(), Player.Listener {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         setIntent(intent)
-        broadcast(intent!!)
+        broadcast(intent?.getStringExtra(Intent.EXTRA_TEXT)!!)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -148,10 +157,10 @@ class Player : AppCompatActivity(), Player.Listener {
         }
     }
 
-    private fun broadcast(intent: Intent) {
+    private fun broadcast(url: String) {
         val youtubeRegex = Regex("^.*(?:(?:youtu\\.be\\/|v\\/|vi\\/|u\\/\\w\\/|embed\\/|shorts\\/|live\\/)|(?:(?:watch)?\\?v(?:i)?=|\\&v(?:i)?=))([^#\\&\\?]*).*")
-        if (youtubeRegex.containsMatchIn(intent.getStringExtra(Intent.EXTRA_TEXT)!!)) {
-            val result = youtubeRegex.findAll(intent.getStringExtra(Intent.EXTRA_TEXT)!!).map { it.groupValues[1] }.joinToString()
+        if (youtubeRegex.containsMatchIn(url)) {
+            val result = youtubeRegex.findAll(url).map { it.groupValues[1] }.joinToString()
 
             if (Application.castActive) {
                 Toast.makeText(this, "Failed, Please Disable Cast First", Toast.LENGTH_LONG).show()
