@@ -74,13 +74,17 @@ class Player : AppCompatActivity(), Player.Listener {
         super.onConfigurationChanged(newConfig)
         when (newConfig.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
-                window.insetsController?.apply {
-                    show(WindowInsets.Type.systemBars())
+                if (!Application.chromebookDevice) {
+                    window.insetsController?.apply {
+                        show(WindowInsets.Type.systemBars())
+                    }
                 }
             }
             Configuration.ORIENTATION_LANDSCAPE -> {
-                window.insetsController?.apply {
-                    hide(WindowInsets.Type.systemBars())
+                if (!Application.chromebookDevice) {
+                    window.insetsController?.apply {
+                        hide(WindowInsets.Type.systemBars())
+                    }
                 }
             }
         }
@@ -147,13 +151,17 @@ class Player : AppCompatActivity(), Player.Listener {
             }
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
-                    window.insetsController?.apply {
-                        show(WindowInsets.Type.systemBars())
+                    if (!Application.chromebookDevice) {
+                        window.insetsController?.apply {
+                            show(WindowInsets.Type.systemBars())
+                        }
                     }
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    window.insetsController?.apply {
-                        hide(WindowInsets.Type.systemBars())
+                    if (!Application.chromebookDevice) {
+                        window.insetsController?.apply {
+                            hide(WindowInsets.Type.systemBars())
+                        }
                     }
                 }
             }
@@ -181,7 +189,7 @@ class Player : AppCompatActivity(), Player.Listener {
                 val playerView: PlayerView = findViewById(R.id.playerView)
                 playerView.player = playerController
 
-                if (Build.VERSION.SDK_INT >= 31) {
+                if (!Application.chromebookDevice && Build.VERSION.SDK_INT >= 31) {
                     setPictureInPictureParams(
                         PictureInPictureParams.Builder()
                             .setAutoEnterEnabled(true)

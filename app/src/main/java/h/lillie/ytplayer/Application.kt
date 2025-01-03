@@ -16,6 +16,9 @@ class Application : Application() {
         if (!Python.isStarted()) {
             Python.start(AndroidPlatform(this));
         }
+        if (packageManager.hasSystemFeature("org.chromium.arc.device_management")) {
+            chromebookDevice = true
+        }
     }
 
     companion object {
@@ -32,6 +35,7 @@ class Application : Application() {
         var hlsUrl = String()
         var sponsorBlock: JSONArray? = JSONArray()
         var castActive: Boolean = false
+        var chromebookDevice: Boolean = false
         fun requests(videoId: String) {
             val policy = StrictMode.ThreadPolicy.Builder().permitNetwork().build()
             StrictMode.setThreadPolicy(policy)
