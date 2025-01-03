@@ -23,8 +23,8 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.source.MergingMediaSource
-import androidx.media3.exoplayer.source.ProgressiveMediaSource
+import androidx.media3.exoplayer.hls.HlsMediaSource
+import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.session.CommandButton
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
@@ -169,27 +169,16 @@ class PlayerService : MediaSessionService(), MediaSession.Callback {
                     .setArtworkUri(Uri.parse(Application.artwork))
                     .build()
 
-                val videoMediaItem: MediaItem = MediaItem.Builder()
-                    .setMimeType(MimeTypes.APPLICATION_MP4)
+                val playerMediaItem: MediaItem = MediaItem.Builder()
+                    .setMimeType(MimeTypes.APPLICATION_M3U8)
                     .setMediaMetadata(playerMediaMetadata)
-                    .setUri(Uri.parse(Application.videoUrl))
-                    .build()
-
-                val audioMediaItem: MediaItem = MediaItem.Builder()
-                    .setMimeType(MimeTypes.APPLICATION_MP4)
-                    .setMediaMetadata(playerMediaMetadata)
-                    .setUri(Uri.parse(Application.audioUrl))
+                    .setUri(Uri.parse(Application.hlsUrl))
                     .build()
 
                 val dataSourceFactory: DataSource.Factory = OkHttpDataSource.Factory(OkHttpClient.Builder().build())
-                val videoSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(videoMediaItem)
-                val audioSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(audioMediaItem)
-                val mergedSource = MergingMediaSource(videoSource, audioSource)
+                val hlsSource: MediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(playerMediaItem)
 
-                // Add To Live Support
-                // val hlsSource: MediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(playerMediaItem)
-
-                exoPlayer.setMediaSource(mergedSource)
+                exoPlayer.setMediaSource(hlsSource)
                 exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
                 exoPlayer.playWhenReady = true
                 exoPlayer.prepare()
