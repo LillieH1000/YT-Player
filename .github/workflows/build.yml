@@ -30,32 +30,47 @@ jobs:
       - name: Build Gradle
         run: ./gradlew build
 
-      - name: Assemble Debug Apk
+      - name: Assemble Debug Apks
         run: |
-          ./gradlew assembleDebug
+          ./gradlew assembleAndroidDebug
+          ./gradlew assembleChromeosDebug
 
-      - name: Assemble Release Apk
+      - name: Assemble Release Apks
         run: |
-          ./gradlew assembleRelease
+          ./gradlew assembleAndroidRelease
+          ./gradlew assembleChromeosRelease
 
       - name: Download Apk Signer
         run: curl -L -o uber-apk-signer.jar https://github.com/patrickfav/uber-apk-signer/releases/download/v1.3.0/uber-apk-signer-1.3.0.jar
 
       - name: Sign Release Apks
         run: |
-          java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/release/app-release-unsigned.apk
+          java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/android/release/app-release-unsigned.apk
+          java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/chromeos/release/app-release-unsigned.apk
 
-      - name: Upload Debug Artifact
+      - name: Upload Android Debug Artifact
         uses: actions/upload-artifact@v4
         with:
           name: debug
-          path: ./app/build/outputs/apk/debug/*.apk
+          path: ./app/build/outputs/apk/android/debug/*.apk
 
-      - name: Upload Release Artifact
+      - name: Upload Android Release Artifact
         uses: actions/upload-artifact@v4
         with:
           name: release
-          path: ./app/build/outputs/apk/release/*.apk
+          path: ./app/build/outputs/apk/android/release/*.apk
+
+      - name: Upload Chromeos Debug Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug
+          path: ./app/build/outputs/apk/chromeos/debug/*.apk
+
+      - name: Upload Chromeos Release Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release
+          path: ./app/build/outputs/apk/chromeos/release/*.apk
 
       - name: Merge Artifacts
         uses: actions/upload-artifact/merge@v4
