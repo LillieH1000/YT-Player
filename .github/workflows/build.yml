@@ -12,11 +12,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Checkout JDK
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: "zulu"
           java-version: "21"
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          architecture: "x64"
 
       - name: Chmod Gradle
         run: chmod +x ./gradlew
@@ -24,47 +30,32 @@ jobs:
       - name: Build Gradle
         run: ./gradlew build
 
-      - name: Assemble Debug Apks
+      - name: Assemble Debug Apk
         run: |
-          ./gradlew assembleExoplayerDebug
-          ./gradlew assembleVlcDebug
+          ./gradlew assembleDebug
 
-      - name: Assemble Release Apks
+      - name: Assemble Release Apk
         run: |
-          ./gradlew assembleExoplayerRelease
-          ./gradlew assembleVlcRelease
+          ./gradlew assembleRelease
 
       - name: Download Apk Signer
         run: curl -L -o uber-apk-signer.jar https://github.com/patrickfav/uber-apk-signer/releases/download/v1.3.0/uber-apk-signer-1.3.0.jar
 
       - name: Sign Release Apks
         run: |
-          java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/exoplayer/release/app-exoplayer-release-unsigned.apk
-          java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/vlc/release/app-vlc-release-unsigned.apk
+          java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/release/app-exoplayer-release-unsigned.apk
 
-      - name: Upload Debug Exoplayer Artifact
+      - name: Upload Debug Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: debugExoplayer
-          path: ./app/build/outputs/apk/exoplayer/debug/*.apk
+          name: debug
+          path: ./app/build/outputs/apk/debug/*.apk
 
-      - name: Upload Release Exoplayer Artifact
+      - name: Upload Release Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: releaseExoplayer
-          path: ./app/build/outputs/apk/exoplayer/release/*.apk
-
-      - name: Upload Debug Vlc Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: debugVlc
-          path: ./app/build/outputs/apk/vlc/debug/*.apk
-
-      - name: Upload Release Vlc Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: releaseVlc
-          path: ./app/build/outputs/apk/vlc/release/*.apk
+          name: release
+          path: ./app/build/outputs/apk/release/*.apk
 
       - name: Merge Artifacts
         uses: actions/upload-artifact/merge@v4
