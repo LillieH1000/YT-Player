@@ -31,20 +31,11 @@ android {
         }
     }
 
-    flavorDimensions += "android"
-    productFlavors {
-        create("exoplayer") {
-            dimension = "android"
-        }
-        create("vlc") {
-            dimension = "android"
-        }
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
+
     kotlinOptions {
         jvmTarget = "21"
     }
@@ -65,24 +56,23 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.common)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    "exoplayerImplementation"(libs.androidx.media3.cast)
-    "exoplayerImplementation"(libs.androidx.media3.common)
-    "exoplayerImplementation"(libs.androidx.media3.container)
-    "exoplayerImplementation"(libs.androidx.media3.database)
-    "exoplayerImplementation"(libs.androidx.media3.datasource)
-    "exoplayerImplementation"(libs.androidx.media3.datasource.okhttp)
-    "exoplayerImplementation"(libs.androidx.media3.decoder)
-    "exoplayerImplementation"(libs.androidx.media3.exoplayer)
-    "exoplayerImplementation"(libs.androidx.media3.exoplayer.hls)
-    "exoplayerImplementation"(libs.androidx.media3.exoplayer.smoothstreaming)
-    "exoplayerImplementation"(libs.androidx.media3.extractor)
+    implementation(libs.androidx.media3.cast)
+    implementation(libs.androidx.media3.common)
+    implementation(libs.androidx.media3.container)
+    implementation(libs.androidx.media3.database)
+    implementation(libs.androidx.media3.datasource)
+    implementation(libs.androidx.media3.datasource.okhttp)
+    implementation(libs.androidx.media3.decoder)
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.exoplayer.hls)
+    implementation(libs.androidx.media3.exoplayer.smoothstreaming)
+    implementation(libs.androidx.media3.extractor)
     implementation(libs.androidx.media3.session)
-    "exoplayerImplementation"(libs.androidx.media3.ui)
-    "exoplayerImplementation"(libs.androidx.mediarouter)
-    "exoplayerImplementation"(libs.glide)
+    implementation(libs.androidx.media3.ui)
+    implementation(libs.androidx.mediarouter)
+    implementation(libs.glide)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
-    "vlcImplementation"(libs.libvlc.all)
     implementation(libs.material)
     implementation(libs.okhttp)
 }
