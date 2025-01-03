@@ -1,10 +1,12 @@
 package h.lillie.ytplayer
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -38,6 +40,7 @@ import org.json.JSONArray
 import java.text.DecimalFormat
 
 @OptIn(UnstableApi::class)
+@SuppressLint("UnspecifiedRegisterReceiverFlag")
 class PlayerService : MediaSessionService(), MediaSession.Callback {
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var playerHandler: Handler
@@ -70,7 +73,11 @@ class PlayerService : MediaSessionService(), MediaSession.Callback {
             .setCustomLayout(ImmutableList.of(backButton, forwardButton))
             .build()
 
-        registerReceiver(playerBroadcastReceiver, IntentFilter("h.lillie.ytplayer.info"), RECEIVER_NOT_EXPORTED)
+        if (Build.VERSION.SDK_INT <= 32) {
+            registerReceiver(playerBroadcastReceiver, IntentFilter("h.lillie.ytplayer.info"))
+        } else {
+            registerReceiver(playerBroadcastReceiver, IntentFilter("h.lillie.ytplayer.info"), RECEIVER_NOT_EXPORTED)
+        }
 
         val castPlayer = CastPlayer(CastContext.getSharedInstance(this, MoreExecutors.directExecutor()).result, DefaultMediaItemConverter(), 10000, 10000)
         castPlayer.setSessionAvailabilityListener(object : SessionAvailabilityListener {

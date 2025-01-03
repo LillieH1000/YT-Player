@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "h.lillie.ytplayer"
-        minSdk = 33
+        minSdk = 30
         // noinspection OldTargetApi, EditedTargetSdkVersion
         targetSdk = 34
         versionCode = 16

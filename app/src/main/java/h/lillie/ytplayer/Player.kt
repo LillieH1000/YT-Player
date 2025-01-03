@@ -5,6 +5,7 @@ import android.app.PictureInPictureParams
 import android.content.ComponentName
 import android.content.Intent
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -168,12 +169,14 @@ class Player : AppCompatActivity(), Player.Listener {
                 val playerView: PlayerView = findViewById(R.id.playerView)
                 playerView.player = playerController
 
-                setPictureInPictureParams(
-                    PictureInPictureParams.Builder()
-                        .setAutoEnterEnabled(true)
-                        .setSeamlessResizeEnabled(true)
-                        .build()
-                )
+                if (Build.VERSION.SDK_INT >= 31) {
+                    setPictureInPictureParams(
+                        PictureInPictureParams.Builder()
+                            .setAutoEnterEnabled(true)
+                            .setSeamlessResizeEnabled(true)
+                            .build()
+                    )
+                }
                 updateUI()
 
                 val broadcastIntent = Intent("h.lillie.ytplayer.info")
