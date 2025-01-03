@@ -45,6 +45,7 @@ class Player : AppCompatActivity(), Player.Listener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
     private lateinit var playerController: MediaController
     private lateinit var playerHandler: Handler
+    private var isFirstLaunch: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,18 +53,11 @@ class Player : AppCompatActivity(), Player.Listener {
 
         onBackPressedDispatcher.addCallback(this) {}
 
-        when (intent?.action) {
-            Intent.ACTION_SEND -> {
+        when {
+            intent?.action == Intent.ACTION_SEND -> {
                 if (intent.type == "text/plain") {
+                    isFirstLaunch = true
                     broadcast(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
-                    createUI()
-                }
-            }
-            Intent.CATEGORY_LAUNCHER -> {
-                val clipManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                val clipData = clipManager.primaryClip
-                if (clipData != null && clipData.itemCount > 0) {
-                    broadcast(clipData.getItemAt(0).text.toString())
                     createUI()
                 }
             }
@@ -142,6 +136,15 @@ class Player : AppCompatActivity(), Player.Listener {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) {
+            if (!isFirstLaunch) {
+                isFirstLaunch = true
+                val clipManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                val clipData = clipManager.primaryClip
+                if (clipData != null && clipData.itemCount > 0) {
+                    broadcast(clipData.getItemAt(0).text.toString())
+                    createUI()
+                }
+            }
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
                     window.insetsController?.apply {
