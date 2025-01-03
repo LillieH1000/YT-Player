@@ -52,13 +52,14 @@ class Application : Application() {
 
         id = info.optString("id")
         title = info.optString("title")
-        author = info.optString("uploader")
-        artwork = info.optString("thumbnail")
-        views = info.optInt("view_count")
-        likes = info.optInt("like_count")
-        live = info.optBoolean("is_live")
-        videoUrl = info.getJSONArray("requested_formats").getJSONObject(0).optString("url")
-        audioUrl = info.getJSONArray("requested_formats").getJSONObject(1).optString("url")
+        author = info.optString("author")
+        artwork = info.optString("artwork")
+        views = info.optInt("views")
+        likes = info.optInt("likes")
+        live = info.optBoolean("live")
+        videoUrl = info.optString("videoUrl")
+        audioUrl = info.optString("audioUrl")
+        hlsUrl = info.optString("hlsUrl")
     }
 
     private fun sponsorBlock(videoId: String) {
