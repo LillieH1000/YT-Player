@@ -45,31 +45,31 @@ jobs:
 
       - name: Sign Release Apks
         run: |
-          java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/android/release/app-release-unsigned.apk
-          java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/chromeos/release/app-release-unsigned.apk
+          java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/android/release/app-android-release-unsigned.apk
+          java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/chromeos/release/app-chromeos-release-unsigned.apk
 
       - name: Upload Android Debug Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: debug
+          name: androidDebug
           path: ./app/build/outputs/apk/android/debug/*.apk
 
       - name: Upload Android Release Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: release
+          name: androidRelease
           path: ./app/build/outputs/apk/android/release/*.apk
 
       - name: Upload Chromeos Debug Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: debug
+          name: chromeosDebug
           path: ./app/build/outputs/apk/chromeos/debug/*.apk
 
       - name: Upload Chromeos Release Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: release
+          name: chromeosRelease
           path: ./app/build/outputs/apk/chromeos/release/*.apk
 
       - name: Merge Artifacts
