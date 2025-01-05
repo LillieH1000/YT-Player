@@ -74,14 +74,14 @@ class Player : AppCompatActivity(), Player.Listener {
         super.onConfigurationChanged(newConfig)
         when (newConfig.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
-                if (!Application.chromebookDevice) {
+                if (!Application.chromeosDevice) {
                     window.insetsController?.apply {
                         show(WindowInsets.Type.systemBars())
                     }
                 }
             }
             Configuration.ORIENTATION_LANDSCAPE -> {
-                if (!Application.chromebookDevice) {
+                if (!Application.chromeosDevice) {
                     window.insetsController?.apply {
                         hide(WindowInsets.Type.systemBars())
                     }
@@ -158,14 +158,14 @@ class Player : AppCompatActivity(), Player.Listener {
             }
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
-                    if (!Application.chromebookDevice) {
+                    if (!Application.chromeosDevice) {
                         window.insetsController?.apply {
                             show(WindowInsets.Type.systemBars())
                         }
                     }
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    if (!Application.chromebookDevice) {
+                    if (!Application.chromeosDevice) {
                         window.insetsController?.apply {
                             hide(WindowInsets.Type.systemBars())
                         }
