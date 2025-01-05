@@ -102,6 +102,13 @@ class Player : AppCompatActivity(), Player.Listener {
         playerHandler.removeCallbacksAndMessages(null)
     }
 
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+        if (Build.VERSION.SDK_INT <= 30) {
+            enterPictureInPictureMode(PictureInPictureParams.Builder().build())
+        }
+    }
+
     override fun onDestroy() {
         MediaController.releaseFuture(playerControllerFuture)
         stopService(Intent(this, PlayerService::class.java))
@@ -189,7 +196,7 @@ class Player : AppCompatActivity(), Player.Listener {
                 val playerView: PlayerView = findViewById(R.id.playerView)
                 playerView.player = playerController
 
-                if (!Application.chromebookDevice && Build.VERSION.SDK_INT >= 31) {
+                if (Build.VERSION.SDK_INT >= 31) {
                     setPictureInPictureParams(
                         PictureInPictureParams.Builder()
                             .setAutoEnterEnabled(true)
