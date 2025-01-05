@@ -175,6 +175,16 @@ class Player : AppCompatActivity(), Player.Listener {
         }
     }
 
+    override fun onRepeatModeChanged(repeatMode: Int) {
+        super.onRepeatModeChanged(repeatMode)
+        val repeatButton: ImageButton = findViewById(R.id.repeatButton)
+        if (repeatMode == Player.REPEAT_MODE_OFF) {
+            repeatButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_repeat_all)
+        } else {
+            repeatButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_repeat_one)
+        }
+    }
+
     private fun broadcast(url: String) {
         val youtubeRegex = Regex("^.*(?:(?:youtu\\.be\\/|v\\/|vi\\/|u\\/\\w\\/|embed\\/|shorts\\/|live\\/)|(?:(?:watch)?\\?v(?:i)?=|\\&v(?:i)?=))([^#\\&\\?]*).*")
         if (youtubeRegex.containsMatchIn(url)) {
@@ -400,13 +410,6 @@ class Player : AppCompatActivity(), Player.Listener {
                     } else {
                         playPauseRestartButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_pause)
                     }
-                }
-
-                val repeatButton: ImageButton = findViewById(R.id.repeatButton)
-                if (playerController.repeatMode == Player.REPEAT_MODE_OFF) {
-                    repeatButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_repeat_all)
-                } else {
-                    repeatButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_repeat_one)
                 }
 
                 val duration = playerController.duration
