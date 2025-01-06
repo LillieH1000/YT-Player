@@ -23,6 +23,7 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
@@ -36,6 +37,7 @@ import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.material.slider.Slider
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
+import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.concurrent.TimeUnit
 
@@ -188,38 +190,43 @@ class Player : AppCompatActivity(), Player.Listener {
     private fun broadcast(url: String) {
         val youtubeRegex = Regex("^.*(?:(?:youtu\\.be\\/|v\\/|vi\\/|u\\/\\w\\/|embed\\/|shorts\\/|live\\/)|(?:(?:watch)?\\?v(?:i)?=|\\&v(?:i)?=))([^#\\&\\?]*).*")
         if (youtubeRegex.containsMatchIn(url)) {
-            val result = youtubeRegex.findAll(url).map { it.groupValues[1] }.joinToString()
+            val id = youtubeRegex.findAll(url).map { it.groupValues[1] }.joinToString()
 
             if (Application.castActive) {
                 Toast.makeText(this, "Failed, Please Disable Cast First", Toast.LENGTH_LONG).show()
                 return
             }
 
-            Application.requests(result)
+            lifecycleScope.launch {
+                val request = Requests()
+                request.ytdlp(id)
+                request.sponsorBlock(id)
+                request.returnYouTubeDislike(id)
 
-            val sessionToken = SessionToken(this, ComponentName(this, PlayerService::class.java))
-            playerControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
-            playerControllerFuture.addListener({
-                playerController = playerControllerFuture.get()
-                playerController.addListener(this)
+                val sessionToken = SessionToken(this@Player, ComponentName(this@Player, PlayerService::class.java))
+                playerControllerFuture = MediaController.Builder(this@Player, sessionToken).buildAsync()
+                playerControllerFuture.addListener({
+                    playerController = playerControllerFuture.get()
+                    playerController.addListener(this@Player)
 
-                val playerView: PlayerView = findViewById(R.id.playerView)
-                playerView.player = playerController
+                    val playerView: PlayerView = findViewById(R.id.playerView)
+                    playerView.player = playerController
 
-                if (Build.VERSION.SDK_INT >= 31) {
-                    setPictureInPictureParams(
-                        PictureInPictureParams.Builder()
-                            .setAutoEnterEnabled(true)
-                            .setSeamlessResizeEnabled(true)
-                            .build()
-                    )
-                }
-                updateUI()
+                    if (Build.VERSION.SDK_INT >= 31) {
+                        setPictureInPictureParams(
+                            PictureInPictureParams.Builder()
+                                .setAutoEnterEnabled(true)
+                                .setSeamlessResizeEnabled(true)
+                                .build()
+                        )
+                    }
+                    updateUI()
 
-                val broadcastIntent = Intent("h.lillie.ytplayer.info")
-                broadcastIntent.setPackage(this.packageName)
-                sendBroadcast(broadcastIntent)
-            }, MoreExecutors.directExecutor())
+                    val broadcastIntent = Intent("h.lillie.ytplayer.info")
+                    broadcastIntent.setPackage(this@Player.packageName)
+                    sendBroadcast(broadcastIntent)
+                }, MoreExecutors.directExecutor())
+            }
         }
     }
 
