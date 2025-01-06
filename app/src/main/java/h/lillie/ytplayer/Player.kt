@@ -197,6 +197,12 @@ class Player : AppCompatActivity(), Player.Listener {
                 return
             }
 
+            if (this::playerController.isInitialized) {
+                playerController.stop()
+                playerController.removeMediaItem(0)
+                updateUI()
+            }
+
             lifecycleScope.launch {
                 val request = Requests()
                 request.ytdlp(id)
