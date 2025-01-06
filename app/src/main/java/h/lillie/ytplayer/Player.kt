@@ -59,8 +59,7 @@ class Player : AppCompatActivity(), Player.Listener {
             intent?.action == Intent.ACTION_SEND -> {
                 if (intent.type == "text/plain") {
                     isFirstLaunch = true
-                    broadcast(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
-                    createUI()
+                    broadcast(intent.getStringExtra(Intent.EXTRA_TEXT)!!, false)
                 }
             }
         }
@@ -69,7 +68,7 @@ class Player : AppCompatActivity(), Player.Listener {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         setIntent(intent)
-        broadcast(intent?.getStringExtra(Intent.EXTRA_TEXT)!!)
+        broadcast(intent?.getStringExtra(Intent.EXTRA_TEXT)!!, true)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -154,8 +153,7 @@ class Player : AppCompatActivity(), Player.Listener {
                 val clipManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                 val clipData = clipManager.primaryClip
                 if (clipData != null && clipData.itemCount > 0) {
-                    broadcast(clipData.getItemAt(0).text.toString())
-                    createUI()
+                    broadcast(clipData.getItemAt(0).text.toString(), false)
                 }
             }
             when (resources.configuration.orientation) {
@@ -187,7 +185,7 @@ class Player : AppCompatActivity(), Player.Listener {
         }
     }
 
-    private fun broadcast(url: String) {
+    private fun broadcast(url: String, new: Boolean) {
         val youtubeRegex = Regex("^.*(?:(?:youtu\\.be\\/|v\\/|vi\\/|u\\/\\w\\/|embed\\/|shorts\\/|live\\/)|(?:(?:watch)?\\?v(?:i)?=|\\&v(?:i)?=))([^#\\&\\?]*).*")
         if (youtubeRegex.containsMatchIn(url)) {
             val id = youtubeRegex.findAll(url).map { it.groupValues[1] }.joinToString()
@@ -197,7 +195,7 @@ class Player : AppCompatActivity(), Player.Listener {
                 return
             }
 
-            if (this::playerController.isInitialized) {
+            if (new) {
                 playerController.stop()
                 playerController.removeMediaItem(0)
                 updateUI()
@@ -225,6 +223,9 @@ class Player : AppCompatActivity(), Player.Listener {
                                 .setSeamlessResizeEnabled(true)
                                 .build()
                         )
+                    }
+                    if (!new) {
+                        createUI()
                     }
                     updateUI()
 
