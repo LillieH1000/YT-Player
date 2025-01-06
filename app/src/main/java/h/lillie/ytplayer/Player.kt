@@ -334,6 +334,14 @@ class Player : AppCompatActivity(), Player.Listener {
             castButton.visibility = View.VISIBLE
             repeatButton.visibility = View.VISIBLE
         }
+
+        val shareButton: ImageButton = findViewById(R.id.shareButton)
+        if (Application.chromeosDevice) {
+            shareButton.visibility = View.GONE
+        } else {
+            shareButton.visibility = View.VISIBLE
+        }
+
         val menuButtons: LinearLayout = findViewById(R.id.menuButtons)
         menuButtons.invalidate()
     }
