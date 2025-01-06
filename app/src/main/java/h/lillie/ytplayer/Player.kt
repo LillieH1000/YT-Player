@@ -422,10 +422,16 @@ class Player : AppCompatActivity(), Player.Listener {
 
                 val duration = playerController.duration
                 val position = playerController.currentPosition
-                if (duration >= 0 && position >= 0 && position <= duration) {
+                if (duration >= 0 && position >= 0) {
                     val progressSlider: Slider = findViewById(R.id.progressSlider)
                     progressSlider.valueTo = duration.toFloat()
-                    progressSlider.value = position.toFloat()
+
+                    if (position <= duration) {
+                        progressSlider.value = position.toFloat()
+                    }
+                    if (position > duration) {
+                        progressSlider.value = duration.toFloat()
+                    }
 
                     val timeView: TextView = findViewById(R.id.timeView)
                     timeView.text = "${time(position)} / ${time(duration)}"
