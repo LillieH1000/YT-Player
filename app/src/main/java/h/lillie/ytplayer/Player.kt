@@ -294,7 +294,7 @@ class Player : AppCompatActivity(), Player.Listener {
         progressSlider.addOnChangeListener { _, value, fromUser ->
             val duration = playerController.duration
             val position = playerController.currentPosition
-            if (fromUser && duration >= 0 && position >= 0 && position <= duration) {
+            if (fromUser && duration >= 0 && position >= 0 && value <= duration) {
                 playerController.seekTo(value.toLong())
             }
         }
