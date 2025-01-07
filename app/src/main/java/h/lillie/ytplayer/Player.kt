@@ -200,7 +200,12 @@ class Player : AppCompatActivity(), Player.Listener {
             if (this::playerController.isInitialized) {
                 playerController.stop()
                 playerController.removeMediaItem(0)
-                updateUI()
+                val titleView: TextView = findViewById(R.id.titleView)
+                titleView.text = ""
+                val progressSlider: Slider = findViewById(R.id.progressSlider)
+                progressSlider.value = 0f
+                val timeView: TextView = findViewById(R.id.timeView)
+                timeView.text = ""
             }
 
             lifecycleScope.launch {
