@@ -301,7 +301,7 @@ class Player : AppCompatActivity(), Player.Listener {
             }
         })
 
-        val titleView: TextView = findViewById(R.id.titleView)
+        /* val titleView: TextView = findViewById(R.id.titleView)
         titleView.setOnClickListener {
             val infoView: LinearLayout = findViewById(R.id.infoView)
 
@@ -322,7 +322,7 @@ class Player : AppCompatActivity(), Player.Listener {
             infoDislikes.text = "Dislikes: ${numberFormat.format(Application.dislikes)}"
 
             infoView.visibility = View.VISIBLE
-        }
+        } */
 
         val playPauseRestartButton: ImageButton = findViewById(R.id.playPauseRestartButton)
         playPauseRestartButton.setOnClickListener {
