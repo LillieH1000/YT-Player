@@ -2,29 +2,20 @@ import json
 import yt_dlp
 
 def getInfo(videoID):
-    ytdlp_mweb = {
+    ytdlp_opts = {
         "extractor_args": {
             "youtube": {
-                "player_client": ["mweb"]
+                "player_client": ["ios","mweb"]
             }
         },
-        "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]",
-        "noplaylist": True
-    }
-
-    ytdlp_ios = {
-        "extractor_args": {
-            "youtube": {
-                "player_client": ["ios"]
-            }
-        },
-        "hls_prefer_native": True,
+        "format": "bestvideo[protocol=m3u8_native]+bestaudio[protocol=https][ext=m4a]/bestvideo[protocol=m3u8_native]",
+        "ignore_no_formats_error": True,
         "noplaylist": True
     }
 
     info = {}
 
-    with yt_dlp.YoutubeDL(ytdlp_ios) as ytdlp:
+    with yt_dlp.YoutubeDL(ytdlp_opts) as ytdlp:
         x = ytdlp.extract_info(f"https://www.youtube.com/watch?v={videoID}", download=False)
         y = json.loads(json.dumps(ytdlp.sanitize_info(x)))
         info["id"] = y["id"]
@@ -34,19 +25,11 @@ def getInfo(videoID):
         info["views"] = y["view_count"]
         info["likes"] = y["like_count"]
         info["live"] = y["is_live"]
-        info["hlsUrl"] = y["requested_formats"][0]["manifest_url"]
-
-    a = json.loads(json.dumps(info))
-
-    if not a["live"]:
-        with yt_dlp.YoutubeDL(ytdlp_mweb) as ytdlp:
-            x = ytdlp.extract_info(f"https://www.youtube.com/watch?v={videoID}", download=False)
-            y = json.loads(json.dumps(ytdlp.sanitize_info(x)))
-            info["videoUrl"] = y["requested_formats"][0]["url"]
+        if ("requested_formats" in y):
+            info["hlsUrl"] = y["requested_formats"][0]["manifest_url"]
             info["audioUrl"] = y["requested_formats"][1]["url"]
-
-    if a["live"]:
-        info["videoUrl"] = None
-        info["audioUrl"] = None
+        if ("requested_formats" not in y):
+            info["hlsUrl"] = y["manifest_url"]
+            info["audioUrl"] = None
         
     return json.dumps(info)

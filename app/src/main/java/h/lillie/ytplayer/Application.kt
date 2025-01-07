@@ -25,7 +25,6 @@ class Application : Application() {
         var likes: Int = 0
         var dislikes: Int = 0
         var live: Boolean = false
-        var videoUrl = String()
         var audioUrl = String()
         var hlsUrl = String()
         var sponsorBlock: JSONArray? = JSONArray()

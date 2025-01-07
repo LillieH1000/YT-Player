@@ -22,7 +22,6 @@ class Requests {
             Application.views = info.optInt("views")
             Application.likes = info.optInt("likes")
             Application.live = info.optBoolean("live")
-            Application.videoUrl = info.optString("videoUrl")
             Application.audioUrl = info.optString("audioUrl")
             Application.hlsUrl = info.optString("hlsUrl")
         }
