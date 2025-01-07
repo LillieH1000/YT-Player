@@ -197,11 +197,15 @@ class Player : AppCompatActivity(), Player.Listener {
                 return
             }
 
-            if (this::playerController.isInitialized) {
+            Toast.makeText(this, "Loading, Please Wait", Toast.LENGTH_SHORT).show()
+
+            if (this::playerController.isInitialized && playerController.mediaItemCount == 1) {
                 playerController.stop()
                 playerController.removeMediaItem(0)
                 val titleView: TextView = findViewById(R.id.titleView)
                 titleView.text = ""
+                val playPauseRestartButton: ImageButton = findViewById(R.id.playPauseRestartButton)
+                playPauseRestartButton.setImageDrawable(null)
                 val progressSlider: Slider = findViewById(R.id.progressSlider)
                 progressSlider.value = 0f
                 val timeView: TextView = findViewById(R.id.timeView)
@@ -301,28 +305,34 @@ class Player : AppCompatActivity(), Player.Listener {
 
         val playPauseRestartButton: ImageButton = findViewById(R.id.playPauseRestartButton)
         playPauseRestartButton.setOnClickListener {
-            if (!playerController.isPlaying) {
-                playerController.play()
-            } else {
-                playerController.pause()
+            if (this::playerController.isInitialized && playerController.mediaItemCount == 1) {
+                if (!playerController.isPlaying) {
+                    playerController.play()
+                } else {
+                    playerController.pause()
+                }
             }
         }
 
         val progressSlider: Slider = findViewById(R.id.progressSlider)
         progressSlider.addOnChangeListener { _, value, fromUser ->
-            val duration = playerController.duration
-            val position = playerController.currentPosition
-            if (fromUser && duration >= 0 && position >= 0 && value <= duration) {
-                playerController.seekTo(value.toLong())
+            if (this::playerController.isInitialized && playerController.mediaItemCount == 1) {
+                val duration = playerController.duration
+                val position = playerController.currentPosition
+                if (fromUser && duration >= 0 && position >= 0 && value <= duration) {
+                    playerController.seekTo(value.toLong())
+                }
             }
         }
 
         val repeatButton: ImageButton = findViewById(R.id.repeatButton)
         repeatButton.setOnClickListener {
-            if (playerController.repeatMode == Player.REPEAT_MODE_OFF) {
-                playerController.repeatMode = Player.REPEAT_MODE_ONE
-            } else {
-                playerController.repeatMode = Player.REPEAT_MODE_OFF
+            if (this::playerController.isInitialized && playerController.mediaItemCount == 1) {
+                if (playerController.repeatMode == Player.REPEAT_MODE_OFF) {
+                    playerController.repeatMode = Player.REPEAT_MODE_ONE
+                } else {
+                    playerController.repeatMode = Player.REPEAT_MODE_OFF
+                }
             }
         }
 
@@ -404,11 +414,13 @@ class Player : AppCompatActivity(), Player.Listener {
             return true
         }
         override fun onDoubleTap(e: MotionEvent): Boolean {
-            if (gestureDirection == 0) {
-                playerController.seekBack()
-            }
-            if (gestureDirection == 2) {
-                playerController.seekForward()
+            if (this@Player::playerController.isInitialized && playerController.mediaItemCount == 1) {
+                if (gestureDirection == 0) {
+                    playerController.seekBack()
+                }
+                if (gestureDirection == 2) {
+                    playerController.seekForward()
+                }
             }
             return true
         }
@@ -416,7 +428,7 @@ class Player : AppCompatActivity(), Player.Listener {
     
     private val playerTask = object : Runnable {
         override fun run() {
-            if (this@Player::playerController.isInitialized) {
+            if (this@Player::playerController.isInitialized && playerController.mediaItemCount == 1) {
                 val playerView: PlayerView = findViewById(R.id.playerView)
                 val artworkView: ImageView = findViewById(R.id.artworkView)
                 if (Application.castActive) {
