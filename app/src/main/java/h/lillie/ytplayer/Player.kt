@@ -120,15 +120,19 @@ class Player : AppCompatActivity(), Player.Listener {
 
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
-        if ((error as ExoPlaybackException).type == ExoPlaybackException.TYPE_SOURCE) {
-            val mainView: RelativeLayout = findViewById(R.id.mainView)
-            mainView.visibility = View.GONE
-            val overlayView: RelativeLayout = findViewById(R.id.overlayView)
-            overlayView.visibility = View.GONE
-            val errorView: LinearLayout = findViewById(R.id.errorView)
-            errorView.visibility = View.VISIBLE
-        } else {
-            Toast.makeText(this, "Unknown Error", Toast.LENGTH_LONG).show()
+        when ((error as ExoPlaybackException).type) {
+            ExoPlaybackException.TYPE_REMOTE -> {
+                Toast.makeText(this, "Remote Error", Toast.LENGTH_LONG).show()
+            }
+            ExoPlaybackException.TYPE_RENDERER -> {
+                Toast.makeText(this, "Renderer Error", Toast.LENGTH_LONG).show()
+            }
+            ExoPlaybackException.TYPE_SOURCE -> {
+                Toast.makeText(this, "Source Error", Toast.LENGTH_LONG).show()
+            }
+            ExoPlaybackException.TYPE_UNEXPECTED -> {
+                Toast.makeText(this, "Unexpected Error", Toast.LENGTH_LONG).show()
+            }
         }
     }
 
