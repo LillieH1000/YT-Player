@@ -39,7 +39,6 @@ import com.google.android.material.slider.Slider
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import kotlinx.coroutines.launch
-import java.text.NumberFormat
 import java.util.concurrent.TimeUnit
 
 @OptIn(UnstableApi::class)
@@ -239,7 +238,6 @@ class Player : AppCompatActivity(), Player.Listener {
                 val request = Requests()
                 request.innertube(id)
                 request.sponsorBlock(id)
-                request.returnYouTubeDislike(id)
 
                 val sessionToken = SessionToken(this@Player, ComponentName(this@Player, PlayerService::class.java))
                 playerControllerFuture = MediaController.Builder(this@Player, sessionToken).buildAsync()
@@ -302,29 +300,6 @@ class Player : AppCompatActivity(), Player.Listener {
                 return gestureDetector.onTouchEvent(event!!)
             }
         })
-
-        /* val titleView: TextView = findViewById(R.id.titleView)
-        titleView.setOnClickListener {
-            val infoView: LinearLayout = findViewById(R.id.infoView)
-
-            if (infoView.visibility == View.VISIBLE) {
-                infoView.visibility = View.GONE
-                return@setOnClickListener
-            }
-
-            val numberFormat = NumberFormat.getNumberInstance()
-
-            val infoViews: TextView = findViewById(R.id.infoViews)
-            infoViews.text = "Views: ${numberFormat.format(Application.views.toInt())}"
-
-            val infoLikes: TextView = findViewById(R.id.infoLikes)
-            infoLikes.text = "Likes: ${numberFormat.format(Application.likes)}"
-
-            val infoDislikes: TextView = findViewById(R.id.infoDislikes)
-            infoDislikes.text = "Dislikes: ${numberFormat.format(Application.dislikes)}"
-
-            infoView.visibility = View.VISIBLE
-        } */
 
         val playPauseRestartButton: ImageButton = findViewById(R.id.playPauseRestartButton)
         playPauseRestartButton.setOnClickListener {

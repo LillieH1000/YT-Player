@@ -48,7 +48,6 @@ class Requests {
         Application.author = jsonObject.getJSONObject("videoDetails").optString("author")
         val artworkArray = jsonObject.getJSONObject("videoDetails").getJSONObject("thumbnail").getJSONArray("thumbnails")
         Application.artwork = artworkArray.getJSONObject((artworkArray.length() - 1)).optString("url")
-        Application.views = jsonObject.getJSONObject("videoDetails").optString("viewCount")
         Application.live = jsonObject.getJSONObject("videoDetails").optBoolean("isLive")
 
         var audioInfo = 0
@@ -94,27 +93,6 @@ class Requests {
         } catch (_: JSONException) {
             Application.sponsorBlock = null
         }
-
-        return@withContext
-    }
-
-    suspend fun returnYouTubeDislike(videoId: String) = withContext(Dispatchers.IO) {
-        val client: OkHttpClient = OkHttpClient.Builder().build()
-
-        val request = Request.Builder()
-            .method("GET", null)
-            .url("https://returnyoutubedislikeapi.com/votes?videoId=$videoId")
-            .build()
-
-        val response = client.newCall(request).execute()
-        if (!response.isSuccessful) {
-            Application.dislikes = 0
-            return@withContext
-        }
-
-        val jsonObject = JSONObject(response.body.string())
-        Application.likes = jsonObject.optInt("likes")
-        Application.dislikes = jsonObject.optInt("dislikes")
 
         return@withContext
     }
