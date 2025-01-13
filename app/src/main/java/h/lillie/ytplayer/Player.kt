@@ -222,8 +222,6 @@ class Player : AppCompatActivity(), Player.Listener {
                 return
             }
 
-            Toast.makeText(this, "Loading, Please Wait", Toast.LENGTH_SHORT).show()
-
             if (this::playerController.isInitialized && playerController.mediaItemCount == 1) {
                 playerController.stop()
                 playerController.removeMediaItem(0)
