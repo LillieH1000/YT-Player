@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.chaquopy.python)
 }
 
 android {
@@ -15,9 +14,6 @@ android {
         targetSdk = 34
         versionCode = 17
         versionName = "1.2.0"
-        ndk {
-            abiFilters += listOf("arm64-v8a", "x86_64")
-        }
     }
 
     buildTypes {
@@ -45,17 +41,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
+
     kotlinOptions {
         jvmTarget = "21"
-    }
-}
-
-chaquopy {
-    defaultConfig {
-        version = "3.13"
-        pip {
-            install("yt-dlp")
-        }
     }
 }
 

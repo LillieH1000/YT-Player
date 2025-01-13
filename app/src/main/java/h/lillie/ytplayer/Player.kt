@@ -235,7 +235,7 @@ class Player : AppCompatActivity(), Player.Listener {
 
             lifecycleScope.launch {
                 val request = Requests()
-                request.ytdlp(id)
+                request.innertube(id)
                 request.sponsorBlock(id)
                 request.returnYouTubeDislike(id)
 
