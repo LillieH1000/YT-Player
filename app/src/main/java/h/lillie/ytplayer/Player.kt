@@ -228,7 +228,7 @@ class Player : AppCompatActivity(), Player.Listener {
 
             CoroutineScope(Dispatchers.Main).launch {
                 val request = Requests()
-                request.innertube(id)
+                request.ytdlp(id)
                 request.sponsorBlock(id)
 
                 val sessionToken = SessionToken(this@Player, ComponentName(this@Player, PlayerService::class.java))
