@@ -24,10 +24,8 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
-import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.ExoPlaybackException
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
@@ -116,24 +114,6 @@ class Player : AppCompatActivity(), Player.Listener {
         MediaController.releaseFuture(playerControllerFuture)
         stopService(Intent(this, PlayerService::class.java))
         super.onDestroy()
-    }
-
-    override fun onPlayerError(error: PlaybackException) {
-        super.onPlayerError(error)
-        when ((error as ExoPlaybackException).type) {
-            ExoPlaybackException.TYPE_REMOTE -> {
-                Toast.makeText(this, "Remote Error", Toast.LENGTH_LONG).show()
-            }
-            ExoPlaybackException.TYPE_RENDERER -> {
-                Toast.makeText(this, "Renderer Error", Toast.LENGTH_LONG).show()
-            }
-            ExoPlaybackException.TYPE_SOURCE -> {
-                Toast.makeText(this, "Source Error", Toast.LENGTH_LONG).show()
-            }
-            ExoPlaybackException.TYPE_UNEXPECTED -> {
-                Toast.makeText(this, "Unexpected Error", Toast.LENGTH_LONG).show()
-            }
-        }
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
