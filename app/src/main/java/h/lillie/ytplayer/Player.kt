@@ -24,7 +24,6 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
@@ -38,6 +37,8 @@ import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.material.slider.Slider
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
@@ -234,7 +235,7 @@ class Player : AppCompatActivity(), Player.Listener {
                 timeView.text = ""
             }
 
-            lifecycleScope.launch {
+            CoroutineScope(Dispatchers.Main).launch {
                 val request = Requests()
                 request.innertube(id)
                 request.sponsorBlock(id)
