@@ -14,6 +14,7 @@ import android.view.GestureDetector
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
+import android.view.View.FOCUSABLE
 import android.view.WindowInsets
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -228,6 +229,14 @@ class Player : AppCompatActivity(), Player.Listener {
 
                     val playerView: PlayerView = findViewById(R.id.playerView)
                     playerView.player = playerController
+                    playerView.focusable = FOCUSABLE
+                    playerView.isFocusableInTouchMode = true
+                    playerView.requestFocus()
+                    playerView.setOnFocusChangeListener { v, hasFocus ->
+                        if (!hasFocus) {
+                            v.requestFocus()
+                        }
+                    }
 
                     if (Build.VERSION.SDK_INT >= 31) {
                         setPictureInPictureParams(
