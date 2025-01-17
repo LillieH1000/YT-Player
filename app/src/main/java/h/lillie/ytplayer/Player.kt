@@ -127,6 +127,16 @@ class Player : AppCompatActivity(), Player.Listener {
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
         if (event.action == KeyEvent.ACTION_DOWN) {
             when (event.keyCode) {
+                KeyEvent.KEYCODE_SPACE -> {
+                    if (this::playerController.isInitialized && playerController.mediaItemCount == 1) {
+                        if (!playerController.isPlaying) {
+                            playerController.play()
+                        } else {
+                            playerController.pause()
+                        }
+                    }
+                    return true
+                }
                 KeyEvent.KEYCODE_DPAD_LEFT -> {
                     if (this@Player::playerController.isInitialized && playerController.mediaItemCount == 1) {
                         playerController.seekBack()
