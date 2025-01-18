@@ -114,6 +114,7 @@ class Player : AppCompatActivity(), Player.Listener {
     override fun onDestroy() {
         MediaController.releaseFuture(playerControllerFuture)
         stopService(Intent(this, PlayerService::class.java))
+        System.exit(0)
         super.onDestroy()
     }
 
