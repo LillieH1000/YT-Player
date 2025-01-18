@@ -83,6 +83,8 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.ktor.server.cio)
+    implementation(libs.ktor.server.core)
     implementation(libs.material)
     implementation(libs.okhttp)
 }

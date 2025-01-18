@@ -36,6 +36,10 @@ import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.material.slider.Slider
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
+import io.ktor.server.cio.CIO
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.routing.get
+import io.ktor.server.routing.routing
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -54,6 +58,8 @@ class Player : AppCompatActivity(), Player.Listener {
         setContentView(R.layout.player)
 
         onBackPressedDispatcher.addCallback(this) {}
+
+        createServer()
 
         when {
             intent?.action == Intent.ACTION_SEND -> {
@@ -265,6 +271,21 @@ class Player : AppCompatActivity(), Player.Listener {
                 }, MoreExecutors.directExecutor())
             }
         }
+    }
+
+    private fun createServer() {
+        embeddedServer(CIO, port = 8080) {
+            routing {
+                get("/") {
+                    val url = call.request.queryParameters["url"]
+                    if (url != null) {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            broadcast(url)
+                        }
+                    }
+                }
+            }
+        }.start(wait = false)
     }
 
     private var gestureDirection: Int = 0
