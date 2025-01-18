@@ -9,7 +9,7 @@ class Application : Application() {
     override fun onCreate() {
         super.onCreate()
         if (!Python.isStarted()) {
-            Python.start(AndroidPlatform(this));
+            Python.start(AndroidPlatform(this))
         }
         if (packageManager.hasSystemFeature("org.chromium.arc.device_management")) {
             chromeosDevice = true
