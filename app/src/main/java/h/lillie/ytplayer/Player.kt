@@ -17,7 +17,6 @@ import android.view.View
 import android.view.View.FOCUSABLE
 import android.view.WindowInsets
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -31,7 +30,6 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
 import androidx.mediarouter.app.MediaRouteButton
-import com.bumptech.glide.Glide
 import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.material.slider.Slider
 import com.google.common.util.concurrent.ListenableFuture
@@ -293,9 +291,6 @@ class Player : AppCompatActivity(), Player.Listener {
     private fun createUI() {
         CastButtonFactory.setUpMediaRouteButton(this, findViewById(R.id.castButton))
 
-        val artworkView: ImageView = findViewById(R.id.artworkView)
-        Glide.with(this).load(Application.artwork).into(artworkView)
-
         val leftView: View = findViewById(R.id.leftView)
         leftView.setOnTouchListener(object : View.OnTouchListener {
             val gestureDetector = GestureDetector(this@Player, playerTouch)
@@ -449,16 +444,6 @@ class Player : AppCompatActivity(), Player.Listener {
     private val playerTask = object : Runnable {
         override fun run() {
             if (this@Player::playerController.isInitialized && playerController.mediaItemCount == 1) {
-                val playerView: PlayerView = findViewById(R.id.playerView)
-                val artworkView: ImageView = findViewById(R.id.artworkView)
-                if (Application.castActive) {
-                    playerView.visibility = View.GONE
-                    artworkView.visibility = View.VISIBLE
-                } else {
-                    playerView.visibility = View.VISIBLE
-                    artworkView.visibility = View.GONE
-                }
-
                 val playPauseRestartButton: ImageButton = findViewById(R.id.playPauseRestartButton)
                 if (playerController.playbackState == Player.STATE_ENDED) {
                     playPauseRestartButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_skip_back)
