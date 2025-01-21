@@ -238,6 +238,9 @@ class Player : AppCompatActivity(), Player.Listener {
                 request.ytdlp(id)
                 request.sponsorBlock(id)
 
+                val artworkView: ImageView = findViewById(R.id.artworkView)
+                Glide.with(this@Player).load(Application.artwork).into(artworkView)
+
                 val sessionToken = SessionToken(this@Player, ComponentName(this@Player, PlayerService::class.java))
                 playerControllerFuture = MediaController.Builder(this@Player, sessionToken).buildAsync()
                 playerControllerFuture.addListener({
@@ -292,9 +295,6 @@ class Player : AppCompatActivity(), Player.Listener {
 
     private fun createUI() {
         CastButtonFactory.setUpMediaRouteButton(this, findViewById(R.id.castButton))
-
-        val artworkView: ImageView = findViewById(R.id.artworkView)
-        Glide.with(this).load(Application.artwork).into(artworkView)
 
         val leftView: View = findViewById(R.id.leftView)
         leftView.setOnTouchListener(object : View.OnTouchListener {
