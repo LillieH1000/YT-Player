@@ -12,7 +12,7 @@ class Application : Application() {
             Python.start(AndroidPlatform(this))
         }
         if (packageManager.hasSystemFeature("org.chromium.arc.device_management")) {
-            chromeosDevice = true
+            chromeOSDevice = true
         }
     }
 
@@ -26,6 +26,6 @@ class Application : Application() {
         var hlsUrl = String()
         var sponsorBlock: JSONArray? = JSONArray()
         var castActive: Boolean = false
-        var chromeosDevice: Boolean = false
+        var chromeOSDevice: Boolean = false
     }
 }
