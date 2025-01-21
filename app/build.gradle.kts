@@ -16,7 +16,7 @@ android {
         versionCode = 20
         versionName = "1.2.21"
         ndk {
-            abiFilters += listOf("arm64-v8a", "x86_64")
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64", "x86")
         }
     }
 
@@ -56,7 +56,7 @@ android {
 
 chaquopy {
     defaultConfig {
-        version = "3.13"
+        version = "3.11"
         pip {
             install("yt-dlp")
         }
