@@ -149,6 +149,16 @@ class Player : AppCompatActivity(), Player.Listener {
                     }
                     return true
                 }
+                KeyEvent.KEYCODE_DPAD_CENTER -> {
+                    if (this::playerController.isInitialized && playerController.mediaItemCount == 1) {
+                        if (!playerController.isPlaying) {
+                            playerController.play()
+                        } else {
+                            playerController.pause()
+                        }
+                    }
+                    return true
+                }
                 KeyEvent.KEYCODE_DPAD_LEFT -> {
                     if (this@Player::playerController.isInitialized && playerController.mediaItemCount == 1) {
                         playerController.seekBack()
