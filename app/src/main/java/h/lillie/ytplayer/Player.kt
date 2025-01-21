@@ -179,11 +179,13 @@ class Player : AppCompatActivity(), Player.Listener {
         if (hasFocus) {
             if (!isFirstLaunch) {
                 isFirstLaunch = true
-                val clipManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                val clipData = clipManager.primaryClip
-                if (clipData != null && clipData.itemCount > 0) {
-                    broadcast(clipData.getItemAt(0).text.toString())
-                    createUI()
+                if (Application.chromeOSDevice) {
+                    val clipManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                    val clipData = clipManager.primaryClip
+                    if (clipData != null && clipData.itemCount > 0) {
+                        broadcast(clipData.getItemAt(0).text.toString())
+                        createUI()
+                    }
                 }
             }
             when (resources.configuration.orientation) {
