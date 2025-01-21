@@ -59,7 +59,9 @@ class Player : AppCompatActivity(), Player.Listener {
 
         onBackPressedDispatcher.addCallback(this) {}
 
-        createServer()
+        if (Application.androidTVDevice) {
+            createServer()
+        }
 
         when {
             intent?.action == Intent.ACTION_SEND -> {
@@ -82,14 +84,14 @@ class Player : AppCompatActivity(), Player.Listener {
         super.onConfigurationChanged(newConfig)
         when (newConfig.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
-                if (!Application.chromeOSDevice) {
+                if (!Application.chromeOSDevice && !Application.androidTVDevice) {
                     window.insetsController?.apply {
                         show(WindowInsets.Type.systemBars())
                     }
                 }
             }
             Configuration.ORIENTATION_LANDSCAPE -> {
-                if (!Application.chromeOSDevice) {
+                if (!Application.chromeOSDevice && !Application.androidTVDevice) {
                     window.insetsController?.apply {
                         hide(WindowInsets.Type.systemBars())
                     }
@@ -112,7 +114,7 @@ class Player : AppCompatActivity(), Player.Listener {
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        if (Build.VERSION.SDK_INT <= 30) {
+        if (Build.VERSION.SDK_INT <= 30 && !Application.androidTVDevice) {
             enterPictureInPictureMode(PictureInPictureParams.Builder().build())
         }
     }
@@ -183,14 +185,14 @@ class Player : AppCompatActivity(), Player.Listener {
             }
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
-                    if (!Application.chromeOSDevice) {
+                    if (!Application.chromeOSDevice && !Application.androidTVDevice) {
                         window.insetsController?.apply {
                             show(WindowInsets.Type.systemBars())
                         }
                     }
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    if (!Application.chromeOSDevice) {
+                    if (!Application.chromeOSDevice && !Application.androidTVDevice) {
                         window.insetsController?.apply {
                             hide(WindowInsets.Type.systemBars())
                         }
@@ -258,7 +260,7 @@ class Player : AppCompatActivity(), Player.Listener {
                         }
                     }
 
-                    if (Build.VERSION.SDK_INT >= 31) {
+                    if (Build.VERSION.SDK_INT >= 31 && !Application.androidTVDevice) {
                         setPictureInPictureParams(
                             PictureInPictureParams.Builder()
                                 .setAutoEnterEnabled(true)
