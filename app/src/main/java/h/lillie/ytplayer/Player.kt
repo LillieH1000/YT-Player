@@ -110,6 +110,9 @@ class Player : AppCompatActivity(), Player.Listener {
     override fun onStop() {
         super.onStop()
         playerHandler.removeCallbacksAndMessages(null)
+        if (Application.androidTVDevice) {
+            finish()
+        }
     }
 
     override fun onUserLeaveHint() {
