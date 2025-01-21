@@ -6,6 +6,7 @@ import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
 import org.json.JSONArray
 
+@Suppress("Deprecation")
 class Application : Application() {
     override fun onCreate() {
         super.onCreate()
