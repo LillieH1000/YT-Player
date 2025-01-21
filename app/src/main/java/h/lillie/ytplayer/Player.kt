@@ -311,7 +311,9 @@ class Player : AppCompatActivity(), Player.Listener {
     private var gestureDirection: Int = 0
 
     private fun createUI() {
-        CastButtonFactory.setUpMediaRouteButton(this, findViewById(R.id.castButton))
+        if (!Application.androidTVDevice) {
+            CastButtonFactory.setUpMediaRouteButton(this, findViewById(R.id.castButton))
+        }
 
         val leftView: View = findViewById(R.id.leftView)
         leftView.setOnTouchListener(object : View.OnTouchListener {
