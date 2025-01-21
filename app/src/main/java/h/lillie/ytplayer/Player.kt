@@ -234,6 +234,18 @@ class Player : AppCompatActivity(), Player.Listener {
         }
     }
 
+    override fun onPlaybackStateChanged(playbackState: Int) {
+        super.onPlaybackStateChanged(playbackState)
+        when (playbackState) {
+            Player.STATE_ENDED -> {
+                if (Application.androidTVDevice) {
+                    val ipView: TextView = findViewById(R.id.ipView)
+                    ipView.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
     private fun broadcast(url: String) {
         val youtubeRegex = Regex("^.*(?:(?:youtu\\.be\\/|v\\/|vi\\/|u\\/\\w\\/|embed\\/|shorts\\/|live\\/)|(?:(?:watch)?\\?v(?:i)?=|\\&v(?:i)?=))([^#\\&\\?]*).*")
         if (youtubeRegex.containsMatchIn(url)) {
