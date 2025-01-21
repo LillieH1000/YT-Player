@@ -1,6 +1,7 @@
 package h.lillie.ytplayer
 
 import android.app.Application
+import android.content.pm.PackageManager
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
 import org.json.JSONArray
@@ -14,7 +15,7 @@ class Application : Application() {
         if (packageManager.hasSystemFeature("org.chromium.arc.device_management")) {
             chromeOSDevice = true
         }
-        if (packageManager.hasSystemFeature("PackageManager.FEATURE_LEANBACK") || packageManager.hasSystemFeature("PackageManager.FEATURE_TELEVISION")) {
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK) || packageManager.hasSystemFeature(PackageManager.FEATURE_TELEVISION)) {
             androidTVDevice = true
         }
     }
