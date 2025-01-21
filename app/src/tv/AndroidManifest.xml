@@ -5,7 +5,7 @@
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
     <uses-feature android:name="android.software.leanback" android:required="true" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" tools:ignore="LeanbackUsesWifi" />
-    <application>
+    <application tools:ignore="MissingTvBanner">
         <activity
             android:name=".Player"
             android:enabled="true"
