@@ -6,10 +6,12 @@ import android.content.ClipboardManager
 import android.content.ComponentName
 import android.content.Intent
 import android.content.res.Configuration
+import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.format.Formatter
 import android.view.GestureDetector
 import android.view.KeyEvent
 import android.view.MotionEvent
@@ -61,6 +63,10 @@ class Player : AppCompatActivity(), Player.Listener {
 
         if (Application.androidTVDevice) {
             createServer()
+            val wifiManager = getSystemService(WIFI_SERVICE) as WifiManager
+            val ipView: TextView = findViewById(R.id.ipView)
+            ipView.text = "http://${Formatter.formatIpAddress(wifiManager.connectionInfo.ipAddress)}:8080/?url=youtubevideourl"
+            ipView.visibility = View.VISIBLE
         }
 
         when {
@@ -235,6 +241,11 @@ class Player : AppCompatActivity(), Player.Listener {
             if (Application.castActive) {
                 Toast.makeText(this, "Failed, Please Disable Cast First", Toast.LENGTH_LONG).show()
                 return
+            }
+
+            if (Application.androidTVDevice) {
+                val ipView: TextView = findViewById(R.id.ipView)
+                ipView.visibility = View.GONE
             }
 
             if (this::playerController.isInitialized && playerController.mediaItemCount == 1) {
