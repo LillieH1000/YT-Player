@@ -79,39 +79,41 @@ class PlayerService : MediaSessionService(), MediaSession.Callback {
             registerReceiver(playerBroadcastReceiver, IntentFilter("h.lillie.ytplayer.info"), RECEIVER_NOT_EXPORTED)
         }
 
-        val castPlayer = CastPlayer(CastContext.getSharedInstance(this, MoreExecutors.directExecutor()).result, DefaultMediaItemConverter(), 10000, 10000)
-        castPlayer.setSessionAvailabilityListener(object : SessionAvailabilityListener {
-            override fun onCastSessionAvailable() {
-                Application.castActive = true
-                exoPlayer.stop()
-                playerSession?.player = castPlayer
+        if (!Application.androidTVDevice) {
+            val castPlayer = CastPlayer(CastContext.getSharedInstance(this, MoreExecutors.directExecutor()).result, DefaultMediaItemConverter(), 10000, 10000)
+            castPlayer.setSessionAvailabilityListener(object : SessionAvailabilityListener {
+                override fun onCastSessionAvailable() {
+                    Application.castActive = true
+                    exoPlayer.stop()
+                    playerSession?.player = castPlayer
 
-                val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
-                    .setTitle(Application.title)
-                    .setArtist(Application.author)
-                    .setArtworkUri(Uri.parse(Application.artwork))
-                    .build()
+                    val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
+                        .setTitle(Application.title)
+                        .setArtist(Application.author)
+                        .setArtworkUri(Uri.parse(Application.artwork))
+                        .build()
 
-                val playerMediaItem: MediaItem = MediaItem.Builder()
-                    .setMimeType(MimeTypes.AUDIO_MP4)
-                    .setMediaMetadata(playerMediaMetadata)
-                    .setUri(Uri.parse(Application.audioUrl))
-                    .build()
+                    val playerMediaItem: MediaItem = MediaItem.Builder()
+                        .setMimeType(MimeTypes.AUDIO_MP4)
+                        .setMediaMetadata(playerMediaMetadata)
+                        .setUri(Uri.parse(Application.audioUrl))
+                        .build()
 
-                castPlayer.setMediaItem(playerMediaItem, exoPlayer.currentPosition)
-                castPlayer.playWhenReady = true
-                castPlayer.prepare()
-            }
+                    castPlayer.setMediaItem(playerMediaItem, exoPlayer.currentPosition)
+                    castPlayer.playWhenReady = true
+                    castPlayer.prepare()
+                }
 
-            override fun onCastSessionUnavailable() {
-                Application.castActive = false
-                castPlayer.stop()
-                playerSession?.player = exoPlayer
-                exoPlayer.seekTo(castPlayer.currentPosition)
-                exoPlayer.playWhenReady = true
-                exoPlayer.prepare()
-            }
-        })
+                override fun onCastSessionUnavailable() {
+                    Application.castActive = false
+                    castPlayer.stop()
+                    playerSession?.player = exoPlayer
+                    exoPlayer.seekTo(castPlayer.currentPosition)
+                    exoPlayer.playWhenReady = true
+                    exoPlayer.prepare()
+                }
+            })
+        }
 
         playerHandler = Handler(Looper.getMainLooper())
         playerHandler.post(playerTask)
