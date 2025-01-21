@@ -14,6 +14,9 @@ class Application : Application() {
         if (packageManager.hasSystemFeature("org.chromium.arc.device_management")) {
             chromeOSDevice = true
         }
+        if (packageManager.hasSystemFeature("PackageManager.FEATURE_LEANBACK") || packageManager.hasSystemFeature("PackageManager.FEATURE_TELEVISION")) {
+            androidTVDevice = true
+        }
     }
 
     companion object {
@@ -27,5 +30,6 @@ class Application : Application() {
         var sponsorBlock: JSONArray? = JSONArray()
         var castActive: Boolean = false
         var chromeOSDevice: Boolean = false
+        var androidTVDevice: Boolean = false
     }
 }
