@@ -30,7 +30,7 @@ class Requests {
 
         val request = Request.Builder()
             .method("GET", null)
-            .url("https://sponsor.ajay.app/api/skipSegments?videoID=$videoId&categories=[\"sponsor\",\"selfpromo\",\"interaction\",\"intro\",\"outro\",\"preview\",\"music_offtopic\"]")
+            .url("https://sponsor.ajay.app/api/skipSegments?videoID=$videoId&category=sponsor")
             .build()
 
         val response = client.newCall(request).execute()

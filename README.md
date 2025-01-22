@@ -26,4 +26,4 @@ Features:
 - Background Playback
 - Picture In Picture
 - Audio Cast
-- [SponsorBlock](https://sponsor.ajay.app/) (Experimental, currently only auto skips sponsors and isn't configurable currently)
+- [SponsorBlock](https://sponsor.ajay.app/) (Only auto skips sponsors)
