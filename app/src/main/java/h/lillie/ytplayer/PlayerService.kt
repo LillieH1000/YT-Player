@@ -22,6 +22,7 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.okhttp.OkHttpDataSource
+import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.exoplayer.source.MediaSource
@@ -52,6 +53,7 @@ class PlayerService : MediaSessionService(), MediaSession.Callback {
         super.onCreate()
 
         exoPlayer = ExoPlayer.Builder(this)
+            .setRenderersFactory(DefaultRenderersFactory(this).forceEnableMediaCodecAsynchronousQueueing())
             .setSeekBackIncrementMs(10000)
             .setSeekForwardIncrementMs(10000)
             .build()
