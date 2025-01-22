@@ -5,13 +5,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
 class Requests {
     suspend fun ytdlp(videoId: String) = withContext(Dispatchers.IO) {
-        val py = Python.getInstance()
+        val py: Python = Python.getInstance()
         val info = JSONObject((py.getModule("ytdlp").callAttr("getInfo", videoId)).toString())
 
         Application.id = info.optString("id")
@@ -28,12 +29,12 @@ class Requests {
     suspend fun sponsorBlock(videoId: String) = withContext(Dispatchers.IO) {
         val client: OkHttpClient = OkHttpClient.Builder().build()
 
-        val request = Request.Builder()
+        val request: Request = Request.Builder()
             .method("GET", null)
             .url("https://sponsor.ajay.app/api/skipSegments?videoID=$videoId&category=sponsor")
             .build()
 
-        val response = client.newCall(request).execute()
+        val response: Response = client.newCall(request).execute()
         if (!response.isSuccessful) {
             Application.sponsorBlock = null
             return@withContext
