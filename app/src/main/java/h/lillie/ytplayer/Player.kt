@@ -318,6 +318,9 @@ class Player : AppCompatActivity(), Player.Listener {
                                 .build()
                         )
                     }
+
+                    playerHandler = Handler(Looper.getMainLooper())
+                    playerHandler.post(playerTask)
                     updateUI()
 
                     val broadcastIntent = Intent("h.lillie.ytplayer.info")
@@ -418,9 +421,6 @@ class Player : AppCompatActivity(), Player.Listener {
                 type = "text/plain"
             }, null))
         }
-
-        playerHandler = Handler(Looper.getMainLooper())
-        playerHandler.post(playerTask)
     }
 
     private fun updateUI() {
