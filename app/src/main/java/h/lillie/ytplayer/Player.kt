@@ -61,7 +61,16 @@ class Player : AppCompatActivity(), Player.Listener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.player)
 
-        onBackPressedDispatcher.addCallback(this) {}
+        onBackPressedDispatcher.addCallback(this) {
+            if (Application.androidTVDevice) {
+                val overlayView: RelativeLayout = findViewById(R.id.overlayView)
+                if (overlayView.visibility == View.GONE) {
+                    overlayView.visibility = View.VISIBLE
+                } else {
+                    overlayView.visibility = View.GONE
+                }
+            }
+        }
 
         if (Application.androidTVDevice) {
             createServer()
