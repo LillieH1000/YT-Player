@@ -2,7 +2,6 @@
 appcompatVersion = "1.7.0"
 chaquopyVersion = "16.0.0"
 coilVersion = "3.0.4"
-constraintlayoutVersion = "2.2.0"
 coreVersion = "1.15.0"
 kotlinxCoroutinesVersion = "1.10.1"
 ktorServerCoreVersion = "3.0.3"
@@ -16,7 +15,6 @@ okhttpVersion = "5.0.0-alpha.14"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }
-androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayoutVersion" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreVersion" }
 androidx-lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", version.ref = "lifecycleVersion" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleVersion" }
