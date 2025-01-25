@@ -428,21 +428,21 @@ class Player : AppCompatActivity(), Player.Listener {
         titleView.text = Application.title
 
         val castButton: MediaRouteButton = findViewById(R.id.castButton)
+        if (Application.live || Application.androidTVDevice) {
+            castButton.visibility = View.GONE
+        } else {
+            castButton.visibility = View.VISIBLE
+        }
+
         val repeatButton: ImageButton = findViewById(R.id.repeatButton)
         if (Application.live) {
-            castButton.visibility = View.GONE
             repeatButton.visibility = View.GONE
         } else {
-            if (Application.androidTVDevice) {
-                castButton.visibility = View.GONE
-            } else {
-                castButton.visibility = View.VISIBLE
-            }
             repeatButton.visibility = View.VISIBLE
         }
 
         val shareButton: ImageButton = findViewById(R.id.shareButton)
-        if (Application.chromeOSDevice) {
+        if (Application.chromeOSDevice || Application.androidTVDevice) {
             shareButton.visibility = View.GONE
         } else {
             shareButton.visibility = View.VISIBLE
