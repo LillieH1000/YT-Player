@@ -1,6 +1,7 @@
 [versions]
 appcompatVersion = "1.7.0"
 chaquopyVersion = "16.0.0"
+coilVersion = "3.0.4"
 constraintlayoutVersion = "2.2.0"
 coreVersion = "1.15.0"
 glideVersion = "4.16.0"
@@ -34,7 +35,8 @@ androidx-media3-extractor = { module = "androidx.media3:media3-extractor", versi
 androidx-media3-session = { module = "androidx.media3:media3-session", version.ref = "media3ExoplayerVersion" }
 androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3ExoplayerVersion" }
 androidx-mediarouter = { module = "androidx.mediarouter:mediarouter", version.ref = "mediarouterVersion" }
-glide = { module = "com.github.bumptech.glide:glide", version.ref = "glideVersion" }
+coil = { module = "io.coil-kt.coil3:coil", version.ref = "coilVersion" }
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilVersion" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesVersion" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesVersion" }
 ktor-server-cio = { module = "io.ktor:ktor-server-cio", version.ref = "ktorServerCoreVersion" }

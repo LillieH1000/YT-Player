@@ -34,7 +34,7 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
 import androidx.mediarouter.app.MediaRouteButton
-import com.bumptech.glide.Glide
+import coil3.load
 import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.material.slider.Slider
 import com.google.common.util.concurrent.ListenableFuture
@@ -280,7 +280,7 @@ class Player : AppCompatActivity(), Player.Listener {
                 request.sponsorBlock(id)
 
                 val artworkView: ImageView = findViewById(R.id.artworkView)
-                Glide.with(this@Player).load(Application.artwork).into(artworkView)
+                artworkView.load(Application.artwork)
 
                 val sessionToken = SessionToken(this@Player, ComponentName(this@Player, PlayerService::class.java))
                 playerControllerFuture = MediaController.Builder(this@Player, sessionToken).buildAsync()
