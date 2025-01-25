@@ -431,7 +431,11 @@ class Player : AppCompatActivity(), Player.Listener {
             castButton.visibility = View.GONE
             repeatButton.visibility = View.GONE
         } else {
-            castButton.visibility = View.VISIBLE
+            if (Application.androidTVDevice) {
+                castButton.visibility = View.GONE
+            } else {
+                castButton.visibility = View.VISIBLE
+            }
             repeatButton.visibility = View.VISIBLE
         }
 
