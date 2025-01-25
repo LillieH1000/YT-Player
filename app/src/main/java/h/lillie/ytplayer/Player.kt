@@ -426,7 +426,7 @@ class Player : AppCompatActivity(), Player.Listener {
         titleView.text = Application.title
 
         val castButton: MediaRouteButton = findViewById(R.id.castButton)
-        if (Application.live || Application.androidTVDevice) {
+        if (Application.live) {
             castButton.visibility = View.GONE
         } else {
             castButton.visibility = View.VISIBLE
@@ -440,13 +440,16 @@ class Player : AppCompatActivity(), Player.Listener {
         }
 
         val shareButton: ImageButton = findViewById(R.id.shareButton)
-        if (Application.chromeOSDevice || Application.androidTVDevice) {
+        if (Application.chromeOSDevice) {
             shareButton.visibility = View.GONE
         } else {
             shareButton.visibility = View.VISIBLE
         }
 
         val menuButtons: LinearLayout = findViewById(R.id.menuButtons)
+        if (Application.androidTVDevice) {
+            menuButtons.visibility = View.GONE
+        }
         menuButtons.invalidate()
     }
 
