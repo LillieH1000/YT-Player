@@ -49,7 +49,7 @@ import java.util.concurrent.TimeUnit
 
 @OptIn(UnstableApi::class)
 @Suppress("Deprecation")
-@SuppressLint("ClickableViewAccessibility", "SetTextI18n", "SwitchIntDef")
+@SuppressLint("ClickableViewAccessibility", "ObsoleteSdkInt", "SetTextI18n", "SwitchIntDef")
 class Player : AppCompatActivity(), Player.Listener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
     private lateinit var playerController: MediaController

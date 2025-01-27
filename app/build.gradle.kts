@@ -38,6 +38,7 @@ android {
         }
         create("chromeos") {
             dimension = "type"
+            minSdk = 26
         }
         create("tv") {
             dimension = "type"
