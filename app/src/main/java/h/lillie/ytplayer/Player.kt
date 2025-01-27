@@ -76,7 +76,7 @@ class Player : AppCompatActivity(), Player.Listener {
             createServer()
             val wifiManager = getSystemService(WIFI_SERVICE) as WifiManager
             val ipView: TextView = findViewById(R.id.ipView)
-            ipView.text = "http://${Formatter.formatIpAddress(wifiManager.connectionInfo.ipAddress)}:8080/?url=youtubevideourl"
+            ipView.text = "http://${Formatter.formatIpAddress(wifiManager.connectionInfo.ipAddress)}:8090/?url=youtubevideourl"
             ipView.visibility = View.VISIBLE
         }
 
@@ -318,7 +318,7 @@ class Player : AppCompatActivity(), Player.Listener {
     }
 
     private fun createServer() {
-        embeddedServer(CIO, port = 8080) {
+        embeddedServer(CIO, port = 8090) {
             routing {
                 get("/") {
                     val url = call.request.queryParameters["url"]
