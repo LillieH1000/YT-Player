@@ -41,6 +41,7 @@ android {
         }
         create("tv") {
             dimension = "type"
+            minSdk = 25
         }
     }
 
