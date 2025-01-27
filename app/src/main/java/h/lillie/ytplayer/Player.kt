@@ -17,7 +17,6 @@ import android.view.GestureDetector
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
-import android.view.View.FOCUSABLE
 import android.view.WindowInsets
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -101,14 +100,14 @@ class Player : AppCompatActivity(), Player.Listener {
         super.onConfigurationChanged(newConfig)
         when (newConfig.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
-                if (!Application.chromeOSDevice && !Application.androidTVDevice) {
+                if (!Application.chromeOSDevice && !Application.androidTVDevice && Build.VERSION.SDK_INT >= 30) {
                     window.insetsController?.apply {
                         show(WindowInsets.Type.systemBars())
                     }
                 }
             }
             Configuration.ORIENTATION_LANDSCAPE -> {
-                if (!Application.chromeOSDevice && !Application.androidTVDevice) {
+                if (!Application.chromeOSDevice && !Application.androidTVDevice && Build.VERSION.SDK_INT >= 30) {
                     window.insetsController?.apply {
                         hide(WindowInsets.Type.systemBars())
                     }
@@ -134,7 +133,7 @@ class Player : AppCompatActivity(), Player.Listener {
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        if (Build.VERSION.SDK_INT <= 30 && !Application.androidTVDevice) {
+        if (!Application.androidTVDevice && Build.VERSION.SDK_INT <= 30 && Build.VERSION.SDK_INT >= 26) {
             enterPictureInPictureMode(PictureInPictureParams.Builder().build())
         }
     }
@@ -216,14 +215,14 @@ class Player : AppCompatActivity(), Player.Listener {
             }
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
-                    if (!Application.chromeOSDevice && !Application.androidTVDevice) {
+                    if (!Application.chromeOSDevice && !Application.androidTVDevice && Build.VERSION.SDK_INT >= 30) {
                         window.insetsController?.apply {
                             show(WindowInsets.Type.systemBars())
                         }
                     }
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    if (!Application.chromeOSDevice && !Application.androidTVDevice) {
+                    if (!Application.chromeOSDevice && !Application.androidTVDevice && Build.VERSION.SDK_INT >= 30) {
                         window.insetsController?.apply {
                             hide(WindowInsets.Type.systemBars())
                         }
@@ -287,8 +286,6 @@ class Player : AppCompatActivity(), Player.Listener {
 
                     val playerView: PlayerView = findViewById(R.id.playerView)
                     playerView.player = playerController
-                    playerView.focusable = FOCUSABLE
-                    playerView.isFocusableInTouchMode = true
                     playerView.requestFocus()
                     playerView.setOnFocusChangeListener { v, hasFocus ->
                         if (!hasFocus) {
