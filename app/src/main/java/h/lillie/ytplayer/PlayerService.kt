@@ -26,6 +26,7 @@ import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.exoplayer.source.MediaSource
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.session.CommandButton
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
@@ -52,8 +53,18 @@ class PlayerService : MediaSessionService(), MediaSession.Callback {
     override fun onCreate() {
         super.onCreate()
 
+        val renderersFactory: DefaultRenderersFactory = DefaultRenderersFactory(this)
+            .forceEnableMediaCodecAsynchronousQueueing()
+
+        val trackSelector: DefaultTrackSelector = DefaultTrackSelector(this).apply {
+            setParameters(buildUponParameters()
+                .setForceHighestSupportedBitrate(true)
+            )
+        }
+
         exoPlayer = ExoPlayer.Builder(this)
-            .setRenderersFactory(DefaultRenderersFactory(this).forceEnableMediaCodecAsynchronousQueueing())
+            .setRenderersFactory(renderersFactory)
+            .setTrackSelector(trackSelector)
             .setSeekBackIncrementMs(10000)
             .setSeekForwardIncrementMs(10000)
             .build()
