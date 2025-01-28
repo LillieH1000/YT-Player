@@ -191,7 +191,9 @@ class PlayerService : MediaSessionService(), MediaSession.Callback {
                     .build()
 
                 val dataSourceFactory: DataSource.Factory = OkHttpDataSource.Factory(OkHttpClient.Builder().build())
-                val hlsSource: MediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(playerMediaItem)
+                val hlsSource: MediaSource = HlsMediaSource.Factory(dataSourceFactory)
+                    .setAllowChunklessPreparation(false)
+                    .createMediaSource(playerMediaItem)
 
                 exoPlayer.setMediaSource(hlsSource)
                 exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
