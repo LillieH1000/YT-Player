@@ -64,6 +64,24 @@ class Player : AppCompatActivity(), Player.Listener {
         setContentView(R.layout.player)
 
         onBackPressedDispatcher.addCallback(this) {
+            if (!Application.androidTVDevice && !Application.chromeOSDevice) {
+                when (resources.configuration.orientation) {
+                    Configuration.ORIENTATION_PORTRAIT -> {
+                        if (!Application.chromeOSDevice && !Application.androidTVDevice) {
+                            WindowCompat.setDecorFitsSystemWindows(window, false)
+                            val controller = WindowInsetsControllerCompat(window, window.decorView)
+                            controller.show(WindowInsetsCompat.Type.systemBars())
+                        }
+                    }
+                    Configuration.ORIENTATION_LANDSCAPE -> {
+                        if (!Application.chromeOSDevice && !Application.androidTVDevice) {
+                            WindowCompat.setDecorFitsSystemWindows(window, false)
+                            val controller = WindowInsetsControllerCompat(window, window.decorView)
+                            controller.hide(WindowInsetsCompat.Type.systemBars())
+                        }
+                    }
+                }
+            }
             if (Application.androidTVDevice) {
                 val overlayView: RelativeLayout = findViewById(R.id.overlayView)
                 if (overlayView.visibility == View.GONE) {
