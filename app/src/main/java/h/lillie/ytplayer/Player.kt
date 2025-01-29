@@ -17,7 +17,6 @@ import android.view.GestureDetector
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
-import android.view.WindowInsets
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
