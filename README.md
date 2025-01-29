@@ -2,11 +2,11 @@
 
 # YT Player
 
-A simple YouTube video player for Android v11+, Android TV v7.1+ and ChromeOS v8+ with features such as no ads, background playback and more!
+A simple YouTube video player for Android v8+, Android TV v7.1+ and ChromeOS v8+ with features such as no ads, background playback and more!
 
 </div><br>
 
-Usage (Android v11+):
+Usage (Android v8+):
 - Press the "Share" button on any video in the YouTube app, press the "More" button and press "YT Player". You may need to press the "More" button a second time as it appears based off recent usage.
 
 <br>
