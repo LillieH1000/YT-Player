@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "h.lillie.ytplayer"
-        minSdk = 30
+        minSdk = 26
         // noinspection OldTargetApi, EditedTargetSdkVersion
         targetSdk = 34
         versionCode = 23
@@ -38,7 +38,6 @@ android {
         }
         create("chromeos") {
             dimension = "type"
-            minSdk = 26
         }
         create("tv") {
             dimension = "type"

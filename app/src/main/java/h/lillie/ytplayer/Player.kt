@@ -27,6 +27,9 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
@@ -100,17 +103,17 @@ class Player : AppCompatActivity(), Player.Listener {
         super.onConfigurationChanged(newConfig)
         when (newConfig.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
-                if (!Application.chromeOSDevice && !Application.androidTVDevice && Build.VERSION.SDK_INT >= 30) {
-                    window.insetsController?.apply {
-                        show(WindowInsets.Type.systemBars())
-                    }
+                if (!Application.chromeOSDevice && !Application.androidTVDevice) {
+                    WindowCompat.setDecorFitsSystemWindows(window, false)
+                    val controller = WindowInsetsControllerCompat(window, window.decorView)
+                    controller.show(WindowInsetsCompat.Type.systemBars())
                 }
             }
             Configuration.ORIENTATION_LANDSCAPE -> {
-                if (!Application.chromeOSDevice && !Application.androidTVDevice && Build.VERSION.SDK_INT >= 30) {
-                    window.insetsController?.apply {
-                        hide(WindowInsets.Type.systemBars())
-                    }
+                if (!Application.chromeOSDevice && !Application.androidTVDevice) {
+                    WindowCompat.setDecorFitsSystemWindows(window, false)
+                    val controller = WindowInsetsControllerCompat(window, window.decorView)
+                    controller.hide(WindowInsetsCompat.Type.systemBars())
                 }
             }
         }
@@ -215,17 +218,17 @@ class Player : AppCompatActivity(), Player.Listener {
             }
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
-                    if (!Application.chromeOSDevice && !Application.androidTVDevice && Build.VERSION.SDK_INT >= 30) {
-                        window.insetsController?.apply {
-                            show(WindowInsets.Type.systemBars())
-                        }
+                    if (!Application.chromeOSDevice && !Application.androidTVDevice) {
+                        WindowCompat.setDecorFitsSystemWindows(window, false)
+                        val controller = WindowInsetsControllerCompat(window, window.decorView)
+                        controller.show(WindowInsetsCompat.Type.systemBars())
                     }
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    if (!Application.chromeOSDevice && !Application.androidTVDevice && Build.VERSION.SDK_INT >= 30) {
-                        window.insetsController?.apply {
-                            hide(WindowInsets.Type.systemBars())
-                        }
+                    if (!Application.chromeOSDevice && !Application.androidTVDevice) {
+                        WindowCompat.setDecorFitsSystemWindows(window, false)
+                        val controller = WindowInsetsControllerCompat(window, window.decorView)
+                        controller.hide(WindowInsetsCompat.Type.systemBars())
                     }
                 }
             }
