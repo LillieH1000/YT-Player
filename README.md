@@ -7,7 +7,7 @@ A simple YouTube video player for Android v8+, Android TV v7.1+ and ChromeOS v8+
 </div><br>
 
 Usage (Android v8+):
-- Press the "Share" button on any video in the YouTube app, press the "More" button and press "YT Player". You may need to press the "More" button a second time as it appears based off recent usage.
+- Press the "Share" button on any video in the YouTube app, press the "More" button and press "YT Player".
 
 <br>
 
@@ -27,3 +27,8 @@ Features:
 - Picture In Picture
 - Audio Cast
 - [SponsorBlock](https://sponsor.ajay.app/) (Only auto skips sponsors)
+
+<br>
+
+Open Source Libraries:
+- [AndroidX](https://github.com/androidx/androidx), [Coil](https://github.com/coil-kt/coil), [Kotlinx Coroutines](https://github.com/Kotlin/kotlinx.coroutines), [Ktor](https://github.com/ktorio/ktor), [Material](https://github.com/material-components/material-components-android), [OkHttp](https://github.com/square/okhttp), [SponsorBlock](https://github.com/ajayyy/SponsorBlock), [yt-dlp](https://github.com/yt-dlp/yt-dlp)
