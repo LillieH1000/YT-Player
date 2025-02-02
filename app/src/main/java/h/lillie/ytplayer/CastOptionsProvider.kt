@@ -7,7 +7,7 @@ import com.google.android.gms.cast.framework.SessionProvider
 import com.google.android.gms.cast.framework.media.CastMediaOptions
 import java.util.Collections
 
-class CastOptionsProvider : OptionsProvider {
+class CastOptionsProvider: OptionsProvider {
     override fun getCastOptions(p0: Context): CastOptions {
         return CastOptions.Builder()
             .setCastMediaOptions(CastMediaOptions.Builder()

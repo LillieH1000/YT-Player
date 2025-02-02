@@ -43,7 +43,7 @@ import java.text.DecimalFormat
 
 @OptIn(UnstableApi::class)
 @SuppressLint("UnspecifiedRegisterReceiverFlag")
-class PlayerService : MediaSessionService(), MediaSession.Callback {
+class PlayerService: MediaSessionService(), MediaSession.Callback {
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var playerHandler: Handler
     private val backCommand = SessionCommand("back", Bundle.EMPTY)
@@ -175,7 +175,7 @@ class PlayerService : MediaSessionService(), MediaSession.Callback {
         return super.onCustomCommand(session, controller, customCommand, args)
     }
 
-    private val playerBroadcastReceiver = object : BroadcastReceiver() {
+    private val playerBroadcastReceiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == "h.lillie.ytplayer.info") {
                 val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
@@ -203,7 +203,7 @@ class PlayerService : MediaSessionService(), MediaSession.Callback {
         }
     }
 
-    private val playerTask = object : Runnable {
+    private val playerTask = object: Runnable {
         override fun run() {
             val sponsorBlock: JSONArray? = Application.sponsorBlock
             if (sponsorBlock != null && playerSession?.player == exoPlayer && !Application.live) {

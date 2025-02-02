@@ -53,7 +53,7 @@ import java.util.concurrent.TimeUnit
 @OptIn(UnstableApi::class)
 @Suppress("Deprecation")
 @SuppressLint("ClickableViewAccessibility", "ObsoleteSdkInt", "SetTextI18n", "SwitchIntDef")
-class Player : AppCompatActivity(), Player.Listener {
+class Player: AppCompatActivity(), Player.Listener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
     private lateinit var playerController: MediaController
     private lateinit var playerHandler: Handler
@@ -449,7 +449,7 @@ class Player : AppCompatActivity(), Player.Listener {
         menuButtons.invalidate()
     }
 
-    private fun time(time: Long) : String {
+    private fun time(time: Long): String {
         val hours: Int = TimeUnit.MILLISECONDS.toHours(time).toInt()
         val minutes: Int = (TimeUnit.MILLISECONDS.toMinutes(time) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(time))).toInt()
         val seconds: Int = (TimeUnit.MILLISECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(time))).toInt()
@@ -475,7 +475,7 @@ class Player : AppCompatActivity(), Player.Listener {
         return formatted
     }
 
-    private val playerTouch = object : GestureDetector.SimpleOnGestureListener() {
+    private val playerTouch = object: GestureDetector.SimpleOnGestureListener() {
         override fun onDown(e: MotionEvent): Boolean {
             return true
         }
@@ -501,7 +501,7 @@ class Player : AppCompatActivity(), Player.Listener {
         }
     }
     
-    private val playerTask = object : Runnable {
+    private val playerTask = object: Runnable {
         override fun run() {
             if (this@Player::playerController.isInitialized && playerController.mediaItemCount == 1) {
                 val playerView: PlayerView = findViewById(R.id.playerView)
