@@ -40,6 +40,8 @@ import com.google.android.material.slider.Slider
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import io.ktor.server.cio.CIO
+import io.ktor.server.cio.CIOApplicationEngine
+import io.ktor.server.engine.EmbeddedServer
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
@@ -87,10 +89,10 @@ class Player : AppCompatActivity(), Player.Listener {
         }
 
         if (Application.androidTVDevice) {
-            createServer()
+            val port = createServer()
             val wifiManager = getSystemService(WIFI_SERVICE) as WifiManager
             val ipView: TextView = findViewById(R.id.ipView)
-            ipView.text = "http://${Formatter.formatIpAddress(wifiManager.connectionInfo.ipAddress)}:8090/?url=youtubevideourl"
+            ipView.text = "http://${Formatter.formatIpAddress(wifiManager.connectionInfo.ipAddress)}:${port}/?url=youtubevideourl"
             ipView.visibility = View.VISIBLE
         }
 
@@ -321,8 +323,8 @@ class Player : AppCompatActivity(), Player.Listener {
         }
     }
 
-    private fun createServer() {
-        embeddedServer(CIO, port = 8090) {
+    private fun createServer(): String {
+        val server: EmbeddedServer<CIOApplicationEngine, CIOApplicationEngine.Configuration> = embeddedServer(CIO, port = 0) {
             routing {
                 get("/") {
                     val url = call.request.queryParameters["url"]
@@ -334,6 +336,8 @@ class Player : AppCompatActivity(), Player.Listener {
                 }
             }
         }.start(wait = false)
+
+        return server.environment.config.property("ktor.deployment.port").toString()
     }
 
     private var gestureDirection: Int = 0
