@@ -88,6 +88,8 @@ dependencies {
     implementation(libs.coil.network.okhttp)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.core)
     implementation(libs.ktor.server.cio)
     implementation(libs.ktor.server.core)
     implementation(libs.material)
