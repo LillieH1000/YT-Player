@@ -9,7 +9,7 @@ lifecycleVersion = "2.8.7"
 materialVersion = "1.12.0"
 androidVersion = "8.8.0"
 kotlinVersion = "2.1.10"
-media3ExoplayerVersion = "1.5.1"
+media3Version = "1.5.1"
 mediarouterVersion = "1.7.0"
 
 [libraries]
@@ -17,19 +17,19 @@ androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "a
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreVersion" }
 androidx-lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", version.ref = "lifecycleVersion" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleVersion" }
-androidx-media3-cast = { module = "androidx.media3:media3-cast", version.ref = "media3ExoplayerVersion" }
-androidx-media3-common = { module = "androidx.media3:media3-common", version.ref = "media3ExoplayerVersion" }
-androidx-media3-common-ktx = { module = "androidx.media3:media3-common-ktx", version.ref = "media3ExoplayerVersion" }
-androidx-media3-container = { module = "androidx.media3:media3-container", version.ref = "media3ExoplayerVersion" }
-androidx-media3-database = { module = "androidx.media3:media3-database", version.ref = "media3ExoplayerVersion" }
-androidx-media3-datasource = { module = "androidx.media3:media3-datasource", version.ref = "media3ExoplayerVersion" }
-androidx-media3-decoder = { module = "androidx.media3:media3-decoder", version.ref = "media3ExoplayerVersion" }
-androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3ExoplayerVersion" }
-androidx-media3-exoplayer-hls = { module = "androidx.media3:media3-exoplayer-hls", version.ref = "media3ExoplayerVersion" }
-androidx-media3-exoplayer-smoothstreaming = { module = "androidx.media3:media3-exoplayer-smoothstreaming", version.ref = "media3ExoplayerVersion" }
-androidx-media3-extractor = { module = "androidx.media3:media3-extractor", version.ref = "media3ExoplayerVersion" }
-androidx-media3-session = { module = "androidx.media3:media3-session", version.ref = "media3ExoplayerVersion" }
-androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3ExoplayerVersion" }
+androidx-media3-cast = { module = "androidx.media3:media3-cast", version.ref = "media3Version" }
+androidx-media3-common = { module = "androidx.media3:media3-common", version.ref = "media3Version" }
+androidx-media3-common-ktx = { module = "androidx.media3:media3-common-ktx", version.ref = "media3Version" }
+androidx-media3-container = { module = "androidx.media3:media3-container", version.ref = "media3Version" }
+androidx-media3-database = { module = "androidx.media3:media3-database", version.ref = "media3Version" }
+androidx-media3-datasource = { module = "androidx.media3:media3-datasource", version.ref = "media3Version" }
+androidx-media3-decoder = { module = "androidx.media3:media3-decoder", version.ref = "media3Version" }
+androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3Version" }
+androidx-media3-exoplayer-hls = { module = "androidx.media3:media3-exoplayer-hls", version.ref = "media3Version" }
+androidx-media3-exoplayer-smoothstreaming = { module = "androidx.media3:media3-exoplayer-smoothstreaming", version.ref = "media3Version" }
+androidx-media3-extractor = { module = "androidx.media3:media3-extractor", version.ref = "media3Version" }
+androidx-media3-session = { module = "androidx.media3:media3-session", version.ref = "media3Version" }
+androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3Version" }
 androidx-mediarouter = { module = "androidx.mediarouter:mediarouter", version.ref = "mediarouterVersion" }
 coil = { module = "io.coil-kt.coil3:coil", version.ref = "coilVersion" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilVersion" }
