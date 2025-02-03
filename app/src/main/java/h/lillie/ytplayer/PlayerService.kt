@@ -21,7 +21,7 @@ import androidx.media3.common.MimeTypes
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
-import androidx.media3.datasource.okhttp.OkHttpDataSource
+import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.hls.HlsMediaSource
@@ -37,7 +37,6 @@ import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
-import okhttp3.OkHttpClient
 import org.json.JSONArray
 import java.text.DecimalFormat
 
@@ -190,7 +189,7 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
                     .setUri(Uri.parse(Application.hlsUrl))
                     .build()
 
-                val dataSourceFactory: DataSource.Factory = OkHttpDataSource.Factory(OkHttpClient.Builder().build())
+                val dataSourceFactory: DataSource.Factory = DefaultDataSource.Factory(this@PlayerService)
                 val hlsSource: MediaSource = HlsMediaSource.Factory(dataSourceFactory)
                     .setAllowChunklessPreparation(false)
                     .createMediaSource(playerMediaItem)

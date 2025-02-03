@@ -75,7 +75,6 @@ dependencies {
     implementation(libs.androidx.media3.container)
     implementation(libs.androidx.media3.database)
     implementation(libs.androidx.media3.datasource)
-    implementation(libs.androidx.media3.datasource.okhttp)
     implementation(libs.androidx.media3.decoder)
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.exoplayer.hls)
@@ -93,5 +92,4 @@ dependencies {
     implementation(libs.ktor.server.cio)
     implementation(libs.ktor.server.core)
     implementation(libs.material)
-    implementation(libs.okhttp)
 }
