@@ -84,7 +84,7 @@ dependencies {
     implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.mediarouter)
     implementation(libs.coil)
-    implementation(libs.coil.network.okhttp)
+    implementation(libs.coil.network.ktor3)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.ktor.client.cio)
