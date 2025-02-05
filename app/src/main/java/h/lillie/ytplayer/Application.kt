@@ -26,6 +26,7 @@ class Application : Application() {
         var author = String()
         var artwork = String()
         var live: Boolean = false
+        var enCaptions = String()
         var audioUrl = String()
         var hlsUrl = String()
         var sponsorBlock: JSONArray? = JSONArray()

@@ -22,6 +22,12 @@ def getInfo(videoID):
         info["author"] = y["uploader"]
         info["artwork"] = y["thumbnail"]
         info["live"] = y["is_live"]
+        if ("en" in y["subtitles"]):
+            for i in y["subtitles"]["en"]:
+                if (i["ext"] == "vtt"):
+                    info["enCaptions"] = i["url"]
+        if ("enCaptions" not in info):
+            info["enCaptions"] = None
         if ("requested_formats" in y):
             info["hlsUrl"] = y["requested_formats"][0]["manifest_url"]
             info["audioUrl"] = y["requested_formats"][1]["url"]
