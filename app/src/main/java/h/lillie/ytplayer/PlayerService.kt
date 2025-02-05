@@ -58,7 +58,6 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
 
         val trackSelector: DefaultTrackSelector = DefaultTrackSelector(this).apply {
             setParameters(buildUponParameters()
-                .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
                 .setForceHighestSupportedBitrate(true)
             )
         }
@@ -205,6 +204,9 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
 
                 exoPlayer.setMediaSource(hlsSource)
                 exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
+                exoPlayer.trackSelectionParameters = exoPlayer.trackSelectionParameters.buildUpon()
+                    .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                    .build()
                 exoPlayer.playWhenReady = true
                 exoPlayer.prepare()
             }
