@@ -445,6 +445,14 @@ class Player: AppCompatActivity(), Player.Listener {
             castButton.visibility = View.VISIBLE
         }
 
+        val captionsButton: ImageButton = findViewById(R.id.captionsButton)
+        captionsButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_closed_captions_off)
+        if (Application.live || Application.enCaptions == "null") {
+            captionsButton.visibility = View.GONE
+        } else {
+            captionsButton.visibility = View.VISIBLE
+        }
+
         val repeatButton: ImageButton = findViewById(R.id.repeatButton)
         if (Application.live) {
             repeatButton.visibility = View.GONE
