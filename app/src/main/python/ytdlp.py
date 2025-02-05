@@ -9,7 +9,6 @@ def getInfo(videoID):
             }
         },
         "format": "bestvideo[protocol=m3u8_native]+bestaudio[protocol=https][ext=m4a]/bestvideo[protocol=m3u8_native]",
-        "ignore_no_formats_error": True,
         "noplaylist": True
     }
 
