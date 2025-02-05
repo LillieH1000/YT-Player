@@ -15,6 +15,7 @@ import androidx.annotation.OptIn
 import androidx.media3.cast.CastPlayer
 import androidx.media3.cast.DefaultMediaItemConverter
 import androidx.media3.cast.SessionAvailabilityListener
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.MimeTypes
@@ -57,6 +58,7 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
 
         val trackSelector: DefaultTrackSelector = DefaultTrackSelector(this).apply {
             setParameters(buildUponParameters()
+                .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
                 .setForceHighestSupportedBitrate(true)
             )
         }
@@ -183,9 +185,16 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
                     .setArtworkUri(Uri.parse(Application.artwork))
                     .build()
 
+                val enPlayerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(Uri.parse(Application.enCaptions))
+                    .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
+                    .setMimeType(MimeTypes.TEXT_VTT)
+                    .setLanguage("en")
+                    .build()
+
                 val playerMediaItem: MediaItem = MediaItem.Builder()
                     .setMimeType(MimeTypes.APPLICATION_M3U8)
                     .setMediaMetadata(playerMediaMetadata)
+                    .setSubtitleConfigurations(listOf(enPlayerCaptions))
                     .setUri(Uri.parse(Application.hlsUrl))
                     .build()
 

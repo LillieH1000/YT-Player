@@ -28,6 +28,7 @@ import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.media3.common.C
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
@@ -388,6 +389,26 @@ class Player: AppCompatActivity(), Player.Listener {
                 val position = playerController.currentPosition
                 if (fromUser && duration >= 0 && position >= 0 && value <= duration) {
                     playerController.seekTo(value.toLong())
+                }
+            }
+        }
+
+        val captionsButton: ImageButton = findViewById(R.id.captionsButton)
+        captionsButton.setOnClickListener {
+            if (this::playerController.isInitialized && playerController.mediaItemCount == 1) {
+                if (playerController.trackSelectionParameters.disabledTrackTypes.isNotEmpty()) {
+                    captionsButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_closed_captions)
+
+                    playerController.trackSelectionParameters = playerController.trackSelectionParameters.buildUpon()
+                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
+                        .setPreferredTextLanguage("en")
+                        .build()
+                } else {
+                    captionsButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_closed_captions_off)
+
+                    playerController.trackSelectionParameters = playerController.trackSelectionParameters.buildUpon()
+                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                        .build()
                 }
             }
         }
