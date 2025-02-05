@@ -25,7 +25,7 @@ def getInfo(videoID):
         if ("requested_formats" in y):
             info["hlsUrl"] = y["requested_formats"][0]["manifest_url"]
             info["audioUrl"] = y["requested_formats"][1]["url"]
-        if ("requested_formats" not in y):
+        else:
             info["hlsUrl"] = y["manifest_url"]
             info["audioUrl"] = None
         
