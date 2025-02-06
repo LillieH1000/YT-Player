@@ -395,7 +395,7 @@ class Player: AppCompatActivity(), Player.Listener {
 
         val captionsButton: ImageButton = findViewById(R.id.captionsButton)
         captionsButton.setOnClickListener {
-            if (this::playerController.isInitialized && playerController.mediaItemCount == 1) {
+            if (this::playerController.isInitialized && playerController.mediaItemCount == 1 && !Application.castActive) {
                 if (playerController.trackSelectionParameters.disabledTrackTypes.isNotEmpty()) {
                     captionsButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_closed_captions)
 
