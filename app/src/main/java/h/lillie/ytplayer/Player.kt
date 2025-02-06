@@ -471,7 +471,7 @@ class Player: AppCompatActivity(), Player.Listener {
         if (Application.androidTVDevice) {
             menuButtons.visibility = View.GONE
         }
-        menuButtons.invalidate()
+        menuButtons.requestLayout()
     }
 
     private fun time(time: Long): String {
