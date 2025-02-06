@@ -184,23 +184,25 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
                     .setArtworkUri(Uri.parse(Application.artwork))
                     .build()
 
-                val enPlayerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(Uri.parse(Application.enCaptions))
-                    .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
-                    .setMimeType(MimeTypes.TEXT_VTT)
-                    .setLanguage("en")
-                    .build()
-
-                val playerMediaItem: MediaItem = MediaItem.Builder()
+                val playerMediaItem: MediaItem.Builder = MediaItem.Builder()
                     .setMimeType(MimeTypes.APPLICATION_M3U8)
                     .setMediaMetadata(playerMediaMetadata)
-                    .setSubtitleConfigurations(listOf(enPlayerCaptions))
                     .setUri(Uri.parse(Application.hlsUrl))
-                    .build()
+
+                if (Application.enCaptions != "null") {
+                    val enPlayerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(Uri.parse(Application.enCaptions))
+                        .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
+                        .setMimeType(MimeTypes.TEXT_VTT)
+                        .setLanguage("en")
+                        .build()
+
+                    playerMediaItem.setSubtitleConfigurations(listOf(enPlayerCaptions))
+                }
 
                 val dataSourceFactory: DataSource.Factory = DefaultDataSource.Factory(this@PlayerService)
                 val hlsSource: MediaSource = HlsMediaSource.Factory(dataSourceFactory)
                     .setAllowChunklessPreparation(false)
-                    .createMediaSource(playerMediaItem)
+                    .createMediaSource(playerMediaItem.build())
 
                 exoPlayer.setMediaSource(hlsSource)
                 exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
