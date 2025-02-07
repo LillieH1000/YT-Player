@@ -29,15 +29,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.C
+import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
-import androidx.mediarouter.app.MediaRouteButton
 import coil3.load
 import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.material.slider.Slider
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import io.ktor.server.cio.CIO
@@ -242,11 +243,11 @@ class Player: AppCompatActivity(), Player.Listener {
 
     override fun onRepeatModeChanged(repeatMode: Int) {
         super.onRepeatModeChanged(repeatMode)
-        val repeatButton: ImageButton = findViewById(R.id.repeatButton)
+        val repeatSwitch: SwitchMaterial = findViewById(R.id.repeatSwitch)
         if (repeatMode == Player.REPEAT_MODE_OFF) {
-            repeatButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_repeat_all)
+            repeatSwitch.isChecked = false
         } else {
-            repeatButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_repeat_one)
+            repeatSwitch.isChecked = true
         }
     }
 
@@ -393,44 +394,53 @@ class Player: AppCompatActivity(), Player.Listener {
             }
         }
 
-        val captionsButton: ImageButton = findViewById(R.id.captionsButton)
-        captionsButton.setOnClickListener {
-            if (this::playerController.isInitialized && playerController.mediaItemCount == 1 && !Application.castActive) {
-                if (playerController.trackSelectionParameters.disabledTrackTypes.isNotEmpty()) {
-                    captionsButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_closed_captions)
-
-                    playerController.trackSelectionParameters = playerController.trackSelectionParameters.buildUpon()
-                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-                        .setPreferredTextLanguage("en")
-                        .build()
-                } else {
-                    captionsButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_closed_captions_off)
-
-                    playerController.trackSelectionParameters = playerController.trackSelectionParameters.buildUpon()
-                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
-                        .build()
-                }
-            }
-        }
-
-        val repeatButton: ImageButton = findViewById(R.id.repeatButton)
-        repeatButton.setOnClickListener {
+        val settingsButton: ImageButton = findViewById(R.id.settingsButton)
+        settingsButton.setOnClickListener {
             if (this::playerController.isInitialized && playerController.mediaItemCount == 1) {
-                if (playerController.repeatMode == Player.REPEAT_MODE_OFF) {
-                    playerController.repeatMode = Player.REPEAT_MODE_ONE
+                val settingsView: LinearLayout = findViewById(R.id.settingsView)
+                if (settingsView.visibility == View.GONE) {
+                    settingsView.visibility = View.VISIBLE
                 } else {
-                    playerController.repeatMode = Player.REPEAT_MODE_OFF
+                    settingsView.visibility = View.GONE
                 }
             }
         }
 
-        val shareButton: ImageButton = findViewById(R.id.shareButton)
-        shareButton.setOnClickListener {
-            startActivity(Intent.createChooser(Intent().apply {
-                action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, "https://youtu.be/${Application.id}")
-                type = "text/plain"
-            }, null))
+        val subtitlesSwitch: SwitchMaterial = findViewById(R.id.subtitlesSwitch)
+        subtitlesSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (!isChecked) {
+                playerController.trackSelectionParameters = playerController.trackSelectionParameters.buildUpon()
+                    .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                    .build()
+            } else {
+                playerController.trackSelectionParameters = playerController.trackSelectionParameters.buildUpon()
+                    .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
+                    .setPreferredTextLanguage("en")
+                    .build()
+            }
+        }
+
+        val repeatSwitch: SwitchMaterial = findViewById(R.id.repeatSwitch)
+        repeatSwitch.setOnCheckedChangeListener { _, _ ->
+            if (playerController.repeatMode == Player.REPEAT_MODE_OFF) {
+                playerController.repeatMode = Player.REPEAT_MODE_ONE
+            } else {
+                playerController.repeatMode = Player.REPEAT_MODE_OFF
+            }
+        }
+
+        val speedViewText: TextView = findViewById(R.id.speedViewText)
+
+        val speedViewMinus: TextView = findViewById(R.id.speedViewMinus)
+        speedViewMinus.setOnClickListener {
+            playerController.playbackParameters = PlaybackParameters(playerController.playbackParameters.speed - 0.1f)
+            speedViewText.text = "Speed: ${playerController.playbackParameters.speed}x"
+        }
+
+        val speedViewPlus: TextView = findViewById(R.id.speedViewPlus)
+        speedViewPlus.setOnClickListener {
+            playerController.playbackParameters = PlaybackParameters(playerController.playbackParameters.speed + 0.1f)
+            speedViewText.text = "Speed: ${playerController.playbackParameters.speed}x"
         }
     }
 
@@ -438,38 +448,27 @@ class Player: AppCompatActivity(), Player.Listener {
         val titleView: TextView = findViewById(R.id.titleView)
         titleView.text = Application.title
 
-        val castButton: MediaRouteButton = findViewById(R.id.castButton)
-        if (Application.live) {
-            castButton.visibility = View.GONE
-        } else {
-            castButton.visibility = View.VISIBLE
+        val settingsView: LinearLayout = findViewById(R.id.settingsView)
+        if (settingsView.visibility == View.VISIBLE) {
+            settingsView.visibility = View.GONE
         }
 
-        val captionsButton: ImageButton = findViewById(R.id.captionsButton)
-        captionsButton.setImageResource(androidx.media3.session.R.drawable.media3_icon_closed_captions_off)
-        if (Application.live || Application.enCaptions == "null") {
-            captionsButton.visibility = View.GONE
+        val subtitlesSwitch: SwitchMaterial = findViewById(R.id.subtitlesSwitch)
+        subtitlesSwitch.isChecked = false
+        if (Application.enCaptions != "null") {
+            subtitlesSwitch.isEnabled = true
         } else {
-            captionsButton.visibility = View.VISIBLE
+            subtitlesSwitch.isEnabled = false
         }
 
-        val repeatButton: ImageButton = findViewById(R.id.repeatButton)
-        if (Application.live) {
-            repeatButton.visibility = View.GONE
-        } else {
-            repeatButton.visibility = View.VISIBLE
-        }
-
-        val shareButton: ImageButton = findViewById(R.id.shareButton)
-        if (Application.chromeOSDevice) {
-            shareButton.visibility = View.GONE
-        } else {
-            shareButton.visibility = View.VISIBLE
-        }
+        val speedViewText: TextView = findViewById(R.id.speedViewText)
+        speedViewText.text = "Speed: 1.0x"
 
         val menuButtons: LinearLayout = findViewById(R.id.menuButtons)
-        if (Application.androidTVDevice) {
+        if (Application.androidTVDevice || Application.live) {
             menuButtons.visibility = View.GONE
+        } else {
+            menuButtons.visibility = View.VISIBLE
         }
         menuButtons.requestLayout()
     }
@@ -510,6 +509,10 @@ class Player: AppCompatActivity(), Player.Listener {
                 overlayView.visibility = View.VISIBLE
             } else {
                 overlayView.visibility = View.GONE
+            }
+            val settingsView: LinearLayout = findViewById(R.id.settingsView)
+            if (settingsView.visibility == View.VISIBLE) {
+                settingsView.visibility = View.GONE
             }
             return true
         }

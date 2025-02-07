@@ -121,27 +121,108 @@
                     android:layout_width="40dp"
                     android:layout_height="50dp" />
                 <ImageButton
-                    android:id="@+id/captionsButton"
+                    android:id="@+id/settingsButton"
                     android:layout_width="40dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/media3_icon_closed_captions_off"
-                    android:backgroundTint="@color/clear"
-                    tools:ignore="ContentDescription" />
-                <ImageButton
-                    android:id="@+id/repeatButton"
-                    android:layout_width="40dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/media3_icon_repeat_all"
-                    android:backgroundTint="@color/clear"
-                    tools:ignore="ContentDescription" />
-                <ImageButton
-                    android:id="@+id/shareButton"
-                    android:layout_width="40dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/media3_icon_share"
+                    android:src="@drawable/media3_icon_settings"
                     android:backgroundTint="@color/clear"
                     tools:ignore="ContentDescription" />
             </LinearLayout>
         </RelativeLayout>
     </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/settingsView"
+        android:layout_width="150dp"
+        android:layout_height="160dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="50dp"
+        android:background="@color/darkGrey"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toStartOf="@+id/subtitlesSwitch"
+                android:paddingLeft="10dp"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:text="Subtitles"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                tools:ignore="HardcodedText" />
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/subtitlesSwitch"
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:gravity="center_vertical|right" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toStartOf="@+id/repeatSwitch"
+                android:paddingLeft="10dp"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:text="Loop Video"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                tools:ignore="HardcodedText" />
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/repeatSwitch"
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:gravity="center_vertical|right" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+            <TextView
+                android:id="@+id/speedViewText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="10dp"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:text="Speed: 1.0x"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                tools:ignore="HardcodedText" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+            <TextView
+                android:id="@+id/speedViewMinus"
+                android:layout_width="75dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:paddingLeft="20dp"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="-"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                tools:ignore="HardcodedText" />
+            <TextView
+                android:id="@+id/speedViewPlus"
+                android:layout_width="75dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:paddingRight="20dp"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="+"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                tools:ignore="HardcodedText" />
+        </RelativeLayout>
+    </LinearLayout>
 </RelativeLayout>
