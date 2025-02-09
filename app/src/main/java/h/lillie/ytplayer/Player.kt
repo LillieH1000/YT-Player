@@ -407,25 +407,29 @@ class Player: AppCompatActivity(), Player.Listener {
         }
 
         val subtitlesSwitch: SwitchMaterial = findViewById(R.id.subtitlesSwitch)
-        subtitlesSwitch.setOnCheckedChangeListener { _, isChecked ->
-            if (!isChecked) {
-                playerController.trackSelectionParameters = playerController.trackSelectionParameters.buildUpon()
-                    .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
-                    .build()
-            } else {
-                playerController.trackSelectionParameters = playerController.trackSelectionParameters.buildUpon()
-                    .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-                    .setPreferredTextLanguage("en")
-                    .build()
+        subtitlesSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (buttonView.isPressed) {
+                if (!isChecked) {
+                    playerController.trackSelectionParameters = playerController.trackSelectionParameters.buildUpon()
+                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                        .build()
+                } else {
+                    playerController.trackSelectionParameters = playerController.trackSelectionParameters.buildUpon()
+                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
+                        .setPreferredTextLanguage("en")
+                        .build()
+                }
             }
         }
 
         val repeatSwitch: SwitchMaterial = findViewById(R.id.repeatSwitch)
-        repeatSwitch.setOnCheckedChangeListener { _, _ ->
-            if (playerController.repeatMode == Player.REPEAT_MODE_OFF) {
-                playerController.repeatMode = Player.REPEAT_MODE_ONE
-            } else {
-                playerController.repeatMode = Player.REPEAT_MODE_OFF
+        repeatSwitch.setOnCheckedChangeListener { buttonView, _ ->
+            if (buttonView.isPressed) {
+                if (playerController.repeatMode == Player.REPEAT_MODE_OFF) {
+                    playerController.repeatMode = Player.REPEAT_MODE_ONE
+                } else {
+                    playerController.repeatMode = Player.REPEAT_MODE_OFF
+                }
             }
         }
 
