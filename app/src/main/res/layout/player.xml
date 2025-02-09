@@ -104,41 +104,64 @@
                 android:id="@+id/titleView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_toStartOf="@+id/menuButtons"
+                android:layout_toStartOf="@+id/settingsButton"
                 android:gravity="center_vertical"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/white"
                 android:textAllCaps="false" />
-            <LinearLayout
-                android:id="@+id/menuButtons"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+            <ImageButton
+                android:id="@+id/settingsButton"
+                android:layout_width="40dp"
+                android:layout_height="50dp"
                 android:layout_alignParentRight="true"
-                android:orientation="horizontal">
-                <androidx.mediarouter.app.MediaRouteButton
-                    android:id="@+id/castButton"
-                    android:layout_width="40dp"
-                    android:layout_height="50dp" />
-                <ImageButton
-                    android:id="@+id/settingsButton"
-                    android:layout_width="40dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/media3_icon_settings"
-                    android:backgroundTint="@color/clear"
-                    tools:ignore="ContentDescription" />
-            </LinearLayout>
+                android:src="@drawable/media3_icon_settings"
+                android:backgroundTint="@color/clear"
+                tools:ignore="ContentDescription" />
+            <androidx.mediarouter.app.MediaRouteButton
+                android:id="@+id/castButton"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone" />
         </RelativeLayout>
     </RelativeLayout>
     <LinearLayout
         android:id="@+id/settingsView"
         android:layout_width="150dp"
-        android:layout_height="160dp"
+        android:layout_height="200dp"
         android:layout_alignParentRight="true"
         android:layout_marginTop="50dp"
         android:background="@color/darkGrey"
         android:orientation="vertical"
         android:visibility="gone">
+        <RelativeLayout
+            android:id="@+id/castView"
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toStartOf="@+id/castTextView"
+                android:paddingLeft="10dp"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:text="Cast Audio"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                tools:ignore="HardcodedText" />
+            <TextView
+                android:id="@+id/castTextView"
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:paddingRight="20dp"
+                android:gravity="center_vertical|right"
+                android:maxLines="1"
+                android:text=">"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                tools:ignore="HardcodedText" />
+        </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp">

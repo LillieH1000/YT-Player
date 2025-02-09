@@ -35,6 +35,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
+import androidx.mediarouter.app.MediaRouteButton
 import coil3.load
 import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.material.slider.Slider
@@ -406,6 +407,12 @@ class Player: AppCompatActivity(), Player.Listener {
             }
         }
 
+        val castView: RelativeLayout = findViewById(R.id.castView)
+        castView.setOnClickListener {
+            val castButton: MediaRouteButton = findViewById(R.id.castButton)
+            castButton.performClick()
+        }
+
         val subtitlesSwitch: SwitchMaterial = findViewById(R.id.subtitlesSwitch)
         subtitlesSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             if (buttonView.isPressed) {
@@ -468,13 +475,12 @@ class Player: AppCompatActivity(), Player.Listener {
         val speedViewText: TextView = findViewById(R.id.speedViewText)
         speedViewText.text = "Speed: 1.0x"
 
-        val menuButtons: LinearLayout = findViewById(R.id.menuButtons)
+        val settingsButton: ImageButton = findViewById(R.id.settingsButton)
         if (Application.androidTVDevice || Application.live) {
-            menuButtons.visibility = View.GONE
+            settingsButton.visibility = View.GONE
         } else {
-            menuButtons.visibility = View.VISIBLE
+            settingsButton.visibility = View.VISIBLE
         }
-        menuButtons.requestLayout()
     }
 
     private fun time(time: Long): String {
