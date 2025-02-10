@@ -60,6 +60,7 @@ class Player: AppCompatActivity(), Player.Listener {
     private lateinit var playerController: MediaController
     private lateinit var playerHandler: Handler
     private var isFirstLaunch: Boolean = false
+    private var overlayVisible: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,8 +85,16 @@ class Player: AppCompatActivity(), Player.Listener {
                 val overlayView: RelativeLayout = findViewById(R.id.overlayView)
                 if (overlayView.visibility == View.GONE) {
                     overlayView.visibility = View.VISIBLE
+                    overlayVisible = true
+                    val playPauseRestartButton: ImageButton = findViewById(R.id.playPauseRestartButton)
+                    playPauseRestartButton.requestFocus()
                 } else {
                     overlayView.visibility = View.GONE
+                    overlayVisible = false
+                }
+                val settingsView: LinearLayout = findViewById(R.id.settingsView)
+                if (settingsView.visibility == View.VISIBLE) {
+                    settingsView.visibility = View.GONE
                 }
             }
         }
@@ -180,26 +189,82 @@ class Player: AppCompatActivity(), Player.Listener {
                     return true
                 }
                 KeyEvent.KEYCODE_DPAD_CENTER -> {
-                    if (this::playerController.isInitialized && playerController.mediaItemCount == 1) {
-                        if (!playerController.isPlaying) {
-                            playerController.play()
-                        } else {
-                            playerController.pause()
+                    if (overlayVisible) {
+                        if (findViewById<ImageButton>(R.id.playPauseRestartButton).isFocused) {
+                            if (this::playerController.isInitialized && playerController.mediaItemCount == 1) {
+                                if (!playerController.isPlaying) {
+                                    playerController.play()
+                                } else {
+                                    playerController.pause()
+                                }
+                            }
+                        }
+                        if (findViewById<ImageButton>(R.id.settingsButton).isFocused) {
+                            if (this::playerController.isInitialized && playerController.mediaItemCount == 1) {
+                                val settingsView: LinearLayout = findViewById(R.id.settingsView)
+                                if (settingsView.visibility == View.GONE) {
+                                    settingsView.visibility = View.VISIBLE
+                                } else {
+                                    settingsView.visibility = View.GONE
+                                }
+                            }
+                        }
+                        val subtitlesSwitch: SwitchMaterial = findViewById(R.id.subtitlesSwitch)
+                        if (subtitlesSwitch.isFocused) {
+                            if (!subtitlesSwitch.isChecked) {
+                                subtitlesSwitch.isChecked = true
+                                playerController.trackSelectionParameters = playerController.trackSelectionParameters.buildUpon()
+                                    .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                                    .build()
+                                playerController.trackSelectionParameters = playerController.trackSelectionParameters.buildUpon()
+                                    .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
+                                    .setPreferredTextLanguage("en")
+                                    .build()
+                            } else {
+                                subtitlesSwitch.isChecked = false
+                                playerController.trackSelectionParameters = playerController.trackSelectionParameters.buildUpon()
+                                    .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                                    .build()
+                            }
+                        }
+                        val repeatSwitch: SwitchMaterial = findViewById(R.id.repeatSwitch)
+                        if (repeatSwitch.isFocused) {
+                            if (!repeatSwitch.isChecked) {
+                                repeatSwitch.isChecked = true
+                            } else {
+                                repeatSwitch.isChecked = false
+                            }
+                            if (playerController.repeatMode == Player.REPEAT_MODE_OFF) {
+                                playerController.repeatMode = Player.REPEAT_MODE_ONE
+                            } else {
+                                playerController.repeatMode = Player.REPEAT_MODE_OFF
+                            }
+                        }
+                    }
+                    if (!overlayVisible) {
+                        if (this::playerController.isInitialized && playerController.mediaItemCount == 1) {
+                            if (!playerController.isPlaying) {
+                                playerController.play()
+                            } else {
+                                playerController.pause()
+                            }
                         }
                     }
                     return true
                 }
                 KeyEvent.KEYCODE_DPAD_LEFT -> {
-                    if (this@Player::playerController.isInitialized && playerController.mediaItemCount == 1) {
+                    if ((!overlayVisible || findViewById<Slider>(R.id.progressSlider).isFocused) && this@Player::playerController.isInitialized && playerController.mediaItemCount == 1) {
                         playerController.seekBack()
+                        return true
                     }
-                    return true
+                    return false
                 }
                 KeyEvent.KEYCODE_DPAD_RIGHT -> {
-                    if (this@Player::playerController.isInitialized && playerController.mediaItemCount == 1) {
+                    if ((!overlayVisible || findViewById<Slider>(R.id.progressSlider).isFocused) && this@Player::playerController.isInitialized && playerController.mediaItemCount == 1) {
                         playerController.seekForward()
+                        return true
                     }
-                    return true
+                    return false
                 }
             }
         }
@@ -210,7 +275,13 @@ class Player: AppCompatActivity(), Player.Listener {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         if (isInPictureInPictureMode) {
             val overlayView: RelativeLayout = findViewById(R.id.overlayView)
-            overlayView.visibility = View.GONE
+            if (overlayView.visibility == View.VISIBLE) {
+                overlayView.visibility = View.GONE
+            }
+            val settingsView: LinearLayout = findViewById(R.id.settingsView)
+            if (settingsView.visibility == View.VISIBLE) {
+                settingsView.visibility = View.GONE
+            }
         }
     }
 
@@ -297,10 +368,12 @@ class Player: AppCompatActivity(), Player.Listener {
 
                     val playerView: PlayerView = findViewById(R.id.playerView)
                     playerView.player = playerController
-                    playerView.requestFocus()
-                    playerView.setOnFocusChangeListener { v, hasFocus ->
-                        if (!hasFocus) {
-                            v.requestFocus()
+                    if (!Application.androidTVDevice) {
+                        playerView.requestFocus()
+                        playerView.setOnFocusChangeListener { v, hasFocus ->
+                            if (!hasFocus) {
+                                v.requestFocus()
+                            }
                         }
                     }
 
@@ -483,7 +556,7 @@ class Player: AppCompatActivity(), Player.Listener {
         speedViewText.text = "Speed: 1x"
 
         val settingsButton: ImageButton = findViewById(R.id.settingsButton)
-        if (Application.androidTVDevice || Application.live) {
+        if (Application.live) {
             settingsButton.visibility = View.GONE
         } else {
             settingsButton.visibility = View.VISIBLE
