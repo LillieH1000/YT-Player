@@ -49,6 +49,7 @@ import io.ktor.server.routing.routing
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.DecimalFormat
 import java.util.concurrent.TimeUnit
 
 @OptIn(UnstableApi::class)
@@ -444,14 +445,20 @@ class Player: AppCompatActivity(), Player.Listener {
 
         val speedViewMinus: TextView = findViewById(R.id.speedViewMinus)
         speedViewMinus.setOnClickListener {
-            playerController.playbackParameters = PlaybackParameters(playerController.playbackParameters.speed - 0.1f)
-            speedViewText.text = "Speed: ${playerController.playbackParameters.speed}x"
+            val decimalFormat = DecimalFormat("#.#")
+            if (decimalFormat.format(playerController.playbackParameters.speed).toFloat() > 0.1f) {
+                playerController.playbackParameters = PlaybackParameters(decimalFormat.format(playerController.playbackParameters.speed).toFloat() - 0.1f)
+                speedViewText.text = "Speed: ${decimalFormat.format(playerController.playbackParameters.speed)}x"
+            }
         }
 
         val speedViewPlus: TextView = findViewById(R.id.speedViewPlus)
         speedViewPlus.setOnClickListener {
-            playerController.playbackParameters = PlaybackParameters(playerController.playbackParameters.speed + 0.1f)
-            speedViewText.text = "Speed: ${playerController.playbackParameters.speed}x"
+            val decimalFormat = DecimalFormat("#.#")
+            if (decimalFormat.format(playerController.playbackParameters.speed).toFloat() < 2.0f) {
+                playerController.playbackParameters = PlaybackParameters(decimalFormat.format(playerController.playbackParameters.speed).toFloat() + 0.1f)
+                speedViewText.text = "Speed: ${decimalFormat.format(playerController.playbackParameters.speed)}x"
+            }
         }
     }
 
@@ -473,7 +480,7 @@ class Player: AppCompatActivity(), Player.Listener {
         }
 
         val speedViewText: TextView = findViewById(R.id.speedViewText)
-        speedViewText.text = "Speed: 1.0x"
+        speedViewText.text = "Speed: 1x"
 
         val settingsButton: ImageButton = findViewById(R.id.settingsButton)
         if (Application.androidTVDevice || Application.live) {

@@ -214,7 +214,7 @@
                 android:paddingLeft="10dp"
                 android:gravity="center_vertical"
                 android:maxLines="1"
-                android:text="Speed: 1.0x"
+                android:text="Speed: 1x"
                 android:textColor="@color/white"
                 android:textAllCaps="false"
                 tools:ignore="HardcodedText" />
