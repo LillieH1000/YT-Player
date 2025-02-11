@@ -231,6 +231,22 @@ class Player: AppCompatActivity(), Player.Listener {
                                 playerController.repeatMode = Player.REPEAT_MODE_OFF
                             }
                         }
+                        if (findViewById<TextView>(R.id.speedViewMinus).isFocused) {
+                            val speedViewText: TextView = findViewById(R.id.speedViewText)
+                            val decimalFormat = DecimalFormat("#.#")
+                            if (decimalFormat.format(playerController.playbackParameters.speed).toFloat() > 0.1f) {
+                                playerController.playbackParameters = PlaybackParameters(decimalFormat.format(playerController.playbackParameters.speed).toFloat() - 0.1f)
+                                speedViewText.text = "Speed: ${decimalFormat.format(playerController.playbackParameters.speed)}x"
+                            }
+                        }
+                        if (findViewById<TextView>(R.id.speedViewPlus).isFocused) {
+                            val speedViewText: TextView = findViewById(R.id.speedViewText)
+                            val decimalFormat = DecimalFormat("#.#")
+                            if (decimalFormat.format(playerController.playbackParameters.speed).toFloat() < 2.0f) {
+                                playerController.playbackParameters = PlaybackParameters(decimalFormat.format(playerController.playbackParameters.speed).toFloat() + 0.1f)
+                                speedViewText.text = "Speed: ${decimalFormat.format(playerController.playbackParameters.speed)}x"
+                            }
+                        }
                     }
                     if (!overlayVisible) {
                         if (this::playerController.isInitialized && playerController.mediaItemCount == 1) {
