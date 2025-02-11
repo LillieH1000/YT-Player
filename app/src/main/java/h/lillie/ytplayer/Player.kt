@@ -214,9 +214,6 @@ class Player: AppCompatActivity(), Player.Listener {
                             if (!subtitlesSwitch.isChecked) {
                                 subtitlesSwitch.isChecked = true
                                 playerController.trackSelectionParameters = playerController.trackSelectionParameters.buildUpon()
-                                    .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
-                                    .build()
-                                playerController.trackSelectionParameters = playerController.trackSelectionParameters.buildUpon()
                                     .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
                                     .setPreferredTextLanguage("en")
                                     .build()
