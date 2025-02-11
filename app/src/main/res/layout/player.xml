@@ -70,7 +70,7 @@
             android:layout_centerInParent="true"
             android:focusable="true"
             android:focusableInTouchMode="false"
-            android:nextFocusUp="@+id/settingsButton"
+            android:nextFocusUp="@+id/playPauseRestartButton"
             android:nextFocusDown="@+id/progressSlider"
             android:nextFocusLeft="@+id/playPauseRestartButton"
             android:nextFocusRight="@+id/playPauseRestartButton"
@@ -127,12 +127,6 @@
                 android:layout_width="40dp"
                 android:layout_height="50dp"
                 android:layout_alignParentRight="true"
-                android:focusable="true"
-                android:focusableInTouchMode="false"
-                android:nextFocusUp="@+id/settingsButton"
-                android:nextFocusDown="@+id/playPauseRestartButton"
-                android:nextFocusLeft="@+id/settingsButton"
-                android:nextFocusRight="@+id/subtitlesSwitch"
                 android:src="@drawable/media3_icon_settings"
                 android:backgroundTint="@color/clear"
                 tools:ignore="ContentDescription" />
@@ -202,9 +196,9 @@
                 android:focusable="true"
                 android:focusableInTouchMode="false"
                 android:nextFocusUp="@+id/subtitlesSwitch"
-                android:nextFocusDown="@+id/subtitlesSwitch"
-                android:nextFocusLeft="@+id/settingsButton"
-                android:nextFocusRight="@+id/repeatSwitch"
+                android:nextFocusDown="@+id/repeatSwitch"
+                android:nextFocusLeft="@+id/subtitlesSwitch"
+                android:nextFocusRight="@+id/subtitlesSwitch"
                 android:gravity="center_vertical|right" />
         </RelativeLayout>
         <RelativeLayout
@@ -228,9 +222,9 @@
                 android:layout_alignParentRight="true"
                 android:focusable="true"
                 android:focusableInTouchMode="false"
-                android:nextFocusUp="@+id/repeatSwitch"
-                android:nextFocusDown="@+id/repeatSwitch"
-                android:nextFocusLeft="@+id/subtitlesSwitch"
+                android:nextFocusUp="@+id/subtitlesSwitch"
+                android:nextFocusDown="@+id/speedViewMinus"
+                android:nextFocusLeft="@+id/repeatSwitch"
                 android:nextFocusRight="@+id/repeatSwitch"
                 android:gravity="center_vertical|right" />
         </RelativeLayout>

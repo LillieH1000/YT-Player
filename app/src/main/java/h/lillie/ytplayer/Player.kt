@@ -255,6 +255,16 @@ class Player: AppCompatActivity(), Player.Listener {
                         playerController.seekForward()
                         return true
                     }
+                    if (overlayVisible && (findViewById<ImageButton>(R.id.playPauseRestartButton).isFocused || findViewById<SwitchMaterial>(R.id.subtitlesSwitch).isFocused || findViewById<SwitchMaterial>(R.id.repeatSwitch).isFocused)) {
+                        val settingsView: LinearLayout = findViewById(R.id.settingsView)
+                        if (settingsView.visibility == View.GONE) {
+                            settingsView.visibility = View.VISIBLE
+                            findViewById<SwitchMaterial>(R.id.subtitlesSwitch).requestFocus()
+                        } else {
+                            settingsView.visibility = View.GONE
+                            findViewById<ImageButton>(R.id.playPauseRestartButton).requestFocus()
+                        }
+                    }
                     return false
                 }
             }
