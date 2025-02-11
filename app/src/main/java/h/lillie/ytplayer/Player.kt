@@ -224,13 +224,7 @@ class Player: AppCompatActivity(), Player.Listener {
                                     .build()
                             }
                         }
-                        val repeatSwitch: SwitchMaterial = findViewById(R.id.repeatSwitch)
-                        if (repeatSwitch.isFocused) {
-                            if (!repeatSwitch.isChecked) {
-                                repeatSwitch.isChecked = true
-                            } else {
-                                repeatSwitch.isChecked = false
-                            }
+                        if (findViewById<SwitchMaterial>(R.id.repeatSwitch).isFocused) {
                             if (playerController.repeatMode == Player.REPEAT_MODE_OFF) {
                                 playerController.repeatMode = Player.REPEAT_MODE_ONE
                             } else {
