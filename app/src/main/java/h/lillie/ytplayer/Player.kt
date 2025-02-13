@@ -554,6 +554,15 @@ class Player: AppCompatActivity(), Player.Listener {
             settingsView.visibility = View.GONE
         }
 
+        val castView: RelativeLayout = findViewById(R.id.castView)
+        if (!Application.castExists) {
+            castView.visibility = View.GONE
+        } else {
+            castView.visibility = View.VISIBLE
+        }
+
+        settingsView.requestLayout()
+
         val subtitlesSwitch: SwitchMaterial = findViewById(R.id.subtitlesSwitch)
         subtitlesSwitch.isChecked = false
         if (Application.enCaptions != "null") {
