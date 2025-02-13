@@ -199,13 +199,16 @@ class Player: AppCompatActivity(), Player.Listener {
                                 }
                             }
                         }
-                        if (findViewById<ImageButton>(R.id.settingsButton).isFocused) {
+                        val settingsButton: ImageButton = findViewById(R.id.settingsButton)
+                        if (settingsButton.isFocused) {
                             if (this::playerController.isInitialized && playerController.mediaItemCount == 1) {
                                 val settingsView: LinearLayout = findViewById(R.id.settingsView)
                                 if (settingsView.visibility == View.GONE) {
                                     settingsView.visibility = View.VISIBLE
+                                    settingsButton.nextFocusDownId = R.id.subtitlesSwitch
                                 } else {
                                     settingsView.visibility = View.GONE
+                                    settingsButton.nextFocusDownId = R.id.playPauseRestartButton
                                 }
                             }
                         }
@@ -270,16 +273,6 @@ class Player: AppCompatActivity(), Player.Listener {
                     if ((!overlayVisible || findViewById<Slider>(R.id.progressSlider).isFocused) && this@Player::playerController.isInitialized && playerController.mediaItemCount == 1) {
                         playerController.seekForward()
                         return true
-                    }
-                    if (overlayVisible && (findViewById<ImageButton>(R.id.playPauseRestartButton).isFocused || findViewById<SwitchMaterial>(R.id.subtitlesSwitch).isFocused || findViewById<SwitchMaterial>(R.id.repeatSwitch).isFocused)) {
-                        val settingsView: LinearLayout = findViewById(R.id.settingsView)
-                        if (settingsView.visibility == View.GONE) {
-                            settingsView.visibility = View.VISIBLE
-                            findViewById<SwitchMaterial>(R.id.subtitlesSwitch).requestFocus()
-                        } else {
-                            settingsView.visibility = View.GONE
-                            findViewById<ImageButton>(R.id.playPauseRestartButton).requestFocus()
-                        }
                     }
                     return false
                 }
