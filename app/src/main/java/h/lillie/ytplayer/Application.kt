@@ -31,6 +31,7 @@ class Application : Application() {
         var hlsUrl = String()
         var sponsorBlock: JSONArray? = JSONArray()
         var castActive: Boolean = false
+        var castExists: Boolean = false
         var chromeOSDevice: Boolean = false
         var androidTVDevice: Boolean = false
     }

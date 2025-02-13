@@ -35,6 +35,8 @@ import androidx.media3.session.MediaSessionService
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
 import com.google.android.gms.cast.framework.CastContext
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
@@ -93,7 +95,14 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
             registerReceiver(playerBroadcastReceiver, IntentFilter("h.lillie.ytplayer.info"), RECEIVER_NOT_EXPORTED)
         }
 
-        if (!Application.androidTVDevice) {
+        val playServiceAvailable: Int = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this)
+        if (playServiceAvailable == ConnectionResult.SUCCESS) {
+            Application.castExists = true
+        } else {
+            Application.castExists = false
+        }
+
+        if (Application.castExists) {
             val castPlayer = CastPlayer(CastContext.getSharedInstance(this, MoreExecutors.directExecutor()).result, DefaultMediaItemConverter(), 10000, 10000)
             castPlayer.setSessionAvailabilityListener(object : SessionAvailabilityListener {
                 override fun onCastSessionAvailable() {
