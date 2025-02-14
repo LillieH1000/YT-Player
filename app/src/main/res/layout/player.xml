@@ -124,7 +124,7 @@
                 android:textAllCaps="false" />
             <ImageButton
                 android:id="@+id/settingsButton"
-                android:layout_width="40dp"
+                android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_alignParentRight="true"
                 android:focusable="true"
