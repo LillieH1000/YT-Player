@@ -14,8 +14,6 @@
             android:id="@+id/playerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:focusable="true"
-            android:focusableInTouchMode="false"
             app:use_controller="false" />
         <ImageView
             android:id="@+id/artworkView"

@@ -399,14 +399,6 @@ class Player: AppCompatActivity(), Player.Listener {
 
                     val playerView: PlayerView = findViewById(R.id.playerView)
                     playerView.player = playerController
-                    if (!Application.androidTVDevice) {
-                        playerView.requestFocus()
-                        playerView.setOnFocusChangeListener { v, hasFocus ->
-                            if (!hasFocus) {
-                                v.requestFocus()
-                            }
-                        }
-                    }
 
                     if (Build.VERSION.SDK_INT >= 31 && !Application.androidTVDevice) {
                         setPictureInPictureParams(
