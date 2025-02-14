@@ -65,6 +65,7 @@
         android:visibility="gone">
         <ImageButton
             android:id="@+id/playPauseRestartButton"
+            android:background="@drawable/focus"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_centerInParent="true"
@@ -76,7 +77,6 @@
             android:nextFocusRight="@+id/playPauseRestartButton"
             android:scaleType="fitCenter"
             android:padding="5dp"
-            android:backgroundTint="@color/clear"
             tools:ignore="ContentDescription" />
         <com.google.android.material.slider.Slider
             android:id="@+id/progressSlider"
@@ -124,6 +124,7 @@
                 android:textAllCaps="false" />
             <ImageButton
                 android:id="@+id/settingsButton"
+                android:background="@drawable/focus"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_alignParentRight="true"
@@ -134,7 +135,6 @@
                 android:nextFocusLeft="@+id/settingsButton"
                 android:nextFocusRight="@+id/settingsButton"
                 android:src="@drawable/media3_icon_settings"
-                android:backgroundTint="@color/clear"
                 tools:ignore="ContentDescription" />
             <androidx.mediarouter.app.MediaRouteButton
                 android:id="@+id/castButton"
