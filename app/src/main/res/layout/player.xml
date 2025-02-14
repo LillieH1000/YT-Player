@@ -65,7 +65,7 @@
         android:visibility="gone">
         <ImageButton
             android:id="@+id/playPauseRestartButton"
-            android:background="@drawable/focus"
+            android:background="@drawable/imageButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_centerInParent="true"
@@ -124,7 +124,7 @@
                 android:textAllCaps="false" />
             <ImageButton
                 android:id="@+id/settingsButton"
-                android:background="@drawable/focus"
+                android:background="@drawable/imageButton"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_alignParentRight="true"
