@@ -13,8 +13,8 @@ android {
         minSdk = 26
         // noinspection OldTargetApi, EditedTargetSdkVersion
         targetSdk = 34
-        versionCode = 27
-        versionName = "1.3.06"
+        versionCode = 28
+        versionName = "1.3.10"
         ndk {
             abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64", "x86")
         }
