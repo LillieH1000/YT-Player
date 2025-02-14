@@ -154,8 +154,15 @@
         android:visibility="gone">
         <RelativeLayout
             android:id="@+id/castView"
+            android:background="@drawable/textbutton"
             android:layout_width="match_parent"
-            android:layout_height="40dp">
+            android:layout_height="40dp"
+            android:focusable="true"
+            android:focusableInTouchMode="false"
+            android:nextFocusUp="@+id/settingsButton"
+            android:nextFocusDown="@+id/subtitlesSwitch"
+            android:nextFocusLeft="@+id/castView"
+            android:nextFocusRight="@+id/castView">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -201,7 +208,7 @@
                 android:layout_alignParentRight="true"
                 android:focusable="true"
                 android:focusableInTouchMode="false"
-                android:nextFocusUp="@+id/settingsButton"
+                android:nextFocusUp="@+id/castView"
                 android:nextFocusDown="@+id/repeatSwitch"
                 android:nextFocusLeft="@+id/subtitlesSwitch"
                 android:nextFocusRight="@+id/subtitlesSwitch"
