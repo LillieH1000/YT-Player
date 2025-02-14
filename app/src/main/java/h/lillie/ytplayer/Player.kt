@@ -223,6 +223,11 @@ class Player: AppCompatActivity(), Player.Listener {
                                 }
                             }
                         }
+                        val castView: RelativeLayout = findViewById(R.id.castView)
+                        if (castView.isFocused) {
+                            val castButton: MediaRouteButton = findViewById(R.id.castButton)
+                            castButton.performClick()
+                        }
                         val subtitlesSwitch: SwitchMaterial = findViewById(R.id.subtitlesSwitch)
                         if (subtitlesSwitch.isFocused) {
                             if (!subtitlesSwitch.isChecked) {
