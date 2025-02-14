@@ -190,7 +190,8 @@ class Player: AppCompatActivity(), Player.Listener {
                 }
                 KeyEvent.KEYCODE_DPAD_CENTER -> {
                     if (overlayVisible) {
-                        if (findViewById<ImageButton>(R.id.playPauseRestartButton).isFocused) {
+                        val playPauseRestartButton: ImageButton = findViewById(R.id.playPauseRestartButton)
+                        if (playPauseRestartButton.isFocused) {
                             if (this::playerController.isInitialized && playerController.mediaItemCount == 1) {
                                 if (!playerController.isPlaying) {
                                     playerController.play()
@@ -237,14 +238,16 @@ class Player: AppCompatActivity(), Player.Listener {
                                     .build()
                             }
                         }
-                        if (findViewById<SwitchMaterial>(R.id.repeatSwitch).isFocused) {
+                        val repeatSwitch: SwitchMaterial = findViewById(R.id.repeatSwitch)
+                        if (repeatSwitch.isFocused) {
                             if (playerController.repeatMode == Player.REPEAT_MODE_OFF) {
                                 playerController.repeatMode = Player.REPEAT_MODE_ONE
                             } else {
                                 playerController.repeatMode = Player.REPEAT_MODE_OFF
                             }
                         }
-                        if (findViewById<TextView>(R.id.speedViewMinus).isFocused) {
+                        val speedViewMinus: TextView = findViewById(R.id.speedViewMinus)
+                        if (speedViewMinus.isFocused) {
                             val speedViewText: TextView = findViewById(R.id.speedViewText)
                             val decimalFormat = DecimalFormat("#.#")
                             if (decimalFormat.format(playerController.playbackParameters.speed).toFloat() > 0.1f) {
@@ -252,7 +255,8 @@ class Player: AppCompatActivity(), Player.Listener {
                                 speedViewText.text = "Speed: ${decimalFormat.format(playerController.playbackParameters.speed)}x"
                             }
                         }
-                        if (findViewById<TextView>(R.id.speedViewPlus).isFocused) {
+                        val speedViewPlus: TextView = findViewById(R.id.speedViewPlus)
+                        if (speedViewPlus.isFocused) {
                             val speedViewText: TextView = findViewById(R.id.speedViewText)
                             val decimalFormat = DecimalFormat("#.#")
                             if (decimalFormat.format(playerController.playbackParameters.speed).toFloat() < 2.0f) {
@@ -273,14 +277,16 @@ class Player: AppCompatActivity(), Player.Listener {
                     return true
                 }
                 KeyEvent.KEYCODE_DPAD_LEFT -> {
-                    if ((!overlayVisible || findViewById<Slider>(R.id.progressSlider).isFocused) && this@Player::playerController.isInitialized && playerController.mediaItemCount == 1) {
+                    val progressSlider: Slider = findViewById(R.id.progressSlider)
+                    if ((!overlayVisible || progressSlider.isFocused) && this@Player::playerController.isInitialized && playerController.mediaItemCount == 1) {
                         playerController.seekBack()
                         return true
                     }
                     return false
                 }
                 KeyEvent.KEYCODE_DPAD_RIGHT -> {
-                    if ((!overlayVisible || findViewById<Slider>(R.id.progressSlider).isFocused) && this@Player::playerController.isInitialized && playerController.mediaItemCount == 1) {
+                    val progressSlider: Slider = findViewById(R.id.progressSlider)
+                    if ((!overlayVisible || progressSlider.isFocused) && this@Player::playerController.isInitialized && playerController.mediaItemCount == 1) {
                         playerController.seekForward()
                         return true
                     }
