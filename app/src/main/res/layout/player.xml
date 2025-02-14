@@ -254,6 +254,7 @@
             android:layout_height="28dp">
             <TextView
                 android:id="@+id/speedViewMinus"
+                android:background="@drawable/textbutton"
                 android:layout_width="75dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
@@ -272,6 +273,7 @@
                 tools:ignore="HardcodedText" />
             <TextView
                 android:id="@+id/speedViewPlus"
+                android:background="@drawable/textbutton"
                 android:layout_width="75dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
