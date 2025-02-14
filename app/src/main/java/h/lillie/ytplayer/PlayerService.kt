@@ -102,6 +102,13 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
             Application.castExists = false
         }
 
+        try {
+            CastContext.getSharedInstance(this, MoreExecutors.directExecutor()).result
+            Application.castExists = true
+        } catch (_: RuntimeException) {
+            Application.castExists = false
+        }
+
         if (Application.castExists) {
             val castPlayer = CastPlayer(CastContext.getSharedInstance(this, MoreExecutors.directExecutor()).result, DefaultMediaItemConverter(), 10000, 10000)
             castPlayer.setSessionAvailabilityListener(object : SessionAvailabilityListener {
