@@ -31,7 +31,7 @@ Features:
 
 <br>
 
-*Background playback, picture in picture, audio cast and subtitles aren't currently available on Android TV
+*Background playback and picture in picture aren't currently available on Android TV
 
 <br>
 
