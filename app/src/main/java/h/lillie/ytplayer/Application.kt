@@ -30,8 +30,8 @@ class Application : Application() {
         var enCaptions = String()
         var audioUrl = String()
         var hlsUrl = String()
-        var sponsorBlock: JSONArray? = JSONArray()
         var returnYouTubeDislike: JSONObject? = JSONObject()
+        var sponsorBlock: JSONArray? = null
         var castActive: Boolean = false
         var castExists: Boolean = false
         var chromeOSDevice: Boolean = false
