@@ -22,6 +22,8 @@ class Requests {
         Application.title = info.optString("title")
         Application.author = info.optString("author")
         Application.artwork = info.optString("artwork")
+        Application.views = info.optInt("views")
+        Application.likes = info.optInt("likes")
         Application.live = info.optBoolean("live")
         Application.enCaptions = info.optString("enCaptions")
         Application.audioUrl = info.optString("audioUrl")
