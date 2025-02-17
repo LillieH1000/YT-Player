@@ -418,6 +418,8 @@ class Player: AppCompatActivity(), Player.Listener {
                     sendBroadcast(broadcastIntent)
                 }, MoreExecutors.directExecutor())
             }
+        } else {
+            Toast.makeText(this, "Invalid Url", Toast.LENGTH_LONG).show()
         }
     }
 
