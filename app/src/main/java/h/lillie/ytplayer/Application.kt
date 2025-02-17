@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
 import org.json.JSONArray
-import org.json.JSONObject
 
 class Application : Application() {
     override fun onCreate() {
@@ -26,11 +25,11 @@ class Application : Application() {
         var title = String()
         var author = String()
         var artwork = String()
+        var dislikes: Int? = 0
         var live: Boolean = false
         var enCaptions = String()
         var audioUrl = String()
         var hlsUrl = String()
-        var returnYouTubeDislike: JSONObject? = JSONObject()
         var sponsorBlock: JSONArray? = null
         var castActive: Boolean = false
         var castExists: Boolean = false

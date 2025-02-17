@@ -52,11 +52,12 @@ class Requests {
         val client = HttpClient(CIO)
         val response: HttpResponse = client.get("https://returnyoutubedislikeapi.com/votes?videoId=$videoId")
         if (!response.status.isSuccess()) {
-            Application.returnYouTubeDislike = null
+            Application.dislikes = null
             return@withContext
         }
 
-        Application.returnYouTubeDislike = JSONObject(response.bodyAsText())
+        val jsonObject = JSONObject(response.bodyAsText())
+        Application.dislikes = jsonObject.optInt("dislikes")
 
         return@withContext
     }
