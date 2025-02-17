@@ -387,6 +387,7 @@ class Player: AppCompatActivity(), Player.Listener {
                 val request = Requests()
                 request.ytdlp(id)
                 request.sponsorBlock(id)
+                request.returnYouTubeDislike(id)
 
                 val artworkView: ImageView = findViewById(R.id.artworkView)
                 artworkView.load(Application.artwork)

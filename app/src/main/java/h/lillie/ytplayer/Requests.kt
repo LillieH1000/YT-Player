@@ -47,4 +47,17 @@ class Requests {
 
         return@withContext
     }
+
+    suspend fun returnYouTubeDislike(videoId: String) = withContext(Dispatchers.IO) {
+        val client = HttpClient(CIO)
+        val response: HttpResponse = client.get("https://returnyoutubedislikeapi.com/votes?videoId=$videoId")
+        if (!response.status.isSuccess()) {
+            Application.returnYouTubeDislike = null
+            return@withContext
+        }
+
+        Application.returnYouTubeDislike = JSONObject(response.bodyAsText())
+
+        return@withContext
+    }
 }
