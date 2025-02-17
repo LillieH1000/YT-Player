@@ -114,26 +114,47 @@
                 android:id="@+id/titleView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_toStartOf="@+id/settingsButton"
+                android:layout_toStartOf="@+id/menuButtons"
                 android:gravity="center_vertical"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/white"
                 android:textAllCaps="false" />
-            <ImageButton
-                android:id="@+id/settingsButton"
-                android:background="@drawable/imagebutton"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+            <LinearLayout
+                android:id="@+id/menuButtons"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
-                android:focusable="true"
-                android:focusableInTouchMode="false"
-                android:nextFocusUp="@+id/settingsButton"
-                android:nextFocusDown="@+id/playPauseRestartButton"
-                android:nextFocusLeft="@+id/settingsButton"
-                android:nextFocusRight="@+id/settingsButton"
-                android:src="@drawable/media3_icon_settings"
-                tools:ignore="ContentDescription" />
+                android:orientation="horizontal">
+                <ImageButton
+                    android:id="@+id/infoButton"
+                    android:background="@drawable/imagebutton"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="false"
+                    android:nextFocusUp="@+id/infoButton"
+                    android:nextFocusDown="@+id/infoButton"
+                    android:nextFocusLeft="@+id/infoButton"
+                    android:nextFocusRight="@+id/infoButton"
+                    android:src="@drawable/info"
+                    app:tint="@color/white"
+                    tools:ignore="ContentDescription" />
+                <ImageButton
+                    android:id="@+id/settingsButton"
+                    android:background="@drawable/imagebutton"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="false"
+                    android:nextFocusUp="@+id/settingsButton"
+                    android:nextFocusDown="@+id/playPauseRestartButton"
+                    android:nextFocusLeft="@+id/settingsButton"
+                    android:nextFocusRight="@+id/settingsButton"
+                    android:src="@drawable/settings"
+                    app:tint="@color/white"
+                    tools:ignore="ContentDescription" />
+            </LinearLayout>
             <androidx.mediarouter.app.MediaRouteButton
                 android:id="@+id/castButton"
                 android:layout_width="0dp"
@@ -297,5 +318,16 @@
                 android:textAllCaps="false"
                 tools:ignore="HardcodedText" />
         </RelativeLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/infoView"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="50dp"
+        android:background="@color/darkGrey"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:clickable="true">
     </LinearLayout>
 </RelativeLayout>

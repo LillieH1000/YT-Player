@@ -490,6 +490,10 @@ class Player: AppCompatActivity(), Player.Listener {
             }
         }
 
+        val infoButton: ImageButton = findViewById(R.id.infoButton)
+        infoButton.setOnClickListener {
+        }
+
         val settingsButton: ImageButton = findViewById(R.id.settingsButton)
         settingsButton.setOnClickListener {
             if (this::playerController.isInitialized && playerController.mediaItemCount == 1) {
@@ -586,11 +590,11 @@ class Player: AppCompatActivity(), Player.Listener {
         val speedViewText: TextView = findViewById(R.id.speedViewText)
         speedViewText.text = "Speed: 1x"
 
-        val settingsButton: ImageButton = findViewById(R.id.settingsButton)
+        val menuButtons: LinearLayout = findViewById(R.id.menuButtons)
         if (Application.live) {
-            settingsButton.visibility = View.GONE
+            menuButtons.visibility = View.GONE
         } else {
-            settingsButton.visibility = View.VISIBLE
+            menuButtons.visibility = View.VISIBLE
         }
     }
 
