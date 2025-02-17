@@ -236,17 +236,17 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
     private val playerTask = object: Runnable {
         override fun run() {
             val sponsorBlock: JSONArray? = Application.sponsorBlock
-            if (sponsorBlock != null && playerSession?.player == exoPlayer && !Application.live) {
+            if (sponsorBlock != null && !Application.live) {
                 for (i in 0 until sponsorBlock.length()) {
                     val decimalFormat = DecimalFormat("#.###")
 
                     val segment: JSONArray = sponsorBlock.getJSONObject(i).getJSONArray("segment")
-                    val position: Double = decimalFormat.format(exoPlayer.currentPosition / 1000.0).toDouble()
+                    val position: Double = decimalFormat.format(playerSession?.player!!.currentPosition / 1000.0).toDouble()
                     val segment0: Double = decimalFormat.format(segment[0]).toDouble()
                     val segment1: Double = decimalFormat.format(segment[1]).toDouble()
 
                     if (position >= segment0 && position < segment1) {
-                        exoPlayer.seekTo(decimalFormat.format(segment1 * 1000.0).toLong())
+                        playerSession?.player!!.seekTo(decimalFormat.format(segment1 * 1000.0).toLong())
                         Toast.makeText(this@PlayerService, "Sponsor Skipped", Toast.LENGTH_SHORT).show()
                     }
                 }
