@@ -441,10 +441,6 @@ class Player: AppCompatActivity(), Player.Listener {
     private var gestureDirection: Int = 0
 
     private fun createUI() {
-        if (!Application.androidTVDevice) {
-            CastButtonFactory.setUpMediaRouteButton(this, findViewById(R.id.castButton))
-        }
-
         val leftView: View = findViewById(R.id.leftView)
         leftView.setOnTouchListener(object : View.OnTouchListener {
             val gestureDetector = GestureDetector(this@Player, playerTouch)
@@ -573,6 +569,7 @@ class Player: AppCompatActivity(), Player.Listener {
         if (!Application.castExists) {
             castView.visibility = View.GONE
         } else {
+            CastButtonFactory.setUpMediaRouteButton(this, findViewById(R.id.castButton))
             castView.visibility = View.VISIBLE
         }
 
