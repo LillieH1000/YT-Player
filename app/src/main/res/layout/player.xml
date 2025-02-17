@@ -149,7 +149,8 @@
         android:layout_marginTop="50dp"
         android:background="@color/darkGrey"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:clickable="true">
         <RelativeLayout
             android:id="@+id/castView"
             android:background="@drawable/textbutton"
