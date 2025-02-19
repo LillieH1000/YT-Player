@@ -439,6 +439,7 @@ class Player: AppCompatActivity(), Player.Listener {
                     if (url != null) {
                         CoroutineScope(Dispatchers.Main).launch {
                             broadcast(url)
+                            createUI()
                         }
                     }
                 }
@@ -499,6 +500,9 @@ class Player: AppCompatActivity(), Player.Listener {
         }
 
         val closeButton: ImageButton = findViewById(R.id.closeButton)
+        if (Application.androidTVDevice) {
+            closeButton.visibility = View.VISIBLE
+        }
         closeButton.setOnClickListener {
             finish()
         }
@@ -576,11 +580,6 @@ class Player: AppCompatActivity(), Player.Listener {
     private fun updateUI() {
         val titleView: TextView = findViewById(R.id.titleView)
         titleView.text = Application.title
-
-        val closeButton: ImageButton = findViewById(R.id.closeButton)
-        if (Application.androidTVDevice) {
-            closeButton.visibility = View.VISIBLE
-        }
 
         val infoButton: ImageButton = findViewById(R.id.infoButton)
         if (Application.live) {
