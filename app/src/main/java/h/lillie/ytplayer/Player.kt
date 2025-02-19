@@ -157,7 +157,7 @@ class Player: AppCompatActivity(), Player.Listener {
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        if (!Application.androidTVDevice && Build.VERSION.SDK_INT <= 30 && Build.VERSION.SDK_INT >= 26 && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
+        if (Build.VERSION.SDK_INT <= 30 && Build.VERSION.SDK_INT >= 26 && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
             enterPictureInPictureMode(PictureInPictureParams.Builder().build())
         }
     }
@@ -401,7 +401,7 @@ class Player: AppCompatActivity(), Player.Listener {
                     val playerView: PlayerView = findViewById(R.id.playerView)
                     playerView.player = playerController
 
-                    if (Build.VERSION.SDK_INT >= 31 && !Application.androidTVDevice && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
+                    if (Build.VERSION.SDK_INT >= 31 && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
                         setPictureInPictureParams(
                             PictureInPictureParams.Builder()
                                 .setAutoEnterEnabled(true)
