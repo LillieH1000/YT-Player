@@ -71,12 +71,12 @@ class Player: AppCompatActivity(), Player.Listener {
             if (!Application.androidTVDevice && !Application.chromeOSDevice) {
                 when (resources.configuration.orientation) {
                     Configuration.ORIENTATION_PORTRAIT -> {
-                        if (!Application.chromeOSDevice && !Application.androidTVDevice) {
+                        if (!Application.androidTVDevice && !Application.chromeOSDevice && !Application.wearOSDevice) {
                             WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                         }
                     }
                     Configuration.ORIENTATION_LANDSCAPE -> {
-                        if (!Application.chromeOSDevice && !Application.androidTVDevice) {
+                        if (!Application.androidTVDevice && !Application.chromeOSDevice && !Application.wearOSDevice) {
                             WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                         }
                     }
@@ -100,7 +100,7 @@ class Player: AppCompatActivity(), Player.Listener {
             }
         }
 
-        if (Application.androidTVDevice) {
+        if (Application.androidTVDevice || Application.wearOSDevice) {
             createServer()
             val wifiManager = getSystemService(WIFI_SERVICE) as WifiManager
             val ipView: TextView = findViewById(R.id.ipView)
@@ -131,12 +131,12 @@ class Player: AppCompatActivity(), Player.Listener {
         super.onConfigurationChanged(newConfig)
         when (newConfig.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
-                if (!Application.chromeOSDevice && !Application.androidTVDevice) {
+                if (!Application.androidTVDevice && !Application.chromeOSDevice && !Application.wearOSDevice) {
                     WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                 }
             }
             Configuration.ORIENTATION_LANDSCAPE -> {
-                if (!Application.chromeOSDevice && !Application.androidTVDevice) {
+                if (!Application.androidTVDevice && !Application.chromeOSDevice && !Application.wearOSDevice) {
                     WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                 }
             }
@@ -157,7 +157,7 @@ class Player: AppCompatActivity(), Player.Listener {
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        if (Build.VERSION.SDK_INT <= 30 && Build.VERSION.SDK_INT >= 26 && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
+        if (!Application.wearOSDevice && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && Build.VERSION.SDK_INT <= 30 && Build.VERSION.SDK_INT >= 26) {
             enterPictureInPictureMode(PictureInPictureParams.Builder().build())
         }
     }
@@ -251,12 +251,12 @@ class Player: AppCompatActivity(), Player.Listener {
             }
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
-                    if (!Application.chromeOSDevice && !Application.androidTVDevice) {
+                    if (!Application.androidTVDevice && !Application.chromeOSDevice && !Application.wearOSDevice) {
                         WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                     }
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    if (!Application.chromeOSDevice && !Application.androidTVDevice) {
+                    if (!Application.androidTVDevice && !Application.chromeOSDevice && !Application.wearOSDevice) {
                         WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                     }
                 }
@@ -284,7 +284,7 @@ class Player: AppCompatActivity(), Player.Listener {
                 return
             }
 
-            if (Application.androidTVDevice) {
+            if (Application.androidTVDevice || Application.wearOSDevice) {
                 val ipView: TextView = findViewById(R.id.ipView)
                 ipView.visibility = View.GONE
             }
@@ -320,7 +320,7 @@ class Player: AppCompatActivity(), Player.Listener {
                     val playerView: PlayerView = findViewById(R.id.playerView)
                     playerView.player = playerController
 
-                    if (Build.VERSION.SDK_INT >= 31 && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
+                    if (!Application.wearOSDevice && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && Build.VERSION.SDK_INT >= 31) {
                         setPictureInPictureParams(
                             PictureInPictureParams.Builder()
                                 .setAutoEnterEnabled(true)
