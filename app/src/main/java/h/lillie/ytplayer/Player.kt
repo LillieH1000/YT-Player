@@ -185,108 +185,20 @@ class Player: AppCompatActivity(), Player.Listener {
                         } else {
                             playerController.pause()
                         }
+                        return true
                     }
-                    return true
+                    return super.dispatchKeyEvent(event)
                 }
                 KeyEvent.KEYCODE_DPAD_CENTER -> {
-                    if (overlayVisible) {
-                        val playPauseRestartButton: ImageButton = findViewById(R.id.playPauseRestartButton)
-                        if (playPauseRestartButton.isFocused) {
-                            if (this::playerController.isInitialized && playerController.mediaItemCount == 1) {
-                                if (!playerController.isPlaying) {
-                                    playerController.play()
-                                } else {
-                                    playerController.pause()
-                                }
-                            }
+                    if (!overlayVisible && this::playerController.isInitialized && playerController.mediaItemCount == 1) {
+                        if (!playerController.isPlaying) {
+                            playerController.play()
+                        } else {
+                            playerController.pause()
                         }
-                        val closeButton: ImageButton = findViewById(R.id.closeButton)
-                        if (closeButton.isFocused) {
-                            finish()
-                        }
-                        val infoButton: ImageButton = findViewById(R.id.infoButton)
-                        if (infoButton.isFocused) {
-                        }
-                        val settingsButton: ImageButton = findViewById(R.id.settingsButton)
-                        if (settingsButton.isFocused) {
-                            if (this::playerController.isInitialized && playerController.mediaItemCount == 1) {
-                                val settingsView: LinearLayout = findViewById(R.id.settingsView)
-                                if (settingsView.visibility == View.GONE) {
-                                    settingsView.visibility = View.VISIBLE
-                                    if (!Application.castExists) {
-                                        settingsButton.nextFocusDownId = R.id.subtitlesSwitch
-                                        val subtitlesSwitch: SwitchMaterial = findViewById(R.id.subtitlesSwitch)
-                                        subtitlesSwitch.nextFocusUpId = R.id.settingsButton
-                                    }
-                                    val subtitlesSwitch: SwitchMaterial = findViewById(R.id.subtitlesSwitch)
-                                    if (!subtitlesSwitch.isEnabled) {
-                                        settingsButton.nextFocusDownId = R.id.repeatSwitch
-                                        val repeatSwitch: SwitchMaterial = findViewById(R.id.repeatSwitch)
-                                        repeatSwitch.nextFocusUpId = R.id.settingsButton
-                                    }
-                                } else {
-                                    settingsView.visibility = View.GONE
-                                    settingsButton.nextFocusDownId = R.id.playPauseRestartButton
-                                }
-                            }
-                        }
-                        val castView: RelativeLayout = findViewById(R.id.castView)
-                        if (castView.isFocused) {
-                            val castButton: MediaRouteButton = findViewById(R.id.castButton)
-                            castButton.performClick()
-                        }
-                        val subtitlesSwitch: SwitchMaterial = findViewById(R.id.subtitlesSwitch)
-                        if (subtitlesSwitch.isFocused) {
-                            if (!subtitlesSwitch.isChecked) {
-                                subtitlesSwitch.isChecked = true
-                                playerController.trackSelectionParameters = playerController.trackSelectionParameters.buildUpon()
-                                    .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-                                    .setPreferredTextLanguage("en")
-                                    .build()
-                            } else {
-                                subtitlesSwitch.isChecked = false
-                                playerController.trackSelectionParameters = playerController.trackSelectionParameters.buildUpon()
-                                    .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
-                                    .build()
-                            }
-                        }
-                        val repeatSwitch: SwitchMaterial = findViewById(R.id.repeatSwitch)
-                        if (repeatSwitch.isFocused) {
-                            if (playerController.repeatMode == Player.REPEAT_MODE_OFF) {
-                                playerController.repeatMode = Player.REPEAT_MODE_ONE
-                            } else {
-                                playerController.repeatMode = Player.REPEAT_MODE_OFF
-                            }
-                        }
-                        val speedViewMinus: TextView = findViewById(R.id.speedViewMinus)
-                        if (speedViewMinus.isFocused) {
-                            val speedViewText: TextView = findViewById(R.id.speedViewText)
-                            val decimalFormat = DecimalFormat("#.#")
-                            if (decimalFormat.format(playerController.playbackParameters.speed).toFloat() > 0.1f) {
-                                playerController.playbackParameters = PlaybackParameters(decimalFormat.format(playerController.playbackParameters.speed).toFloat() - 0.1f)
-                                speedViewText.text = "Speed: ${decimalFormat.format(playerController.playbackParameters.speed)}x"
-                            }
-                        }
-                        val speedViewPlus: TextView = findViewById(R.id.speedViewPlus)
-                        if (speedViewPlus.isFocused) {
-                            val speedViewText: TextView = findViewById(R.id.speedViewText)
-                            val decimalFormat = DecimalFormat("#.#")
-                            if (decimalFormat.format(playerController.playbackParameters.speed).toFloat() < 2.0f) {
-                                playerController.playbackParameters = PlaybackParameters(decimalFormat.format(playerController.playbackParameters.speed).toFloat() + 0.1f)
-                                speedViewText.text = "Speed: ${decimalFormat.format(playerController.playbackParameters.speed)}x"
-                            }
-                        }
+                        return true
                     }
-                    if (!overlayVisible) {
-                        if (this::playerController.isInitialized && playerController.mediaItemCount == 1) {
-                            if (!playerController.isPlaying) {
-                                playerController.play()
-                            } else {
-                                playerController.pause()
-                            }
-                        }
-                    }
-                    return true
+                    return super.dispatchKeyEvent(event)
                 }
                 KeyEvent.KEYCODE_DPAD_LEFT -> {
                     val progressSlider: Slider = findViewById(R.id.progressSlider)
@@ -294,7 +206,7 @@ class Player: AppCompatActivity(), Player.Listener {
                         playerController.seekBack()
                         return true
                     }
-                    return false
+                    return super.dispatchKeyEvent(event)
                 }
                 KeyEvent.KEYCODE_DPAD_RIGHT -> {
                     val progressSlider: Slider = findViewById(R.id.progressSlider)
@@ -302,7 +214,7 @@ class Player: AppCompatActivity(), Player.Listener {
                         playerController.seekForward()
                         return true
                     }
-                    return false
+                    return super.dispatchKeyEvent(event)
                 }
             }
         }
