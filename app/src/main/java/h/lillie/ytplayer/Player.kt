@@ -492,9 +492,6 @@ class Player: AppCompatActivity(), Player.Listener {
         }
 
         val closeButton: ImageButton = findViewById(R.id.closeButton)
-        if (Application.androidTVDevice) {
-            closeButton.visibility = View.VISIBLE
-        }
         closeButton.setOnClickListener {
             finish()
         }
@@ -572,6 +569,11 @@ class Player: AppCompatActivity(), Player.Listener {
     private fun updateUI() {
         val titleView: TextView = findViewById(R.id.titleView)
         titleView.text = Application.title
+
+        val closeButton: ImageButton = findViewById(R.id.closeButton)
+        if (Application.androidTVDevice) {
+            closeButton.visibility = View.VISIBLE
+        }
 
         val settingsView: LinearLayout = findViewById(R.id.settingsView)
         if (settingsView.visibility == View.VISIBLE) {
