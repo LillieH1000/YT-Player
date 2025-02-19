@@ -94,9 +94,7 @@ class Player: AppCompatActivity(), Player.Listener {
                     overlayVisible = false
                 }
                 val settingsView: LinearLayout = findViewById(R.id.settingsView)
-                if (settingsView.visibility == View.VISIBLE) {
-                    settingsView.visibility = View.GONE
-                }
+                settingsView.visibility = View.GONE
             }
         }
 
@@ -225,13 +223,9 @@ class Player: AppCompatActivity(), Player.Listener {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         if (isInPictureInPictureMode) {
             val overlayView: RelativeLayout = findViewById(R.id.overlayView)
-            if (overlayView.visibility == View.VISIBLE) {
-                overlayView.visibility = View.GONE
-            }
+            overlayView.visibility = View.GONE
             val settingsView: LinearLayout = findViewById(R.id.settingsView)
-            if (settingsView.visibility == View.VISIBLE) {
-                settingsView.visibility = View.GONE
-            }
+            settingsView.visibility = View.GONE
         }
     }
 
@@ -587,9 +581,7 @@ class Player: AppCompatActivity(), Player.Listener {
                 overlayView.visibility = View.GONE
             }
             val settingsView: LinearLayout = findViewById(R.id.settingsView)
-            if (settingsView.visibility == View.VISIBLE) {
-                settingsView.visibility = View.GONE
-            }
+            settingsView.visibility = View.GONE
             return true
         }
         override fun onDoubleTap(e: MotionEvent): Boolean {
