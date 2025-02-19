@@ -582,6 +582,20 @@ class Player: AppCompatActivity(), Player.Listener {
             closeButton.visibility = View.VISIBLE
         }
 
+        val infoButton: ImageButton = findViewById(R.id.infoButton)
+        if (Application.live) {
+            infoButton.visibility = View.GONE
+        } else {
+            infoButton.visibility = View.VISIBLE
+        }
+
+        val settingsButton: ImageButton = findViewById(R.id.settingsButton)
+        if (Application.live) {
+            settingsButton.visibility = View.GONE
+        } else {
+            settingsButton.visibility = View.VISIBLE
+        }
+
         val settingsView: LinearLayout = findViewById(R.id.settingsView)
         if (settingsView.visibility == View.VISIBLE) {
             settingsView.visibility = View.GONE
@@ -609,11 +623,6 @@ class Player: AppCompatActivity(), Player.Listener {
         speedViewText.text = "Speed: 1x"
 
         val menuButtons: LinearLayout = findViewById(R.id.menuButtons)
-        if (Application.live) {
-            menuButtons.visibility = View.GONE
-        } else {
-            menuButtons.visibility = View.VISIBLE
-        }
         menuButtons.requestLayout()
     }
 
