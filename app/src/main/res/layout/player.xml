@@ -122,10 +122,25 @@
                 android:textAllCaps="false" />
             <LinearLayout
                 android:id="@+id/menuButtons"
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:orientation="horizontal">
+                <ImageButton
+                    android:id="@+id/closeButton"
+                    android:background="@drawable/imagebutton"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="false"
+                    android:nextFocusUp="@+id/closeButton"
+                    android:nextFocusDown="@+id/closeButton"
+                    android:nextFocusLeft="@+id/closeButton"
+                    android:nextFocusRight="@+id/closeButton"
+                    android:src="@drawable/close"
+                    android:visibility="gone"
+                    app:tint="@color/white"
+                    tools:ignore="ContentDescription" />
                 <ImageButton
                     android:id="@+id/infoButton"
                     android:background="@drawable/imagebutton"

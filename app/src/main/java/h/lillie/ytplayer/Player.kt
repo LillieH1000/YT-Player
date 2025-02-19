@@ -491,6 +491,14 @@ class Player: AppCompatActivity(), Player.Listener {
             }
         }
 
+        val closeButton: ImageButton = findViewById(R.id.closeButton)
+        if (Application.androidTVDevice) {
+            closeButton.visibility = View.VISIBLE
+        }
+        closeButton.setOnClickListener {
+            finish()
+        }
+
         val infoButton: ImageButton = findViewById(R.id.infoButton)
         infoButton.setOnClickListener {
         }
@@ -597,6 +605,7 @@ class Player: AppCompatActivity(), Player.Listener {
         } else {
             menuButtons.visibility = View.VISIBLE
         }
+        menuButtons.requestLayout()
     }
 
     private fun time(time: Long): String {
