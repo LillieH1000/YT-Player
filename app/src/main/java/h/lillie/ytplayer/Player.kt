@@ -122,7 +122,9 @@ class Player: AppCompatActivity(), Player.Listener {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         setIntent(intent)
-        broadcast(intent?.getStringExtra(Intent.EXTRA_TEXT)!!)
+        if (!Application.androidTVDevice && !Application.chromeOSDevice) {
+            broadcast(intent?.getStringExtra(Intent.EXTRA_TEXT)!!)
+        }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -151,9 +153,6 @@ class Player: AppCompatActivity(), Player.Listener {
     override fun onStop() {
         super.onStop()
         playerHandler.removeCallbacksAndMessages(null)
-        if (Application.androidTVDevice) {
-            finish()
-        }
     }
 
     override fun onUserLeaveHint() {
