@@ -12,11 +12,14 @@ class Application : Application() {
         if (!Python.isStarted()) {
             Python.start(AndroidPlatform(this))
         }
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)) {
+            androidTVDevice = true
+        }
         if (packageManager.hasSystemFeature("org.chromium.arc.device_management")) {
             chromeOSDevice = true
         }
-        if (packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)) {
-            androidTVDevice = true
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_WATCH)) {
+            wearOSDevice = true
         }
     }
 
@@ -35,7 +38,8 @@ class Application : Application() {
         var sponsorBlock: JSONArray? = null
         var castActive: Boolean = false
         var castExists: Boolean = false
-        var chromeOSDevice: Boolean = false
         var androidTVDevice: Boolean = false
+        var chromeOSDevice: Boolean = false
+        var wearOSDevice: Boolean = false
     }
 }
