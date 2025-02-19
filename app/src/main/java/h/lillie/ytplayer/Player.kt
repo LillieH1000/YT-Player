@@ -200,6 +200,13 @@ class Player: AppCompatActivity(), Player.Listener {
                                 }
                             }
                         }
+                        val closeButton: ImageButton = findViewById(R.id.closeButton)
+                        if (closeButton.isFocused) {
+                            finish()
+                        }
+                        val infoButton: ImageButton = findViewById(R.id.infoButton)
+                        if (infoButton.isFocused) {
+                        }
                         val settingsButton: ImageButton = findViewById(R.id.settingsButton)
                         if (settingsButton.isFocused) {
                             if (this::playerController.isInitialized && playerController.mediaItemCount == 1) {
