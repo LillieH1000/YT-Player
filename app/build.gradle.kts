@@ -43,6 +43,9 @@ android {
             dimension = "type"
             minSdk = 25
         }
+        create("wearos") {
+            dimension = "type"
+        }
     }
 
     compileOptions {
