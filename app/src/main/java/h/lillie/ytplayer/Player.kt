@@ -429,8 +429,20 @@ class Player: AppCompatActivity(), Player.Listener {
                 val settingsView: LinearLayout = findViewById(R.id.settingsView)
                 if (settingsView.visibility == View.GONE) {
                     settingsView.visibility = View.VISIBLE
+                    if (!Application.castExists) {
+                        settingsButton.nextFocusDownId = R.id.subtitlesSwitch
+                        val subtitlesSwitch: SwitchMaterial = findViewById(R.id.subtitlesSwitch)
+                        subtitlesSwitch.nextFocusUpId = R.id.settingsButton
+                    }
+                    val subtitlesSwitch: SwitchMaterial = findViewById(R.id.subtitlesSwitch)
+                    if (!subtitlesSwitch.isEnabled) {
+                        settingsButton.nextFocusDownId = R.id.repeatSwitch
+                        val repeatSwitch: SwitchMaterial = findViewById(R.id.repeatSwitch)
+                        repeatSwitch.nextFocusUpId = R.id.settingsButton
+                    }
                 } else {
                     settingsView.visibility = View.GONE
+                    settingsButton.nextFocusDownId = R.id.playPauseRestartButton
                 }
             }
         }
