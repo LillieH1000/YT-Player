@@ -313,6 +313,15 @@ class Player: AppCompatActivity(), Player.Listener {
 
                     val playerView: PlayerView = findViewById(R.id.playerView)
                     playerView.player = playerController
+                    if (Application.chromeOSDevice) {
+                        playerView.isFocusableInTouchMode = true
+                        playerView.requestFocus()
+                        playerView.setOnFocusChangeListener { v, hasFocus ->
+                            if (!hasFocus) {
+                                v.requestFocus()
+                            }
+                        }
+                    }
 
                     if (!Application.wearOSDevice && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && Build.VERSION.SDK_INT >= 31) {
                         setPictureInPictureParams(

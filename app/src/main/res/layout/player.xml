@@ -14,6 +14,12 @@
             android:id="@+id/playerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="false"
+            android:nextFocusUp="@+id/playerView"
+            android:nextFocusDown="@+id/playerView"
+            android:nextFocusLeft="@+id/playerView"
+            android:nextFocusRight="@+id/playerView"
             app:use_controller="false" />
         <ImageView
             android:id="@+id/artworkView"
