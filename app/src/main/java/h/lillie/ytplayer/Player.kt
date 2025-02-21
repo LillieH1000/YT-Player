@@ -499,12 +499,12 @@ class Player: AppCompatActivity(), Player.Listener {
         val titleView: TextView = findViewById(R.id.titleView)
         titleView.text = Application.title
 
-        val infoButton: ImageButton = findViewById(R.id.infoButton)
+        /* val infoButton: ImageButton = findViewById(R.id.infoButton)
         if (Application.live) {
             infoButton.visibility = View.GONE
         } else {
             infoButton.visibility = View.VISIBLE
-        }
+        } */
 
         val settingsButton: ImageButton = findViewById(R.id.settingsButton)
         if (Application.live) {
