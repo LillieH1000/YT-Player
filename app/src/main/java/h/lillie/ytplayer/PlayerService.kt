@@ -105,15 +105,13 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
 
         val playServiceAvailable: Int = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this)
         if (playServiceAvailable == ConnectionResult.SUCCESS) {
-            Application.castExists = true
+            try {
+                CastContext.getSharedInstance(this, MoreExecutors.directExecutor()).result
+                Application.castExists = true
+            } catch (_: RuntimeException) {
+                Application.castExists = false
+            }
         } else {
-            Application.castExists = false
-        }
-
-        try {
-            CastContext.getSharedInstance(this, MoreExecutors.directExecutor()).result
-            Application.castExists = true
-        } catch (_: RuntimeException) {
             Application.castExists = false
         }
 
