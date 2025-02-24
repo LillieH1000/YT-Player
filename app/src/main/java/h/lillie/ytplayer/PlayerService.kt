@@ -6,10 +6,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
+import android.net.http.HttpEngine
 import android.os.Build
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.ext.SdkExtensions
 import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.media3.cast.CastPlayer
@@ -23,8 +26,8 @@ import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.StandaloneDatabaseProvider
-import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.HttpEngineDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
@@ -221,11 +224,18 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
                     playerMediaItem.setSubtitleConfigurations(listOf(enPlayerCaptions))
                 }
 
-                val dataSourceFactory: DataSource.Factory = DefaultDataSource.Factory(this@PlayerService)
                 val simpleCache = SimpleCache(File(cacheDir, "media"), LeastRecentlyUsedCacheEvictor(200 * 1024 * 1024), StandaloneDatabaseProvider(this@PlayerService))
-                val cacheDataSource: CacheDataSource.Factory = CacheDataSource.Factory()
-                    .setUpstreamDataSourceFactory(dataSourceFactory)
-                    .setCache(simpleCache)
+                val cacheDataSource: CacheDataSource.Factory = CacheDataSource.Factory().setCache(simpleCache)
+
+                if (Build.VERSION.SDK_INT >= 34 && SdkExtensions.getExtensionVersion(VERSION_CODES.S) >= 7) {
+                    val httpEngine: HttpEngine = HttpEngine.Builder(this@PlayerService)
+                        .setEnableHttp2(true)
+                        .build()
+
+                    cacheDataSource.setUpstreamDataSourceFactory(HttpEngineDataSource.Factory(httpEngine, MoreExecutors.directExecutor()))
+                } else {
+                    cacheDataSource.setUpstreamDataSourceFactory(DefaultDataSource.Factory(this@PlayerService))
+                }
 
                 val hlsSource: MediaSource = HlsMediaSource.Factory(cacheDataSource)
                     .setAllowChunklessPreparation(false)
