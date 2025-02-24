@@ -8,7 +8,6 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.net.http.HttpEngine
 import android.os.Build
-import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -227,7 +226,7 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
                 val simpleCache = SimpleCache(File(cacheDir, "media"), LeastRecentlyUsedCacheEvictor(200 * 1024 * 1024), StandaloneDatabaseProvider(this@PlayerService))
                 val cacheDataSource: CacheDataSource.Factory = CacheDataSource.Factory().setCache(simpleCache)
 
-                if (Build.VERSION.SDK_INT >= 34 && SdkExtensions.getExtensionVersion(VERSION_CODES.S) >= 7) {
+                if (Build.VERSION.SDK_INT >= 34 && SdkExtensions.getExtensionVersion(Build.VERSION_CODES.S) >= 7) {
                     val httpEngine: HttpEngine = HttpEngine.Builder(this@PlayerService)
                         .setEnableHttp2(true)
                         .build()
