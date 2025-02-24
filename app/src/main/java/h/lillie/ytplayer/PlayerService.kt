@@ -56,6 +56,7 @@ import java.text.DecimalFormat
 class PlayerService: MediaSessionService(), MediaSession.Callback {
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var playerHandler: Handler
+    private lateinit var playerCache: SimpleCache
     private val backCommand = SessionCommand("back", Bundle.EMPTY)
     private val forwardCommand = SessionCommand("forward", Bundle.EMPTY)
     private var playerSession: MediaSession? = null
@@ -164,6 +165,7 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
         playerSession?.run {
             playerHandler.removeCallbacksAndMessages(null)
             unregisterReceiver(playerBroadcastReceiver)
+            playerCache.release()
             player.release()
             release()
             playerSession = null
@@ -223,8 +225,11 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
                     playerMediaItem.setSubtitleConfigurations(listOf(enPlayerCaptions))
                 }
 
-                val simpleCache = SimpleCache(File(cacheDir, "media"), LeastRecentlyUsedCacheEvictor(200 * 1024 * 1024), StandaloneDatabaseProvider(this@PlayerService))
-                val cacheDataSource: CacheDataSource.Factory = CacheDataSource.Factory().setCache(simpleCache)
+                if (this@PlayerService::playerCache.isInitialized) {
+                    playerCache.release()
+                }
+                playerCache = SimpleCache(File(cacheDir, "media"), LeastRecentlyUsedCacheEvictor(200 * 1024 * 1024), StandaloneDatabaseProvider(this@PlayerService))
+                val cacheDataSource: CacheDataSource.Factory = CacheDataSource.Factory().setCache(playerCache)
 
                 if (Build.VERSION.SDK_INT >= 34 && SdkExtensions.getExtensionVersion(Build.VERSION_CODES.S) >= 7) {
                     val httpEngine: HttpEngine = HttpEngine.Builder(this@PlayerService)
