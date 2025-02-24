@@ -469,6 +469,24 @@ class Player: AppCompatActivity(), Player.Listener {
                 }
             }
         }
+        subtitlesSwitch.setOnKeyListener { _, _, event ->
+            if (event.action == KeyEvent.ACTION_DOWN && event.keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+                subtitlesSwitch.toggle()
+                if (!subtitlesSwitch.isChecked) {
+                    playerController.trackSelectionParameters = playerController.trackSelectionParameters.buildUpon()
+                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                        .build()
+                } else {
+                    playerController.trackSelectionParameters = playerController.trackSelectionParameters.buildUpon()
+                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
+                        .setPreferredTextLanguage("en")
+                        .build()
+                }
+                true
+            } else {
+                false
+            }
+        }
 
         val repeatSwitch: SwitchMaterial = findViewById(R.id.repeatSwitch)
         repeatSwitch.setOnCheckedChangeListener { buttonView, _ ->
@@ -478,6 +496,19 @@ class Player: AppCompatActivity(), Player.Listener {
                 } else {
                     playerController.repeatMode = Player.REPEAT_MODE_OFF
                 }
+            }
+        }
+        repeatSwitch.setOnKeyListener { _, _, event ->
+            if (event.action == KeyEvent.ACTION_DOWN && event.keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+                repeatSwitch.toggle()
+                if (playerController.repeatMode == Player.REPEAT_MODE_OFF) {
+                    playerController.repeatMode = Player.REPEAT_MODE_ONE
+                } else {
+                    playerController.repeatMode = Player.REPEAT_MODE_OFF
+                }
+                true
+            } else {
+                false
             }
         }
 
