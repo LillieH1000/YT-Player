@@ -236,16 +236,41 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
                         .setEnableHttp2(true)
                         .build()
 
-                    cacheDataSource.setUpstreamDataSourceFactory(HttpEngineDataSource.Factory(httpEngine, MoreExecutors.directExecutor()))
+                    val httpEngineDataSource: HttpEngineDataSource.Factory = HttpEngineDataSource.Factory(httpEngine, MoreExecutors.directExecutor())
+                    if (!Application.live) {
+                        cacheDataSource.setUpstreamDataSourceFactory(httpEngineDataSource)
+
+                        val hlsSource: MediaSource = HlsMediaSource.Factory(cacheDataSource)
+                            .setAllowChunklessPreparation(false)
+                            .createMediaSource(playerMediaItem.build())
+
+                        exoPlayer.setMediaSource(hlsSource)
+                    } else {
+                        val hlsSource: MediaSource = HlsMediaSource.Factory(httpEngineDataSource)
+                            .setAllowChunklessPreparation(false)
+                            .createMediaSource(playerMediaItem.build())
+
+                        exoPlayer.setMediaSource(hlsSource)
+                    }
                 } else {
-                    cacheDataSource.setUpstreamDataSourceFactory(DefaultDataSource.Factory(this@PlayerService))
+                    val defaultDataSource: DefaultDataSource.Factory = DefaultDataSource.Factory(this@PlayerService)
+                    if (!Application.live) {
+                        cacheDataSource.setUpstreamDataSourceFactory(defaultDataSource)
+
+                        val hlsSource: MediaSource = HlsMediaSource.Factory(cacheDataSource)
+                            .setAllowChunklessPreparation(false)
+                            .createMediaSource(playerMediaItem.build())
+
+                        exoPlayer.setMediaSource(hlsSource)
+                    } else {
+                        val hlsSource: MediaSource = HlsMediaSource.Factory(defaultDataSource)
+                            .setAllowChunklessPreparation(false)
+                            .createMediaSource(playerMediaItem.build())
+
+                        exoPlayer.setMediaSource(hlsSource)
+                    }
                 }
 
-                val hlsSource: MediaSource = HlsMediaSource.Factory(cacheDataSource)
-                    .setAllowChunklessPreparation(false)
-                    .createMediaSource(playerMediaItem.build())
-
-                exoPlayer.setMediaSource(hlsSource)
                 exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
                 exoPlayer.playbackParameters = PlaybackParameters(1.0f)
                 exoPlayer.trackSelectionParameters = exoPlayer.trackSelectionParameters.buildUpon()
