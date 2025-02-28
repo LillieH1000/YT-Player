@@ -203,7 +203,10 @@ class Player: ComponentActivity(), Player.Listener {
         AndroidView(
             modifier = Modifier
                 .background(colorResource(R.color.black))
-                .fillMaxSize(),
+                .fillMaxSize()
+                .navigationBarsPadding()
+                .statusBarsPadding()
+                .systemBarsPadding(),
             factory = { context ->
                 PlayerView(context).apply {
                     player = playerController
@@ -211,11 +214,13 @@ class Player: ComponentActivity(), Player.Listener {
                 }
             },
         )
-        Row(modifier = Modifier
-            .fillMaxSize()
-            .navigationBarsPadding()
-            .statusBarsPadding()
-            .systemBarsPadding()) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .navigationBarsPadding()
+                .statusBarsPadding()
+                .systemBarsPadding()
+        ) {
             Text(
                 text = Application.title,
                 color = colorResource(R.color.white)
