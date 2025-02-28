@@ -1,35 +1,34 @@
 package h.lillie.ytplayer
 
+import android.app.PictureInPictureParams
 import android.content.ClipboardManager
-import android.net.Uri
-import android.net.http.HttpEngine
+import android.content.ComponentName
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.ext.SdkExtensions
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
-import androidx.media3.common.MimeTypes
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.datasource.HttpEngineDataSource
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.hls.HlsMediaSource
-import androidx.media3.exoplayer.source.MediaSource
+import androidx.media3.session.MediaController
+import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
+import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(UnstableApi::class)
-class Player: ComponentActivity() {
+class Player: ComponentActivity(), Player.Listener {
+    private lateinit var playerControllerFuture: ListenableFuture<MediaController>
+    private lateinit var playerController: MediaController
     private var isFirstLaunch: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,58 +51,44 @@ class Player: ComponentActivity() {
                         val request = Requests()
                         request.ytdlp(id)
                         request.sponsorBlock(id)
-                        setContent {
-                            CreatePlayer()
-                        }
+                        createPlayer()
                     }
                 }
             }
         }
     }
 
-    @Composable
-    private fun CreatePlayer() {
-        if (Build.VERSION.SDK_INT >= 34 && SdkExtensions.getExtensionVersion(Build.VERSION_CODES.S) >= 7) {
-            val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
-                .setTitle(Application.title)
-                .setArtist(Application.author)
-                .setArtworkUri(Uri.parse(Application.artwork))
-                .build()
+    private fun createPlayer() {
+        val sessionToken = SessionToken(this, ComponentName(this, PlayerService::class.java))
+        playerControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
+        playerControllerFuture.addListener({
+            playerController = playerControllerFuture.get()
+            playerController.addListener(this)
 
-            val playerMediaItem: MediaItem = MediaItem.Builder()
-                .setMimeType(MimeTypes.APPLICATION_M3U8)
-                .setMediaMetadata(playerMediaMetadata)
-                .setUri(Uri.parse(Application.hlsUrl))
-                .build()
+            setContent {
+                AndroidView(
+                    modifier = Modifier.fillMaxSize(),
+                    factory = { context ->
+                        PlayerView(context).apply {
+                            player = playerController
+                            useController = true
+                        }
+                    },
+                )
+            }
 
-            val httpEngine: HttpEngine = HttpEngine.Builder(this)
-                .setEnableHttp2(true)
-                .build()
+            if (packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && Build.VERSION.SDK_INT >= 31) {
+                setPictureInPictureParams(
+                    PictureInPictureParams.Builder()
+                        .setAutoEnterEnabled(true)
+                        .setSeamlessResizeEnabled(true)
+                        .build()
+                )
+            }
 
-            val httpEngineDataSource: HttpEngineDataSource.Factory = HttpEngineDataSource.Factory(httpEngine, MoreExecutors.directExecutor())
-            val hlsSource: MediaSource = HlsMediaSource.Factory(httpEngineDataSource)
-                .setAllowChunklessPreparation(false)
-                .createMediaSource(playerMediaItem)
-
-            val exoPlayer: ExoPlayer = ExoPlayer.Builder(this)
-                .setSeekBackIncrementMs(10000)
-                .setSeekForwardIncrementMs(10000)
-                .build()
-
-            exoPlayer.setMediaSource(hlsSource)
-
-            exoPlayer.playWhenReady = true
-            exoPlayer.prepare()
-
-            AndroidView(
-                modifier = Modifier.fillMaxSize(),
-                factory = { context ->
-                    PlayerView(context).apply {
-                        player = exoPlayer
-                        useController = true
-                    }
-                },
-            )
-        }
+            val broadcastIntent = Intent("h.lillie.ytplayer.info")
+            broadcastIntent.setPackage(this.packageName)
+            sendBroadcast(broadcastIntent)
+        }, MoreExecutors.directExecutor())
     }
 }
