@@ -69,7 +69,7 @@
         android:visibility="gone">
         <ImageButton
             android:id="@+id/playPauseRestartButton"
-            android:background="@drawable/imagebutton"
+            android:background="@drawable/image"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_centerInParent="true"
@@ -134,7 +134,7 @@
                 android:orientation="horizontal">
                 <ImageButton
                     android:id="@+id/closeButton"
-                    android:background="@drawable/imagebutton"
+                    android:background="@drawable/image"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:focusable="true"
@@ -149,7 +149,7 @@
                     tools:ignore="ContentDescription" />
                 <ImageButton
                     android:id="@+id/settingsButton"
-                    android:background="@drawable/imagebutton"
+                    android:background="@drawable/image"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:focusable="true"
@@ -181,7 +181,7 @@
         android:clickable="true">
         <RelativeLayout
             android:id="@+id/castView"
-            android:background="@drawable/textbutton"
+            android:background="@drawable/text"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:focusable="true"
@@ -288,7 +288,7 @@
             android:layout_height="28dp">
             <TextView
                 android:id="@+id/speedViewMinus"
-                android:background="@drawable/textbutton"
+                android:background="@drawable/text"
                 android:layout_width="75dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
@@ -307,7 +307,7 @@
                 tools:ignore="HardcodedText" />
             <TextView
                 android:id="@+id/speedViewPlus"
-                android:background="@drawable/textbutton"
+                android:background="@drawable/text"
                 android:layout_width="75dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
