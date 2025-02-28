@@ -1,6 +1,5 @@
 [versions]
 activityComposeVersion = "1.10.1"
-appcompatVersion = "1.7.0"
 chaquopyVersion = "16.0.0"
 coilVersion = "3.1.0"
 composeBomVersion = "2025.02.00"
@@ -18,7 +17,6 @@ uiVersion = "1.7.8"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityComposeVersion" }
-androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBomVersion" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreVersion" }
 androidx-lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", version.ref = "lifecycleVersion" }
