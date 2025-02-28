@@ -22,7 +22,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -40,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowInsetsCompat
@@ -200,6 +203,9 @@ class Player: ComponentActivity(), Player.Listener {
     private fun CreatePlayerUI() {
         var showOverlay by remember { mutableStateOf(false) }
         val isPlaying by remember { isPlaying }
+
+        // Player View
+
         AndroidView(
             modifier = Modifier
                 .background(colorResource(R.color.black))
@@ -214,6 +220,9 @@ class Player: ComponentActivity(), Player.Listener {
                 }
             },
         )
+
+        // 3 View
+
         Row(
             modifier = Modifier
                 .fillMaxSize()
@@ -221,10 +230,6 @@ class Player: ComponentActivity(), Player.Listener {
                 .statusBarsPadding()
                 .systemBarsPadding()
         ) {
-            Text(
-                text = Application.title,
-                color = colorResource(R.color.white)
-            )
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
@@ -259,33 +264,7 @@ class Player: ComponentActivity(), Player.Listener {
                             }
                         )
                     }
-            ) {
-                if (showOverlay) {
-                    IconButton(
-                        modifier = Modifier.align(Alignment.Center),
-                        onClick = {
-                            if (!playerController.isPlaying) {
-                                playerController.play()
-                            } else {
-                                playerController.pause()
-                            }
-                        }
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(50.dp),
-                            painter = if (isPlaying == 1) {
-                                painterResource(androidx.media3.session.R.drawable.media3_icon_play)
-                            } else if (isPlaying == 2) {
-                                painterResource(androidx.media3.session.R.drawable.media3_icon_pause)
-                            } else {
-                                painterResource(androidx.media3.session.R.drawable.media3_icon_skip_back)
-                            },
-                            tint = colorResource(R.color.white),
-                            contentDescription = ""
-                        )
-                    }
-                }
-            }
+            )
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
@@ -305,6 +284,58 @@ class Player: ComponentActivity(), Player.Listener {
                         )
                     }
             )
+        }
+
+        // Overlay View
+
+        if (showOverlay) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .navigationBarsPadding()
+                    .statusBarsPadding()
+                    .systemBarsPadding()
+            ) {
+                IconButton(
+                    modifier = Modifier.align(Alignment.Center),
+                    onClick = {
+                        if (!playerController.isPlaying) {
+                            playerController.play()
+                        } else {
+                            playerController.pause()
+                        }
+                    }
+                ) {
+                    Icon(
+                        modifier = Modifier.size(50.dp),
+                        painter = if (isPlaying == 1) {
+                            painterResource(androidx.media3.session.R.drawable.media3_icon_play)
+                        } else if (isPlaying == 2) {
+                            painterResource(androidx.media3.session.R.drawable.media3_icon_pause)
+                        } else {
+                            painterResource(androidx.media3.session.R.drawable.media3_icon_skip_back)
+                        },
+                        tint = colorResource(R.color.white),
+                        contentDescription = ""
+                    )
+                }
+                Row(
+                    modifier = Modifier
+                        .height(50.dp)
+                        .padding(start = 10.dp, end = 10.dp)
+                        .navigationBarsPadding()
+                        .statusBarsPadding()
+                        .systemBarsPadding()
+                ) {
+                    Text(
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                        text = Application.title,
+                        color = colorResource(R.color.white),
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
+                    )
+                }
+            }
         }
     }
 
