@@ -1,15 +1,18 @@
 package h.lillie.ytplayer
 
+import android.annotation.SuppressLint
 import android.app.PictureInPictureParams
 import android.content.ClipboardManager
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.activity.ComponentActivity
+import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.OptIn
@@ -35,6 +38,8 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
@@ -47,6 +52,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(UnstableApi::class)
+@SuppressLint("SwitchIntDef")
 class Player: ComponentActivity(), Player.Listener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
     private lateinit var playerController: MediaController
@@ -56,6 +62,21 @@ class Player: ComponentActivity(), Player.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        onBackPressedDispatcher.addCallback(this) {
+            when (resources.configuration.orientation) {
+                Configuration.ORIENTATION_PORTRAIT -> {
+                    if (!Application.androidTVDevice && !Application.chromeOSDevice && !Application.wearOSDevice) {
+                        WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
+                    }
+                }
+                Configuration.ORIENTATION_LANDSCAPE -> {
+                    if (!Application.androidTVDevice && !Application.chromeOSDevice && !Application.wearOSDevice) {
+                        WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
+                    }
+                }
+            }
+        }
 
         when {
             intent?.action == Intent.ACTION_SEND -> {
@@ -73,6 +94,22 @@ class Player: ComponentActivity(), Player.Listener {
         createRequest(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        when (newConfig.orientation) {
+            Configuration.ORIENTATION_PORTRAIT -> {
+                if (!Application.androidTVDevice && !Application.chromeOSDevice && !Application.wearOSDevice) {
+                    WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
+                }
+            }
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                if (!Application.androidTVDevice && !Application.chromeOSDevice && !Application.wearOSDevice) {
+                    WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
+                }
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         if (this::playerHandler.isInitialized) {
@@ -87,12 +124,26 @@ class Player: ComponentActivity(), Player.Listener {
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (hasFocus && !isFirstLaunch) {
-            isFirstLaunch = true
-            val clipManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-            val clipData = clipManager.primaryClip
-            if (clipData != null && clipData.itemCount > 0) {
-                createRequest(clipData.getItemAt(0).text.toString())
+        if (hasFocus) {
+            if (!isFirstLaunch) {
+                isFirstLaunch = true
+                val clipManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                val clipData = clipManager.primaryClip
+                if (clipData != null && clipData.itemCount > 0) {
+                    createRequest(clipData.getItemAt(0).text.toString())
+                }
+            }
+            when (resources.configuration.orientation) {
+                Configuration.ORIENTATION_PORTRAIT -> {
+                    if (!Application.androidTVDevice && !Application.chromeOSDevice && !Application.wearOSDevice) {
+                        WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
+                    }
+                }
+                Configuration.ORIENTATION_LANDSCAPE -> {
+                    if (!Application.androidTVDevice && !Application.chromeOSDevice && !Application.wearOSDevice) {
+                        WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
+                    }
+                }
             }
         }
     }
