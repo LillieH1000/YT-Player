@@ -55,7 +55,7 @@ import java.util.concurrent.TimeUnit
 
 @OptIn(UnstableApi::class)
 @Suppress("Deprecation")
-@SuppressLint("ClickableViewAccessibility", "ObsoleteSdkInt", "SetTextI18n", "SwitchIntDef")
+@SuppressLint("ClickableViewAccessibility", "SetTextI18n", "SwitchIntDef")
 class Player: AppCompatActivity(), Player.Listener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
     private lateinit var playerController: MediaController
@@ -155,7 +155,7 @@ class Player: AppCompatActivity(), Player.Listener {
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        if (!Application.wearOSDevice && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && Build.VERSION.SDK_INT <= 30 && Build.VERSION.SDK_INT >= 26) {
+        if (!Application.wearOSDevice && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && Build.VERSION.SDK_INT == 30) {
             enterPictureInPictureMode(PictureInPictureParams.Builder().build())
         }
     }
