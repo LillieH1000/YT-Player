@@ -36,6 +36,21 @@ class Player: ComponentActivity(), Player.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        when {
+            intent?.action == Intent.ACTION_SEND -> {
+                if (intent.type == "text/plain") {
+                    isFirstLaunch = true
+                    createRequest(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
+                }
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        createRequest(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -45,17 +60,20 @@ class Player: ComponentActivity(), Player.Listener {
             val clipManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
             val clipData = clipManager.primaryClip
             if (clipData != null && clipData.itemCount > 0) {
-                val url: String = clipData.getItemAt(0).text.toString()
-                val youtubeRegex = Regex("^.*(?:(?:youtu\\.be\\/|v\\/|vi\\/|u\\/\\w\\/|embed\\/|shorts\\/|live\\/)|(?:(?:watch)?\\?v(?:i)?=|\\&v(?:i)?=))([^#\\&\\?]*).*")
-                if (youtubeRegex.containsMatchIn(url)) {
-                    val id = youtubeRegex.findAll(url).map { it.groupValues[1] }.joinToString()
-                    CoroutineScope(Dispatchers.Main).launch {
-                        val request = Requests()
-                        request.ytdlp(id)
-                        request.sponsorBlock(id)
-                        createPlayer()
-                    }
-                }
+                createRequest(clipData.getItemAt(0).text.toString())
+            }
+        }
+    }
+
+    private fun createRequest(url: String) {
+        val youtubeRegex = Regex("^.*(?:(?:youtu\\.be\\/|v\\/|vi\\/|u\\/\\w\\/|embed\\/|shorts\\/|live\\/)|(?:(?:watch)?\\?v(?:i)?=|\\&v(?:i)?=))([^#\\&\\?]*).*")
+        if (youtubeRegex.containsMatchIn(url)) {
+            val id = youtubeRegex.findAll(url).map { it.groupValues[1] }.joinToString()
+            CoroutineScope(Dispatchers.Main).launch {
+                val request = Requests()
+                request.ytdlp(id)
+                request.sponsorBlock(id)
+                createPlayer()
             }
         }
     }
