@@ -11,7 +11,7 @@
         android:label="YT Player"
         android:name=".Application"
         android:supportsRtl="false"
-        android:theme="@android:style/Theme.Material.Light.NoActionBar"
+        android:theme="@android:style/Theme.Material.NoActionBar"
         tools:ignore="DataExtractionRules, MissingApplicationIcon">
         <activity
             android:name=".Player"
