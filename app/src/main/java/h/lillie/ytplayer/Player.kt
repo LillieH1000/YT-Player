@@ -17,10 +17,20 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
@@ -86,6 +96,7 @@ class Player: ComponentActivity(), Player.Listener {
 
     @Composable
     private fun CreatePlayerUI() {
+        var showOverlay by remember { mutableStateOf(false) }
         AndroidView(
             modifier = Modifier
                 .background(colorResource(R.color.black))
@@ -105,6 +116,11 @@ class Player: ComponentActivity(), Player.Listener {
                     .pointerInput(Unit) {
                         detectTapGestures(
                             onTap = {
+                                if (!showOverlay) {
+                                    showOverlay = true
+                                } else {
+                                    showOverlay = false
+                                }
                             },
                             onDoubleTap = {
                                 playerController.seekBack()
@@ -119,10 +135,39 @@ class Player: ComponentActivity(), Player.Listener {
                     .pointerInput(Unit) {
                         detectTapGestures(
                             onTap = {
+                                if (!showOverlay) {
+                                    showOverlay = true
+                                } else {
+                                    showOverlay = false
+                                }
                             }
                         )
                     }
-            )
+            ) {
+                if (showOverlay) {
+                    IconButton(
+                        modifier = Modifier.align(Alignment.Center),
+                        onClick = {
+                            if (!playerController.isPlaying) {
+                                playerController.play()
+                            } else {
+                                playerController.pause()
+                            }
+                        }
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(50.dp),
+                            painter = if (!playerController.isPlaying) {
+                                painterResource(androidx.media3.session.R.drawable.media3_icon_play)
+                            } else {
+                                painterResource(androidx.media3.session.R.drawable.media3_icon_pause)
+                            },
+                            tint = colorResource(R.color.white),
+                            contentDescription = ""
+                        )
+                    }
+                }
+            }
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
@@ -130,6 +175,11 @@ class Player: ComponentActivity(), Player.Listener {
                     .pointerInput(Unit) {
                         detectTapGestures(
                             onTap = {
+                                if (!showOverlay) {
+                                    showOverlay = true
+                                } else {
+                                    showOverlay = false
+                                }
                             },
                             onDoubleTap = {
                                 playerController.seekForward()
