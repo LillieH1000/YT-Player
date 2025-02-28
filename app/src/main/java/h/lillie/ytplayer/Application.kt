@@ -28,9 +28,6 @@ class Application : Application() {
         var title = String()
         var author = String()
         var artwork = String()
-        var views: Int = 0
-        var likes: Int = 0
-        var dislikes: Int? = 0
         var live: Boolean = false
         var enCaptions = String()
         var audioUrl = String()

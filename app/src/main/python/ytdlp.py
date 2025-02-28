@@ -21,8 +21,6 @@ def getInfo(videoID):
         info["title"] = y["title"]
         info["author"] = y["uploader"]
         info["artwork"] = y["thumbnail"]
-        info["views"] = y["view_count"]
-        info["likes"] = y["like_count"]
         info["live"] = y["is_live"]
         if ("en" in y["subtitles"]):
             for i in y["subtitles"]["en"]:

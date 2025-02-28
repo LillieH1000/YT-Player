@@ -148,21 +148,6 @@
                     app:tint="@color/white"
                     tools:ignore="ContentDescription" />
                 <ImageButton
-                    android:id="@+id/infoButton"
-                    android:background="@drawable/imagebutton"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:focusable="true"
-                    android:focusableInTouchMode="false"
-                    android:nextFocusUp="@+id/infoButton"
-                    android:nextFocusDown="@+id/infoButton"
-                    android:nextFocusLeft="@+id/infoButton"
-                    android:nextFocusRight="@+id/infoButton"
-                    android:src="@drawable/info"
-                    android:visibility="gone"
-                    app:tint="@color/white"
-                    tools:ignore="ContentDescription" />
-                <ImageButton
                     android:id="@+id/settingsButton"
                     android:background="@drawable/imagebutton"
                     android:layout_width="50dp"
@@ -340,16 +325,5 @@
                 android:textAllCaps="false"
                 tools:ignore="HardcodedText" />
         </RelativeLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/infoView"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="50dp"
-        android:background="@color/darkGrey"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:clickable="true">
     </LinearLayout>
 </RelativeLayout>
