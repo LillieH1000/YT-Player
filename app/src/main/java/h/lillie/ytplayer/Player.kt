@@ -24,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -138,9 +139,12 @@ class Player: ComponentActivity(), Player.Listener {
         }, MoreExecutors.directExecutor())
     }
 
+    private var isPlaying = mutableIntStateOf(0)
+
     @Composable
     private fun CreatePlayerUI() {
         var showOverlay by remember { mutableStateOf(false) }
+        val isPlaying by remember { isPlaying }
         AndroidView(
             modifier = Modifier
                 .background(colorResource(R.color.black))
@@ -201,10 +205,12 @@ class Player: ComponentActivity(), Player.Listener {
                     ) {
                         Icon(
                             modifier = Modifier.size(50.dp),
-                            painter = if (!playerController.isPlaying) {
+                            painter = if (isPlaying == 1) {
                                 painterResource(androidx.media3.session.R.drawable.media3_icon_play)
-                            } else {
+                            } else if (isPlaying == 2) {
                                 painterResource(androidx.media3.session.R.drawable.media3_icon_pause)
+                            } else {
+                                painterResource(androidx.media3.session.R.drawable.media3_icon_skip_back)
                             },
                             tint = colorResource(R.color.white),
                             contentDescription = ""
@@ -236,6 +242,17 @@ class Player: ComponentActivity(), Player.Listener {
 
     private val playerTask = object: Runnable {
         override fun run() {
+            if (this@Player::playerController.isInitialized && playerController.mediaItemCount == 1) {
+                if (playerController.playbackState == Player.STATE_ENDED) {
+                    isPlaying.intValue = 0
+                } else {
+                    if (!playerController.isPlaying) {
+                        isPlaying.intValue = 1
+                    } else {
+                        isPlaying.intValue = 2
+                    }
+                }
+            }
             playerHandler.postDelayed(this, 1000)
         }
     }
