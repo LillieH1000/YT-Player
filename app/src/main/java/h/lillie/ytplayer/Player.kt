@@ -7,6 +7,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -47,6 +49,7 @@ import kotlinx.coroutines.launch
 class Player: ComponentActivity(), Player.Listener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
     private lateinit var playerController: MediaController
+    private lateinit var playerHandler: Handler
     private var isFirstLaunch: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,6 +70,18 @@ class Player: ComponentActivity(), Player.Listener {
         super.onNewIntent(intent)
         setIntent(intent)
         createRequest(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (this::playerHandler.isInitialized) {
+            playerHandler.post(playerTask)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        playerHandler.removeCallbacksAndMessages(null)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -113,6 +128,9 @@ class Player: ComponentActivity(), Player.Listener {
                         .build()
                 )
             }
+
+            playerHandler = Handler(Looper.getMainLooper())
+            playerHandler.post(playerTask)
 
             val broadcastIntent = Intent("h.lillie.ytplayer.info")
             broadcastIntent.setPackage(this.packageName)
@@ -213,6 +231,12 @@ class Player: ComponentActivity(), Player.Listener {
                         )
                     }
             )
+        }
+    }
+
+    private val playerTask = object: Runnable {
+        override fun run() {
+            playerHandler.postDelayed(this, 1000)
         }
     }
 }
