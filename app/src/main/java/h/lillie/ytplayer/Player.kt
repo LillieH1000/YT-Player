@@ -12,8 +12,14 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.Player
@@ -78,6 +84,62 @@ class Player: ComponentActivity(), Player.Listener {
         }
     }
 
+    @Composable
+    private fun CreatePlayerUI() {
+        AndroidView(
+            modifier = Modifier
+                .background(colorResource(R.color.black))
+                .fillMaxSize(),
+            factory = { context ->
+                PlayerView(context).apply {
+                    player = playerController
+                    useController = false
+                }
+            },
+        )
+        Row(modifier = Modifier.fillMaxSize()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f)
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onTap = {
+                            },
+                            onDoubleTap = {
+                                playerController.seekBack()
+                            }
+                        )
+                    }
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f)
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onTap = {
+                            }
+                        )
+                    }
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f)
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onTap = {
+                            },
+                            onDoubleTap = {
+                                playerController.seekForward()
+                            }
+                        )
+                    }
+            )
+        }
+    }
+
     private fun createPlayer() {
         val sessionToken = SessionToken(this, ComponentName(this, PlayerService::class.java))
         playerControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
@@ -86,17 +148,7 @@ class Player: ComponentActivity(), Player.Listener {
             playerController.addListener(this)
 
             setContent {
-                AndroidView(
-                    modifier = Modifier
-                        .background(colorResource(R.color.black))
-                        .fillMaxSize(),
-                    factory = { context ->
-                        PlayerView(context).apply {
-                            player = playerController
-                            useController = true
-                        }
-                    },
-                )
+                CreatePlayerUI()
             }
 
             if (packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && Build.VERSION.SDK_INT >= 31) {
