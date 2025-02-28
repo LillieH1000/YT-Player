@@ -14,15 +14,5 @@
         android:theme="@style/Theme.MaterialComponents.NoActionBar.Bridge"
         tools:ignore="DataExtractionRules, MissingApplicationIcon">
         <meta-data android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME" android:value="h.lillie.ytplayer.CastOptionsProvider" />
-        <service
-            android:name=".PlayerService"
-            android:enabled="true"
-            android:exported="false"
-            android:stopWithTask="true"
-            android:foregroundServiceType="mediaPlayback">
-            <intent-filter>
-                <action android:name="androidx.media3.session.MediaSessionService" />
-            </intent-filter>
-        </service>
     </application>
 </manifest>
