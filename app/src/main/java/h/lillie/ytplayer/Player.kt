@@ -94,6 +94,32 @@ class Player: ComponentActivity(), Player.Listener {
         }
     }
 
+    private fun createPlayer() {
+        val sessionToken = SessionToken(this, ComponentName(this, PlayerService::class.java))
+        playerControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
+        playerControllerFuture.addListener({
+            playerController = playerControllerFuture.get()
+            playerController.addListener(this)
+
+            setContent {
+                CreatePlayerUI()
+            }
+
+            if (packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && Build.VERSION.SDK_INT >= 31) {
+                setPictureInPictureParams(
+                    PictureInPictureParams.Builder()
+                        .setAutoEnterEnabled(true)
+                        .setSeamlessResizeEnabled(true)
+                        .build()
+                )
+            }
+
+            val broadcastIntent = Intent("h.lillie.ytplayer.info")
+            broadcastIntent.setPackage(this.packageName)
+            sendBroadcast(broadcastIntent)
+        }, MoreExecutors.directExecutor())
+    }
+
     @Composable
     private fun CreatePlayerUI() {
         var showOverlay by remember { mutableStateOf(false) }
@@ -188,31 +214,5 @@ class Player: ComponentActivity(), Player.Listener {
                     }
             )
         }
-    }
-
-    private fun createPlayer() {
-        val sessionToken = SessionToken(this, ComponentName(this, PlayerService::class.java))
-        playerControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
-        playerControllerFuture.addListener({
-            playerController = playerControllerFuture.get()
-            playerController.addListener(this)
-
-            setContent {
-                CreatePlayerUI()
-            }
-
-            if (packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && Build.VERSION.SDK_INT >= 31) {
-                setPictureInPictureParams(
-                    PictureInPictureParams.Builder()
-                        .setAutoEnterEnabled(true)
-                        .setSeamlessResizeEnabled(true)
-                        .build()
-                )
-            }
-
-            val broadcastIntent = Intent("h.lillie.ytplayer.info")
-            broadcastIntent.setPackage(this.packageName)
-            sendBroadcast(broadcastIntent)
-        }, MoreExecutors.directExecutor())
     }
 }
