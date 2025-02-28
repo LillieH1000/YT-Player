@@ -43,5 +43,6 @@ material = { module = "com.google.android.material:material", version.ref = "mat
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidVersion" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVersion" }
 chaquopy-python = { id = "com.chaquo.python", version.ref = "chaquopyVersion" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVersion" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlinVersion" }
