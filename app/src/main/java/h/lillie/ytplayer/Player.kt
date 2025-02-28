@@ -101,7 +101,9 @@ class Player: ComponentActivity(), Player.Listener {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
-        createRequest(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
+        if (!Application.androidTVDevice && !Application.chromeOSDevice && !Application.wearOSDevice) {
+            createRequest(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
+        }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
