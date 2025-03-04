@@ -303,14 +303,19 @@ class Player: ComponentActivity(), Player.Listener {
                         } else {
                             Modifier.size(50.dp).alpha(1f)
                         },
-                        painter = if (isPlaying == 1) {
-                            painterResource(androidx.media3.session.R.drawable.media3_icon_skip_back)
-                        } else if (isPlaying == 2) {
-                            painterResource(androidx.media3.session.R.drawable.media3_icon_play)
-                        } else if (isPlaying == 3) {
-                            painterResource(androidx.media3.session.R.drawable.media3_icon_pause)
-                        } else {
-                            painterResource(R.drawable.empty)
+                        painter = when (isPlaying) {
+                            1 -> {
+                                painterResource(androidx.media3.session.R.drawable.media3_icon_skip_back)
+                            }
+                            2 -> {
+                                painterResource(androidx.media3.session.R.drawable.media3_icon_play)
+                            }
+                            3 -> {
+                                painterResource(androidx.media3.session.R.drawable.media3_icon_pause)
+                            }
+                            else -> {
+                                painterResource(R.drawable.empty)
+                            }
                         },
                         tint = colorResource(R.color.white),
                         contentDescription = ""
