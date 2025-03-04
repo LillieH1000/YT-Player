@@ -17,6 +17,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -407,6 +408,7 @@ class Player: ComponentActivity(), Player.Listener {
                     .statusBarsPadding()
                     .systemBarsPadding()
                     .background(colorResource(R.color.darkGrey))
+                    .clickable(enabled = true, interactionSource = null, indication = null, onClick = {})
             ) {
                 // Subtitles (EN)
                 Row(
