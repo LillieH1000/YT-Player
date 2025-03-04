@@ -41,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
@@ -313,13 +314,19 @@ class Player: ComponentActivity(), Player.Listener {
                     }
                 ) {
                     Icon(
-                        modifier = Modifier.size(50.dp),
+                        modifier = if (isPlaying == 0) {
+                            Modifier.size(50.dp).alpha(0f)
+                        } else {
+                            Modifier.size(50.dp).alpha(1f)
+                        },
                         painter = if (isPlaying == 1) {
-                            painterResource(androidx.media3.session.R.drawable.media3_icon_play)
+                            painterResource(androidx.media3.session.R.drawable.media3_icon_skip_back)
                         } else if (isPlaying == 2) {
+                            painterResource(androidx.media3.session.R.drawable.media3_icon_play)
+                        } else if (isPlaying == 3) {
                             painterResource(androidx.media3.session.R.drawable.media3_icon_pause)
                         } else {
-                            painterResource(androidx.media3.session.R.drawable.media3_icon_skip_back)
+                            painterResource(R.drawable.empty)
                         },
                         tint = colorResource(R.color.white),
                         contentDescription = ""
@@ -363,12 +370,12 @@ class Player: ComponentActivity(), Player.Listener {
         override fun run() {
             if (this@Player::playerController.isInitialized && playerController.mediaItemCount == 1) {
                 if (playerController.playbackState == Player.STATE_ENDED) {
-                    isPlaying.intValue = 0
+                    isPlaying.intValue = 1
                 } else {
                     if (!playerController.isPlaying) {
-                        isPlaying.intValue = 1
-                    } else {
                         isPlaying.intValue = 2
+                    } else {
+                        isPlaying.intValue = 3
                     }
                 }
             }
