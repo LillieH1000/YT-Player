@@ -296,6 +296,7 @@ class Player: ComponentActivity(), Player.Listener {
                     .systemBarsPadding()
                     .background(colorResource(R.color.dimBlack))
             ) {
+                // Play/Pause/Restart Button
                 IconButton(
                     modifier = Modifier.align(Alignment.Center),
                     onClick = {
@@ -332,6 +333,7 @@ class Player: ComponentActivity(), Player.Listener {
                         contentDescription = ""
                     )
                 }
+                // Top Row
                 Row(
                     modifier = Modifier
                         .height(50.dp)
@@ -341,6 +343,7 @@ class Player: ComponentActivity(), Player.Listener {
                         .statusBarsPadding()
                         .systemBarsPadding()
                 ) {
+                    // Title View
                     Column(
                         modifier = Modifier
                             .weight(1f)
@@ -353,6 +356,7 @@ class Player: ComponentActivity(), Player.Listener {
                             maxLines = 1
                         )
                     }
+                    // Menu Buttons
                     Column(
                         modifier = Modifier
                             .wrapContentWidth()
@@ -361,6 +365,7 @@ class Player: ComponentActivity(), Player.Listener {
                         Row(
                             modifier = Modifier.wrapContentWidth()
                         ) {
+                            // Close Button
                             if (Application.androidTVDevice) {
                                 IconButton(
                                     modifier = Modifier.width(50.dp),
@@ -375,6 +380,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     )
                                 }
                             }
+                            // Settings Button
                             IconButton(
                                 modifier = Modifier.width(50.dp),
                                 onClick = {
