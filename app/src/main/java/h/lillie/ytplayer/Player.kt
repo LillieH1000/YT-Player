@@ -19,6 +19,7 @@ import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,6 +31,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -45,7 +47,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -324,25 +325,34 @@ class Player: ComponentActivity(), Player.Listener {
                         .statusBarsPadding()
                         .systemBarsPadding()
                 ) {
-                    Text(
+                    Column(
                         modifier = Modifier
-                            .width(LocalConfiguration.current.screenWidthDp.dp - 50.dp)
-                            .align(Alignment.CenterVertically),
-                        text = title,
-                        color = colorResource(R.color.white),
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1
-                    )
-                    IconButton(
-                        modifier = Modifier.align(Alignment.CenterVertically),
-                        onClick = {
-                        }
+                            .weight(1f)
+                            .align(Alignment.CenterVertically)
                     ) {
-                        Icon(
-                            painter = painterResource(R.drawable.settings),
-                            tint = colorResource(R.color.white),
-                            contentDescription = ""
+                        Text(
+                            text = title,
+                            color = colorResource(R.color.white),
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
                         )
+                    }
+                    Column(
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .align(Alignment.CenterVertically)
+                    ) {
+                        IconButton(
+                            modifier = Modifier.width(50.dp),
+                            onClick = {
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.settings),
+                                tint = colorResource(R.color.white),
+                                contentDescription = ""
+                            )
+                        }
                     }
                 }
             }
