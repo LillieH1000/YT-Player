@@ -34,6 +34,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -60,14 +62,15 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 @OptIn(UnstableApi::class)
 @SuppressLint("SwitchIntDef")
 class Player: ComponentActivity(), Player.Listener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
-    private lateinit var playerController: MediaController
     private lateinit var playerHandler: Handler
+    private var playerController = MutableStateFlow<MediaController?>(null)
     private var isFirstLaunch: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,7 +96,9 @@ class Player: ComponentActivity(), Player.Listener {
             intent?.action == Intent.ACTION_SEND -> {
                 if (intent.type == "text/plain") {
                     isFirstLaunch = true
-                    createRequest(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
+                    setContent {
+                        CreatePlayerUI(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
+                    }
                 }
             }
         }
@@ -103,7 +108,9 @@ class Player: ComponentActivity(), Player.Listener {
         super.onNewIntent(intent)
         setIntent(intent)
         if (!Application.androidTVDevice && !Application.chromeOSDevice && !Application.wearOSDevice) {
-            createRequest(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
+            setContent {
+                CreatePlayerUI(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
+            }
         }
     }
 
@@ -143,7 +150,9 @@ class Player: ComponentActivity(), Player.Listener {
                 val clipManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                 val clipData = clipManager.primaryClip
                 if (clipData != null && clipData.itemCount > 0) {
-                    createRequest(clipData.getItemAt(0).text.toString())
+                    setContent {
+                        CreatePlayerUI(clipData.getItemAt(0).text.toString())
+                    }
                 }
             }
             when (resources.configuration.orientation) {
@@ -178,12 +187,8 @@ class Player: ComponentActivity(), Player.Listener {
         val sessionToken = SessionToken(this, ComponentName(this, PlayerService::class.java))
         playerControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
         playerControllerFuture.addListener({
-            playerController = playerControllerFuture.get()
-            playerController.addListener(this)
-
-            setContent {
-                CreatePlayerUI()
-            }
+            playerController.value = playerControllerFuture.get()
+            playerController.value!!.addListener(this)
 
             if (packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && Build.VERSION.SDK_INT >= 31) {
                 setPictureInPictureParams(
@@ -206,9 +211,14 @@ class Player: ComponentActivity(), Player.Listener {
     private var isPlaying = mutableIntStateOf(0)
 
     @Composable
-    private fun CreatePlayerUI() {
+    private fun CreatePlayerUI(t: String) {
+        LaunchedEffect(t) {
+            createRequest(t)
+        }
+
         var showOverlay by remember { mutableStateOf(false) }
         val isPlaying by remember { isPlaying }
+        val player by playerController.collectAsState()
 
         // Player View
 
@@ -221,10 +231,13 @@ class Player: ComponentActivity(), Player.Listener {
                 .systemBarsPadding(),
             factory = { context ->
                 PlayerView(context).apply {
-                    player = playerController
+                    this.player = player
                     useController = false
                 }
             },
+            update = { playerView ->
+                playerView.player = player
+            }
         )
 
         // 3 View
@@ -250,7 +263,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 }
                             },
                             onDoubleTap = {
-                                playerController.seekBack()
+                                playerController.value?.seekBack()
                             }
                         )
                     }
@@ -285,7 +298,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 }
                             },
                             onDoubleTap = {
-                                playerController.seekForward()
+                                playerController.value?.seekForward()
                             }
                         )
                     }
@@ -306,10 +319,12 @@ class Player: ComponentActivity(), Player.Listener {
                 IconButton(
                     modifier = Modifier.align(Alignment.Center),
                     onClick = {
-                        if (!playerController.isPlaying) {
-                            playerController.play()
-                        } else {
-                            playerController.pause()
+                        if (playerController.value != null) {
+                            if (!playerController.value!!.isPlaying) {
+                                playerController.value?.play()
+                            } else {
+                                playerController.value?.pause()
+                            }
                         }
                     }
                 ) {
@@ -368,11 +383,11 @@ class Player: ComponentActivity(), Player.Listener {
 
     private val playerTask = object: Runnable {
         override fun run() {
-            if (this@Player::playerController.isInitialized && playerController.mediaItemCount == 1) {
-                if (playerController.playbackState == Player.STATE_ENDED) {
+            if (playerController.value != null && playerController.value!!.mediaItemCount == 1) {
+                if (playerController.value!!.playbackState == Player.STATE_ENDED) {
                     isPlaying.intValue = 1
                 } else {
-                    if (!playerController.isPlaying) {
+                    if (!playerController.value!!.isPlaying) {
                         isPlaying.intValue = 2
                     } else {
                         isPlaying.intValue = 3
