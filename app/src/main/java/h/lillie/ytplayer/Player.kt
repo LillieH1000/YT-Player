@@ -31,9 +31,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,6 +48,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -54,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.media3.common.C
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
@@ -182,6 +186,9 @@ class Player: ComponentActivity(), Player.Listener {
         // Remembers
 
         var showOverlay by remember { mutableStateOf(false) }
+        var showSettings by remember { mutableStateOf(false) }
+        var subtitlesChecked by remember { mutableStateOf(false) }
+        var loopChecked by remember { mutableStateOf(false) }
         val isPlaying by remember { isPlaying }
 
         // States
@@ -230,6 +237,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 } else {
                                     showOverlay = false
                                 }
+                                showSettings = false
                             },
                             onDoubleTap = {
                                 playerController.value?.seekBack()
@@ -249,6 +257,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 } else {
                                     showOverlay = false
                                 }
+                                showSettings = false
                             }
                         )
                     }
@@ -265,6 +274,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 } else {
                                     showOverlay = false
                                 }
+                                showSettings = false
                             },
                             onDoubleTap = {
                                 playerController.value?.seekForward()
@@ -366,6 +376,11 @@ class Player: ComponentActivity(), Player.Listener {
                             IconButton(
                                 modifier = Modifier.width(50.dp),
                                 onClick = {
+                                    if (!showSettings) {
+                                        showSettings = true
+                                    } else {
+                                        showSettings = false
+                                    }
                                 }
                             ) {
                                 Icon(
@@ -375,6 +390,95 @@ class Player: ComponentActivity(), Player.Listener {
                                 )
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        // Settings View
+
+        if (showSettings) {
+            Column(
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .width(170.dp)
+                    .padding(start = 10.dp, end = 10.dp, top = 50.dp)
+                    .navigationBarsPadding()
+                    .statusBarsPadding()
+                    .systemBarsPadding()
+                    .background(colorResource(R.color.darkGrey))
+            ) {
+                // Subtitles (EN)
+                Row(
+                    modifier = Modifier
+                        .height(40.dp)
+                        .padding(start = 10.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .align(Alignment.CenterVertically)
+                    ) {
+                        Text(
+                            text = "Subtitles (EN)",
+                            color = colorResource(R.color.white),
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
+                    }
+                    Column(
+                    ) {
+                        Switch(
+                            modifier = Modifier.scale(0.8f),
+                            checked = subtitlesChecked,
+                            onCheckedChange = {
+                                subtitlesChecked = it
+                                if (!subtitlesChecked) {
+                                    playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
+                                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                                        .build()
+                                } else {
+                                    playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
+                                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
+                                        .setPreferredTextLanguage("en")
+                                        .build()
+                                }
+                            }
+                        )
+                    }
+                }
+                // Loop Video
+                Row(
+                    modifier = Modifier
+                        .height(40.dp)
+                        .padding(start = 10.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .align(Alignment.CenterVertically)
+                    ) {
+                        Text(
+                            text = "Loop Video",
+                            color = colorResource(R.color.white),
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
+                    }
+                    Column(
+                    ) {
+                        Switch(
+                            modifier = Modifier.scale(0.8f),
+                            checked = loopChecked,
+                            onCheckedChange = {
+                                loopChecked = it
+                                if (playerController.value?.repeatMode == Player.REPEAT_MODE_OFF) {
+                                    playerController.value?.repeatMode = Player.REPEAT_MODE_ONE
+                                } else {
+                                    playerController.value?.repeatMode = Player.REPEAT_MODE_OFF
+                                }
+                            }
+                        )
                     }
                 }
             }
