@@ -365,6 +365,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 IconButton(
                                     modifier = Modifier.width(50.dp),
                                     onClick = {
+                                        finish()
                                     }
                                 ) {
                                     Icon(
