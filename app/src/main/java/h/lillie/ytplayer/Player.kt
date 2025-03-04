@@ -194,7 +194,7 @@ class Player: ComponentActivity(), Player.Listener {
             factory = { context ->
                 PlayerView(context).apply {
                     this.player = player
-                    useController = false
+                    this.useController = false
                 }
             },
             update = { playerView ->
