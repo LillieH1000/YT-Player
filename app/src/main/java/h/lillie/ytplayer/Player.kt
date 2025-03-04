@@ -377,7 +377,7 @@ class Player: ComponentActivity(), Player.Listener {
     }
 
     private fun createRequest(url: String) {
-        val youtubeRegex = Regex("^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/|live/)|(?:(?:watch)?\\?v(?:i)?=|&v(?:i)?=))([^#&?]*).*")
+        val youtubeRegex = Regex("^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/|live/)|(?:(?:watch)?\\?vi?=|&vi?=))([^#&?]*).*")
         if (youtubeRegex.containsMatchIn(url)) {
             val id = youtubeRegex.findAll(url).map { it.groupValues[1] }.joinToString()
             CoroutineScope(Dispatchers.Main).launch {
