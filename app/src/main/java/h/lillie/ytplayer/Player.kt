@@ -173,9 +173,9 @@ class Player: ComponentActivity(), Player.Listener {
     private var isPlaying = mutableIntStateOf(0)
 
     @Composable
-    private fun CreatePlayerUI(t: String) {
-        LaunchedEffect(t) {
-            createRequest(t)
+    private fun CreatePlayerUI(url: String) {
+        LaunchedEffect(url) {
+            createRequest(url)
         }
 
         var showOverlay by remember { mutableStateOf(false) }
