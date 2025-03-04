@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.net.Uri
 import android.net.http.HttpEngine
 import android.os.Build
 import android.os.Bundle
@@ -14,6 +13,7 @@ import android.os.Looper
 import android.os.ext.SdkExtensions
 import android.widget.Toast
 import androidx.annotation.OptIn
+import androidx.core.net.toUri
 import androidx.media3.cast.CastPlayer
 import androidx.media3.cast.DefaultMediaItemConverter
 import androidx.media3.cast.SessionAvailabilityListener
@@ -126,13 +126,13 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
                     val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
                         .setTitle(Application.title.value)
                         .setArtist(Application.author)
-                        .setArtworkUri(Uri.parse(Application.artwork))
+                        .setArtworkUri(Application.artwork.toUri())
                         .build()
 
                     val playerMediaItem: MediaItem = MediaItem.Builder()
                         .setMimeType(MimeTypes.AUDIO_MP4)
                         .setMediaMetadata(playerMediaMetadata)
-                        .setUri(Uri.parse(Application.audioUrl))
+                        .setUri(Application.audioUrl.toUri())
                         .build()
 
                     castPlayer.setMediaItem(playerMediaItem, exoPlayer.currentPosition)
@@ -205,16 +205,16 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
                 val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
                     .setTitle(Application.title.value)
                     .setArtist(Application.author)
-                    .setArtworkUri(Uri.parse(Application.artwork))
+                    .setArtworkUri(Application.artwork.toUri())
                     .build()
 
                 val playerMediaItem: MediaItem.Builder = MediaItem.Builder()
                     .setMimeType(MimeTypes.APPLICATION_M3U8)
                     .setMediaMetadata(playerMediaMetadata)
-                    .setUri(Uri.parse(Application.hlsUrl))
+                    .setUri(Application.hlsUrl.toUri())
 
                 if (Application.enCaptions != "null") {
-                    val enPlayerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(Uri.parse(Application.enCaptions))
+                    val enPlayerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(Application.enCaptions.toUri())
                         .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
                         .setMimeType(MimeTypes.TEXT_VTT)
                         .setLanguage("en")
