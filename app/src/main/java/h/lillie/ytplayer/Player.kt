@@ -342,16 +342,33 @@ class Player: ComponentActivity(), Player.Listener {
                             .wrapContentWidth()
                             .align(Alignment.CenterVertically)
                     ) {
-                        IconButton(
-                            modifier = Modifier.width(50.dp),
-                            onClick = {
-                            }
+                        Row(
+                            modifier = Modifier.wrapContentWidth()
                         ) {
-                            Icon(
-                                painter = painterResource(R.drawable.settings),
-                                tint = colorResource(R.color.white),
-                                contentDescription = ""
-                            )
+                            if (Application.androidTVDevice) {
+                                IconButton(
+                                    modifier = Modifier.width(50.dp),
+                                    onClick = {
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.close),
+                                        tint = colorResource(R.color.white),
+                                        contentDescription = ""
+                                    )
+                                }
+                            }
+                            IconButton(
+                                modifier = Modifier.width(50.dp),
+                                onClick = {
+                                }
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.settings),
+                                    tint = colorResource(R.color.white),
+                                    contentDescription = ""
+                                )
+                            }
                         }
                     }
                 }
