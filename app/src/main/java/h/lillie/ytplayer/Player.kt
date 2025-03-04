@@ -178,8 +178,13 @@ class Player: ComponentActivity(), Player.Listener {
             createRequest(url)
         }
 
+        // Remembers
+
         var showOverlay by remember { mutableStateOf(false) }
         val isPlaying by remember { isPlaying }
+
+        // States
+
         val player by playerController.collectAsState()
 
         // Player View
