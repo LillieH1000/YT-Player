@@ -279,11 +279,11 @@ class Player: ComponentActivity(), Player.Listener {
         if (showOverlay) {
             Box(
                 modifier = Modifier
+                    .background(colorResource(R.color.dimBlack))
                     .fillMaxSize()
                     .navigationBarsPadding()
                     .statusBarsPadding()
                     .systemBarsPadding()
-                    .background(colorResource(R.color.dimBlack))
             ) {
                 IconButton(
                     modifier = Modifier.align(Alignment.Center),
