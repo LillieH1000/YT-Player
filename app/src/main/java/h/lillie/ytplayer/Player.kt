@@ -186,6 +186,7 @@ class Player: ComponentActivity(), Player.Listener {
         // States
 
         val player by playerController.collectAsState()
+        val title by Application.title.collectAsState()
 
         // Player View
 
@@ -327,7 +328,7 @@ class Player: ComponentActivity(), Player.Listener {
                         modifier = Modifier
                             .width(LocalConfiguration.current.screenWidthDp.dp - 50.dp)
                             .align(Alignment.CenterVertically),
-                        text = Application.title,
+                        text = title,
                         color = colorResource(R.color.white),
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1

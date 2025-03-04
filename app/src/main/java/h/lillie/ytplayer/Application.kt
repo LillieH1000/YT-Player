@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.pm.PackageManager
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.json.JSONArray
 
 class Application : Application() {
@@ -25,7 +26,7 @@ class Application : Application() {
 
     companion object {
         var id = String()
-        var title = String()
+        var title = MutableStateFlow(String())
         var author = String()
         var artwork = String()
         var live: Boolean = false

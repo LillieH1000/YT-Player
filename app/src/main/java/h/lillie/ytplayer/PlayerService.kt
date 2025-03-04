@@ -124,7 +124,7 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
                     playerSession?.player = castPlayer
 
                     val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
-                        .setTitle(Application.title)
+                        .setTitle(Application.title.value)
                         .setArtist(Application.author)
                         .setArtworkUri(Uri.parse(Application.artwork))
                         .build()
@@ -203,7 +203,7 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == "h.lillie.ytplayer.info") {
                 val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
-                    .setTitle(Application.title)
+                    .setTitle(Application.title.value)
                     .setArtist(Application.author)
                     .setArtworkUri(Uri.parse(Application.artwork))
                     .build()

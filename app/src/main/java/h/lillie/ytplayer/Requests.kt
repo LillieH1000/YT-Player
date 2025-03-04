@@ -19,7 +19,7 @@ class Requests {
         val info = JSONObject((py.getModule("ytdlp").callAttr("getInfo", videoId)).toString())
 
         Application.id = info.optString("id")
-        Application.title = info.optString("title")
+        Application.title.value = info.optString("title")
         Application.author = info.optString("author")
         Application.artwork = info.optString("artwork")
         Application.live = info.optBoolean("live")
