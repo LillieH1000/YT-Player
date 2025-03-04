@@ -170,44 +170,6 @@ class Player: ComponentActivity(), Player.Listener {
         }
     }
 
-    private fun createRequest(url: String) {
-        val youtubeRegex = Regex("^.*(?:(?:youtu\\.be\\/|v\\/|vi\\/|u\\/\\w\\/|embed\\/|shorts\\/|live\\/)|(?:(?:watch)?\\?v(?:i)?=|\\&v(?:i)?=))([^#\\&\\?]*).*")
-        if (youtubeRegex.containsMatchIn(url)) {
-            val id = youtubeRegex.findAll(url).map { it.groupValues[1] }.joinToString()
-            CoroutineScope(Dispatchers.Main).launch {
-                val request = Requests()
-                request.ytdlp(id)
-                request.sponsorBlock(id)
-                createPlayer()
-            }
-        }
-    }
-
-    private fun createPlayer() {
-        val sessionToken = SessionToken(this, ComponentName(this, PlayerService::class.java))
-        playerControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
-        playerControllerFuture.addListener({
-            playerController.value = playerControllerFuture.get()
-            playerController.value!!.addListener(this)
-
-            if (packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && Build.VERSION.SDK_INT >= 31) {
-                setPictureInPictureParams(
-                    PictureInPictureParams.Builder()
-                        .setAutoEnterEnabled(true)
-                        .setSeamlessResizeEnabled(true)
-                        .build()
-                )
-            }
-
-            playerHandler = Handler(Looper.getMainLooper())
-            playerHandler.post(playerTask)
-
-            val broadcastIntent = Intent("h.lillie.ytplayer.info")
-            broadcastIntent.setPackage(this.packageName)
-            sendBroadcast(broadcastIntent)
-        }, MoreExecutors.directExecutor())
-    }
-
     private var isPlaying = mutableIntStateOf(0)
 
     @Composable
@@ -379,6 +341,44 @@ class Player: ComponentActivity(), Player.Listener {
                 }
             }
         }
+    }
+
+    private fun createRequest(url: String) {
+        val youtubeRegex = Regex("^.*(?:(?:youtu\\.be\\/|v\\/|vi\\/|u\\/\\w\\/|embed\\/|shorts\\/|live\\/)|(?:(?:watch)?\\?v(?:i)?=|\\&v(?:i)?=))([^#\\&\\?]*).*")
+        if (youtubeRegex.containsMatchIn(url)) {
+            val id = youtubeRegex.findAll(url).map { it.groupValues[1] }.joinToString()
+            CoroutineScope(Dispatchers.Main).launch {
+                val request = Requests()
+                request.ytdlp(id)
+                request.sponsorBlock(id)
+                createPlayer()
+            }
+        }
+    }
+
+    private fun createPlayer() {
+        val sessionToken = SessionToken(this, ComponentName(this, PlayerService::class.java))
+        playerControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
+        playerControllerFuture.addListener({
+            playerController.value = playerControllerFuture.get()
+            playerController.value!!.addListener(this)
+
+            if (packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && Build.VERSION.SDK_INT >= 31) {
+                setPictureInPictureParams(
+                    PictureInPictureParams.Builder()
+                        .setAutoEnterEnabled(true)
+                        .setSeamlessResizeEnabled(true)
+                        .build()
+                )
+            }
+
+            playerHandler = Handler(Looper.getMainLooper())
+            playerHandler.post(playerTask)
+
+            val broadcastIntent = Intent("h.lillie.ytplayer.info")
+            broadcastIntent.setPackage(this.packageName)
+            sendBroadcast(broadcastIntent)
+        }, MoreExecutors.directExecutor())
     }
 
     private val playerTask = object: Runnable {
