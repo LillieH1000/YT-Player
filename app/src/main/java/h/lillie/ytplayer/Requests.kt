@@ -10,7 +10,6 @@ import io.ktor.http.isSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
-import org.json.JSONException
 import org.json.JSONObject
 
 class Requests {
@@ -37,12 +36,7 @@ class Requests {
             return@withContext
         }
 
-        try {
-            val jsonArray = JSONArray(response.bodyAsText())
-            Application.sponsorBlock = jsonArray
-        } catch (_: JSONException) {
-            Application.sponsorBlock = null
-        }
+        Application.sponsorBlock = JSONArray(response.bodyAsText())
 
         return@withContext
     }
