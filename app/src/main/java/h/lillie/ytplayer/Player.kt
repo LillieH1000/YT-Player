@@ -39,7 +39,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -82,6 +81,9 @@ class Player: ComponentActivity(), Player.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        setContent {
+            CreatePlayerUI()
+        }
 
         onBackPressedDispatcher.addCallback(this) {
             when (resources.configuration.orientation) {
@@ -102,9 +104,7 @@ class Player: ComponentActivity(), Player.Listener {
             intent?.action == Intent.ACTION_SEND -> {
                 if (intent.type == "text/plain") {
                     isFirstLaunch = true
-                    setContent {
-                        CreatePlayerUI(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
-                    }
+                    createRequest(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
                 }
             }
         }
@@ -114,9 +114,7 @@ class Player: ComponentActivity(), Player.Listener {
         super.onNewIntent(intent)
         setIntent(intent)
         if (!Application.androidTVDevice && !Application.chromeOSDevice && !Application.wearOSDevice) {
-            setContent {
-                CreatePlayerUI(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
-            }
+            createRequest(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
         }
     }
 
@@ -156,9 +154,7 @@ class Player: ComponentActivity(), Player.Listener {
                 val clipManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                 val clipData = clipManager.primaryClip
                 if (clipData != null && clipData.itemCount > 0) {
-                    setContent {
-                        CreatePlayerUI(clipData.getItemAt(0).text.toString())
-                    }
+                    createRequest(clipData.getItemAt(0).text.toString())
                 }
             }
             when (resources.configuration.orientation) {
@@ -179,11 +175,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var isPlaying = mutableIntStateOf(0)
 
     @Composable
-    private fun CreatePlayerUI(url: String) {
-        LaunchedEffect(url) {
-            createRequest(url)
-        }
-
+    private fun CreatePlayerUI() {
         // Remembers
 
         var showOverlay by remember { mutableStateOf(false) }
