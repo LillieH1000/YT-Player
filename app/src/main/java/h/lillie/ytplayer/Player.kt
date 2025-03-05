@@ -11,7 +11,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.ContextThemeWrapper
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
 import androidx.activity.compose.setContent
@@ -65,8 +64,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
-import androidx.mediarouter.app.MediaRouteButton
-import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import kotlinx.coroutines.CoroutineScope
@@ -383,14 +380,6 @@ class Player: ComponentActivity(), Player.Listener {
                                     )
                                 }
                             }
-                            // Cast Button
-                            AndroidView(
-                                factory = { context ->
-                                    MediaRouteButton(ContextThemeWrapper(context, R.style.CastTheme)).apply {
-                                        CastButtonFactory.setUpMediaRouteButton(context, this)
-                                    }
-                                }
-                            )
                             // Settings Button
                             IconButton(
                                 modifier = Modifier.width(50.dp),
