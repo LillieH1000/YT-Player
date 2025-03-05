@@ -168,11 +168,11 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
                     .setMediaMetadata(playerMediaMetadata)
                     .setUri(Application.url.value?.toUri())
 
-                if (Application.captions.value != null) {
+                if (Application.subtitles.value != null) {
                     val subtitlesList = mutableListOf<MediaItem.SubtitleConfiguration>()
 
                     // English
-                    val en = optString(Application.captions.value!!, "en")
+                    val en = optString(Application.subtitles.value!!, "en")
                     if (en != null) {
                         val playerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(en.toUri())
                             .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
@@ -183,7 +183,7 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
                         subtitlesList.add(playerCaptions)
                     }
                     // Japanese
-                    val ja = optString(Application.captions.value!!, "en")
+                    val ja = optString(Application.subtitles.value!!, "ja")
                     if (ja != null) {
                         val playerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(ja.toUri())
                             .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)

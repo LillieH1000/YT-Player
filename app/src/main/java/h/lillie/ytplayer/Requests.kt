@@ -23,7 +23,7 @@ class Requests {
         Application.artwork.value = optString(info, "artwork")
         Application.live = info.optBoolean("live")
         Application.url.value = optString(info, "url")
-        Application.captions.value = info.optJSONObject("captions")
+        Application.subtitles.value = info.optJSONObject("subtitles")
 
         return@withContext
     }
