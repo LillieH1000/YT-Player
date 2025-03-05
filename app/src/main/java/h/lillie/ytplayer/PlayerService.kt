@@ -14,9 +14,6 @@ import android.os.ext.SdkExtensions
 import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.core.net.toUri
-import androidx.media3.cast.CastPlayer
-import androidx.media3.cast.DefaultMediaItemConverter
-import androidx.media3.cast.SessionAvailabilityListener
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
@@ -40,9 +37,6 @@ import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
-import com.google.android.gms.cast.framework.CastContext
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
@@ -101,54 +95,6 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
             registerReceiver(playerBroadcastReceiver, IntentFilter("h.lillie.ytplayer.info"))
         } else {
             registerReceiver(playerBroadcastReceiver, IntentFilter("h.lillie.ytplayer.info"), RECEIVER_NOT_EXPORTED)
-        }
-
-        val playServiceAvailable: Int = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this)
-        if (playServiceAvailable == ConnectionResult.SUCCESS) {
-            try {
-                CastContext.getSharedInstance(this, MoreExecutors.directExecutor()).result
-                Application.castExists = true
-            } catch (_: RuntimeException) {
-                Application.castExists = false
-            }
-        } else {
-            Application.castExists = false
-        }
-
-        if (Application.castExists) {
-            val castPlayer = CastPlayer(CastContext.getSharedInstance(this, MoreExecutors.directExecutor()).result, DefaultMediaItemConverter(), 10000, 10000)
-            castPlayer.setSessionAvailabilityListener(object : SessionAvailabilityListener {
-                override fun onCastSessionAvailable() {
-                    Application.castActive = true
-                    exoPlayer.stop()
-                    playerSession?.player = castPlayer
-
-                    val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
-                        .setTitle(Application.title.value)
-                        .setArtist(Application.author)
-                        .setArtworkUri(Application.artwork.toUri())
-                        .build()
-
-                    val playerMediaItem: MediaItem = MediaItem.Builder()
-                        .setMimeType(MimeTypes.AUDIO_MP4)
-                        .setMediaMetadata(playerMediaMetadata)
-                        .setUri(Application.audioUrl.toUri())
-                        .build()
-
-                    castPlayer.setMediaItem(playerMediaItem, exoPlayer.currentPosition)
-                    castPlayer.playWhenReady = true
-                    castPlayer.prepare()
-                }
-
-                override fun onCastSessionUnavailable() {
-                    Application.castActive = false
-                    castPlayer.stop()
-                    playerSession?.player = exoPlayer
-                    exoPlayer.seekTo(castPlayer.currentPosition)
-                    exoPlayer.playWhenReady = true
-                    exoPlayer.prepare()
-                }
-            })
         }
 
         playerHandler = Handler(Looper.getMainLooper())
@@ -211,7 +157,7 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
                 val playerMediaItem: MediaItem.Builder = MediaItem.Builder()
                     .setMimeType(MimeTypes.APPLICATION_M3U8)
                     .setMediaMetadata(playerMediaMetadata)
-                    .setUri(Application.hlsUrl.toUri())
+                    .setUri(Application.url.toUri())
 
                 if (Application.enCaptions != "null") {
                     val enPlayerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(Application.enCaptions.toUri())

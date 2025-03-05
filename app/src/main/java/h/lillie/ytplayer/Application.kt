@@ -30,12 +30,9 @@ class Application : Application() {
         var author = String()
         var artwork = String()
         var live: Boolean = false
+        var url = String()
         var enCaptions = String()
-        var audioUrl = String()
-        var hlsUrl = String()
         var sponsorBlock: JSONArray? = null
-        var castActive: Boolean = false
-        var castExists: Boolean = false
         var androidTVDevice: Boolean = false
         var chromeOSDevice: Boolean = false
         var wearOSDevice: Boolean = false

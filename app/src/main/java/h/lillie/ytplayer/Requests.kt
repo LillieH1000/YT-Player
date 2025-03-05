@@ -23,9 +23,8 @@ class Requests {
         Application.author = info.optString("author")
         Application.artwork = info.optString("artwork")
         Application.live = info.optBoolean("live")
+        Application.url = info.optString("url")
         Application.enCaptions = info.optString("enCaptions")
-        Application.audioUrl = info.optString("audioUrl")
-        Application.hlsUrl = info.optString("hlsUrl")
 
         return@withContext
     }
