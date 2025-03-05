@@ -42,6 +42,7 @@ import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import org.json.JSONArray
+import org.json.JSONObject
 import java.io.File
 import java.text.DecimalFormat
 
@@ -145,6 +146,14 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
         return super.onCustomCommand(session, controller, customCommand, args)
     }
 
+    private fun optString(info: JSONObject, key: String): String? {
+        if (info.isNull(key)) {
+            return null
+        }
+
+        return info.optString(key)
+    }
+
     private val playerBroadcastReceiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == "h.lillie.ytplayer.info") {
@@ -159,14 +168,35 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
                     .setMediaMetadata(playerMediaMetadata)
                     .setUri(Application.url.value?.toUri())
 
-                if (Application.enCaptions.value != null) {
-                    val enPlayerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(Application.enCaptions.value!!.toUri())
-                        .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
-                        .setMimeType(MimeTypes.TEXT_VTT)
-                        .setLanguage("en")
-                        .build()
+                if (Application.captions.value != null) {
+                    val subtitlesList = mutableListOf<MediaItem.SubtitleConfiguration>()
 
-                    playerMediaItem.setSubtitleConfigurations(listOf(enPlayerCaptions))
+                    // English
+                    val en = optString(Application.captions.value!!, "en")
+                    if (en != null) {
+                        val playerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(en.toUri())
+                            .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
+                            .setMimeType(MimeTypes.TEXT_VTT)
+                            .setLanguage("en")
+                            .build()
+
+                        subtitlesList.add(playerCaptions)
+                    }
+                    // Japanese
+                    val ja = optString(Application.captions.value!!, "en")
+                    if (ja != null) {
+                        val playerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(ja.toUri())
+                            .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
+                            .setMimeType(MimeTypes.TEXT_VTT)
+                            .setLanguage("ja")
+                            .build()
+
+                        subtitlesList.add(playerCaptions)
+                    }
+
+                    if (subtitlesList.isNotEmpty()) {
+                        playerMediaItem.setSubtitleConfigurations(subtitlesList)
+                    }
                 }
 
                 if (this@PlayerService::playerCache.isInitialized) {

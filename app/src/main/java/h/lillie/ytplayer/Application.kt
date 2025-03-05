@@ -6,6 +6,7 @@ import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.json.JSONArray
+import org.json.JSONObject
 
 class Application : Application() {
     override fun onCreate() {
@@ -31,7 +32,7 @@ class Application : Application() {
         var artwork = MutableStateFlow<String?>(null)
         var live: Boolean = false
         var url = MutableStateFlow<String?>(null)
-        var enCaptions = MutableStateFlow<String?>(null)
+        var captions = MutableStateFlow<JSONObject?>(null)
         var sponsorBlock: JSONArray? = null
         var androidTVDevice: Boolean = false
         var chromeOSDevice: Boolean = false

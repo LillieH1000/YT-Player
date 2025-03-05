@@ -13,6 +13,7 @@ def getInfo(videoID):
     }
 
     info = {}
+    captions = {}
 
     with yt_dlp.YoutubeDL(ytdlp_opts) as ytdlp:
         x = ytdlp.extract_info(f"https://www.youtube.com/watch?v={videoID}", download=False)
@@ -26,8 +27,14 @@ def getInfo(videoID):
         if ("en" in y["subtitles"]):
             for i in y["subtitles"]["en"]:
                 if (i["ext"] == "vtt"):
-                    info["enCaptions"] = i["url"]
-        if ("enCaptions" not in info):
-            info["enCaptions"] = None
+                    captions["en"] = i["url"]
+        if ("ja" in y["subtitles"]):
+            for i in y["subtitles"]["ja"]:
+                if (i["ext"] == "vtt"):
+                    captions["ja"] = i["url"]
+        if (len(captions) == 0):
+            info["captions"] = None
+        else:
+            info["captions"] = captions
         
     return json.dumps(info)
