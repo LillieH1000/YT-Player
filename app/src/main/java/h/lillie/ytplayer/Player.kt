@@ -180,6 +180,7 @@ class Player: ComponentActivity(), Player.Listener {
 
         var showOverlay by remember { mutableStateOf(false) }
         var showSettings by remember { mutableStateOf(false) }
+        var showSubtitles by remember { mutableStateOf(false) }
         var subtitlesChecked by remember { mutableStateOf(false) }
         var loopChecked by remember { mutableStateOf(false) }
         val isPlaying by remember { isPlaying }
@@ -484,6 +485,23 @@ class Player: ComponentActivity(), Player.Listener {
                         )
                     }
                 }
+            }
+        }
+
+        // Subtitles View
+
+        if (showSubtitles) {
+            Column(
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .width(170.dp)
+                    .padding(start = 10.dp, end = 10.dp, top = 50.dp)
+                    .navigationBarsPadding()
+                    .statusBarsPadding()
+                    .systemBarsPadding()
+                    .background(colorResource(R.color.darkGrey))
+                    .clickable(enabled = true, interactionSource = null, indication = null, onClick = {})
+            ) {
             }
         }
     }
