@@ -150,17 +150,17 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
             if (intent?.action == "h.lillie.ytplayer.info") {
                 val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
                     .setTitle(Application.title.value)
-                    .setArtist(Application.author)
-                    .setArtworkUri(Application.artwork.toUri())
+                    .setArtist(Application.author.value)
+                    .setArtworkUri(Application.artwork.value?.toUri())
                     .build()
 
                 val playerMediaItem: MediaItem.Builder = MediaItem.Builder()
                     .setMimeType(MimeTypes.APPLICATION_M3U8)
                     .setMediaMetadata(playerMediaMetadata)
-                    .setUri(Application.url.toUri())
+                    .setUri(Application.url.value?.toUri())
 
-                if (Application.enCaptions != "null") {
-                    val enPlayerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(Application.enCaptions.toUri())
+                if (Application.enCaptions.value != null) {
+                    val enPlayerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(Application.enCaptions.value!!.toUri())
                         .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
                         .setMimeType(MimeTypes.TEXT_VTT)
                         .setLanguage("en")

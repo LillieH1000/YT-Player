@@ -341,12 +341,14 @@ class Player: ComponentActivity(), Player.Listener {
                             .weight(1f)
                             .align(Alignment.CenterVertically)
                     ) {
-                        Text(
-                            text = title,
-                            color = colorResource(R.color.white),
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1
-                        )
+                        if (title != null) {
+                            Text(
+                                text = title!!,
+                                color = colorResource(R.color.white),
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1
+                            )
+                        }
                     }
                     // Menu Buttons
                     Column(
