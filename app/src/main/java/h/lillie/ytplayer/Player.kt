@@ -172,7 +172,17 @@ class Player: ComponentActivity(), Player.Listener {
         }
     }
 
+    override fun onRepeatModeChanged(repeatMode: Int) {
+        super.onRepeatModeChanged(repeatMode)
+        if (repeatMode == Player.REPEAT_MODE_OFF) {
+            loopChecked.value = false
+        } else {
+            loopChecked.value = true
+        }
+    }
+
     private var isPlaying = mutableIntStateOf(0)
+    private var loopChecked = mutableStateOf(false)
 
     @Composable
     private fun CreatePlayerUI() {
@@ -182,7 +192,7 @@ class Player: ComponentActivity(), Player.Listener {
         var showSettings by remember { mutableStateOf(false) }
         var showSubtitles by remember { mutableStateOf(false) }
         var subtitlesChecked by remember { mutableStateOf(false) }
-        var loopChecked by remember { mutableStateOf(false) }
+        var loopChecked by remember { loopChecked }
         val isPlaying by remember { isPlaying }
 
         // States
@@ -475,7 +485,6 @@ class Player: ComponentActivity(), Player.Listener {
                             modifier = Modifier.scale(0.8f),
                             checked = loopChecked,
                             onCheckedChange = {
-                                loopChecked = it
                                 if (playerController.value?.repeatMode == Player.REPEAT_MODE_OFF) {
                                     playerController.value?.repeatMode = Player.REPEAT_MODE_ONE
                                 } else {
