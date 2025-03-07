@@ -19,6 +19,7 @@ import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,13 +35,17 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,6 +58,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowInsetsCompat
@@ -71,6 +77,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 @OptIn(UnstableApi::class)
+@kotlin.OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("SwitchIntDef")
 class Player: ComponentActivity(), Player.Listener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
@@ -183,6 +190,8 @@ class Player: ComponentActivity(), Player.Listener {
 
     private var isPlaying = mutableIntStateOf(0)
     private var loopChecked = mutableStateOf(false)
+    private var playerDuration = mutableFloatStateOf(0f)
+    private var playerPosition = mutableFloatStateOf(0f)
 
     @Composable
     private fun CreatePlayerUI() {
@@ -192,8 +201,11 @@ class Player: ComponentActivity(), Player.Listener {
         var showSettings by remember { mutableStateOf(false) }
         var showSubtitles by remember { mutableStateOf(false) }
         var subtitlesChecked by remember { mutableStateOf(false) }
+        val sliderSource = remember { MutableInteractionSource() }
         val isPlaying by remember { isPlaying }
         val loopChecked by remember { loopChecked }
+        val playerDuration by remember { playerDuration }
+        val playerPosition by remember { playerPosition }
 
         // States
 
@@ -336,6 +348,25 @@ class Player: ComponentActivity(), Player.Listener {
                         contentDescription = ""
                     )
                 }
+                // Progress Slider
+                Slider(
+                    colors = SliderDefaults.colors(
+                        activeTrackColor = colorResource(R.color.lightGrey),
+                        inactiveTrackColor = colorResource(R.color.darkGrey),
+                    ),
+                    interactionSource = sliderSource,
+                    steps = 0,
+                    thumb = {
+                        SliderDefaults.Thumb(
+                            interactionSource = sliderSource,
+                            thumbSize = DpSize.Zero,
+                        )
+                    },
+                    value = playerPosition,
+                    valueRange = 0f..playerDuration,
+                    onValueChange = { newValue ->
+                    }
+                )
                 // Top Row
                 Row(
                     modifier = Modifier
@@ -564,6 +595,14 @@ class Player: ComponentActivity(), Player.Listener {
                     } else {
                         isPlaying.intValue = 3
                     }
+                }
+
+                val duration = playerController.value!!.duration
+                if (duration != C.TIME_UNSET && playerDuration.floatValue == 0f) {
+                    playerDuration.floatValue = duration.toFloat()
+                }
+                if (playerDuration.floatValue != 0f) {
+                    playerPosition.floatValue = playerController.value!!.currentPosition.toFloat()
                 }
             }
             playerHandler.postDelayed(this, 1000)
