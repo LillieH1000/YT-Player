@@ -192,8 +192,8 @@ class Player: ComponentActivity(), Player.Listener {
         var showSettings by remember { mutableStateOf(false) }
         var showSubtitles by remember { mutableStateOf(false) }
         var subtitlesChecked by remember { mutableStateOf(false) }
-        var loopChecked by remember { loopChecked }
         val isPlaying by remember { isPlaying }
+        val loopChecked by remember { loopChecked }
 
         // States
 
