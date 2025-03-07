@@ -349,7 +349,7 @@ class Player: ComponentActivity(), Player.Listener {
                     )
                 }
                 // Progress Slider
-                Slider(
+                /* Slider(
                     colors = SliderDefaults.colors(
                         activeTrackColor = colorResource(R.color.lightGrey),
                         inactiveTrackColor = colorResource(R.color.darkGrey),
@@ -366,7 +366,7 @@ class Player: ComponentActivity(), Player.Listener {
                     valueRange = 0f..playerDuration,
                     onValueChange = { newValue ->
                     }
-                )
+                ) */
                 // Top Row
                 Row(
                     modifier = Modifier
