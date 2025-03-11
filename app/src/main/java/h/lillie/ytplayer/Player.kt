@@ -36,7 +36,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
-import androidx.mediarouter.app.MediaRouteButton
 import coil3.load
 import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.material.slider.Slider
@@ -425,12 +424,10 @@ class Player: AppCompatActivity(), Player.Listener {
                 val settingsView: LinearLayout = findViewById(R.id.settingsView)
                 if (settingsView.visibility == View.GONE) {
                     settingsView.visibility = View.VISIBLE
-                    if (!Application.castExists) {
-                        settingsButton.nextFocusDownId = R.id.subtitlesSwitch
-                        val subtitlesSwitch: SwitchMaterial = findViewById(R.id.subtitlesSwitch)
-                        subtitlesSwitch.nextFocusUpId = R.id.settingsButton
-                    }
+                    settingsButton.nextFocusDownId = R.id.subtitlesSwitch
+
                     val subtitlesSwitch: SwitchMaterial = findViewById(R.id.subtitlesSwitch)
+                    subtitlesSwitch.nextFocusUpId = R.id.settingsButton
                     if (!subtitlesSwitch.isEnabled) {
                         settingsButton.nextFocusDownId = R.id.repeatSwitch
                         val repeatSwitch: SwitchMaterial = findViewById(R.id.repeatSwitch)
@@ -441,12 +438,6 @@ class Player: AppCompatActivity(), Player.Listener {
                     settingsButton.nextFocusDownId = R.id.playPauseRestartButton
                 }
             }
-        }
-
-        val castView: RelativeLayout = findViewById(R.id.castView)
-        castView.setOnClickListener {
-            val castButton: MediaRouteButton = findViewById(R.id.castButton)
-            castButton.performClick()
         }
 
         val subtitlesSwitch: SwitchMaterial = findViewById(R.id.subtitlesSwitch)
@@ -544,12 +535,8 @@ class Player: AppCompatActivity(), Player.Listener {
             settingsView.visibility = View.GONE
         }
 
-        val castView: RelativeLayout = findViewById(R.id.castView)
-        if (!Application.castExists) {
-            castView.visibility = View.GONE
-        } else {
+        if (Application.castExists) {
             CastButtonFactory.setUpMediaRouteButton(this, findViewById(R.id.castButton))
-            castView.visibility = View.VISIBLE
         }
 
         settingsView.requestLayout()

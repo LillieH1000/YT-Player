@@ -180,41 +180,6 @@
         android:visibility="gone"
         android:clickable="true">
         <RelativeLayout
-            android:id="@+id/castView"
-            android:background="@drawable/text"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:focusable="true"
-            android:focusableInTouchMode="false"
-            android:nextFocusUp="@+id/settingsButton"
-            android:nextFocusDown="@+id/subtitlesSwitch"
-            android:nextFocusLeft="@+id/castView"
-            android:nextFocusRight="@+id/castView">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_toStartOf="@+id/castTextView"
-                android:paddingLeft="10dp"
-                android:gravity="center_vertical"
-                android:maxLines="1"
-                android:text="Cast Audio"
-                android:textColor="@color/white"
-                android:textAllCaps="false"
-                tools:ignore="HardcodedText" />
-            <TextView
-                android:id="@+id/castTextView"
-                android:layout_width="60dp"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:paddingRight="20dp"
-                android:gravity="center_vertical|right"
-                android:maxLines="1"
-                android:text=">"
-                android:textColor="@color/white"
-                android:textAllCaps="false"
-                tools:ignore="HardcodedText" />
-        </RelativeLayout>
-        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp">
             <TextView
@@ -235,7 +200,7 @@
                 android:layout_alignParentRight="true"
                 android:focusable="true"
                 android:focusableInTouchMode="false"
-                android:nextFocusUp="@+id/castView"
+                android:nextFocusUp="@+id/settingsButton"
                 android:nextFocusDown="@+id/repeatSwitch"
                 android:nextFocusLeft="@+id/subtitlesSwitch"
                 android:nextFocusRight="@+id/subtitlesSwitch"
