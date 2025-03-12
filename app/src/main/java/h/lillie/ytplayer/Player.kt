@@ -350,21 +350,35 @@ class Player: ComponentActivity(), Player.Listener {
                 }
                 // Progress Slider
                 Slider(
-                    colors = SliderDefaults.colors(
-                        activeTrackColor = colorResource(R.color.lightGrey),
-                        inactiveTrackColor = colorResource(R.color.darkGrey),
-                    ),
                     interactionSource = sliderSource,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(start = 10.dp, end = 10.dp, bottom = 50.dp),
                     steps = 0,
                     thumb = {
                         SliderDefaults.Thumb(
                             interactionSource = sliderSource,
-                            thumbSize = DpSize.Zero,
+                            modifier = Modifier.size(0.dp),
+                            thumbSize = DpSize.Zero
+                        )
+                    },
+                    track = { sliderState ->
+                        SliderDefaults.Track(
+                            colors = SliderDefaults.colors(
+                                activeTickColor = colorResource(R.color.clear),
+                                inactiveTickColor = colorResource(R.color.clear),
+                                activeTrackColor = colorResource(R.color.lightGrey),
+                                inactiveTrackColor = colorResource(R.color.darkGrey)
+                            ),
+                            modifier = Modifier.height(5.dp),
+                            sliderState = sliderState,
+                            thumbTrackGapSize = 0.dp
                         )
                     },
                     value = playerPosition,
                     valueRange = 0f..playerDuration,
                     onValueChange = { newValue ->
+                        playerController.value?.seekTo(newValue.toLong())
                     }
                 )
                 // Top Row
