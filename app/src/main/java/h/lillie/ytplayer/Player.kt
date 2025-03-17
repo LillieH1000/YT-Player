@@ -23,6 +23,8 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,6 +35,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -217,10 +220,11 @@ class Player: ComponentActivity(), Player.Listener {
         AndroidView(
             modifier = Modifier
                 .background(colorResource(R.color.black))
-                .fillMaxSize()
                 .navigationBarsPadding()
                 .statusBarsPadding()
-                .systemBarsPadding(),
+                .systemBarsPadding()
+                .windowInsetsPadding(WindowInsets.displayCutout)
+                .fillMaxSize(),
             factory = { context ->
                 PlayerView(context).apply {
                     this.player = player
@@ -236,10 +240,11 @@ class Player: ComponentActivity(), Player.Listener {
 
         Row(
             modifier = Modifier
-                .fillMaxSize()
                 .navigationBarsPadding()
                 .statusBarsPadding()
                 .systemBarsPadding()
+                .windowInsetsPadding(WindowInsets.displayCutout)
+                .fillMaxSize()
         ) {
             Box(
                 modifier = Modifier
@@ -305,10 +310,11 @@ class Player: ComponentActivity(), Player.Listener {
         if (showOverlay) {
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
                     .navigationBarsPadding()
                     .statusBarsPadding()
                     .systemBarsPadding()
+                    .windowInsetsPadding(WindowInsets.displayCutout)
+                    .fillMaxSize()
                     .background(colorResource(R.color.dimBlack))
             ) {
                 // Play/Pause/Restart Button
@@ -384,12 +390,9 @@ class Player: ComponentActivity(), Player.Listener {
                 // Top Row
                 Row(
                     modifier = Modifier
+                        .padding(start = 10.dp, end = 10.dp)
                         .height(50.dp)
                         .fillMaxWidth()
-                        .padding(start = 10.dp, end = 10.dp)
-                        .navigationBarsPadding()
-                        .statusBarsPadding()
-                        .systemBarsPadding()
                 ) {
                     // Title View
                     Column(
@@ -457,7 +460,13 @@ class Player: ComponentActivity(), Player.Listener {
 
         if (showSettings) {
             Row(
-                modifier = Modifier.wrapContentHeight()
+                modifier = Modifier
+                    .navigationBarsPadding()
+                    .statusBarsPadding()
+                    .systemBarsPadding()
+                    .windowInsetsPadding(WindowInsets.displayCutout)
+                    .padding(start = 10.dp, end = 10.dp, top = 50.dp)
+                    .wrapContentHeight()
             ) {
                 Box(
                     modifier = Modifier.weight(1f)
@@ -467,10 +476,6 @@ class Player: ComponentActivity(), Player.Listener {
                     modifier = Modifier
                         .wrapContentHeight()
                         .width(170.dp)
-                        .padding(start = 10.dp, end = 10.dp, top = 50.dp)
-                        .navigationBarsPadding()
-                        .statusBarsPadding()
-                        .systemBarsPadding()
                         .background(colorResource(R.color.darkGrey))
                         .clickable(
                             enabled = true,
