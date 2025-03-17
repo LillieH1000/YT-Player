@@ -2,6 +2,7 @@ package h.lillie.ytplayer
 
 import android.annotation.SuppressLint
 import android.app.PictureInPictureParams
+import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.ComponentName
 import android.content.Intent
@@ -163,8 +164,8 @@ class Player: ComponentActivity(), Player.Listener {
         if (hasFocus) {
             if (!isFirstLaunch) {
                 isFirstLaunch = true
-                val clipManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                val clipData = clipManager.primaryClip
+                val clipManager: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                val clipData: ClipData? = clipManager.primaryClip
                 if (clipData != null && clipData.itemCount > 0) {
                     createRequest(clipData.getItemAt(0).text.toString())
                 }
@@ -620,7 +621,7 @@ class Player: ComponentActivity(), Player.Listener {
     private fun createRequest(url: String) {
         val youtubeRegex = Regex("^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/|live/)|(?:(?:watch)?\\?vi?=|&vi?=))([^#&?]*).*")
         if (youtubeRegex.containsMatchIn(url)) {
-            val id = youtubeRegex.findAll(url).map { it.groupValues[1] }.joinToString()
+            val id: String = youtubeRegex.findAll(url).map { it.groupValues[1] }.joinToString()
             CoroutineScope(Dispatchers.Main).launch {
                 val request = Requests()
                 request.ytdlp(id)
