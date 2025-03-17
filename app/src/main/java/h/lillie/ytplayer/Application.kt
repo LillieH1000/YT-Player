@@ -26,13 +26,13 @@ class Application : Application() {
     }
 
     companion object {
-        var id = MutableStateFlow<String?>(null)
+        var id: String? = null
         var title = MutableStateFlow<String?>(null)
-        var author = MutableStateFlow<String?>(null)
-        var artwork = MutableStateFlow<String?>(null)
+        var author: String? = null
+        var artwork: String? = null
         var live: Boolean = false
-        var url = MutableStateFlow<String?>(null)
-        var subtitles = MutableStateFlow<JSONObject?>(null)
+        var url: String? = null
+        var subtitles: JSONObject? = null
         var sponsorBlock: JSONArray? = null
         var androidTVDevice: Boolean = false
         var chromeOSDevice: Boolean = false

@@ -159,20 +159,20 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
             if (intent?.action == "h.lillie.ytplayer.info") {
                 val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
                     .setTitle(Application.title.value)
-                    .setArtist(Application.author.value)
-                    .setArtworkUri(Application.artwork.value?.toUri())
+                    .setArtist(Application.author)
+                    .setArtworkUri(Application.artwork?.toUri())
                     .build()
 
                 val playerMediaItem: MediaItem.Builder = MediaItem.Builder()
                     .setMimeType(MimeTypes.APPLICATION_M3U8)
                     .setMediaMetadata(playerMediaMetadata)
-                    .setUri(Application.url.value?.toUri())
+                    .setUri(Application.url?.toUri())
 
-                if (Application.subtitles.value != null) {
+                if (Application.subtitles != null) {
                     val subtitlesList = mutableListOf<MediaItem.SubtitleConfiguration>()
 
                     // English
-                    val en = optString(Application.subtitles.value!!, "en")
+                    val en = optString(Application.subtitles!!, "en")
                     if (en != null) {
                         val playerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(en.toUri())
                             .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
@@ -183,7 +183,7 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
                         subtitlesList.add(playerCaptions)
                     }
                     // Japanese
-                    val ja = optString(Application.subtitles.value!!, "ja")
+                    val ja = optString(Application.subtitles!!, "ja")
                     if (ja != null) {
                         val playerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(ja.toUri())
                             .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)

@@ -17,13 +17,13 @@ class Requests {
         val py: Python = Python.getInstance()
         val info = JSONObject((py.getModule("ytdlp").callAttr("getInfo", videoId)).toString())
 
-        Application.id.value = optString(info, "id")
+        Application.id = optString(info, "id")
         Application.title.value = optString(info, "title")
-        Application.author.value = optString(info, "author")
-        Application.artwork.value = optString(info, "artwork")
+        Application.author = optString(info, "author")
+        Application.artwork = optString(info, "artwork")
         Application.live = info.optBoolean("live")
-        Application.url.value = optString(info, "url")
-        Application.subtitles.value = info.optJSONObject("subtitles")
+        Application.url = optString(info, "url")
+        Application.subtitles = info.optJSONObject("subtitles")
 
         return@withContext
     }
