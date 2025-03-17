@@ -1,7 +1,7 @@
 [versions]
 activityComposeVersion = "1.10.1"
 chaquopyVersion = "16.0.0"
-composeBomVersion = "2025.02.00"
+composeBomVersion = "2025.03.00"
 coreVersion = "1.15.0"
 kotlinxCoroutinesVersion = "1.10.1"
 ktorVersion = "3.1.1"
