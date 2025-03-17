@@ -76,10 +76,10 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
             .build()
 
         val backButton: CommandButton = CommandButton.Builder()
-                .setDisplayName("Seek Back")
-                .setIconResId(androidx.media3.session.R.drawable.media3_icon_skip_back_10)
-                .setSessionCommand(backCommand)
-                .build()
+            .setDisplayName("Seek Back")
+            .setIconResId(androidx.media3.session.R.drawable.media3_icon_skip_back_10)
+            .setSessionCommand(backCommand)
+            .build()
 
         val forwardButton: CommandButton = CommandButton.Builder()
             .setDisplayName("Seek Forward")
