@@ -10,7 +10,7 @@ Features:
 - No Ads
 - Background Playback
 - Picture In Picture
-- Subtitles (English only)
+- Subtitles
 - [SponsorBlock](https://sponsor.ajay.app/) (Only auto skips sponsors)
 
 <br>

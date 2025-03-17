@@ -78,6 +78,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import org.json.JSONArray
+import org.json.JSONObject
 
 @OptIn(UnstableApi::class)
 @kotlin.OptIn(ExperimentalMaterial3Api::class)
@@ -259,6 +261,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     showOverlay = false
                                 }
                                 showSettings = false
+                                showSubtitles = false
                             },
                             onDoubleTap = {
                                 playerController.value?.seekBack()
@@ -279,6 +282,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     showOverlay = false
                                 }
                                 showSettings = false
+                                showSubtitles = false
                             }
                         )
                     }
@@ -296,6 +300,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     showOverlay = false
                                 }
                                 showSettings = false
+                                showSubtitles = false
                             },
                             onDoubleTap = {
                                 playerController.value?.seekForward()
@@ -441,6 +446,7 @@ class Player: ComponentActivity(), Player.Listener {
                                         showSettings = true
                                     } else {
                                         showSettings = false
+                                        showSubtitles = false
                                     }
                                 }
                             ) {
@@ -488,41 +494,21 @@ class Player: ComponentActivity(), Player.Listener {
                         modifier = Modifier
                             .height(40.dp)
                             .padding(start = 10.dp)
+                            .clickable(
+                                enabled = true,
+                                interactionSource = null,
+                                indication = null,
+                                onClick = {
+                                    showSettings = false
+                                    showSubtitles = true
+                                })
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .align(Alignment.CenterVertically)
-                        ) {
-                            Text(
-                                text = "Subtitles (EN)",
-                                color = colorResource(R.color.white),
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1
-                            )
-                        }
-                        Column(
-                        ) {
-                            Switch(
-                                modifier = Modifier.scale(0.8f),
-                                checked = subtitlesChecked,
-                                onCheckedChange = {
-                                    subtitlesChecked = it
-                                    if (!subtitlesChecked) {
-                                        playerController.value?.trackSelectionParameters =
-                                            playerController.value?.trackSelectionParameters!!.buildUpon()
-                                                .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
-                                                .build()
-                                    } else {
-                                        playerController.value?.trackSelectionParameters =
-                                            playerController.value?.trackSelectionParameters!!.buildUpon()
-                                                .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-                                                .setPreferredTextLanguage("en")
-                                                .build()
-                                    }
-                                }
-                            )
-                        }
+                        Text(
+                            text = "Subtitles",
+                            color = colorResource(R.color.white),
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
                     }
                     // Loop Video
                     Row(
@@ -564,17 +550,69 @@ class Player: ComponentActivity(), Player.Listener {
         // Subtitles View
 
         if (showSubtitles) {
-            Column(
+            Row(
                 modifier = Modifier
-                    .wrapContentHeight()
-                    .width(170.dp)
-                    .padding(start = 10.dp, end = 10.dp, top = 50.dp)
                     .navigationBarsPadding()
                     .statusBarsPadding()
                     .systemBarsPadding()
-                    .background(colorResource(R.color.darkGrey))
-                    .clickable(enabled = true, interactionSource = null, indication = null, onClick = {})
+                    .windowInsetsPadding(WindowInsets.displayCutout)
+                    .padding(start = 10.dp, end = 10.dp, top = 50.dp)
+                    .wrapContentHeight()
             ) {
+                Box(
+                    modifier = Modifier.weight(1f)
+                ) {
+                }
+                Column(
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .width(150.dp)
+                        .background(colorResource(R.color.darkGrey))
+                        .clickable(
+                            enabled = true,
+                            interactionSource = null,
+                            indication = null,
+                            onClick = {})
+                ) {
+                    val subtitles: JSONArray? = Application.subtitles
+                    if (subtitles != null) {
+                        Text(
+                            text = "Off",
+                            color = colorResource(R.color.white),
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1,
+                            modifier = Modifier.clickable(
+                                enabled = true,
+                                interactionSource = null,
+                                indication = null,
+                                onClick = {
+                                    playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
+                                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                                        .build()
+                                }
+                            )
+                        )
+                        for (i in 0 until subtitles.length()) {
+                            Text(
+                                text = optString(subtitles.getJSONObject(i), "name")!!,
+                                color = colorResource(R.color.white),
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1,
+                                modifier = Modifier.clickable(
+                                    enabled = true,
+                                    interactionSource = null,
+                                    indication = null,
+                                    onClick = {
+                                        playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
+                                            .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
+                                            .setPreferredTextLanguage(optString(subtitles.getJSONObject(i), "id"))
+                                            .build()
+                                    }
+                                )
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -615,6 +653,14 @@ class Player: ComponentActivity(), Player.Listener {
             broadcastIntent.setPackage(this.packageName)
             sendBroadcast(broadcastIntent)
         }, MoreExecutors.directExecutor())
+    }
+
+    private fun optString(info: JSONObject, key: String): String? {
+        if (info.isNull(key)) {
+            return null
+        }
+
+        return info.optString(key)
     }
 
     private val playerTask = object: Runnable {
