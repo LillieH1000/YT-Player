@@ -475,7 +475,7 @@ class Player: ComponentActivity(), Player.Listener {
                 Column(
                     modifier = Modifier
                         .wrapContentHeight()
-                        .width(170.dp)
+                        .width(150.dp)
                         .background(colorResource(R.color.darkGrey))
                         .clickable(
                             enabled = true,
