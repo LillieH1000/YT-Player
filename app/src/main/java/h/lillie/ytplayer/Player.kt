@@ -456,87 +456,101 @@ class Player: ComponentActivity(), Player.Listener {
         // Settings View
 
         if (showSettings) {
-            Column(
-                modifier = Modifier
-                    .wrapContentHeight()
-                    .width(170.dp)
-                    .padding(start = 10.dp, end = 10.dp, top = 50.dp)
-                    .navigationBarsPadding()
-                    .statusBarsPadding()
-                    .systemBarsPadding()
-                    .background(colorResource(R.color.darkGrey))
-                    .clickable(enabled = true, interactionSource = null, indication = null, onClick = {})
+            Row(
+                modifier = Modifier.wrapContentHeight()
             ) {
-                // Subtitles (EN)
-                Row(
-                    modifier = Modifier
-                        .height(40.dp)
-                        .padding(start = 10.dp)
+                Box(
+                    modifier = Modifier.weight(1f)
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .align(Alignment.CenterVertically)
-                    ) {
-                        Text(
-                            text = "Subtitles (EN)",
-                            color = colorResource(R.color.white),
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1
-                        )
-                    }
-                    Column(
-                    ) {
-                        Switch(
-                            modifier = Modifier.scale(0.8f),
-                            checked = subtitlesChecked,
-                            onCheckedChange = {
-                                subtitlesChecked = it
-                                if (!subtitlesChecked) {
-                                    playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
-                                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
-                                        .build()
-                                } else {
-                                    playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
-                                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-                                        .setPreferredTextLanguage("en")
-                                        .build()
-                                }
-                            }
-                        )
-                    }
                 }
-                // Loop Video
-                Row(
+                Column(
                     modifier = Modifier
-                        .height(40.dp)
-                        .padding(start = 10.dp)
+                        .wrapContentHeight()
+                        .width(170.dp)
+                        .padding(start = 10.dp, end = 10.dp, top = 50.dp)
+                        .navigationBarsPadding()
+                        .statusBarsPadding()
+                        .systemBarsPadding()
+                        .background(colorResource(R.color.darkGrey))
+                        .clickable(
+                            enabled = true,
+                            interactionSource = null,
+                            indication = null,
+                            onClick = {})
                 ) {
-                    Column(
+                    // Subtitles (EN)
+                    Row(
                         modifier = Modifier
-                            .weight(1f)
-                            .align(Alignment.CenterVertically)
+                            .height(40.dp)
+                            .padding(start = 10.dp)
                     ) {
-                        Text(
-                            text = "Loop Video",
-                            color = colorResource(R.color.white),
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1
-                        )
-                    }
-                    Column(
-                    ) {
-                        Switch(
-                            modifier = Modifier.scale(0.8f),
-                            checked = loopChecked,
-                            onCheckedChange = {
-                                if (playerController.value?.repeatMode == Player.REPEAT_MODE_OFF) {
-                                    playerController.value?.repeatMode = Player.REPEAT_MODE_ONE
-                                } else {
-                                    playerController.value?.repeatMode = Player.REPEAT_MODE_OFF
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .align(Alignment.CenterVertically)
+                        ) {
+                            Text(
+                                text = "Subtitles (EN)",
+                                color = colorResource(R.color.white),
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1
+                            )
+                        }
+                        Column(
+                        ) {
+                            Switch(
+                                modifier = Modifier.scale(0.8f),
+                                checked = subtitlesChecked,
+                                onCheckedChange = {
+                                    subtitlesChecked = it
+                                    if (!subtitlesChecked) {
+                                        playerController.value?.trackSelectionParameters =
+                                            playerController.value?.trackSelectionParameters!!.buildUpon()
+                                                .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                                                .build()
+                                    } else {
+                                        playerController.value?.trackSelectionParameters =
+                                            playerController.value?.trackSelectionParameters!!.buildUpon()
+                                                .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
+                                                .setPreferredTextLanguage("en")
+                                                .build()
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        }
+                    }
+                    // Loop Video
+                    Row(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .padding(start = 10.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .align(Alignment.CenterVertically)
+                        ) {
+                            Text(
+                                text = "Loop Video",
+                                color = colorResource(R.color.white),
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1
+                            )
+                        }
+                        Column(
+                        ) {
+                            Switch(
+                                modifier = Modifier.scale(0.8f),
+                                checked = loopChecked,
+                                onCheckedChange = {
+                                    if (playerController.value?.repeatMode == Player.REPEAT_MODE_OFF) {
+                                        playerController.value?.repeatMode = Player.REPEAT_MODE_ONE
+                                    } else {
+                                        playerController.value?.repeatMode = Player.REPEAT_MODE_OFF
+                                    }
+                                }
+                            )
+                        }
                     }
                 }
             }
