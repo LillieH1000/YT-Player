@@ -206,7 +206,6 @@ class Player: ComponentActivity(), Player.Listener {
         var showOverlay by remember { mutableStateOf(false) }
         var showSettings by remember { mutableStateOf(false) }
         var showSubtitles by remember { mutableStateOf(false) }
-        var subtitlesChecked by remember { mutableStateOf(false) }
         val sliderSource = remember { MutableInteractionSource() }
         val isPlaying by remember { isPlaying }
         val loopChecked by remember { loopChecked }
