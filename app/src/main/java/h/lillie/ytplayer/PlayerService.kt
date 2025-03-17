@@ -168,35 +168,21 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
                     .setMediaMetadata(playerMediaMetadata)
                     .setUri(Application.url?.toUri())
 
-                if (Application.subtitles != null) {
+                val subtitles: JSONArray? = Application.subtitles
+                if (subtitles != null) {
                     val subtitlesList = mutableListOf<MediaItem.SubtitleConfiguration>()
 
-                    // English
-                    val en = optString(Application.subtitles!!, "en")
-                    if (en != null) {
-                        val playerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(en.toUri())
+                    for (i in 0 until subtitles.length()) {
+                        val playerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(optString(subtitles.getJSONObject(i), "url")!!.toUri())
                             .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
                             .setMimeType(MimeTypes.TEXT_VTT)
-                            .setLanguage("en")
-                            .build()
-
-                        subtitlesList.add(playerCaptions)
-                    }
-                    // Japanese
-                    val ja = optString(Application.subtitles!!, "ja")
-                    if (ja != null) {
-                        val playerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(ja.toUri())
-                            .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
-                            .setMimeType(MimeTypes.TEXT_VTT)
-                            .setLanguage("ja")
+                            .setLanguage(optString(subtitles.getJSONObject(i), "id"))
                             .build()
 
                         subtitlesList.add(playerCaptions)
                     }
 
-                    if (subtitlesList.isNotEmpty()) {
-                        playerMediaItem.setSubtitleConfigurations(subtitlesList)
-                    }
+                    playerMediaItem.setSubtitleConfigurations(subtitlesList)
                 }
 
                 if (this@PlayerService::playerCache.isInitialized) {
