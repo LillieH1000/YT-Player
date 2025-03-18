@@ -439,22 +439,24 @@ class Player: ComponentActivity(), Player.Listener {
                                 }
                             }
                             // Settings Button
-                            IconButton(
-                                modifier = Modifier.width(50.dp),
-                                onClick = {
-                                    if (!showSettings) {
-                                        showSettings = true
-                                    } else {
-                                        showSettings = false
-                                        showSubtitles = false
+                            if (!Application.live) {
+                                IconButton(
+                                    modifier = Modifier.width(50.dp),
+                                    onClick = {
+                                        if (!showSettings) {
+                                            showSettings = true
+                                        } else {
+                                            showSettings = false
+                                            showSubtitles = false
+                                        }
                                     }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.settings),
+                                        tint = colorResource(R.color.white),
+                                        contentDescription = ""
+                                    )
                                 }
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.settings),
-                                    tint = colorResource(R.color.white),
-                                    contentDescription = ""
-                                )
                             }
                         }
                     }
