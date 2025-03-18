@@ -39,6 +39,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -585,9 +587,10 @@ class Player: ComponentActivity(), Player.Listener {
                 }
                 Column(
                     modifier = Modifier
-                        .wrapContentHeight()
+                        .height(150.dp)
                         .width(150.dp)
                         .background(colorResource(R.color.darkGrey))
+                        .verticalScroll(rememberScrollState())
                         .clickable(
                             enabled = true,
                             interactionSource = null,
@@ -596,40 +599,86 @@ class Player: ComponentActivity(), Player.Listener {
                 ) {
                     val subtitles: JSONArray? = Application.subtitles
                     if (subtitles != null) {
-                        Text(
-                            text = "Off",
-                            color = colorResource(R.color.white),
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1,
-                            modifier = Modifier.clickable(
-                                enabled = true,
-                                interactionSource = null,
-                                indication = null,
-                                onClick = {
-                                    playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
-                                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
-                                        .build()
-                                }
-                            )
-                        )
-                        for (i in 0 until subtitles.length()) {
-                            Text(
-                                text = optString(subtitles.getJSONObject(i), "name")!!,
-                                color = colorResource(R.color.white),
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1,
-                                modifier = Modifier.clickable(
+                        Row(
+                            modifier = Modifier
+                                .height(30.dp)
+                                .padding(start = 10.dp)
+                                .clickable(
                                     enabled = true,
                                     interactionSource = null,
                                     indication = null,
                                     onClick = {
                                         playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
-                                            .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-                                            .setPreferredTextLanguage(optString(subtitles.getJSONObject(i), "id"))
+                                            .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
                                             .build()
-                                    }
+                                    })
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .weight(1f)
+                            ) {
+                                Text(
+                                    text = "Off",
+                                    color = colorResource(R.color.white),
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1
                                 )
-                            )
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .scale(0.6f)
+                                    .width(30.dp)
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.forward),
+                                    tint = colorResource(R.color.white),
+                                    contentDescription = ""
+                                )
+                            }
+                        }
+                        for (i in 0 until subtitles.length()) {
+                            Row(
+                                modifier = Modifier
+                                    .height(30.dp)
+                                    .padding(start = 10.dp)
+                                    .clickable(
+                                        enabled = true,
+                                        interactionSource = null,
+                                        indication = null,
+                                        onClick = {
+                                            playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
+                                                .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
+                                                .setPreferredTextLanguage(optString(subtitles.getJSONObject(i), "id"))
+                                                .build()
+                                        })
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .weight(1f)
+                                ) {
+                                    Text(
+                                        text = optString(subtitles.getJSONObject(i), "name")!!,
+                                        color = colorResource(R.color.white),
+                                        overflow = TextOverflow.Ellipsis,
+                                        maxLines = 1
+                                    )
+                                }
+                                Column(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .scale(0.6f)
+                                        .width(30.dp)
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.forward),
+                                        tint = colorResource(R.color.white),
+                                        contentDescription = ""
+                                    )
+                                }
+                            }
                         }
                     }
                 }
