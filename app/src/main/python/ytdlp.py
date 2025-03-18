@@ -31,7 +31,8 @@ def getInfo(videoID):
                     c["id"] = a
                     c["name"] = b["name"]
                     c["url"] = b["url"]
-            subtitles.append(c)
+            if (len(c) != 0):
+                subtitles.append(c)
         if (len(subtitles) == 0):
             info["subtitles"] = None
         else:
