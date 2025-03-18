@@ -505,12 +505,30 @@ class Player: ComponentActivity(), Player.Listener {
                                     showSubtitles = true
                                 })
                     ) {
-                        Text(
-                            text = "Subtitles",
-                            color = colorResource(R.color.white),
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1
-                        )
+                        Column(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .weight(1f)
+                        ) {
+                            Text(
+                                text = "Subtitles",
+                                color = colorResource(R.color.white),
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1
+                            )
+                        }
+                        Column(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .scale(0.6f)
+                                .width(30.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.forward),
+                                tint = colorResource(R.color.white),
+                                contentDescription = ""
+                            )
+                        }
                     }
                     // Loop Video
                     Row(
