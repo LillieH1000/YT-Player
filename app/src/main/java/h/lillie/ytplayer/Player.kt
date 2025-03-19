@@ -440,6 +440,25 @@ class Player: ComponentActivity(), Player.Listener {
                                     )
                                 }
                             }
+                            // Share Button
+                            if (!Application.chromeOSDevice) {
+                                IconButton(
+                                    modifier = Modifier.width(50.dp),
+                                    onClick = {
+                                        startActivity(Intent.createChooser(Intent().apply {
+                                            action = Intent.ACTION_SEND
+                                            putExtra(Intent.EXTRA_TEXT, "https://youtu.be/${Application.id}")
+                                            type = "text/plain"
+                                        }, null))
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.share),
+                                        tint = colorResource(R.color.white),
+                                        contentDescription = ""
+                                    )
+                                }
+                            }
                             // Settings Button
                             if (!Application.live) {
                                 IconButton(
