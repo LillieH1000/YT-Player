@@ -128,8 +128,12 @@ class Player: ComponentActivity(), Player.Listener {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
-        if (!Application.androidTVDevice && !Application.chromeOSDevice && !Application.wearOSDevice) {
-            createRequest(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
+        when {
+            intent.action == Intent.ACTION_SEND -> {
+                if (intent.type == "text/plain") {
+                    createRequest(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
+                }
+            }
         }
     }
 
