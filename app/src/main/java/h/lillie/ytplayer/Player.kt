@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
 import androidx.activity.compose.setContent
@@ -224,6 +225,14 @@ class Player: ComponentActivity(), Player.Listener {
         val title by Application.title.collectAsState()
 
         // Player View
+
+        AndroidView(
+            factory = { context ->
+                View(context).apply {
+                    this.keepScreenOn = true
+                }
+            }
+        )
 
         AndroidView(
             modifier = Modifier
