@@ -753,23 +753,24 @@ class Player: ComponentActivity(), Player.Listener {
 
     private val playerTask = object: Runnable {
         override fun run() {
-            if (playerController.value != null && playerController.value!!.mediaItemCount == 1) {
-                if (playerController.value!!.playbackState == Player.STATE_ENDED) {
+            val player: MediaController? = playerController.value
+            if (player != null && player.mediaItemCount == 1) {
+                if (player.playbackState == Player.STATE_ENDED) {
                     isPlaying.intValue = 1
                 } else {
-                    if (!playerController.value!!.isPlaying) {
+                    if (!player.isPlaying) {
                         isPlaying.intValue = 2
                     } else {
                         isPlaying.intValue = 3
                     }
                 }
 
-                val duration = playerController.value!!.duration
+                val duration = player.duration
                 if (duration != C.TIME_UNSET && playerDuration.floatValue == 0f) {
                     playerDuration.floatValue = duration.toFloat()
                 }
                 if (playerDuration.floatValue != 0f) {
-                    playerPosition.floatValue = playerController.value!!.currentPosition.toFloat()
+                    playerPosition.floatValue = player.currentPosition.toFloat()
                 }
             }
             playerHandler.postDelayed(this, 1000)
