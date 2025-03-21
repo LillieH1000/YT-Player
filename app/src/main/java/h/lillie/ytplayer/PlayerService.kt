@@ -62,15 +62,15 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
         val renderersFactory: DefaultRenderersFactory = DefaultRenderersFactory(this)
             .forceEnableMediaCodecAsynchronousQueueing()
 
-        val trackSelector: DefaultTrackSelector = DefaultTrackSelector(this).apply {
+        /* val trackSelector: DefaultTrackSelector = DefaultTrackSelector(this).apply {
             setParameters(buildUponParameters()
                 .setForceHighestSupportedBitrate(true)
             )
-        }
+        } */
 
         exoPlayer = ExoPlayer.Builder(this)
             .setRenderersFactory(renderersFactory)
-            .setTrackSelector(trackSelector)
+            // .setTrackSelector(trackSelector)
             .setSeekBackIncrementMs(10000)
             .setSeekForwardIncrementMs(10000)
             .build()
