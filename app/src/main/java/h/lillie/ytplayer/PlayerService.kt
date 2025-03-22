@@ -33,8 +33,8 @@ import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.session.CommandButton
+import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
-import androidx.media3.session.MediaSessionService
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
 import com.google.common.collect.ImmutableList
@@ -48,13 +48,13 @@ import java.text.DecimalFormat
 
 @OptIn(UnstableApi::class)
 @SuppressLint("UnspecifiedRegisterReceiverFlag")
-class PlayerService: MediaSessionService(), MediaSession.Callback {
+class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Callback {
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var playerHandler: Handler
     private lateinit var playerCache: SimpleCache
     private val backCommand = SessionCommand("back", Bundle.EMPTY)
     private val forwardCommand = SessionCommand("forward", Bundle.EMPTY)
-    private var playerSession: MediaSession? = null
+    private var playerSession: MediaLibrarySession? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -87,8 +87,7 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
             .setSessionCommand(forwardCommand)
             .build()
 
-        playerSession = MediaSession.Builder(this, exoPlayer)
-            .setCallback(this)
+        playerSession = MediaLibrarySession.Builder(this, exoPlayer, this)
             .setCustomLayout(ImmutableList.of(backButton, forwardButton))
             .build()
 
@@ -102,7 +101,7 @@ class PlayerService: MediaSessionService(), MediaSession.Callback {
         playerHandler.post(playerTask)
     }
 
-    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? {
+    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession? {
         return playerSession
     }
 
