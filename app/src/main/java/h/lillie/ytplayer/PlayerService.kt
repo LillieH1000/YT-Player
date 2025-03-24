@@ -14,6 +14,7 @@ import android.os.ext.SdkExtensions
 import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.core.net.toUri
+import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
@@ -60,6 +61,10 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
     override fun onCreate() {
         super.onCreate()
 
+        val audioAttributes: AudioAttributes = AudioAttributes.Builder()
+            .setUsage(C.USAGE_MEDIA)
+            .build()
+
         val renderersFactory: DefaultRenderersFactory = DefaultRenderersFactory(this)
             .forceEnableMediaCodecAsynchronousQueueing()
 
@@ -70,6 +75,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
         }
 
         exoPlayer = ExoPlayer.Builder(this)
+            .setAudioAttributes(audioAttributes, true)
             .setRenderersFactory(renderersFactory)
             .setTrackSelector(trackSelector)
             .setSeekBackIncrementMs(10000)
