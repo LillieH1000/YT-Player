@@ -28,15 +28,18 @@ jobs:
           chmod +x ./gradlew
           ./gradlew build
 
-      - name: Sign Release Apk
+      - name: Sign Release Apks
         run: |
           curl -L -o uber-apk-signer.jar https://github.com/patrickfav/uber-apk-signer/releases/download/v1.3.0/uber-apk-signer-1.3.0.jar
-          java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/release/app-release-unsigned.apk
+          java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/android/release/app-android-release-unsigned.apk
+          java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/chromeos/release/app-chromeos-release-unsigned.apk
+          java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/tv/release/app-tv-release-unsigned.apk
+          java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/wearos/release/app-wearos-release-unsigned.apk
 
       - name: Upload Apks
         uses: actions/upload-artifact@v4
         with:
           name: apks
           path: |
-            ./app/build/outputs/apk/debug/*.apk
-            ./app/build/outputs/apk/release/*.apk
+            ./app/build/outputs/apk/**/debug/*.apk
+            ./app/build/outputs/apk/**/release/*.apk

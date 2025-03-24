@@ -32,6 +32,22 @@ android {
         }
     }
 
+    flavorDimensions += "type"
+    productFlavors {
+        create("android") {
+            dimension = "type"
+        }
+        create("chromeos") {
+            dimension = "type"
+        }
+        create("tv") {
+            dimension = "type"
+        }
+        create("wearos") {
+            dimension = "type"
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
