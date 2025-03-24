@@ -2,12 +2,6 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <queries>
-        <package android:name="com.google.android.projection.gearhead" />
-    </queries>
-    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
-    <uses-feature android:name="android.software.leanback" android:required="false" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" tools:ignore="LeanbackUsesWifi" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -22,29 +16,7 @@
         android:roundIcon="@mipmap/icon_round"
         android:supportsRtl="false"
         android:theme="@android:style/Theme.Material.NoActionBar"
-        tools:ignore="DataExtractionRules, MissingTvBanner">
-        <meta-data android:name="androidx.car.app.TintableAttributionIcon" android:resource="@mipmap/icon" />
-        <meta-data android:name="com.google.android.gms.car.application" android:resource="@xml/automotive_app_desc" />
-        <activity
-            android:name=".Player"
-            android:enabled="true"
-            android:exported="true"
-            android:launchMode="singleInstance"
-            android:screenOrientation="fullSensor"
-            android:supportsPictureInPicture="true"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-            tools:ignore="DiscouragedApi">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/plain" />
-            </intent-filter>
-        </activity>
+        tools:ignore="DataExtractionRules">
         <service
             android:name=".PlayerService"
             android:enabled="true"
