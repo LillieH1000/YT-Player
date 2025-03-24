@@ -34,7 +34,6 @@ jobs:
           java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/android/release/app-android-release-unsigned.apk
           java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/chromeos/release/app-chromeos-release-unsigned.apk
           java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/tv/release/app-tv-release-unsigned.apk
-          java -jar ./uber-apk-signer.jar --apks ./app/build/outputs/apk/wearos/release/app-wearos-release-unsigned.apk
 
       - name: Upload Apks
         uses: actions/upload-artifact@v4

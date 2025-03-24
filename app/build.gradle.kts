@@ -43,9 +43,6 @@ android {
         create("tv") {
             dimension = "type"
         }
-        create("wearos") {
-            dimension = "type"
-        }
     }
 
     compileOptions {
