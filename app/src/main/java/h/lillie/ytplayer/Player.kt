@@ -124,10 +124,6 @@ class Player: ComponentActivity(), Player.Listener {
                     createRequest(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
                 }
             }
-            intent?.action == Intent.ACTION_MAIN -> {
-                isFirstLaunch = true
-                createRequest("https://www.youtube.com/watch?v=OuLZlZ18APQ")
-            }
         }
     }
 
