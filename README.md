@@ -47,4 +47,4 @@ Usage:
 <br>
 
 ## Open Source Libraries
-- [AndroidX](https://github.com/androidx/androidx), [Chaquopy](https://github.com/chaquo/chaquopy), [Kotlinx Coroutines](https://github.com/Kotlin/kotlinx.coroutines), [Ktor](https://github.com/ktorio/ktor), [Material](https://github.com/material-components/material-components-android), [SponsorBlock](https://github.com/ajayyy/SponsorBlock), [yt-dlp](https://github.com/yt-dlp/yt-dlp)
+- [AndroidX](https://github.com/androidx/androidx), [Chaquopy](https://github.com/chaquo/chaquopy), [Kotlinx Coroutines](https://github.com/Kotlin/kotlinx.coroutines), [Ktor](https://github.com/ktorio/ktor), [SponsorBlock](https://github.com/ajayyy/SponsorBlock), [yt-dlp](https://github.com/yt-dlp/yt-dlp)
