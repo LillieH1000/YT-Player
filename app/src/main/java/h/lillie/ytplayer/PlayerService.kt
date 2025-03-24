@@ -33,6 +33,7 @@ import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.session.CommandButton
+import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionCommand
@@ -88,7 +89,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
             .build()
 
         playerSession = MediaLibrarySession.Builder(this, exoPlayer, this)
-            .setCustomLayout(ImmutableList.of(backButton, forwardButton))
+            // .setCustomLayout(ImmutableList.of(backButton, forwardButton))
             .build()
 
         if (Build.VERSION.SDK_INT <= 32) {
@@ -117,7 +118,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
         super.onDestroy()
     }
 
-    override fun onConnect(session: MediaSession, controller: MediaSession.ControllerInfo): MediaSession.ConnectionResult {
+    /* override fun onConnect(session: MediaSession, controller: MediaSession.ControllerInfo): MediaSession.ConnectionResult {
         return MediaSession.ConnectionResult.AcceptedResultBuilder(session)
             .setAvailablePlayerCommands(MediaSession.ConnectionResult.DEFAULT_PLAYER_COMMANDS.buildUpon()
                 .remove(Player.COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
@@ -131,9 +132,13 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                 .add(forwardCommand)
                 .build()
             ).build()
+    } */
+
+    override fun onGetLibraryRoot(session: MediaLibrarySession, browser: MediaSession.ControllerInfo, params: LibraryParams?): ListenableFuture<LibraryResult<MediaItem>> {
+        return Futures.immediateFuture(LibraryResult.ofItem(exoPlayer.currentMediaItem!!, params))
     }
 
-    override fun onCustomCommand(session: MediaSession, controller: MediaSession.ControllerInfo, customCommand: SessionCommand, args: Bundle): ListenableFuture<SessionResult> {
+    /* override fun onCustomCommand(session: MediaSession, controller: MediaSession.ControllerInfo, customCommand: SessionCommand, args: Bundle): ListenableFuture<SessionResult> {
         if (customCommand.customAction == "back") {
             playerSession?.player?.seekBack()
             return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
@@ -143,7 +148,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
             return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
         }
         return super.onCustomCommand(session, controller, customCommand, args)
-    }
+    } */
 
     private fun optString(info: JSONObject, key: String): String? {
         if (info.isNull(key)) {
@@ -160,10 +165,13 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                     .setTitle(Application.title.value)
                     .setArtist(Application.author)
                     .setArtworkUri(Application.artwork?.toUri())
+                    .setIsBrowsable(false)
+                    .setIsPlayable(true)
                     .build()
 
                 val playerMediaItem: MediaItem.Builder = MediaItem.Builder()
                     .setMimeType(MimeTypes.APPLICATION_M3U8)
+                    .setMediaId("root")
                     .setMediaMetadata(playerMediaMetadata)
                     .setUri(Application.url?.toUri())
 

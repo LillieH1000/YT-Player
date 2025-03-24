@@ -2,6 +2,9 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <queries>
+        <package android:name="com.google.android.projection.gearhead" />
+    </queries>
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
     <uses-feature android:name="android.software.leanback" android:required="false" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" tools:ignore="LeanbackUsesWifi" />
@@ -10,7 +13,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="false"
-        android:appCategory="video"
+        android:appCategory="audio"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/icon"
         android:label="YT Player"
@@ -20,6 +23,8 @@
         android:supportsRtl="false"
         android:theme="@android:style/Theme.Material.NoActionBar"
         tools:ignore="DataExtractionRules, MissingTvBanner">
+        <meta-data android:name="androidx.car.app.TintableAttributionIcon" android:resource="@mipmap/icon" />
+        <meta-data android:name="com.google.android.gms.car.application" android:resource="@xml/automotive_app_desc" />
         <activity
             android:name=".Player"
             android:enabled="true"
@@ -43,11 +48,13 @@
         <service
             android:name=".PlayerService"
             android:enabled="true"
-            android:exported="false"
+            android:exported="true"
             android:stopWithTask="true"
-            android:foregroundServiceType="mediaPlayback">
+            android:foregroundServiceType="mediaPlayback"
+            tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="androidx.media3.session.MediaLibraryService" />
+                <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
     </application>
