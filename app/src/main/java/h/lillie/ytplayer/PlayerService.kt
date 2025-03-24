@@ -147,7 +147,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
         if (currentMediaItem != null) {
             return Futures.immediateFuture(LibraryResult.ofItem(currentMediaItem, params))
         } else {
-            return Futures.immediateFuture(LibraryResult.ofError(SessionError.ERROR_UNKNOWN, params))
+            return Futures.immediateFuture(LibraryResult.ofError(SessionError.ERROR_SESSION_SETUP_REQUIRED))
         }
     }
 
