@@ -38,6 +38,7 @@ import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionCommand
+import androidx.media3.session.SessionError
 import androidx.media3.session.SessionResult
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
@@ -141,7 +142,12 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
     } */
 
     override fun onGetLibraryRoot(session: MediaLibrarySession, browser: MediaSession.ControllerInfo, params: LibraryParams?): ListenableFuture<LibraryResult<MediaItem>> {
-        return Futures.immediateFuture(LibraryResult.ofItem(exoPlayer.currentMediaItem!!, params))
+        val currentMediaItem: MediaItem? = exoPlayer.currentMediaItem
+        if (currentMediaItem != null) {
+            return Futures.immediateFuture(LibraryResult.ofItem(currentMediaItem, params))
+        } else {
+            return Futures.immediateFuture(LibraryResult.ofError(SessionError.ERROR_UNKNOWN, params))
+        }
     }
 
     /* override fun onCustomCommand(session: MediaSession, controller: MediaSession.ControllerInfo, customCommand: SessionCommand, args: Bundle): ListenableFuture<SessionResult> {
