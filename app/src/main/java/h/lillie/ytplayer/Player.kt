@@ -473,7 +473,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 }
                             }
                             // Share Button
-                            if (!Application.chromeOSDevice) {
+                            if (!Application.androidTVDevice && !Application.chromeOSDevice) {
                                 IconButton(
                                     modifier = Modifier.width(50.dp),
                                     onClick = {
