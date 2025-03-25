@@ -78,6 +78,10 @@ import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
+import io.ktor.server.cio.CIO
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.routing.get
+import io.ktor.server.routing.routing
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -115,6 +119,21 @@ class Player: ComponentActivity(), Player.Listener {
                     }
                 }
             }
+        }
+
+        if (Application.androidTVDevice) {
+            embeddedServer(CIO, port = 8090) {
+                routing {
+                    get("/") {
+                        val url = call.request.queryParameters["url"]
+                        if (url != null) {
+                            CoroutineScope(Dispatchers.Main).launch {
+                                createRequest(url)
+                            }
+                        }
+                    }
+                }
+            }.start(wait = false)
         }
 
         when {
