@@ -3,6 +3,7 @@ activityComposeVersion = "1.10.1"
 chaquopyVersion = "16.0.0"
 composeBomVersion = "2025.03.00"
 coreVersion = "1.15.0"
+foundationVersion = "1.7.8"
 kotlinxCoroutinesVersion = "1.10.1"
 ktorVersion = "3.1.1"
 lifecycleVersion = "2.8.7"
@@ -16,6 +17,7 @@ uiVersion = "1.7.8"
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityComposeVersion" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBomVersion" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreVersion" }
+androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundationVersion" }
 androidx-lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", version.ref = "lifecycleVersion" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleVersion" }
 androidx-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3Version" }
