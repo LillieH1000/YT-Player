@@ -40,8 +40,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -636,12 +635,11 @@ class Player: ComponentActivity(), Player.Listener {
                     modifier = Modifier.weight(1f)
                 ) {
                 }
-                Column(
+                LazyColumn(
                     modifier = Modifier
                         .height(150.dp)
                         .width(150.dp)
                         .background(colorResource(R.color.darkGrey))
-                        .verticalScroll(rememberScrollState())
                         .clickable(
                             enabled = true,
                             interactionSource = null,
@@ -650,46 +648,48 @@ class Player: ComponentActivity(), Player.Listener {
                 ) {
                     val subtitles: JSONArray? = Application.subtitles
                     if (subtitles != null) {
-                        Row(
-                            modifier = Modifier
-                                .height(30.dp)
-                                .padding(start = 10.dp)
-                                .clickable(
-                                    enabled = true,
-                                    interactionSource = null,
-                                    indication = null,
-                                    onClick = {
-                                        playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
-                                            .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
-                                            .build()
-                                    })
-                        ) {
-                            Column(
+                        item {
+                            Row(
                                 modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .weight(1f)
+                                    .height(30.dp)
+                                    .padding(start = 10.dp)
+                                    .clickable(
+                                        enabled = true,
+                                        interactionSource = null,
+                                        indication = null,
+                                        onClick = {
+                                            playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
+                                                .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                                                .build()
+                                        })
                             ) {
-                                Text(
-                                    text = "Off",
-                                    color = colorResource(R.color.white),
-                                    overflow = TextOverflow.Ellipsis,
-                                    maxLines = 1
-                                )
-                            }
-                            Column(
-                                modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .scale(0.6f)
-                                    .width(30.dp)
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.forward),
-                                    tint = colorResource(R.color.white),
-                                    contentDescription = ""
-                                )
+                                Column(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .weight(1f)
+                                ) {
+                                    Text(
+                                        text = "Off",
+                                        color = colorResource(R.color.white),
+                                        overflow = TextOverflow.Ellipsis,
+                                        maxLines = 1
+                                    )
+                                }
+                                Column(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .scale(0.6f)
+                                        .width(30.dp)
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.forward),
+                                        tint = colorResource(R.color.white),
+                                        contentDescription = ""
+                                    )
+                                }
                             }
                         }
-                        for (i in 0 until subtitles.length()) {
+                        items(subtitles.length()) { index ->
                             Row(
                                 modifier = Modifier
                                     .height(30.dp)
@@ -701,7 +701,7 @@ class Player: ComponentActivity(), Player.Listener {
                                         onClick = {
                                             playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
                                                 .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-                                                .setPreferredTextLanguage(optString(subtitles.getJSONObject(i), "id"))
+                                                .setPreferredTextLanguage(optString(subtitles.getJSONObject(index), "id"))
                                                 .build()
                                         })
                             ) {
@@ -711,7 +711,7 @@ class Player: ComponentActivity(), Player.Listener {
                                         .weight(1f)
                                 ) {
                                     Text(
-                                        text = optString(subtitles.getJSONObject(i), "name")!!,
+                                        text = optString(subtitles.getJSONObject(index), "name")!!,
                                         color = colorResource(R.color.white),
                                         overflow = TextOverflow.Ellipsis,
                                         maxLines = 1
