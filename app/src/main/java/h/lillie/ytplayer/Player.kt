@@ -237,6 +237,7 @@ class Player: ComponentActivity(), Player.Listener {
         var showOverlay by remember { mutableStateOf(false) }
         var showSettings by remember { mutableStateOf(false) }
         var showSubtitles by remember { mutableStateOf(false) }
+        var showSleepTimer by remember { mutableStateOf(false) }
         val sliderSource = remember { MutableInteractionSource() }
         val isPlaying by remember { isPlaying }
         val loopChecked by remember { loopChecked }
@@ -293,6 +294,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 }
                                 showSettings = false
                                 showSubtitles = false
+                                showSleepTimer = false
                             },
                             onDoubleTap = {
                                 playerController.value?.seekBack()
@@ -314,6 +316,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 }
                                 showSettings = false
                                 showSubtitles = false
+                                showSleepTimer = false
                             }
                         )
                     }
@@ -332,6 +335,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 }
                                 showSettings = false
                                 showSubtitles = false
+                                showSleepTimer = false
                             },
                             onDoubleTap = {
                                 playerController.value?.seekForward()
@@ -500,6 +504,7 @@ class Player: ComponentActivity(), Player.Listener {
                                         } else {
                                             showSettings = false
                                             showSubtitles = false
+                                            showSleepTimer = false
                                         }
                                     }
                                 ) {
@@ -564,6 +569,45 @@ class Player: ComponentActivity(), Player.Listener {
                         ) {
                             Text(
                                 text = "Subtitles",
+                                color = colorResource(R.color.white),
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1
+                            )
+                        }
+                        Column(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .scale(0.6f)
+                                .width(30.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.forward),
+                                tint = colorResource(R.color.white),
+                                contentDescription = ""
+                            )
+                        }
+                    }
+                    // Sleep Timer
+                    Row(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .padding(start = 10.dp)
+                            .clickable(
+                                enabled = true,
+                                interactionSource = null,
+                                indication = null,
+                                onClick = {
+                                    showSettings = false
+                                    showSleepTimer = true
+                                })
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .weight(1f)
+                        ) {
+                            Text(
+                                text = "Sleep Timer",
                                 color = colorResource(R.color.white),
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
