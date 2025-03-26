@@ -544,7 +544,7 @@ class Player: ComponentActivity(), Player.Listener {
                             indication = null,
                             onClick = {})
                 ) {
-                    // Subtitles (EN)
+                    // Subtitles
                     Row(
                         modifier = Modifier
                             .height(40.dp)
