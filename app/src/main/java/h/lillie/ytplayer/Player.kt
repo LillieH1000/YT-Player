@@ -41,6 +41,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -54,6 +55,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -87,6 +89,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.Collections
 
 @OptIn(UnstableApi::class)
 @kotlin.OptIn(ExperimentalMaterial3Api::class)
@@ -239,6 +242,7 @@ class Player: ComponentActivity(), Player.Listener {
         var showSubtitles by remember { mutableStateOf(false) }
         var showSleepTimer by remember { mutableStateOf(false) }
         val sliderSource = remember { MutableInteractionSource() }
+        val subtitlesChecked = remember { mutableStateListOf<Boolean>() }
         val isPlaying by remember { isPlaying }
         val loopChecked by remember { loopChecked }
         val playerDuration by remember { playerDuration }
@@ -693,19 +697,11 @@ class Player: ComponentActivity(), Player.Listener {
                     val subtitles: JSONArray? = Application.subtitles
                     if (subtitles != null) {
                         item {
+                            subtitlesChecked.add(true)
                             Row(
                                 modifier = Modifier
                                     .height(30.dp)
                                     .padding(start = 10.dp)
-                                    .clickable(
-                                        enabled = true,
-                                        interactionSource = null,
-                                        indication = null,
-                                        onClick = {
-                                            playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
-                                                .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
-                                                .build()
-                                        })
                             ) {
                                 Column(
                                     modifier = Modifier
@@ -725,29 +721,27 @@ class Player: ComponentActivity(), Player.Listener {
                                         .scale(0.6f)
                                         .width(30.dp)
                                 ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.forward),
-                                        tint = colorResource(R.color.white),
-                                        contentDescription = ""
+                                    Checkbox(
+                                        checked = subtitlesChecked[0],
+                                        onCheckedChange = { checked ->
+                                            Collections.replaceAll(subtitlesChecked, true, false)
+                                            subtitlesChecked[0] = true
+                                            if (checked) {
+                                                playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
+                                                    .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                                                    .build()
+                                            }
+                                        }
                                     )
                                 }
                             }
                         }
                         items(subtitles.length()) { index ->
+                            subtitlesChecked.add(false)
                             Row(
                                 modifier = Modifier
                                     .height(30.dp)
                                     .padding(start = 10.dp)
-                                    .clickable(
-                                        enabled = true,
-                                        interactionSource = null,
-                                        indication = null,
-                                        onClick = {
-                                            playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
-                                                .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-                                                .setPreferredTextLanguage(optString(subtitles.getJSONObject(index), "id"))
-                                                .build()
-                                        })
                             ) {
                                 Column(
                                     modifier = Modifier
@@ -767,10 +761,18 @@ class Player: ComponentActivity(), Player.Listener {
                                         .scale(0.6f)
                                         .width(30.dp)
                                 ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.forward),
-                                        tint = colorResource(R.color.white),
-                                        contentDescription = ""
+                                    Checkbox(
+                                        checked = subtitlesChecked[index + 1],
+                                        onCheckedChange = { checked ->
+                                            Collections.replaceAll(subtitlesChecked, true, false)
+                                            subtitlesChecked[index + 1] = true
+                                            if (checked) {
+                                                playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
+                                                    .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
+                                                    .setPreferredTextLanguage(optString(subtitles.getJSONObject(index), "id"))
+                                                    .build()
+                                            }
+                                        }
                                     )
                                 }
                             }
