@@ -6,7 +6,7 @@
         <package android:name="com.google.android.projection.gearhead" />
     </queries>
     <application>
-        <meta-data android:name="androidx.car.app.TintableAttributionIcon" android:resource="@mipmap/icon" />
+        <meta-data android:name="androidx.car.app.TintableAttributionIcon" android:resource="@drawable/music" />
         <meta-data android:name="com.google.android.gms.car.application" android:resource="@xml/auto" />
         <activity
             android:name=".Player"
