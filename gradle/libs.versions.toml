@@ -42,8 +42,6 @@ kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutine
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesVersion" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktorVersion" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorVersion" }
-ktor-server-cio = { module = "io.ktor:ktor-server-cio", version.ref = "ktorVersion" }
-ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktorVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidVersion" }
