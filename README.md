@@ -18,7 +18,7 @@ Features:
 
 ## Android
 
-Requires: Android version 11 and above
+Requires: Android version 8 and above
 
 Usage:
 - Press the "Share" button on any video in the YouTube app, press the "More" button and press "YT Player".
@@ -27,7 +27,7 @@ Usage:
 
 ## ChromeOS
 
-Requires: Android version 11 and above
+Requires: Android version 8 and above
 
 Usage:
 - Copy the YouTube video url to your clipboard then launch the "YT Player" app.
