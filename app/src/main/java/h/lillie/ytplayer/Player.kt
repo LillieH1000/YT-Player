@@ -79,10 +79,6 @@ import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
-import io.ktor.server.cio.CIO
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.routing.get
-import io.ktor.server.routing.routing
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -111,31 +107,16 @@ class Player: ComponentActivity(), Player.Listener {
         onBackPressedDispatcher.addCallback(this) {
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
-                    if (!Application.androidTVDevice && !Application.chromeOSDevice) {
+                    if (!Application.chromeOSDevice) {
                         WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                     }
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    if (!Application.androidTVDevice && !Application.chromeOSDevice) {
+                    if (!Application.chromeOSDevice) {
                         WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                     }
                 }
             }
-        }
-
-        if (Application.androidTVDevice) {
-            embeddedServer(CIO, port = 8090) {
-                routing {
-                    get("/") {
-                        val url = call.request.queryParameters["url"]
-                        if (url != null) {
-                            CoroutineScope(Dispatchers.Main).launch {
-                                createRequest(url)
-                            }
-                        }
-                    }
-                }
-            }.start(wait = false)
         }
 
         when {
@@ -164,12 +145,12 @@ class Player: ComponentActivity(), Player.Listener {
         super.onConfigurationChanged(newConfig)
         when (newConfig.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
-                if (!Application.androidTVDevice && !Application.chromeOSDevice) {
+                if (!Application.chromeOSDevice) {
                     WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                 }
             }
             Configuration.ORIENTATION_LANDSCAPE -> {
-                if (!Application.androidTVDevice && !Application.chromeOSDevice) {
+                if (!Application.chromeOSDevice) {
                     WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                 }
             }
@@ -206,12 +187,12 @@ class Player: ComponentActivity(), Player.Listener {
             }
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
-                    if (!Application.androidTVDevice && !Application.chromeOSDevice) {
+                    if (!Application.chromeOSDevice) {
                         WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                     }
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    if (!Application.androidTVDevice && !Application.chromeOSDevice) {
+                    if (!Application.chromeOSDevice) {
                         WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                     }
                 }
@@ -464,23 +445,8 @@ class Player: ComponentActivity(), Player.Listener {
                         Row(
                             modifier = Modifier.wrapContentWidth()
                         ) {
-                            // Close Button
-                            if (Application.androidTVDevice) {
-                                IconButton(
-                                    modifier = Modifier.width(50.dp),
-                                    onClick = {
-                                        finish()
-                                    }
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.close),
-                                        tint = colorResource(R.color.white),
-                                        contentDescription = ""
-                                    )
-                                }
-                            }
                             // Share Button
-                            if (!Application.androidTVDevice && !Application.chromeOSDevice) {
+                            if (!Application.chromeOSDevice) {
                                 IconButton(
                                     modifier = Modifier.width(50.dp),
                                     onClick = {

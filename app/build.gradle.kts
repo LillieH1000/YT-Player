@@ -40,9 +40,6 @@ android {
         create("chromeos") {
             dimension = "type"
         }
-        create("tv") {
-            dimension = "type"
-        }
     }
 
     compileOptions {
