@@ -236,8 +236,8 @@ class Player: ComponentActivity(), Player.Listener {
         // States
 
         val player by playerController.collectAsState()
-        val title by Application.title.collectAsState()
         val speed by playbackSpeed.collectAsState()
+        val title by Application.title.collectAsState()
 
         // Player View
 
