@@ -892,11 +892,16 @@ class Player: ComponentActivity(), Player.Listener {
                 }
 
                 val duration = player.duration
-                if (duration != C.TIME_UNSET && playerDuration.floatValue == 0f) {
+                val position = player.currentPosition
+                if (duration >= 0 && position >= 0) {
                     playerDuration.floatValue = duration.toFloat()
-                }
-                if (playerDuration.floatValue != 0f) {
-                    playerPosition.floatValue = player.currentPosition.toFloat()
+
+                    if (position <= duration) {
+                        playerPosition.floatValue = position.toFloat()
+                    }
+                    if (position > duration) {
+                        playerPosition.floatValue = duration.toFloat()
+                    }
                 }
             }
             playerHandler.postDelayed(this, 1000)
