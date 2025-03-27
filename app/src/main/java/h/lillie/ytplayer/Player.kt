@@ -618,6 +618,7 @@ class Player: ComponentActivity(), Player.Listener {
                             )
                         }
                         Column(
+                            modifier = Modifier.align(Alignment.CenterVertically)
                         ) {
                             Switch(
                                 modifier = Modifier.scale(0.8f),
