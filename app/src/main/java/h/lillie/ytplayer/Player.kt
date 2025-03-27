@@ -558,7 +558,7 @@ class Player: ComponentActivity(), Player.Listener {
                         }
                     }
                     // Sleep Timer
-                    Row(
+                    /* Row(
                         modifier = Modifier
                             .height(40.dp)
                             .padding(start = 10.dp)
@@ -595,7 +595,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 contentDescription = ""
                             )
                         }
-                    }
+                    } */
                     // Loop Video
                     Row(
                         modifier = Modifier
