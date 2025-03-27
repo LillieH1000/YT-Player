@@ -73,6 +73,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.C
+import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
@@ -86,6 +87,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
+import java.text.DecimalFormat
 import java.util.Collections
 
 @OptIn(UnstableApi::class)
@@ -223,6 +225,7 @@ class Player: ComponentActivity(), Player.Listener {
         var showSettings by remember { mutableStateOf(false) }
         var showSubtitles by remember { mutableStateOf(false) }
         var showSleepTimer by remember { mutableStateOf(false) }
+        val playbackSpeed = remember { MutableStateFlow("1") }
         val sliderSource = remember { MutableInteractionSource() }
         val subtitlesChecked = remember { mutableStateListOf<Boolean>() }
         val isPlaying by remember { isPlaying }
@@ -234,6 +237,7 @@ class Player: ComponentActivity(), Player.Listener {
 
         val player by playerController.collectAsState()
         val title by Application.title.collectAsState()
+        val speed by playbackSpeed.collectAsState()
 
         // Player View
 
@@ -631,6 +635,73 @@ class Player: ComponentActivity(), Player.Listener {
                                     }
                                 }
                             )
+                        }
+                    }
+                    // Playback Speed
+                    Row(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .padding(start = 10.dp, end = 10.dp)
+                    ) {
+                        Text(
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                            text = "Speed: ${speed}x",
+                            color = colorResource(R.color.white),
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .height(30.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .align(Alignment.CenterVertically)
+                        ) {
+                            IconButton(
+                                modifier = Modifier
+                                    .scale(0.6f)
+                                    .align(Alignment.CenterHorizontally),
+                                onClick = {
+                                    val decimalFormat = DecimalFormat("#.#")
+                                    if (decimalFormat.format(playerController.value!!.playbackParameters.speed).toFloat() > 0.1f) {
+                                        playerController.value!!.playbackParameters = PlaybackParameters(decimalFormat.format(playerController.value!!.playbackParameters.speed).toFloat() - 0.1f)
+                                        playbackSpeed.value = decimalFormat.format(playerController.value!!.playbackParameters.speed)
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.remove),
+                                    tint = colorResource(R.color.white),
+                                    contentDescription = ""
+                                )
+                            }
+                        }
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .align(Alignment.CenterVertically)
+                        ) {
+                            IconButton(
+                                modifier = Modifier
+                                    .scale(0.6f)
+                                    .align(Alignment.CenterHorizontally),
+                                onClick = {
+                                    val decimalFormat = DecimalFormat("#.#")
+                                    if (decimalFormat.format(playerController.value!!.playbackParameters.speed).toFloat() < 2.0f) {
+                                        playerController.value!!.playbackParameters = PlaybackParameters(decimalFormat.format(playerController.value!!.playbackParameters.speed).toFloat() + 0.1f)
+                                        playbackSpeed.value = decimalFormat.format(playerController.value!!.playbackParameters.speed)
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.add),
+                                    tint = colorResource(R.color.white),
+                                    contentDescription = ""
+                                )
+                            }
                         }
                     }
                 }
