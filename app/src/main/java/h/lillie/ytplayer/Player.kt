@@ -89,6 +89,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.text.DecimalFormat
 import java.util.Collections
+import java.util.concurrent.TimeUnit
 
 @OptIn(UnstableApi::class)
 @kotlin.OptIn(ExperimentalMaterial3Api::class)
@@ -216,6 +217,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var loopChecked = mutableStateOf(false)
     private var playerDuration = mutableFloatStateOf(0f)
     private var playerPosition = mutableFloatStateOf(0f)
+    private var playerTime = MutableStateFlow<String?>(null)
 
     @Composable
     private fun CreatePlayerUI() {
@@ -226,6 +228,7 @@ class Player: ComponentActivity(), Player.Listener {
         var showSubtitles by remember { mutableStateOf(false) }
         var showSleepTimer by remember { mutableStateOf(false) }
         val playbackSpeed = remember { MutableStateFlow("1") }
+        val playerTime = remember { playerTime }
         val sliderSource = remember { MutableInteractionSource() }
         val subtitlesChecked = remember { mutableStateListOf<Boolean>() }
         val isPlaying by remember { isPlaying }
@@ -237,6 +240,7 @@ class Player: ComponentActivity(), Player.Listener {
 
         val player by playerController.collectAsState()
         val speed by playbackSpeed.collectAsState()
+        val time by playerTime.collectAsState()
         val title by Application.title.collectAsState()
 
         // Player View
@@ -419,6 +423,17 @@ class Player: ComponentActivity(), Player.Listener {
                         playerController.value?.seekTo(newValue.toLong())
                     }
                 )
+                if (time != null) {
+                    Text(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(start = 15.dp, end = 15.dp, bottom = 45.dp),
+                        text = time!!,
+                        color = colorResource(R.color.white),
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
+                    )
+                }
                 // Top Row
                 Row(
                     modifier = Modifier
@@ -871,6 +886,33 @@ class Player: ComponentActivity(), Player.Listener {
         return info.optString(key)
     }
 
+    private fun optTime(time: Long): String {
+        val hours: Int = TimeUnit.MILLISECONDS.toHours(time).toInt()
+        val minutes: Int = (TimeUnit.MILLISECONDS.toMinutes(time) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(time))).toInt()
+        val seconds: Int = (TimeUnit.MILLISECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(time))).toInt()
+        var formatted = ""
+        if (hours != 0) {
+            formatted += "$hours:"
+        }
+        if (formatted != "") {
+            if (minutes >= 10) {
+                formatted += "$minutes:"
+            } else {
+                formatted += "0$minutes:"
+            }
+        }
+        if (formatted == "") {
+            formatted += "$minutes:"
+        }
+        if (seconds >= 10) {
+            formatted += seconds
+        } else {
+            formatted += "0$seconds"
+        }
+        return formatted
+    }
+
+
     private val playerTask = object: Runnable {
         override fun run() {
             val player: MediaController? = playerController.value
@@ -902,6 +944,8 @@ class Player: ComponentActivity(), Player.Listener {
                     if (position > duration) {
                         playerPosition.floatValue = duration.toFloat()
                     }
+
+                    playerTime.value = "${optTime(position)} / ${optTime(duration)}"
                 }
             }
             playerHandler.postDelayed(this, 1000)
