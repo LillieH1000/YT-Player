@@ -651,7 +651,8 @@ class Player: ComponentActivity(), Player.Listener {
                 }
                 LazyColumn(
                     modifier = Modifier
-                        .height(150.dp)
+                        .wrapContentHeight()
+                        .heightIn(0.dp, 150.dp)
                         .width(150.dp)
                         .background(colorResource(R.color.darkGrey))
                         .clickable(
