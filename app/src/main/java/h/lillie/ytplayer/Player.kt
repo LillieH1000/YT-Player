@@ -218,6 +218,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var playerDuration = mutableFloatStateOf(0f)
     private var playerPosition = mutableFloatStateOf(0f)
     private var playerTime = MutableStateFlow<String?>(null)
+    private var subtitlesChecked = mutableStateListOf<Boolean>()
 
     @Composable
     private fun CreatePlayerUI() {
@@ -230,7 +231,7 @@ class Player: ComponentActivity(), Player.Listener {
         val playbackSpeed = remember { MutableStateFlow("1") }
         val playerTime = remember { playerTime }
         val sliderSource = remember { MutableInteractionSource() }
-        val subtitlesChecked = remember { mutableStateListOf<Boolean>() }
+        val subtitlesChecked = remember { subtitlesChecked }
         val isPlaying by remember { isPlaying }
         val loopChecked by remember { loopChecked }
         val playerDuration by remember { playerDuration }
@@ -859,6 +860,11 @@ class Player: ComponentActivity(), Player.Listener {
         playerControllerFuture.addListener({
             playerController.value = playerControllerFuture.get()
             playerController.value!!.addListener(this)
+
+            if (subtitlesChecked.isNotEmpty()) {
+                Collections.replaceAll(subtitlesChecked, true, false)
+                subtitlesChecked[0] = true
+            }
 
             if (packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && Build.VERSION.SDK_INT >= 31) {
                 setPictureInPictureParams(
