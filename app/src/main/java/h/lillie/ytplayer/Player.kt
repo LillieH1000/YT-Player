@@ -106,6 +106,9 @@ class Player: ComponentActivity(), Player.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        if (!Application.chromeOSDevice) {
+            WindowInsetsControllerCompat(window, window.decorView).systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
         enableEdgeToEdge()
         setContent {
             CreatePlayerUI()
