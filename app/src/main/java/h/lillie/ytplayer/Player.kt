@@ -115,11 +115,13 @@ class Player: ComponentActivity(), Player.Listener {
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
                     if (!Application.chromeOSDevice) {
+                        deviceRotation.intValue = 0
                         WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                     }
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
                     if (!Application.chromeOSDevice) {
+                        deviceRotation.intValue = 1
                         WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                     }
                 }
@@ -153,11 +155,13 @@ class Player: ComponentActivity(), Player.Listener {
         when (newConfig.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
                 if (!Application.chromeOSDevice) {
+                    deviceRotation.intValue = 0
                     WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                 }
             }
             Configuration.ORIENTATION_LANDSCAPE -> {
                 if (!Application.chromeOSDevice) {
+                    deviceRotation.intValue = 1
                     WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                 }
             }
@@ -195,11 +199,13 @@ class Player: ComponentActivity(), Player.Listener {
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
                     if (!Application.chromeOSDevice) {
+                        deviceRotation.intValue = 0
                         WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                     }
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
                     if (!Application.chromeOSDevice) {
+                        deviceRotation.intValue = 1
                         WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                     }
                 }
@@ -216,6 +222,7 @@ class Player: ComponentActivity(), Player.Listener {
         }
     }
 
+    private var deviceRotation = mutableIntStateOf(0)
     private var isPlaying = mutableIntStateOf(0)
     private var loopChecked = mutableStateOf(false)
     private var playerDuration = mutableFloatStateOf(0f)
@@ -235,6 +242,7 @@ class Player: ComponentActivity(), Player.Listener {
         val playerTime = remember { playerTime }
         val sliderSource = remember { MutableInteractionSource() }
         val subtitlesChecked = remember { subtitlesChecked }
+        val deviceRotation by remember { deviceRotation }
         val isPlaying by remember { isPlaying }
         val loopChecked by remember { loopChecked }
         val playerDuration by remember { playerDuration }
@@ -253,13 +261,22 @@ class Player: ComponentActivity(), Player.Listener {
             val presentationState = rememberPresentationState(player!!)
 
             PlayerSurface(
-                modifier = Modifier
-                    .background(colorResource(R.color.black))
-                    .navigationBarsPadding()
-                    .statusBarsPadding()
-                    .systemBarsPadding()
-                    .windowInsetsPadding(WindowInsets.displayCutout)
-                    .resizeWithContentScale(ContentScale.Fit, presentationState.videoSizeDp),
+                modifier = if (deviceRotation == 1) {
+                    Modifier
+                        .background(colorResource(R.color.black))
+                        .navigationBarsPadding()
+                        .statusBarsPadding()
+                        .systemBarsPadding()
+                        .windowInsetsPadding(WindowInsets.displayCutout)
+                        .resizeWithContentScale(ContentScale.Fit, presentationState.videoSizeDp)
+                } else {
+                    Modifier
+                        .background(colorResource(R.color.black))
+                        .navigationBarsPadding()
+                        .statusBarsPadding()
+                        .systemBarsPadding()
+                        .resizeWithContentScale(ContentScale.Fit, presentationState.videoSizeDp)
+                },
                 player = player!!,
                 surfaceType = SURFACE_TYPE_SURFACE_VIEW
             )
@@ -268,12 +285,20 @@ class Player: ComponentActivity(), Player.Listener {
         // 3 View
 
         Row(
-            modifier = Modifier
-                .navigationBarsPadding()
-                .statusBarsPadding()
-                .systemBarsPadding()
-                .windowInsetsPadding(WindowInsets.displayCutout)
-                .fillMaxSize()
+            modifier = if (deviceRotation == 1) {
+                Modifier
+                    .navigationBarsPadding()
+                    .statusBarsPadding()
+                    .systemBarsPadding()
+                    .windowInsetsPadding(WindowInsets.displayCutout)
+                    .fillMaxSize()
+            } else {
+                Modifier
+                    .navigationBarsPadding()
+                    .statusBarsPadding()
+                    .systemBarsPadding()
+                    .fillMaxSize()
+            }
         ) {
             Box(
                 modifier = Modifier
@@ -344,13 +369,22 @@ class Player: ComponentActivity(), Player.Listener {
 
         if (showOverlay) {
             Box(
-                modifier = Modifier
-                    .navigationBarsPadding()
-                    .statusBarsPadding()
-                    .systemBarsPadding()
-                    .windowInsetsPadding(WindowInsets.displayCutout)
-                    .fillMaxSize()
-                    .background(colorResource(R.color.dimBlack))
+                modifier = if (deviceRotation == 1) {
+                    Modifier
+                        .navigationBarsPadding()
+                        .statusBarsPadding()
+                        .systemBarsPadding()
+                        .windowInsetsPadding(WindowInsets.displayCutout)
+                        .fillMaxSize()
+                        .background(colorResource(R.color.dimBlack))
+                } else {
+                    Modifier
+                        .navigationBarsPadding()
+                        .statusBarsPadding()
+                        .systemBarsPadding()
+                        .fillMaxSize()
+                        .background(colorResource(R.color.dimBlack))
+                }
             ) {
                 // Play/Pause/Restart Button
                 IconButton(
@@ -516,13 +550,22 @@ class Player: ComponentActivity(), Player.Listener {
 
         if (showSettings) {
             Row(
-                modifier = Modifier
-                    .navigationBarsPadding()
-                    .statusBarsPadding()
-                    .systemBarsPadding()
-                    .windowInsetsPadding(WindowInsets.displayCutout)
-                    .padding(start = 10.dp, end = 10.dp, top = 50.dp)
-                    .wrapContentHeight()
+                modifier = if (deviceRotation == 1) {
+                    Modifier
+                        .navigationBarsPadding()
+                        .statusBarsPadding()
+                        .systemBarsPadding()
+                        .windowInsetsPadding(WindowInsets.displayCutout)
+                        .padding(start = 10.dp, end = 10.dp, top = 50.dp)
+                        .wrapContentHeight()
+                } else {
+                    Modifier
+                        .navigationBarsPadding()
+                        .statusBarsPadding()
+                        .systemBarsPadding()
+                        .padding(start = 10.dp, end = 10.dp, top = 50.dp)
+                        .wrapContentHeight()
+                }
             ) {
                 Box(
                     modifier = Modifier.weight(1f)
@@ -728,13 +771,22 @@ class Player: ComponentActivity(), Player.Listener {
 
         if (showSubtitles) {
             Row(
-                modifier = Modifier
-                    .navigationBarsPadding()
-                    .statusBarsPadding()
-                    .systemBarsPadding()
-                    .windowInsetsPadding(WindowInsets.displayCutout)
-                    .padding(start = 10.dp, end = 10.dp, top = 50.dp)
-                    .wrapContentHeight()
+                modifier = if (deviceRotation == 1) {
+                    Modifier
+                        .navigationBarsPadding()
+                        .statusBarsPadding()
+                        .systemBarsPadding()
+                        .windowInsetsPadding(WindowInsets.displayCutout)
+                        .padding(start = 10.dp, end = 10.dp, top = 50.dp)
+                        .wrapContentHeight()
+                } else {
+                    Modifier
+                        .navigationBarsPadding()
+                        .statusBarsPadding()
+                        .systemBarsPadding()
+                        .padding(start = 10.dp, end = 10.dp, top = 50.dp)
+                        .wrapContentHeight()
+                }
             ) {
                 Box(
                     modifier = Modifier.weight(1f)
