@@ -83,7 +83,7 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer.smoothstreaming)
     implementation(libs.androidx.media3.extractor)
     implementation(libs.androidx.media3.session)
-    implementation(libs.androidx.media3.ui)
+    implementation(libs.androidx.media3.ui.compose)
     implementation(libs.androidx.runtime)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
