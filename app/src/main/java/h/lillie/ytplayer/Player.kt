@@ -232,6 +232,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var playerPosition = mutableFloatStateOf(0f)
     private var playerTime = MutableStateFlow<String?>(null)
     private var subtitlesChecked = mutableStateListOf<Boolean>()
+    private var sleepTimerChecked = mutableStateListOf<Boolean>()
 
     @Composable
     private fun CreatePlayerUI() {
@@ -245,6 +246,7 @@ class Player: ComponentActivity(), Player.Listener {
         val playerTime = remember { playerTime }
         val sliderSource = remember { MutableInteractionSource() }
         val subtitlesChecked = remember { subtitlesChecked }
+        val sleepTimerChecked = remember { sleepTimerChecked }
         val deviceRotation by remember { deviceRotation }
         val isPlaying by remember { isPlaying }
         val loopChecked by remember { loopChecked }
@@ -646,7 +648,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 .weight(1f)
                         ) {
                             Text(
-                                text = "Sleep Timer",
+                                text = "Sleep Timer (Beta)",
                                 color = colorResource(R.color.white),
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
@@ -919,6 +921,276 @@ class Player: ComponentActivity(), Player.Listener {
                 Box(
                     modifier = Modifier.weight(1f)
                 ) {
+                }
+                LazyColumn(
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .heightIn(0.dp, 150.dp)
+                        .width(150.dp)
+                        .background(colorResource(R.color.darkGrey))
+                        .clickable(
+                            enabled = true,
+                            interactionSource = null,
+                            indication = null,
+                            onClick = {})
+                ) {
+                    // Off
+                    item {
+                        sleepTimerChecked.add(true)
+                        Row(
+                            modifier = Modifier
+                                .height(30.dp)
+                                .padding(start = 10.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .weight(1f)
+                            ) {
+                                Text(
+                                    text = "Off",
+                                    color = colorResource(R.color.white),
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1
+                                )
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .scale(0.6f)
+                                    .width(30.dp)
+                            ) {
+                                Checkbox(
+                                    checked = sleepTimerChecked[0],
+                                    onCheckedChange = { checked ->
+                                        Collections.replaceAll(sleepTimerChecked, true, false)
+                                        sleepTimerChecked[0] = true
+                                        if (checked) {
+                                            val broadcastIntent = Intent("h.lillie.ytplayer.timer")
+                                            broadcastIntent.setPackage(this@Player.packageName)
+                                            broadcastIntent.putExtra("enable", false)
+                                            sendBroadcast(broadcastIntent)
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    // 15 Minutes
+                    item {
+                        sleepTimerChecked.add(false)
+                        Row(
+                            modifier = Modifier
+                                .height(30.dp)
+                                .padding(start = 10.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .weight(1f)
+                            ) {
+                                Text(
+                                    text = "15 Minutes",
+                                    color = colorResource(R.color.white),
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1
+                                )
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .scale(0.6f)
+                                    .width(30.dp)
+                            ) {
+                                Checkbox(
+                                    checked = sleepTimerChecked[1],
+                                    onCheckedChange = { checked ->
+                                        Collections.replaceAll(sleepTimerChecked, true, false)
+                                        sleepTimerChecked[1] = true
+                                        if (checked) {
+                                            val broadcastIntent = Intent("h.lillie.ytplayer.timer")
+                                            broadcastIntent.setPackage(this@Player.packageName)
+                                            broadcastIntent.putExtra("enable", true)
+                                            broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(15))
+                                            sendBroadcast(broadcastIntent)
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    // 30 Minutes
+                    item {
+                        sleepTimerChecked.add(false)
+                        Row(
+                            modifier = Modifier
+                                .height(30.dp)
+                                .padding(start = 10.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .weight(1f)
+                            ) {
+                                Text(
+                                    text = "30 Minutes",
+                                    color = colorResource(R.color.white),
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1
+                                )
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .scale(0.6f)
+                                    .width(30.dp)
+                            ) {
+                                Checkbox(
+                                    checked = sleepTimerChecked[2],
+                                    onCheckedChange = { checked ->
+                                        Collections.replaceAll(sleepTimerChecked, true, false)
+                                        sleepTimerChecked[2] = true
+                                        if (checked) {
+                                            val broadcastIntent = Intent("h.lillie.ytplayer.timer")
+                                            broadcastIntent.setPackage(this@Player.packageName)
+                                            broadcastIntent.putExtra("enable", true)
+                                            broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(30))
+                                            sendBroadcast(broadcastIntent)
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    // 45 Minutes
+                    item {
+                        sleepTimerChecked.add(false)
+                        Row(
+                            modifier = Modifier
+                                .height(30.dp)
+                                .padding(start = 10.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .weight(1f)
+                            ) {
+                                Text(
+                                    text = "45 Minutes",
+                                    color = colorResource(R.color.white),
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1
+                                )
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .scale(0.6f)
+                                    .width(30.dp)
+                            ) {
+                                Checkbox(
+                                    checked = sleepTimerChecked[3],
+                                    onCheckedChange = { checked ->
+                                        Collections.replaceAll(sleepTimerChecked, true, false)
+                                        sleepTimerChecked[3] = true
+                                        if (checked) {
+                                            val broadcastIntent = Intent("h.lillie.ytplayer.timer")
+                                            broadcastIntent.setPackage(this@Player.packageName)
+                                            broadcastIntent.putExtra("enable", true)
+                                            broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(45))
+                                            sendBroadcast(broadcastIntent)
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    // 1 Hour
+                    item {
+                        sleepTimerChecked.add(false)
+                        Row(
+                            modifier = Modifier
+                                .height(30.dp)
+                                .padding(start = 10.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .weight(1f)
+                            ) {
+                                Text(
+                                    text = "1 Hour",
+                                    color = colorResource(R.color.white),
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1
+                                )
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .scale(0.6f)
+                                    .width(30.dp)
+                            ) {
+                                Checkbox(
+                                    checked = sleepTimerChecked[4],
+                                    onCheckedChange = { checked ->
+                                        Collections.replaceAll(sleepTimerChecked, true, false)
+                                        sleepTimerChecked[4] = true
+                                        if (checked) {
+                                            val broadcastIntent = Intent("h.lillie.ytplayer.timer")
+                                            broadcastIntent.setPackage(this@Player.packageName)
+                                            broadcastIntent.putExtra("enable", true)
+                                            broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(60))
+                                            sendBroadcast(broadcastIntent)
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    // End Of Video
+                    item {
+                        sleepTimerChecked.add(false)
+                        Row(
+                            modifier = Modifier
+                                .height(30.dp)
+                                .padding(start = 10.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .weight(1f)
+                            ) {
+                                Text(
+                                    text = "End Of Video",
+                                    color = colorResource(R.color.white),
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1
+                                )
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .scale(0.6f)
+                                    .width(30.dp)
+                            ) {
+                                Checkbox(
+                                    checked = sleepTimerChecked[5],
+                                    onCheckedChange = { checked ->
+                                        Collections.replaceAll(sleepTimerChecked, true, false)
+                                        sleepTimerChecked[5] = true
+                                        if (checked) {
+                                            val broadcastIntent = Intent("h.lillie.ytplayer.timer")
+                                            broadcastIntent.setPackage(this@Player.packageName)
+                                            broadcastIntent.putExtra("enable", true)
+                                            broadcastIntent.putExtra("time", 0L)
+                                            sendBroadcast(broadcastIntent)
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }

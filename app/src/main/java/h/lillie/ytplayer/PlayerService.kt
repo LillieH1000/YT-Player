@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.net.http.HttpEngine
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.os.ext.SdkExtensions
@@ -58,6 +59,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
     private val backCommand = SessionCommand("back", Bundle.EMPTY)
     private val forwardCommand = SessionCommand("forward", Bundle.EMPTY)
     private var playerSession: MediaLibrarySession? = null
+    private var playerTimer: CountDownTimer? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -99,10 +101,13 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
             .setCustomLayout(ImmutableList.of(backButton, forwardButton))
             .build()
 
+        val intentFilter = IntentFilter()
+        intentFilter.addAction("h.lillie.ytplayer.info")
+        intentFilter.addAction("h.lillie.ytplayer.timer")
         if (Build.VERSION.SDK_INT <= 32) {
-            registerReceiver(playerBroadcastReceiver, IntentFilter("h.lillie.ytplayer.info"))
+            registerReceiver(playerBroadcastReceiver, intentFilter)
         } else {
-            registerReceiver(playerBroadcastReceiver, IntentFilter("h.lillie.ytplayer.info"), RECEIVER_NOT_EXPORTED)
+            registerReceiver(playerBroadcastReceiver, intentFilter, RECEIVER_NOT_EXPORTED)
         }
 
         playerHandler = Handler(Looper.getMainLooper())
@@ -258,6 +263,27 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                     .build()
                 exoPlayer.playWhenReady = true
                 exoPlayer.prepare()
+
+                return
+            }
+
+            if (intent?.action == "h.lillie.ytplayer.timer") {
+                val enable: Boolean = intent.extras!!.getBoolean("enable")
+                if (!enable) {
+                    playerTimer?.cancel()
+                    playerTimer = null
+                } else {
+                    playerTimer?.cancel()
+                    playerTimer = null
+                    playerTimer = object: CountDownTimer(intent.extras!!.getLong("time"), 1000) {
+                        override fun onTick(millisUntilFinished: Long) {
+                        }
+                        override fun onFinish() {
+                            exoPlayer.pause()
+                        }
+                    }.start()
+                }
+                return
             }
         }
     }
