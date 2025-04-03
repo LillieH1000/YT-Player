@@ -627,7 +627,7 @@ class Player: ComponentActivity(), Player.Listener {
                         }
                     }
                     // Sleep Timer
-                    /* Row(
+                    Row(
                         modifier = Modifier
                             .height(40.dp)
                             .padding(start = 10.dp)
@@ -664,7 +664,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 contentDescription = ""
                             )
                         }
-                    } */
+                    }
                     // Loop Video
                     Row(
                         modifier = Modifier
@@ -891,6 +891,34 @@ class Player: ComponentActivity(), Player.Listener {
                             }
                         }
                     }
+                }
+            }
+        }
+
+        // Sleep Timer View
+
+        if (showSleepTimer) {
+            Row(
+                modifier = if (deviceRotation == 1) {
+                    Modifier
+                        .navigationBarsPadding()
+                        .statusBarsPadding()
+                        .systemBarsPadding()
+                        .windowInsetsPadding(WindowInsets.displayCutout)
+                        .padding(start = 10.dp, end = 10.dp, top = 50.dp)
+                        .wrapContentHeight()
+                } else {
+                    Modifier
+                        .navigationBarsPadding()
+                        .statusBarsPadding()
+                        .systemBarsPadding()
+                        .padding(start = 10.dp, end = 10.dp, top = 50.dp)
+                        .wrapContentHeight()
+                }
+            ) {
+                Box(
+                    modifier = Modifier.weight(1f)
+                ) {
                 }
             }
         }
