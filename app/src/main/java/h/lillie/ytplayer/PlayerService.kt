@@ -85,15 +85,13 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
             .setSeekForwardIncrementMs(10000)
             .build()
 
-        val backButton: CommandButton = CommandButton.Builder()
+        val backButton: CommandButton = CommandButton.Builder(CommandButton.ICON_SKIP_BACK_10)
             .setDisplayName("Seek Back")
-            .setIconResId(androidx.media3.session.R.drawable.media3_icon_skip_back_10)
             .setSessionCommand(backCommand)
             .build()
 
-        val forwardButton: CommandButton = CommandButton.Builder()
+        val forwardButton: CommandButton = CommandButton.Builder(CommandButton.ICON_SKIP_FORWARD_10)
             .setDisplayName("Seek Forward")
-            .setIconResId(androidx.media3.session.R.drawable.media3_icon_skip_forward_10)
             .setSessionCommand(forwardCommand)
             .build()
 
