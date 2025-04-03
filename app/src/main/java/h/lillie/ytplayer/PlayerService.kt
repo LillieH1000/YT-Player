@@ -119,14 +119,12 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
     }
 
     override fun onDestroy() {
-        playerSession?.run {
-            playerHandler.removeCallbacksAndMessages(null)
-            unregisterReceiver(playerBroadcastReceiver)
-            playerCache.release()
-            player.release()
-            release()
-            playerSession = null
-        }
+        playerHandler.removeCallbacksAndMessages(null)
+        unregisterReceiver(playerBroadcastReceiver)
+        playerCache.release()
+        exoPlayer.release()
+        playerSession?.release()
+        playerSession = null
         super.onDestroy()
     }
 
