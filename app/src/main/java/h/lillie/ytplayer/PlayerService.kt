@@ -54,8 +54,8 @@ import java.text.DecimalFormat
 @SuppressLint("UnspecifiedRegisterReceiverFlag")
 class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Callback {
     private lateinit var exoPlayer: ExoPlayer
-    private lateinit var playerHandler: Handler
     private lateinit var playerCache: SimpleCache
+    private lateinit var playerHandler: Handler
     private val backCommand = SessionCommand("back", Bundle.EMPTY)
     private val forwardCommand = SessionCommand("forward", Bundle.EMPTY)
     private var playerSession: MediaLibrarySession? = null
