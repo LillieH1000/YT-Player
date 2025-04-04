@@ -51,7 +51,7 @@ import java.text.DecimalFormat
 
 @OptIn(UnstableApi::class)
 @SuppressLint("UnspecifiedRegisterReceiverFlag")
-class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Callback {
+class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Callback, Player.Listener {
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var playerCache: SimpleCache
     private lateinit var playerHandler: Handler
@@ -59,6 +59,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
     private val forwardCommand = SessionCommand("forward", Bundle.EMPTY)
     private var playerSession: MediaLibrarySession? = null
     private var playerTimer: CountDownTimer? = null
+    private var timerLength: Long = 0
 
     override fun onCreate() {
         super.onCreate()
@@ -83,6 +84,8 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
             .setSeekBackIncrementMs(10000)
             .setSeekForwardIncrementMs(10000)
             .build()
+
+        exoPlayer.addListener(this)
 
         val backButton: CommandButton = CommandButton.Builder(CommandButton.ICON_SKIP_BACK_10)
             .setDisplayName("Seek Back")
@@ -116,6 +119,8 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
     }
 
     override fun onDestroy() {
+        playerTimer?.cancel()
+        playerTimer = null
         playerHandler.removeCallbacksAndMessages(null)
         unregisterReceiver(playerBroadcastReceiver)
         playerCache.release()
@@ -171,6 +176,13 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
             return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
         }
         return super.onCustomCommand(session, controller, customCommand, args)
+    }
+
+    override fun onPlaybackStateChanged(playbackState: Int) {
+        super.onPlaybackStateChanged(playbackState)
+        if (playbackState == Player.STATE_ENDED && playerTimer != null && timerLength == 0L) {
+            exoPlayer.pause()
+        }
     }
 
     private fun optString(info: JSONObject, key: String): String? {
@@ -280,13 +292,17 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                 } else {
                     playerTimer?.cancel()
                     playerTimer = null
-                    playerTimer = object: CountDownTimer(intent.extras!!.getLong("time"), 1000) {
-                        override fun onTick(millisUntilFinished: Long) {
-                        }
-                        override fun onFinish() {
-                            exoPlayer.pause()
-                        }
-                    }.start()
+
+                    timerLength = intent.extras!!.getLong("time")
+                    if (timerLength > 0) {
+                        playerTimer = object : CountDownTimer(timerLength, 1000) {
+                            override fun onTick(millisUntilFinished: Long) {
+                            }
+                            override fun onFinish() {
+                                exoPlayer.pause()
+                            }
+                        }.start()
+                    }
                 }
                 return
             }
