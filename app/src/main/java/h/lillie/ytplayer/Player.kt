@@ -232,7 +232,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var playerPosition = mutableFloatStateOf(0f)
     private var playerTime = MutableStateFlow<String?>(null)
     private var subtitlesChecked = mutableStateListOf<Boolean>()
-    private var sleepTimerChecked = mutableStateListOf<Boolean>()
+    private var sleepTimerChecked = mutableStateListOf(false, false, false, false, false, false)
 
     @Composable
     private fun CreatePlayerUI() {
@@ -812,7 +812,6 @@ class Player: ComponentActivity(), Player.Listener {
                     val subtitles: JSONArray? = Application.subtitles
                     if (subtitles != null) {
                         item {
-                            subtitlesChecked.add(true)
                             Row(
                                 modifier = Modifier
                                     .height(30.dp)
@@ -852,7 +851,6 @@ class Player: ComponentActivity(), Player.Listener {
                             }
                         }
                         items(subtitles.length()) { index ->
-                            subtitlesChecked.add(false)
                             Row(
                                 modifier = Modifier
                                     .height(30.dp)
@@ -936,7 +934,6 @@ class Player: ComponentActivity(), Player.Listener {
                 ) {
                     // Off
                     item {
-                        sleepTimerChecked.add(true)
                         Row(
                             modifier = Modifier
                                 .height(30.dp)
@@ -978,7 +975,6 @@ class Player: ComponentActivity(), Player.Listener {
                     }
                     // 15 Minutes
                     item {
-                        sleepTimerChecked.add(false)
                         Row(
                             modifier = Modifier
                                 .height(30.dp)
@@ -1021,7 +1017,6 @@ class Player: ComponentActivity(), Player.Listener {
                     }
                     // 30 Minutes
                     item {
-                        sleepTimerChecked.add(false)
                         Row(
                             modifier = Modifier
                                 .height(30.dp)
@@ -1064,7 +1059,6 @@ class Player: ComponentActivity(), Player.Listener {
                     }
                     // 45 Minutes
                     item {
-                        sleepTimerChecked.add(false)
                         Row(
                             modifier = Modifier
                                 .height(30.dp)
@@ -1107,7 +1101,6 @@ class Player: ComponentActivity(), Player.Listener {
                     }
                     // 1 Hour
                     item {
-                        sleepTimerChecked.add(false)
                         Row(
                             modifier = Modifier
                                 .height(30.dp)
@@ -1150,7 +1143,6 @@ class Player: ComponentActivity(), Player.Listener {
                     }
                     // End Of Video
                     item {
-                        sleepTimerChecked.add(false)
                         Row(
                             modifier = Modifier
                                 .height(30.dp)
@@ -1216,10 +1208,19 @@ class Player: ComponentActivity(), Player.Listener {
             playerController.value = playerControllerFuture.get()
             playerController.value!!.addListener(this)
 
-            if (subtitlesChecked.isNotEmpty()) {
-                Collections.replaceAll(subtitlesChecked, true, false)
-                subtitlesChecked[0] = true
+            val subtitles: JSONArray? = Application.subtitles
+            if (subtitles != null) {
+                if (subtitlesChecked.isNotEmpty()) {
+                    subtitlesChecked.clear()
+                }
+                subtitlesChecked.add(true)
+                for (i in 0 until subtitles.length()) {
+                    subtitlesChecked.add(false)
+                }
             }
+
+            Collections.replaceAll(sleepTimerChecked, true, false)
+            sleepTimerChecked[0] = true
 
             if (packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && Build.VERSION.SDK_INT >= 31) {
                 setPictureInPictureParams(
