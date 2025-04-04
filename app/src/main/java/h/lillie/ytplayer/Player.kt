@@ -529,7 +529,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 IconButton(
                                     modifier = Modifier.width(50.dp),
                                     onClick = {
-                                        if (!showSettings) {
+                                        if (!showSettings && !showSubtitles && !showSleepTimer) {
                                             showSettings = true
                                         } else {
                                             showSettings = false
