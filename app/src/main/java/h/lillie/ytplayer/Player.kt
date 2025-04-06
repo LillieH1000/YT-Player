@@ -1194,7 +1194,7 @@ class Player: ComponentActivity(), Player.Listener {
             val id: String = youtubeRegex.findAll(url).map { it.groupValues[1] }.joinToString()
             CoroutineScope(Dispatchers.Main).launch {
                 val request = Requests()
-                request.ytdlp(id)
+                request.ytdlp(id, null)
                 request.sponsorBlock(id)
                 createPlayer()
             }

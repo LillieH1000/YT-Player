@@ -13,9 +13,9 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class Requests {
-    suspend fun ytdlp(videoId: String) = withContext(Dispatchers.IO) {
+    suspend fun ytdlp(videoID: String?, searchQuery: String?) = withContext(Dispatchers.IO) {
         val py: Python = Python.getInstance()
-        val info = JSONObject((py.getModule("ytdlp").callAttr("getInfo", videoId)).toString())
+        val info = JSONObject((py.getModule("ytdlp").callAttr("getInfo", videoID, searchQuery)).toString())
 
         Application.id = optString(info, "id")
         Application.title.value = optString(info, "title")
