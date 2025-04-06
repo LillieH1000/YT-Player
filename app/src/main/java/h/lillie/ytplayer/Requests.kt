@@ -23,6 +23,7 @@ class Requests {
         Application.artwork = optString(info, "artwork")
         Application.live = info.optBoolean("live")
         Application.url = optString(info, "url")
+        Application.expiration = optString(info, "expiration")
         Application.subtitles = info.optJSONArray("subtitles")
 
         return@withContext

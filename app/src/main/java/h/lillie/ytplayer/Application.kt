@@ -24,6 +24,7 @@ class Application : Application() {
         var artwork: String? = null
         var live: Boolean = false
         var url: String? = null
+        var expiration: String? = null
         var subtitles: JSONArray? = null
         var sponsorBlock: JSONArray? = null
         var chromeOSDevice: Boolean = false
