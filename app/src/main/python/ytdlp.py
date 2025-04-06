@@ -2,7 +2,7 @@ import json
 import re
 import yt_dlp
 
-def getInfo(videoID):
+def getInfo(videoID, searchQuery):
     ytdlp_opts = {
         "extractor_args": {
             "youtube": {
@@ -17,8 +17,13 @@ def getInfo(videoID):
     subtitles = []
 
     with yt_dlp.YoutubeDL(ytdlp_opts) as ytdlp:
-        x = ytdlp.extract_info(f"https://www.youtube.com/watch?v={videoID}", download=False)
-        y = json.loads(json.dumps(ytdlp.sanitize_info(x)))
+        if (searchQuery == None):
+            x = ytdlp.extract_info(f"https://www.youtube.com/watch?v={videoID}", download=False)
+            y = json.loads(json.dumps(ytdlp.sanitize_info(x)))
+        if (videoID == None):
+            x = ytdlp.extract_info(f"ytsearch:{searchQuery}", download=False)
+            z = json.loads(json.dumps(ytdlp.sanitize_info(x)))
+            y = z["entries"][0]
         info["id"] = y["id"]
         info["title"] = y["title"]
         info["author"] = y["uploader"]
