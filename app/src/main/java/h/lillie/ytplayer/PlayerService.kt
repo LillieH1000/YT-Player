@@ -171,6 +171,17 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
         }
     }
 
+    override fun onSetMediaItems(mediaSession: MediaSession, controller: MediaSession.ControllerInfo, mediaItems: MutableList<MediaItem>, startIndex: Int, startPositionMs: Long): ListenableFuture<MediaSession.MediaItemsWithStartPosition> {
+        val searchQuery: String? = mediaItems[0].requestMetadata.searchQuery
+        if (searchQuery != null) {
+            val broadcastIntent = Intent("h.lillie.ytplayer.info")
+            broadcastIntent.setPackage(this.packageName)
+            broadcastIntent.putExtra("searchQuery", searchQuery)
+            sendBroadcast(broadcastIntent)
+        }
+        return super.onSetMediaItems(mediaSession, controller, mediaItems, startIndex, startPositionMs)
+    }
+
     override fun onCustomCommand(session: MediaSession, controller: MediaSession.ControllerInfo, customCommand: SessionCommand, args: Bundle): ListenableFuture<SessionResult> {
         if (customCommand.customAction == "back") {
             playerSession?.player?.seekBack()
@@ -211,8 +222,8 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
         override fun onReceive(context: Context?, intent: Intent?) = async {
             if (intent?.action == "h.lillie.ytplayer.info") {
                 val request = Requests()
-                request.ytdlp(intent.extras!!.getString("videoID"), null)
-                request.sponsorBlock(intent.extras!!.getString("videoID")!!)
+                request.ytdlp(intent.extras!!.getString("videoID"), intent.extras!!.getString("searchQuery"))
+                request.sponsorBlock(Application.id!!)
 
                 val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
                     .setTitle(Application.title.value)
