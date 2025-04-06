@@ -32,7 +32,6 @@ import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.hls.HlsMediaSource
-import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.session.CommandButton
 import androidx.media3.session.LibraryResult
@@ -44,10 +43,16 @@ import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 import java.text.DecimalFormat
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 @OptIn(UnstableApi::class)
 @SuppressLint("UnspecifiedRegisterReceiverFlag")
@@ -193,9 +198,22 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
         return info.optString(key)
     }
 
+    private fun BroadcastReceiver.async(coroutineContext: CoroutineContext = EmptyCoroutineContext, block: suspend CoroutineScope.() -> Unit) {
+        val pendingResult = goAsync()
+        CoroutineScope(Dispatchers.IO).launch(coroutineContext) {
+            block()
+        }.invokeOnCompletion {
+            pendingResult.finish()
+        }
+    }
+
     private val playerBroadcastReceiver = object: BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
+        override fun onReceive(context: Context?, intent: Intent?) = async {
             if (intent?.action == "h.lillie.ytplayer.info") {
+                val request = Requests()
+                request.ytdlp(intent.extras!!.getString("videoID"), null)
+                request.sponsorBlock(intent.extras!!.getString("videoID")!!)
+
                 val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
                     .setTitle(Application.title.value)
                     .setArtist(Application.author)
@@ -232,6 +250,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                 }
                 playerCache = SimpleCache(File(cacheDir, "media"), LeastRecentlyUsedCacheEvictor(200 * 1024 * 1024), StandaloneDatabaseProvider(this@PlayerService))
                 val cacheDataSource: CacheDataSource.Factory = CacheDataSource.Factory().setCache(playerCache)
+                val hlsMediaSource: HlsMediaSource
 
                 if (Build.VERSION.SDK_INT >= 34 && SdkExtensions.getExtensionVersion(Build.VERSION_CODES.S) >= 7) {
                     val httpEngine: HttpEngine = HttpEngine.Builder(this@PlayerService)
@@ -242,46 +261,43 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                     if (!Application.live) {
                         cacheDataSource.setUpstreamDataSourceFactory(httpEngineDataSource)
 
-                        val hlsSource: MediaSource = HlsMediaSource.Factory(cacheDataSource)
+                        hlsMediaSource = HlsMediaSource.Factory(cacheDataSource)
                             .setAllowChunklessPreparation(false)
                             .createMediaSource(playerMediaItem.build())
-
-                        exoPlayer.setMediaSource(hlsSource)
                     } else {
-                        val hlsSource: MediaSource = HlsMediaSource.Factory(httpEngineDataSource)
+                        hlsMediaSource = HlsMediaSource.Factory(httpEngineDataSource)
                             .setAllowChunklessPreparation(false)
                             .createMediaSource(playerMediaItem.build())
-
-                        exoPlayer.setMediaSource(hlsSource)
                     }
                 } else {
                     val defaultDataSource: DefaultDataSource.Factory = DefaultDataSource.Factory(this@PlayerService)
                     if (!Application.live) {
                         cacheDataSource.setUpstreamDataSourceFactory(defaultDataSource)
 
-                        val hlsSource: MediaSource = HlsMediaSource.Factory(cacheDataSource)
+                        hlsMediaSource = HlsMediaSource.Factory(cacheDataSource)
                             .setAllowChunklessPreparation(false)
                             .createMediaSource(playerMediaItem.build())
-
-                        exoPlayer.setMediaSource(hlsSource)
                     } else {
-                        val hlsSource: MediaSource = HlsMediaSource.Factory(defaultDataSource)
+                        hlsMediaSource = HlsMediaSource.Factory(defaultDataSource)
                             .setAllowChunklessPreparation(false)
                             .createMediaSource(playerMediaItem.build())
-
-                        exoPlayer.setMediaSource(hlsSource)
                     }
                 }
 
-                exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
-                exoPlayer.playbackParameters = PlaybackParameters(1.0f)
-                exoPlayer.trackSelectionParameters = exoPlayer.trackSelectionParameters.buildUpon()
-                    .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
-                    .build()
-                exoPlayer.playWhenReady = true
-                exoPlayer.prepare()
+                withContext(Dispatchers.Main) {
+                    exoPlayer.setMediaSource(hlsMediaSource)
+                    exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
+                    exoPlayer.playbackParameters = PlaybackParameters(1.0f)
+                    exoPlayer.trackSelectionParameters = exoPlayer.trackSelectionParameters.buildUpon()
+                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                        .build()
+                    exoPlayer.playWhenReady = true
+                    exoPlayer.prepare()
 
-                return
+                    return@withContext
+                }
+
+                return@async
             }
 
             if (intent?.action == "h.lillie.ytplayer.timer") {
@@ -304,7 +320,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                         }.start()
                     }
                 }
-                return
+                return@async
             }
         }
     }

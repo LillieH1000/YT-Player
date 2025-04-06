@@ -84,10 +84,7 @@ import androidx.media3.ui.compose.modifiers.resizeWithContentScale
 import androidx.media3.ui.compose.state.rememberPresentationState
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.DecimalFormat
@@ -135,7 +132,7 @@ class Player: ComponentActivity(), Player.Listener {
             intent?.action == Intent.ACTION_SEND -> {
                 if (intent.type == "text/plain") {
                     isFirstLaunch = true
-                    createRequest(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
+                    createPlayer(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
                 }
             }
         }
@@ -147,7 +144,7 @@ class Player: ComponentActivity(), Player.Listener {
         when {
             intent.action == Intent.ACTION_SEND -> {
                 if (intent.type == "text/plain") {
-                    createRequest(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
+                    createPlayer(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
                 }
             }
         }
@@ -196,7 +193,7 @@ class Player: ComponentActivity(), Player.Listener {
                 val clipManager: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                 val clipData: ClipData? = clipManager.primaryClip
                 if (clipData != null && clipData.itemCount > 0) {
-                    createRequest(clipData.getItemAt(0).text.toString())
+                    createPlayer(clipData.getItemAt(0).text.toString())
                 }
             }
             when (resources.configuration.orientation) {
@@ -1188,20 +1185,11 @@ class Player: ComponentActivity(), Player.Listener {
         }
     }
 
-    private fun createRequest(url: String) {
+    private fun createPlayer(url: String) {
         val youtubeRegex = Regex("^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/|live/)|(?:(?:watch)?\\?vi?=|&vi?=))([^#&?]*).*")
-        if (youtubeRegex.containsMatchIn(url)) {
-            val id: String = youtubeRegex.findAll(url).map { it.groupValues[1] }.joinToString()
-            CoroutineScope(Dispatchers.Main).launch {
-                val request = Requests()
-                request.ytdlp(id, null)
-                request.sponsorBlock(id)
-                createPlayer()
-            }
+        if (!youtubeRegex.containsMatchIn(url)) {
+            return
         }
-    }
-
-    private fun createPlayer() {
         val sessionToken = SessionToken(this, ComponentName(this, PlayerService::class.java))
         playerControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
         playerControllerFuture.addListener({
@@ -1236,6 +1224,7 @@ class Player: ComponentActivity(), Player.Listener {
 
             val broadcastIntent = Intent("h.lillie.ytplayer.info")
             broadcastIntent.setPackage(this.packageName)
+            broadcastIntent.putExtra("videoID", youtubeRegex.findAll(url).map { it.groupValues[1] }.joinToString())
             sendBroadcast(broadcastIntent)
         }, MoreExecutors.directExecutor())
     }
