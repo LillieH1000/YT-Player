@@ -33,12 +33,4 @@ class Requests {
 
         return@withContext JSONArray(response.bodyAsText())
     }
-
-    private fun optString(info: JSONObject, key: String): String? {
-        if (info.isNull(key)) {
-            return null
-        }
-
-        return info.optString(key)
-    }
 }
