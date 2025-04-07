@@ -258,7 +258,7 @@ class Player: ComponentActivity(), Player.Listener {
 
         // Player View
 
-        if (player != null) {
+        if (player != null && player?.mediaItemCount == 1) {
             val presentationState = rememberPresentationState(player!!)
 
             PlayerSurface(
