@@ -1190,6 +1190,10 @@ class Player: ComponentActivity(), Player.Listener {
         if (!youtubeRegex.containsMatchIn(url)) {
             return
         }
+
+        playerController.value?.stop()
+        playerController.value?.removeMediaItem(0)
+
         val sessionToken = SessionToken(this, ComponentName(this, PlayerService::class.java))
         playerControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
         playerControllerFuture.addListener({
