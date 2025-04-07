@@ -508,7 +508,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     onClick = {
                                         startActivity(Intent.createChooser(Intent().apply {
                                             action = Intent.ACTION_SEND
-                                            putExtra(Intent.EXTRA_TEXT, "https://youtu.be/${Application.id}")
+                                            putExtra(Intent.EXTRA_TEXT, "https://youtu.be/${player?.mediaMetadata?.extras?.getString("id")}")
                                             type = "text/plain"
                                         }, null))
                                     }
@@ -521,7 +521,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 }
                             }
                             // Settings Button
-                            if (!Application.live) {
+                            if (player?.mediaMetadata?.extras?.getBoolean("live") != true) {
                                 IconButton(
                                     modifier = Modifier.width(50.dp),
                                     onClick = {

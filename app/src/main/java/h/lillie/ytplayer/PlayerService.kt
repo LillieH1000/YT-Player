@@ -64,6 +64,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
     private val forwardCommand = SessionCommand("forward", Bundle.EMPTY)
     private var playerSession: MediaLibrarySession? = null
     private var playerTimer: CountDownTimer? = null
+    private var sponsorBlock: JSONArray? = null
     private var timerLength: Long = 0
 
     override fun onCreate() {
@@ -223,7 +224,11 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
             if (intent?.action == "h.lillie.ytplayer.info") {
                 val request = Requests()
                 val info = request.ytdlp(intent.extras!!.getString("videoID"), intent.extras!!.getString("searchQuery"))
-                request.sponsorBlock(Application.id!!)
+                sponsorBlock = request.sponsorBlock(info.id)
+
+                val playerExtraInfo = Bundle()
+                playerExtraInfo.putString("id", info.id)
+                playerExtraInfo.putBoolean("live", info.live)
 
                 val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
                     .setTitle(info.title)
@@ -239,7 +244,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                     .setMediaMetadata(playerMediaMetadata)
                     .setUri(info.url.toUri())
 
-                val subtitles: JSONArray? = Application.subtitles
+                val subtitles: JSONArray? = info.subtitles
                 if (subtitles != null) {
                     val subtitlesList = mutableListOf<MediaItem.SubtitleConfiguration>()
 
@@ -269,7 +274,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                         .build()
 
                     val httpEngineDataSource: HttpEngineDataSource.Factory = HttpEngineDataSource.Factory(httpEngine, MoreExecutors.directExecutor())
-                    if (!Application.live) {
+                    if (!info.live) {
                         cacheDataSource.setUpstreamDataSourceFactory(httpEngineDataSource)
 
                         hlsMediaSource = HlsMediaSource.Factory(cacheDataSource)
@@ -282,7 +287,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                     }
                 } else {
                     val defaultDataSource: DefaultDataSource.Factory = DefaultDataSource.Factory(this@PlayerService)
-                    if (!Application.live) {
+                    if (!info.live) {
                         cacheDataSource.setUpstreamDataSourceFactory(defaultDataSource)
 
                         hlsMediaSource = HlsMediaSource.Factory(cacheDataSource)
@@ -338,8 +343,9 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
 
     private val playerTask = object: Runnable {
         override fun run() {
-            val sponsorBlock: JSONArray? = Application.sponsorBlock
-            if (sponsorBlock != null && !Application.live) {
+            val sponsorBlock: JSONArray? = sponsorBlock
+            val exoPlayerExtras: Bundle? = exoPlayer.mediaMetadata.extras
+            if (sponsorBlock != null && exoPlayerExtras != null && !exoPlayerExtras.getBoolean("live")) {
                 for (i in 0 until sponsorBlock.length()) {
                     val decimalFormat = DecimalFormat("#.###")
 

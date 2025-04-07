@@ -17,11 +17,7 @@ class Application : Application() {
     }
 
     companion object {
-        var id: String? = null
-        var live: Boolean = false
-        var expiration: String? = null
         var subtitles: JSONArray? = null
-        var sponsorBlock: JSONArray? = null
         var chromeOSDevice: Boolean = false
     }
 }
