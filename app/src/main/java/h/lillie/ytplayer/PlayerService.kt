@@ -222,11 +222,11 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
         override fun onReceive(context: Context?, intent: Intent?) = async {
             if (intent?.action == "h.lillie.ytplayer.info") {
                 val request = Requests()
-                request.ytdlp(intent.extras!!.getString("videoID"), intent.extras!!.getString("searchQuery"))
+                val info = request.ytdlp(intent.extras!!.getString("videoID"), intent.extras!!.getString("searchQuery"))
                 request.sponsorBlock(Application.id!!)
 
                 val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
-                    .setTitle(Application.title.value)
+                    .setTitle(info.title)
                     .setArtist(Application.author)
                     .setArtworkUri(Application.artwork?.toUri())
                     .setIsBrowsable(false)

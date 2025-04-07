@@ -255,7 +255,6 @@ class Player: ComponentActivity(), Player.Listener {
         val player by playerController.collectAsState()
         val speed by playbackSpeed.collectAsState()
         val time by playerTime.collectAsState()
-        val title by Application.title.collectAsState()
 
         // Player View
 
@@ -484,9 +483,9 @@ class Player: ComponentActivity(), Player.Listener {
                             .weight(1f)
                             .align(Alignment.CenterVertically)
                     ) {
-                        if (title != null) {
+                        if (player?.mediaMetadata?.title != null) {
                             Text(
-                                text = title!!,
+                                text = player?.mediaMetadata?.title.toString(),
                                 color = colorResource(R.color.white),
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1

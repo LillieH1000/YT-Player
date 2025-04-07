@@ -3,7 +3,6 @@ package h.lillie.ytplayer
 import android.app.Application
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
-import kotlinx.coroutines.flow.MutableStateFlow
 import org.json.JSONArray
 
 class Application : Application() {
@@ -19,7 +18,6 @@ class Application : Application() {
 
     companion object {
         var id: String? = null
-        var title = MutableStateFlow<String?>(null)
         var author: String? = null
         var artwork: String? = null
         var live: Boolean = false
