@@ -1196,11 +1196,11 @@ class Player: ComponentActivity(), Player.Listener {
             playerController.value = playerControllerFuture.get()
             playerController.value!!.addListener(this)
 
+            if (subtitlesChecked.isNotEmpty()) {
+                subtitlesChecked.clear()
+            }
             val subtitles: JSONArray? = Application.subtitles
             if (subtitles != null) {
-                if (subtitlesChecked.isNotEmpty()) {
-                    subtitlesChecked.clear()
-                }
                 subtitlesChecked.add(true)
                 for (i in 0 until subtitles.length()) {
                     subtitlesChecked.add(false)
