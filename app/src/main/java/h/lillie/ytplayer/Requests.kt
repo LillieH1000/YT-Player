@@ -1,6 +1,7 @@
 package h.lillie.ytplayer
 
 import com.chaquo.python.Python
+import com.google.gson.Gson
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.get
@@ -13,20 +14,21 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class Requests {
-    suspend fun ytdlp(videoID: String?, searchQuery: String?) = withContext(Dispatchers.IO) {
+    suspend fun ytdlp(videoID: String?, searchQuery: String?): Info = withContext(Dispatchers.IO) {
         val py: Python = Python.getInstance()
-        val info = JSONObject((py.getModule("ytdlp").callAttr("getInfo", videoID, searchQuery)).toString())
+        val rq = py.getModule("ytdlp").callAttr("getInfo", videoID, searchQuery).toString()
+        val jo = JSONObject(rq)
 
-        Application.id = optString(info, "id")
-        Application.title.value = optString(info, "title")
-        Application.author = optString(info, "author")
-        Application.artwork = optString(info, "artwork")
-        Application.live = info.optBoolean("live")
-        Application.url = optString(info, "url")
-        Application.expiration = optString(info, "expiration")
-        Application.subtitles = info.optJSONArray("subtitles")
+        Application.id = optString(jo, "id")
+        Application.author = optString(jo, "author")
+        Application.artwork = optString(jo, "artwork")
+        Application.live = jo.optBoolean("live")
+        Application.url = optString(jo, "url")
+        Application.expiration = optString(jo, "expiration")
+        Application.subtitles = jo.optJSONArray("subtitles")
 
-        return@withContext
+        val gson = Gson()
+        return@withContext gson.fromJson(rq, Info::class.java)
     }
 
     suspend fun sponsorBlock(videoId: String) = withContext(Dispatchers.IO) {
