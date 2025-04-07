@@ -4,6 +4,7 @@ chaquopyVersion = "16.0.0"
 composeBomVersion = "2025.03.01"
 coreVersion = "1.15.0"
 foundationVersion = "1.7.8"
+gsonVersion = "2.12.1"
 kotlinxCoroutinesVersion = "1.10.1"
 ktorVersion = "3.1.2"
 lifecycleVersion = "2.8.7"
@@ -38,6 +39,7 @@ androidx-runtime = { module = "androidx.compose.runtime:runtime", version.ref = 
 androidx-ui = { module = "androidx.compose.ui:ui", version.ref = "uiVersion" }
 androidx-ui-graphics = { module = "androidx.compose.ui:ui-graphics", version.ref = "uiVersion" }
 androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "uiVersion" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gsonVersion" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesVersion" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesVersion" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktorVersion" }
