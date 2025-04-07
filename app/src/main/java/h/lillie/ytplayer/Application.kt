@@ -18,10 +18,7 @@ class Application : Application() {
 
     companion object {
         var id: String? = null
-        var author: String? = null
-        var artwork: String? = null
         var live: Boolean = false
-        var url: String? = null
         var expiration: String? = null
         var subtitles: JSONArray? = null
         var sponsorBlock: JSONArray? = null

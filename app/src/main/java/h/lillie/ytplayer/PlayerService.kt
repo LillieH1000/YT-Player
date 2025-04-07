@@ -227,8 +227,8 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
 
                 val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
                     .setTitle(info.title)
-                    .setArtist(Application.author)
-                    .setArtworkUri(Application.artwork?.toUri())
+                    .setArtist(info.author)
+                    .setArtworkUri(info.artwork.toUri())
                     .setIsBrowsable(false)
                     .setIsPlayable(true)
                     .build()
@@ -237,7 +237,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                     .setMimeType(MimeTypes.APPLICATION_M3U8)
                     .setMediaId("root")
                     .setMediaMetadata(playerMediaMetadata)
-                    .setUri(Application.url?.toUri())
+                    .setUri(info.url.toUri())
 
                 val subtitles: JSONArray? = Application.subtitles
                 if (subtitles != null) {

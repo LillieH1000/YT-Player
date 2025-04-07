@@ -20,10 +20,7 @@ class Requests {
         val jo = JSONObject(rq)
 
         Application.id = optString(jo, "id")
-        Application.author = optString(jo, "author")
-        Application.artwork = optString(jo, "artwork")
         Application.live = jo.optBoolean("live")
-        Application.url = optString(jo, "url")
         Application.expiration = optString(jo, "expiration")
         Application.subtitles = jo.optJSONArray("subtitles")
 
