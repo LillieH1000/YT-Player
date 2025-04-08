@@ -1,7 +1,5 @@
 package h.lillie.ytplayer
 
-import org.json.JSONArray
-
 data class Info(
     val id: String,
     val title: String,
@@ -10,5 +8,5 @@ data class Info(
     val live: Boolean,
     val url: String,
     val expiration: String,
-    val subtitles: JSONArray?
+    val subtitles: ArrayList<InfoSubs>?
 )
