@@ -13,7 +13,7 @@ android {
         applicationId = "h.lillie.ytplayer"
         minSdk = 26
         targetSdk = 35
-        versionCode = 45
+        versionCode = 46
         versionName = "2.0.03"
         ndk {
             abiFilters += listOf("arm64-v8a", "x86_64")
@@ -83,7 +83,7 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer.smoothstreaming)
     implementation(libs.androidx.media3.extractor)
     implementation(libs.androidx.media3.session)
-    implementation(libs.androidx.media3.ui.compose)
+    implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.runtime)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)

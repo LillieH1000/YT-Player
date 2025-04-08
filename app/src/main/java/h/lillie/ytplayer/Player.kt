@@ -67,12 +67,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.C
@@ -81,10 +81,7 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
-import androidx.media3.ui.compose.PlayerSurface
-import androidx.media3.ui.compose.SURFACE_TYPE_SURFACE_VIEW
-import androidx.media3.ui.compose.modifiers.resizeWithContentScale
-import androidx.media3.ui.compose.state.rememberPresentationState
+import androidx.media3.ui.PlayerView
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import kotlinx.coroutines.CoroutineScope
@@ -276,30 +273,33 @@ class Player: ComponentActivity(), Player.Listener {
 
         // Player View
 
-        if (player != null && player?.mediaItemCount == 1) {
-            val presentationState = rememberPresentationState(player!!)
-
-            PlayerSurface(
-                modifier = if (deviceRotation == 1) {
-                    Modifier
-                        .background(colorResource(R.color.black))
-                        .navigationBarsPadding()
-                        .statusBarsPadding()
-                        .systemBarsPadding()
-                        .windowInsetsPadding(WindowInsets.displayCutout)
-                        .resizeWithContentScale(ContentScale.Fit, presentationState.videoSizeDp)
-                } else {
-                    Modifier
-                        .background(colorResource(R.color.black))
-                        .navigationBarsPadding()
-                        .statusBarsPadding()
-                        .systemBarsPadding()
-                        .resizeWithContentScale(ContentScale.Fit, presentationState.videoSizeDp)
-                },
-                player = player!!,
-                surfaceType = SURFACE_TYPE_SURFACE_VIEW
-            )
-        }
+        AndroidView(
+            modifier = if (deviceRotation == 1) {
+                Modifier
+                    .background(colorResource(R.color.black))
+                    .navigationBarsPadding()
+                    .statusBarsPadding()
+                    .systemBarsPadding()
+                    .windowInsetsPadding(WindowInsets.displayCutout)
+                    .fillMaxSize()
+            } else {
+                Modifier
+                    .background(colorResource(R.color.black))
+                    .navigationBarsPadding()
+                    .statusBarsPadding()
+                    .systemBarsPadding()
+                    .fillMaxSize()
+            },
+            factory = { context ->
+                PlayerView(context).apply {
+                    this.player = player
+                    this.useController = false
+                }
+            },
+            update = { playerView ->
+                playerView.player = player
+            }
+        )
 
         // 3 View
 
