@@ -261,6 +261,16 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                     }
 
                     playerMediaItem.setSubtitleConfigurations(subtitlesList)
+
+                    val broadcastIntent = Intent("h.lillie.ytplayer.activity.subtitles")
+                    broadcastIntent.setPackage(this@PlayerService.packageName)
+                    broadcastIntent.putExtra("subtitles", subtitles.toString())
+                    sendBroadcast(broadcastIntent)
+                } else {
+                    val broadcastIntent = Intent("h.lillie.ytplayer.activity.subtitles")
+                    broadcastIntent.setPackage(this@PlayerService.packageName)
+                    broadcastIntent.putExtra("null", "")
+                    sendBroadcast(broadcastIntent)
                 }
 
                 if (this@PlayerService::playerCache.isInitialized) {

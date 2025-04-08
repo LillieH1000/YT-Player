@@ -2,10 +2,13 @@ package h.lillie.ytplayer
 
 import android.annotation.SuppressLint
 import android.app.PictureInPictureParams
+import android.content.BroadcastReceiver
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
@@ -84,20 +87,26 @@ import androidx.media3.ui.compose.modifiers.resizeWithContentScale
 import androidx.media3.ui.compose.state.rememberPresentationState
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.DecimalFormat
 import java.util.Collections
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 @OptIn(UnstableApi::class)
 @kotlin.OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("SwitchIntDef")
+@SuppressLint("SwitchIntDef", "UnspecifiedRegisterReceiverFlag")
 class Player: ComponentActivity(), Player.Listener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
     private lateinit var playerHandler: Handler
     private var playerController = MutableStateFlow<MediaController?>(null)
+    private var playerSubtitles: JSONArray? = null
     private var isFirstLaunch: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -126,6 +135,14 @@ class Player: ComponentActivity(), Player.Listener {
                     }
                 }
             }
+        }
+
+        val intentFilter = IntentFilter()
+        intentFilter.addAction("h.lillie.ytplayer.activity.subtitles")
+        if (Build.VERSION.SDK_INT <= 32) {
+            registerReceiver(playerBroadcastReceiver, intentFilter)
+        } else {
+            registerReceiver(playerBroadcastReceiver, intentFilter, RECEIVER_NOT_EXPORTED)
         }
 
         when {
@@ -183,6 +200,7 @@ class Player: ComponentActivity(), Player.Listener {
     override fun onDestroy() {
         super.onDestroy()
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        unregisterReceiver(playerBroadcastReceiver)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -584,7 +602,7 @@ class Player: ComponentActivity(), Player.Listener {
                             onClick = {})
                 ) {
                     // Subtitles
-                    if (Application.subtitles != null) {
+                    if (playerSubtitles != null) {
                         Row(
                             modifier = Modifier
                                 .height(40.dp)
@@ -805,7 +823,7 @@ class Player: ComponentActivity(), Player.Listener {
                             indication = null,
                             onClick = {})
                 ) {
-                    val subtitles: JSONArray? = Application.subtitles
+                    val subtitles: JSONArray? = playerSubtitles
                     if (subtitles != null) {
                         item {
                             Row(
@@ -1199,17 +1217,6 @@ class Player: ComponentActivity(), Player.Listener {
             playerController.value = playerControllerFuture.get()
             playerController.value!!.addListener(this)
 
-            if (subtitlesChecked.isNotEmpty()) {
-                subtitlesChecked.clear()
-            }
-            val subtitles: JSONArray? = Application.subtitles
-            if (subtitles != null) {
-                subtitlesChecked.add(true)
-                for (i in 0 until subtitles.length()) {
-                    subtitlesChecked.add(false)
-                }
-            }
-
             Collections.replaceAll(sleepTimerChecked, true, false)
             sleepTimerChecked[0] = true
 
@@ -1266,6 +1273,37 @@ class Player: ComponentActivity(), Player.Listener {
         return formatted
     }
 
+    private fun BroadcastReceiver.async(coroutineContext: CoroutineContext = EmptyCoroutineContext, block: suspend CoroutineScope.() -> Unit) {
+        val pendingResult = goAsync()
+        CoroutineScope(Dispatchers.IO).launch(coroutineContext) {
+            block()
+        }.invokeOnCompletion {
+            pendingResult.finish()
+        }
+    }
+
+    private val playerBroadcastReceiver = object: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) = async {
+            if (intent?.action == "h.lillie.ytplayer.activity.subtitles") {
+                val subtitles = intent.extras!!.getString("subtitles")
+
+                if (subtitlesChecked.isNotEmpty()) {
+                    subtitlesChecked.clear()
+                }
+
+                if (subtitles != null) {
+                    val subtitlesArray = JSONArray(subtitles)
+                    playerSubtitles = subtitlesArray
+                    subtitlesChecked.add(true)
+                    for (i in 0 until subtitlesArray.length()) {
+                        subtitlesChecked.add(false)
+                    }
+                } else {
+                    playerSubtitles = null
+                }
+            }
+        }
+    }
 
     private val playerTask = object: Runnable {
         override fun run() {

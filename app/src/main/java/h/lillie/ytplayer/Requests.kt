@@ -11,14 +11,11 @@ import io.ktor.http.isSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
-import org.json.JSONObject
 
 class Requests {
     suspend fun ytdlp(videoID: String?, searchQuery: String?): Info = withContext(Dispatchers.IO) {
         val py: Python = Python.getInstance()
         val rq = py.getModule("ytdlp").callAttr("getInfo", videoID, searchQuery).toString()
-        val jo = JSONObject(rq)
-        Application.subtitles = jo.optJSONArray("subtitles")
 
         val gson = Gson()
         return@withContext gson.fromJson(rq, Info::class.java)
