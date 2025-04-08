@@ -959,7 +959,7 @@ class Player: ComponentActivity(), Player.Listener {
                                         Collections.replaceAll(sleepTimerChecked, true, false)
                                         sleepTimerChecked[0] = true
                                         if (checked) {
-                                            val broadcastIntent = Intent("h.lillie.ytplayer.timer")
+                                            val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
                                             broadcastIntent.setPackage(this@Player.packageName)
                                             broadcastIntent.putExtra("enable", false)
                                             sendBroadcast(broadcastIntent)
@@ -1000,7 +1000,7 @@ class Player: ComponentActivity(), Player.Listener {
                                         Collections.replaceAll(sleepTimerChecked, true, false)
                                         sleepTimerChecked[1] = true
                                         if (checked) {
-                                            val broadcastIntent = Intent("h.lillie.ytplayer.timer")
+                                            val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
                                             broadcastIntent.setPackage(this@Player.packageName)
                                             broadcastIntent.putExtra("enable", true)
                                             broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(15))
@@ -1042,7 +1042,7 @@ class Player: ComponentActivity(), Player.Listener {
                                         Collections.replaceAll(sleepTimerChecked, true, false)
                                         sleepTimerChecked[2] = true
                                         if (checked) {
-                                            val broadcastIntent = Intent("h.lillie.ytplayer.timer")
+                                            val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
                                             broadcastIntent.setPackage(this@Player.packageName)
                                             broadcastIntent.putExtra("enable", true)
                                             broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(30))
@@ -1084,7 +1084,7 @@ class Player: ComponentActivity(), Player.Listener {
                                         Collections.replaceAll(sleepTimerChecked, true, false)
                                         sleepTimerChecked[3] = true
                                         if (checked) {
-                                            val broadcastIntent = Intent("h.lillie.ytplayer.timer")
+                                            val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
                                             broadcastIntent.setPackage(this@Player.packageName)
                                             broadcastIntent.putExtra("enable", true)
                                             broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(45))
@@ -1126,7 +1126,7 @@ class Player: ComponentActivity(), Player.Listener {
                                         Collections.replaceAll(sleepTimerChecked, true, false)
                                         sleepTimerChecked[4] = true
                                         if (checked) {
-                                            val broadcastIntent = Intent("h.lillie.ytplayer.timer")
+                                            val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
                                             broadcastIntent.setPackage(this@Player.packageName)
                                             broadcastIntent.putExtra("enable", true)
                                             broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(60))
@@ -1168,7 +1168,7 @@ class Player: ComponentActivity(), Player.Listener {
                                         Collections.replaceAll(sleepTimerChecked, true, false)
                                         sleepTimerChecked[5] = true
                                         if (checked) {
-                                            val broadcastIntent = Intent("h.lillie.ytplayer.timer")
+                                            val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
                                             broadcastIntent.setPackage(this@Player.packageName)
                                             broadcastIntent.putExtra("enable", true)
                                             broadcastIntent.putExtra("time", 0L)
@@ -1225,7 +1225,7 @@ class Player: ComponentActivity(), Player.Listener {
             playerHandler = Handler(Looper.getMainLooper())
             playerHandler.post(playerTask)
 
-            val broadcastIntent = Intent("h.lillie.ytplayer.info")
+            val broadcastIntent = Intent("h.lillie.ytplayer.service.info")
             broadcastIntent.setPackage(this.packageName)
             broadcastIntent.putExtra("videoID", youtubeRegex.findAll(url).map { it.groupValues[1] }.joinToString())
             sendBroadcast(broadcastIntent)

@@ -109,8 +109,8 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
             .build()
 
         val intentFilter = IntentFilter()
-        intentFilter.addAction("h.lillie.ytplayer.info")
-        intentFilter.addAction("h.lillie.ytplayer.timer")
+        intentFilter.addAction("h.lillie.ytplayer.service.info")
+        intentFilter.addAction("h.lillie.ytplayer.service.timer")
         if (Build.VERSION.SDK_INT <= 32) {
             registerReceiver(playerBroadcastReceiver, intentFilter)
         } else {
@@ -176,7 +176,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
     override fun onSetMediaItems(mediaSession: MediaSession, controller: MediaSession.ControllerInfo, mediaItems: MutableList<MediaItem>, startIndex: Int, startPositionMs: Long): ListenableFuture<MediaSession.MediaItemsWithStartPosition> {
         val searchQuery: String? = mediaItems[0].requestMetadata.searchQuery
         if (searchQuery != null) {
-            val broadcastIntent = Intent("h.lillie.ytplayer.info")
+            val broadcastIntent = Intent("h.lillie.ytplayer.service.info")
             broadcastIntent.setPackage(this.packageName)
             broadcastIntent.putExtra("searchQuery", searchQuery)
             sendBroadcast(broadcastIntent)
@@ -222,7 +222,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
 
     private val playerBroadcastReceiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) = async {
-            if (intent?.action == "h.lillie.ytplayer.info") {
+            if (intent?.action == "h.lillie.ytplayer.service.info") {
                 val request = Requests()
                 val info = request.ytdlp(intent.extras!!.getString("videoID"), intent.extras!!.getString("searchQuery"))
                 sponsorBlock = request.sponsorBlock(info.id)
@@ -318,7 +318,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                 return@async
             }
 
-            if (intent?.action == "h.lillie.ytplayer.timer") {
+            if (intent?.action == "h.lillie.ytplayer.service.timer") {
                 val enable: Boolean = intent.extras!!.getBoolean("enable")
                 if (!enable) {
                     playerTimer?.cancel()
