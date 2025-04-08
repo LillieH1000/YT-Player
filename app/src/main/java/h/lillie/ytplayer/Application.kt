@@ -10,12 +10,5 @@ class Application : Application() {
         if (!Python.isStarted()) {
             Python.start(AndroidPlatform(this))
         }
-        if (packageManager.hasSystemFeature("org.chromium.arc.device_management")) {
-            chromeOSDevice = true
-        }
-    }
-
-    companion object {
-        var chromeOSDevice: Boolean = false
     }
 }

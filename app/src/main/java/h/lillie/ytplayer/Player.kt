@@ -104,12 +104,16 @@ class Player: ComponentActivity(), Player.Listener {
     private lateinit var playerHandler: Handler
     private var playerController = MutableStateFlow<MediaController?>(null)
     private var playerSubtitles: JSONArray? = null
+    private var chromeOSDevice: Boolean = false
     private var isFirstLaunch: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        if (!Application.chromeOSDevice) {
+        if (packageManager.hasSystemFeature("org.chromium.arc.device_management")) {
+            chromeOSDevice = true
+        }
+        if (!chromeOSDevice) {
             WindowInsetsControllerCompat(window, window.decorView).systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
         enableEdgeToEdge()
@@ -120,13 +124,13 @@ class Player: ComponentActivity(), Player.Listener {
         onBackPressedDispatcher.addCallback(this) {
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
-                    if (!Application.chromeOSDevice) {
+                    if (!chromeOSDevice) {
                         deviceRotation.intValue = 0
                         WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                     }
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    if (!Application.chromeOSDevice) {
+                    if (!chromeOSDevice) {
                         deviceRotation.intValue = 1
                         WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                     }
@@ -168,13 +172,13 @@ class Player: ComponentActivity(), Player.Listener {
         super.onConfigurationChanged(newConfig)
         when (newConfig.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
-                if (!Application.chromeOSDevice) {
+                if (!chromeOSDevice) {
                     deviceRotation.intValue = 0
                     WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                 }
             }
             Configuration.ORIENTATION_LANDSCAPE -> {
-                if (!Application.chromeOSDevice) {
+                if (!chromeOSDevice) {
                     deviceRotation.intValue = 1
                     WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                 }
@@ -213,13 +217,13 @@ class Player: ComponentActivity(), Player.Listener {
             }
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
-                    if (!Application.chromeOSDevice) {
+                    if (!chromeOSDevice) {
                         deviceRotation.intValue = 0
                         WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                     }
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    if (!Application.chromeOSDevice) {
+                    if (!chromeOSDevice) {
                         deviceRotation.intValue = 1
                         WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                     }
@@ -520,7 +524,7 @@ class Player: ComponentActivity(), Player.Listener {
                             modifier = Modifier.wrapContentWidth()
                         ) {
                             // Share Button
-                            if (!Application.chromeOSDevice) {
+                            if (!chromeOSDevice) {
                                 IconButton(
                                     modifier = Modifier.width(50.dp),
                                     onClick = {
