@@ -235,6 +235,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                     .setTitle(info.title)
                     .setArtist(info.author)
                     .setArtworkUri(info.artwork.toUri())
+                    .setExtras(playerExtraInfo)
                     .setIsBrowsable(false)
                     .setIsPlayable(true)
                     .build()
