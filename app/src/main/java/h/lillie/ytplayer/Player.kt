@@ -204,6 +204,16 @@ class Player: ComponentActivity(), Player.Listener {
         unregisterReceiver(playerBroadcastReceiver)
     }
 
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        if (isInPictureInPictureMode) {
+            showOverlay.value = false
+            showSettings.value = false
+            showSubtitles.value = false
+            showSleepTimer.value = false
+        }
+    }
+
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) {
@@ -247,6 +257,10 @@ class Player: ComponentActivity(), Player.Listener {
     private var playerDuration = mutableFloatStateOf(0f)
     private var playerPosition = mutableFloatStateOf(0f)
     private var playerTime = MutableStateFlow<String?>(null)
+    private var showOverlay = mutableStateOf(false)
+    private var showSettings = mutableStateOf(false)
+    private var showSubtitles = mutableStateOf(false)
+    private var showSleepTimer = mutableStateOf(false)
     private var subtitlesChecked = mutableStateListOf<Boolean>()
     private var sleepTimerChecked = mutableStateListOf(false, false, false, false, false, false)
 
@@ -254,10 +268,10 @@ class Player: ComponentActivity(), Player.Listener {
     private fun CreatePlayerUI() {
         // Remembers
 
-        var showOverlay by remember { mutableStateOf(false) }
-        var showSettings by remember { mutableStateOf(false) }
-        var showSubtitles by remember { mutableStateOf(false) }
-        var showSleepTimer by remember { mutableStateOf(false) }
+        var showOverlay by remember { showOverlay }
+        var showSettings by remember { showSettings }
+        var showSubtitles by remember { showSubtitles }
+        var showSleepTimer by remember { showSleepTimer }
         val playbackSpeed = remember { MutableStateFlow("1") }
         val playerTime = remember { playerTime }
         val sliderSource = remember { MutableInteractionSource() }
