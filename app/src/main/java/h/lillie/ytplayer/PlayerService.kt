@@ -20,6 +20,7 @@ import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.MimeTypes
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
@@ -30,6 +31,7 @@ import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.exoplayer.DefaultRenderersFactory
+import androidx.media3.exoplayer.ExoPlaybackException
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
@@ -56,13 +58,15 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
 @OptIn(UnstableApi::class)
-@SuppressLint("UnspecifiedRegisterReceiverFlag")
+@SuppressLint("SwitchIntDef", "UnspecifiedRegisterReceiverFlag")
 class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Callback, Player.Listener {
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var playerCache: SimpleCache
     private lateinit var playerHandler: Handler
     private val backCommand = SessionCommand("back", Bundle.EMPTY)
     private val forwardCommand = SessionCommand("forward", Bundle.EMPTY)
+    private var playerExpiration: String? = null
+    private var playerID: String? = null
     private var playerSession: MediaLibrarySession? = null
     private var playerTimer: CountDownTimer? = null
     private var sponsorBlock: JSONArray? = null
@@ -203,6 +207,21 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
         }
     }
 
+    override fun onPlayerError(error: PlaybackException) {
+        super.onPlayerError(error)
+        when ((error as ExoPlaybackException).type) {
+            ExoPlaybackException.TYPE_SOURCE -> {
+                val expiration: String? = playerExpiration
+                if (playerID != null && expiration != null && expiration.toLong() < System.currentTimeMillis()) {
+                    val broadcastIntent = Intent("h.lillie.ytplayer.service.info")
+                    broadcastIntent.setPackage(this.packageName)
+                    broadcastIntent.putExtra("videoID", playerID)
+                    sendBroadcast(broadcastIntent)
+                }
+            }
+        }
+    }
+
     private fun optString(info: JSONObject, key: String): String? {
         if (info.isNull(key)) {
             return null
@@ -226,6 +245,8 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                 val request = Requests()
                 val info = request.ytdlp(intent.extras!!.getString("videoID"), intent.extras!!.getString("searchQuery"))
                 sponsorBlock = request.sponsorBlock(info.id)
+                playerExpiration = info.expiration
+                playerID = info.id
 
                 val playerExtraInfo = Bundle()
                 playerExtraInfo.putString("id", info.id)
