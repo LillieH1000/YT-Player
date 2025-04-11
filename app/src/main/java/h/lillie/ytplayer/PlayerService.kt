@@ -132,6 +132,10 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
     override fun onDestroy() {
         playerTimer?.cancel()
         playerTimer = null
+        playerExpiration = null
+        playerID = null
+        sponsorBlock = null
+        timerLength = 0
         playerHandler.removeCallbacksAndMessages(null)
         unregisterReceiver(playerBroadcastReceiver)
         playerCache.release()
