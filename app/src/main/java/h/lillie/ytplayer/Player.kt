@@ -542,11 +542,11 @@ class Player: ComponentActivity(), Player.Listener {
                                 IconButton(
                                     modifier = Modifier.width(50.dp),
                                     onClick = {
-                                        startActivity(Intent.createChooser(Intent().apply {
-                                            action = Intent.ACTION_SEND
-                                            putExtra(Intent.EXTRA_TEXT, "https://youtu.be/${player?.mediaMetadata?.extras?.getString("id")}")
-                                            type = "text/plain"
-                                        }, null))
+                                        val shareIntent = Intent()
+                                        shareIntent.action = Intent.ACTION_SEND
+                                        shareIntent.putExtra(Intent.EXTRA_TEXT, "https://youtu.be/${player?.mediaMetadata?.extras?.getString("id")}")
+                                        shareIntent.type = "text/plain"
+                                        startActivity(Intent.createChooser(shareIntent, null))
                                     }
                                 ) {
                                     Icon(
