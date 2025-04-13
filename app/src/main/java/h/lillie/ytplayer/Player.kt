@@ -1,5 +1,6 @@
 package h.lillie.ytplayer
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.PictureInPictureParams
 import android.content.BroadcastReceiver
@@ -15,11 +16,13 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.speech.RecognizerIntent
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -73,6 +76,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.C
@@ -537,6 +542,30 @@ class Player: ComponentActivity(), Player.Listener {
                         Row(
                             modifier = Modifier.wrapContentWidth()
                         ) {
+                            // Voice Search Button
+                            IconButton(
+                                modifier = Modifier.width(50.dp),
+                                onClick = {
+                                    player?.pause()
+                                    if (ContextCompat.checkSelfPermission(this@Player, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                                        ActivityCompat.requestPermissions(this@Player, listOf(Manifest.permission.RECORD_AUDIO).toTypedArray(), 0)
+                                    } else {
+                                        val voiceIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+                                        voiceIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, this@Player.packageName)
+                                        voiceIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.EXTRA_LANGUAGE_MODEL)
+                                        voiceIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+                                        voiceIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en")
+                                        voiceIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say the video name you wish to search")
+                                        playerSearch.launch(voiceIntent)
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.search),
+                                    tint = colorResource(R.color.white),
+                                    contentDescription = ""
+                                )
+                            }
                             // Share Button
                             if (!chromeOSDevice) {
                                 IconButton(
@@ -1319,6 +1348,18 @@ class Player: ComponentActivity(), Player.Listener {
                 } else {
                     playerSubtitles = null
                 }
+            }
+        }
+    }
+
+    private val playerSearch = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val data = result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+            if (data != null) {
+                val broadcastIntent = Intent("h.lillie.ytplayer.service.info")
+                broadcastIntent.setPackage(this.packageName)
+                broadcastIntent.putExtra("searchQuery", data[0])
+                sendBroadcast(broadcastIntent)
             }
         }
     }
