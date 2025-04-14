@@ -155,7 +155,11 @@ class Player: ComponentActivity(), Player.Listener {
             intent?.action == Intent.ACTION_SEND -> {
                 if (intent.type == "text/plain") {
                     isFirstLaunch = true
-                    createPlayer(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
+                    val youtubeRegex = Regex("^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/|live/)|(?:(?:watch)?\\?vi?=|&vi?=))([^#&?]*).*")
+                    val info = intent.getStringExtra(Intent.EXTRA_TEXT)!!
+                    if (youtubeRegex.containsMatchIn(info)) {
+                        createPlayer(youtubeRegex.findAll(info).map { it.groupValues[1] }.joinToString(), null)
+                    }
                 }
             }
         }
@@ -167,7 +171,11 @@ class Player: ComponentActivity(), Player.Listener {
         when {
             intent.action == Intent.ACTION_SEND -> {
                 if (intent.type == "text/plain") {
-                    createPlayer(intent.getStringExtra(Intent.EXTRA_TEXT)!!)
+                    val youtubeRegex = Regex("^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/|live/)|(?:(?:watch)?\\?vi?=|&vi?=))([^#&?]*).*")
+                    val info = intent.getStringExtra(Intent.EXTRA_TEXT)!!
+                    if (youtubeRegex.containsMatchIn(info)) {
+                        createPlayer(youtubeRegex.findAll(info).map { it.groupValues[1] }.joinToString(), null)
+                    }
                 }
             }
         }
@@ -227,7 +235,11 @@ class Player: ComponentActivity(), Player.Listener {
                 val clipManager: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                 val clipData: ClipData? = clipManager.primaryClip
                 if (clipData != null && clipData.itemCount > 0) {
-                    createPlayer(clipData.getItemAt(0).text.toString())
+                    val youtubeRegex = Regex("^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/|live/)|(?:(?:watch)?\\?vi?=|&vi?=))([^#&?]*).*")
+                    val info = clipData.getItemAt(0).text.toString()
+                    if (youtubeRegex.containsMatchIn(info)) {
+                        createPlayer(youtubeRegex.findAll(info).map { it.groupValues[1] }.joinToString(), null)
+                    }
                 }
             }
             when (resources.configuration.orientation) {
@@ -1249,12 +1261,7 @@ class Player: ComponentActivity(), Player.Listener {
         }
     }
 
-    private fun createPlayer(url: String) {
-        val youtubeRegex = Regex("^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/|live/)|(?:(?:watch)?\\?vi?=|&vi?=))([^#&?]*).*")
-        if (!youtubeRegex.containsMatchIn(url)) {
-            return
-        }
-
+    private fun createPlayer(videoID: String?, searchQuery: String?) {
         playerController.value?.stop()
         playerController.value?.removeMediaItem(0)
 
@@ -1281,7 +1288,8 @@ class Player: ComponentActivity(), Player.Listener {
 
             val broadcastIntent = Intent("h.lillie.ytplayer.service.info")
             broadcastIntent.setPackage(this.packageName)
-            broadcastIntent.putExtra("videoID", youtubeRegex.findAll(url).map { it.groupValues[1] }.joinToString())
+            broadcastIntent.putExtra("videoID", videoID)
+            broadcastIntent.putExtra("searchQuery", searchQuery)
             sendBroadcast(broadcastIntent)
         }, MoreExecutors.directExecutor())
     }
@@ -1356,10 +1364,7 @@ class Player: ComponentActivity(), Player.Listener {
         if (result.resultCode == RESULT_OK) {
             val data = result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
             if (data != null) {
-                val broadcastIntent = Intent("h.lillie.ytplayer.service.info")
-                broadcastIntent.setPackage(this.packageName)
-                broadcastIntent.putExtra("searchQuery", data[0])
-                sendBroadcast(broadcastIntent)
+                createPlayer(null, data[0])
             }
         }
     }
