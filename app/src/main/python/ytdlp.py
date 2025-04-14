@@ -1,5 +1,4 @@
 import json
-import re
 import yt_dlp
 
 def getInfo(videoID, searchQuery):
@@ -30,7 +29,6 @@ def getInfo(videoID, searchQuery):
         info["artwork"] = y["thumbnail"]
         info["live"] = y["is_live"]
         info["url"] = y["manifest_url"]
-        info["expiration"] = re.search("/expire/(\\d+)/", y["manifest_url"]).group(1)
         for a in y["subtitles"]:
             c = {}
             for b in y["subtitles"][a]:
