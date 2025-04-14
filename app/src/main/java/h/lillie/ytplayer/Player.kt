@@ -274,7 +274,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var playerDuration = mutableFloatStateOf(0f)
     private var playerPosition = mutableFloatStateOf(0f)
     private var playerTime = MutableStateFlow<String?>(null)
-    private var showOverlay = mutableStateOf(false)
+    private var showOverlay = mutableStateOf(true)
     private var showSettings = mutableStateOf(false)
     private var showSubtitles = mutableStateOf(false)
     private var showSleepTimer = mutableStateOf(false)
