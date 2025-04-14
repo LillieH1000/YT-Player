@@ -562,32 +562,32 @@ class Player: ComponentActivity(), Player.Listener {
                         Row(
                             modifier = Modifier.wrapContentWidth()
                         ) {
-                            // Voice Search Button
-                            IconButton(
-                                modifier = Modifier.width(50.dp),
-                                onClick = {
-                                    player?.pause()
-                                    if (ContextCompat.checkSelfPermission(this@Player, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                                        ActivityCompat.requestPermissions(this@Player, listOf(Manifest.permission.RECORD_AUDIO).toTypedArray(), 0)
-                                    } else {
-                                        val voiceIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-                                        voiceIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, this@Player.packageName)
-                                        voiceIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.EXTRA_LANGUAGE_MODEL)
-                                        voiceIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
-                                        voiceIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en")
-                                        voiceIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say the video name you wish to search")
-                                        playerSearch.launch(voiceIntent)
-                                    }
-                                }
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.search),
-                                    tint = colorResource(R.color.white),
-                                    contentDescription = ""
-                                )
-                            }
-                            // Share Button
                             if (!chromeOSDevice) {
+                                // Voice Search Button
+                                IconButton(
+                                    modifier = Modifier.width(50.dp),
+                                    onClick = {
+                                        player?.pause()
+                                        if (ContextCompat.checkSelfPermission(this@Player, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                                            ActivityCompat.requestPermissions(this@Player, listOf(Manifest.permission.RECORD_AUDIO).toTypedArray(), 0)
+                                        } else {
+                                            val voiceIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+                                            voiceIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, this@Player.packageName)
+                                            voiceIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.EXTRA_LANGUAGE_MODEL)
+                                            voiceIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+                                            voiceIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en")
+                                            voiceIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say the video name you wish to search")
+                                            playerSearch.launch(voiceIntent)
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.search),
+                                        tint = colorResource(R.color.white),
+                                        contentDescription = ""
+                                    )
+                                }
+                                // Share Button
                                 IconButton(
                                     modifier = Modifier.width(50.dp),
                                     onClick = {
