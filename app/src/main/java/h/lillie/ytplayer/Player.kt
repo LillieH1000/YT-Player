@@ -280,7 +280,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var showSubtitles = mutableStateOf(false)
     private var showSleepTimer = mutableStateOf(false)
     private var subtitlesChecked = mutableStateListOf<Boolean>()
-    private var sleepTimerChecked = mutableStateListOf(false, false, false, false, false, false)
+    private var sleepTimerChecked = mutableStateListOf(false, false, false, false, false)
 
     @Composable
     private fun CreatePlayerUI() {
@@ -729,7 +729,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 .weight(1f)
                         ) {
                             Text(
-                                text = "Sleep Timer (Beta)",
+                                text = "Sleep Timer",
                                 color = colorResource(R.color.white),
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
@@ -1215,48 +1215,6 @@ class Player: ComponentActivity(), Player.Listener {
                                             broadcastIntent.setPackage(this@Player.packageName)
                                             broadcastIntent.putExtra("enable", true)
                                             broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(60))
-                                            sendBroadcast(broadcastIntent)
-                                        }
-                                    }
-                                )
-                            }
-                        }
-                    }
-                    // End Of Video
-                    item {
-                        Row(
-                            modifier = Modifier
-                                .height(30.dp)
-                                .padding(start = 10.dp)
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .weight(1f)
-                            ) {
-                                Text(
-                                    text = "End Of Video",
-                                    color = colorResource(R.color.white),
-                                    overflow = TextOverflow.Ellipsis,
-                                    maxLines = 1
-                                )
-                            }
-                            Column(
-                                modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .scale(0.6f)
-                                    .width(30.dp)
-                            ) {
-                                Checkbox(
-                                    checked = sleepTimerChecked[5],
-                                    onCheckedChange = { checked ->
-                                        Collections.replaceAll(sleepTimerChecked, true, false)
-                                        sleepTimerChecked[5] = true
-                                        if (checked) {
-                                            val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
-                                            broadcastIntent.setPackage(this@Player.packageName)
-                                            broadcastIntent.putExtra("enable", true)
-                                            broadcastIntent.putExtra("time", 0L)
                                             sendBroadcast(broadcastIntent)
                                         }
                                     }

@@ -67,7 +67,6 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
     private var playerSession: MediaLibrarySession? = null
     private var playerTimer: CountDownTimer? = null
     private var sponsorBlock: JSONArray? = null
-    private var timerLength: Long = 0
 
     override fun onCreate() {
         super.onCreate()
@@ -131,7 +130,6 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
         playerTimer = null
         playerID = null
         sponsorBlock = null
-        timerLength = 0
         playerHandler.removeCallbacksAndMessages(null)
         unregisterReceiver(playerBroadcastReceiver)
         playerCache.release()
@@ -198,13 +196,6 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
             return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
         }
         return super.onCustomCommand(session, controller, customCommand, args)
-    }
-
-    override fun onPlaybackStateChanged(playbackState: Int) {
-        super.onPlaybackStateChanged(playbackState)
-        if (playbackState == Player.STATE_ENDED && playerTimer != null && timerLength == 0L) {
-            exoPlayer.pause()
-        }
     }
 
     private fun optString(info: JSONObject, key: String): String? {
@@ -343,16 +334,13 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                     playerTimer?.cancel()
                     playerTimer = null
 
-                    timerLength = intent.extras!!.getLong("time")
-                    if (timerLength > 0) {
-                        playerTimer = object : CountDownTimer(timerLength, 1000) {
-                            override fun onTick(millisUntilFinished: Long) {
-                            }
-                            override fun onFinish() {
-                                exoPlayer.pause()
-                            }
-                        }.start()
-                    }
+                    playerTimer = object : CountDownTimer(intent.extras!!.getLong("time"), 1000) {
+                        override fun onTick(millisUntilFinished: Long) {
+                        }
+                        override fun onFinish() {
+                            exoPlayer.pause()
+                        }
+                    }.start()
                 }
                 return@async
             }
