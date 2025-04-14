@@ -543,6 +543,13 @@ class Player: ComponentActivity(), Player.Listener {
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
                             )
+                        } else {
+                            Text(
+                                text = "No Video Loaded",
+                                color = colorResource(R.color.white),
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1
+                            )
                         }
                     }
                     // Menu Buttons
