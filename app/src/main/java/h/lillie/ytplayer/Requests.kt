@@ -13,9 +13,15 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 
 class Requests {
-    suspend fun ytdlp(videoID: String?, searchQuery: String?): Info = withContext(Dispatchers.IO) {
+    suspend fun ytdlp(videoID: String?, searchQuery: String?): Info? = withContext(Dispatchers.IO) {
+        var rq = ""
         val py: Python = Python.getInstance()
-        val rq = py.getModule("ytdlp").callAttr("getInfo", videoID, searchQuery).toString()
+
+        runCatching {
+            rq = py.getModule("ytdlp").callAttr("getInfo", videoID, searchQuery).toString()
+        }.onFailure {
+            return@withContext null
+        }
 
         val gson = Gson()
         return@withContext gson.fromJson(rq, Info::class.java)

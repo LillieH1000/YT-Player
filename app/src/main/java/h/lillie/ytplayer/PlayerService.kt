@@ -220,6 +220,9 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
             if (intent?.action == "h.lillie.ytplayer.service.info") {
                 val request = Requests()
                 val info = request.ytdlp(intent.extras!!.getString("videoID"), intent.extras!!.getString("searchQuery"))
+                if (info == null) {
+                    return@async
+                }
                 sponsorBlock = request.sponsorBlock(info.id)
 
                 val playerExtraInfo = Bundle()
