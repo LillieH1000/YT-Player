@@ -233,13 +233,15 @@ class Player: ComponentActivity(), Player.Listener {
         if (hasFocus) {
             if (!isFirstLaunch) {
                 isFirstLaunch = true
-                val clipManager: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                val clipData: ClipData? = clipManager.primaryClip
-                if (clipData != null && clipData.itemCount > 0) {
-                    val youtubeRegex = Regex("^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/|live/)|(?:(?:watch)?\\?vi?=|&vi?=))([^#&?]*).*")
-                    val info = clipData.getItemAt(0).text.toString()
-                    if (youtubeRegex.containsMatchIn(info)) {
-                        createPlayer(youtubeRegex.findAll(info).map { it.groupValues[1] }.joinToString(), null)
+                if (chromeOSDevice) {
+                    val clipManager: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                    val clipData: ClipData? = clipManager.primaryClip
+                    if (clipData != null && clipData.itemCount > 0) {
+                        val youtubeRegex = Regex("^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/|live/)|(?:(?:watch)?\\?vi?=|&vi?=))([^#&?]*).*")
+                        val info = clipData.getItemAt(0).text.toString()
+                        if (youtubeRegex.containsMatchIn(info)) {
+                            createPlayer(youtubeRegex.findAll(info).map { it.groupValues[1] }.joinToString(), null)
+                        }
                     }
                 }
             }
