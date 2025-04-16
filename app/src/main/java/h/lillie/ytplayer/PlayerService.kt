@@ -56,14 +56,13 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
 @OptIn(UnstableApi::class)
-@SuppressLint("SwitchIntDef", "UnspecifiedRegisterReceiverFlag")
+@SuppressLint("UnspecifiedRegisterReceiverFlag")
 class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Callback, Player.Listener {
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var playerCache: SimpleCache
     private lateinit var playerHandler: Handler
     private val backCommand = SessionCommand("back", Bundle.EMPTY)
     private val forwardCommand = SessionCommand("forward", Bundle.EMPTY)
-    private var playerID: String? = null
     private var playerSession: MediaLibrarySession? = null
     private var playerTimer: CountDownTimer? = null
     private var sponsorBlock: JSONArray? = null
@@ -128,7 +127,6 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
     override fun onDestroy() {
         playerTimer?.cancel()
         playerTimer = null
-        playerID = null
         sponsorBlock = null
         playerHandler.removeCallbacksAndMessages(null)
         unregisterReceiver(playerBroadcastReceiver)
@@ -140,7 +138,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
     }
 
     override fun onConnect(session: MediaSession, controller: MediaSession.ControllerInfo): MediaSession.ConnectionResult {
-        return MediaSession.ConnectionResult.AcceptedResultBuilder(session)
+        val connectionResult: MediaSession.ConnectionResult = MediaSession.ConnectionResult.AcceptedResultBuilder(session)
             .setAvailablePlayerCommands(MediaSession.ConnectionResult.DEFAULT_PLAYER_COMMANDS.buildUpon()
                 .remove(Player.COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
                 .remove(Player.COMMAND_SEEK_TO_PREVIOUS)
@@ -154,6 +152,8 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                 .add(forwardCommand)
                 .build()
             ).build()
+
+        return connectionResult
     }
 
     override fun onGetLibraryRoot(session: MediaLibrarySession, browser: MediaSession.ControllerInfo, params: LibraryParams?): ListenableFuture<LibraryResult<MediaItem>> {
@@ -221,7 +221,6 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                 val request = Requests()
                 val info = request.ytdlp(intent.extras!!.getString("videoID"), intent.extras!!.getString("searchQuery"))
                 sponsorBlock = request.sponsorBlock(info.id)
-                playerID = info.id
 
                 val playerExtraInfo = Bundle()
                 playerExtraInfo.putString("id", info.id)
