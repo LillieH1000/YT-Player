@@ -14,8 +14,8 @@ import org.json.JSONArray
 
 class Requests {
     suspend fun ytdlp(videoID: String?, searchQuery: String?): Info? = withContext(Dispatchers.IO) {
-        var rq = ""
         val py: Python = Python.getInstance()
+        var rq = ""
 
         runCatching {
             rq = py.getModule("ytdlp").callAttr("getInfo", videoID, searchQuery).toString()
