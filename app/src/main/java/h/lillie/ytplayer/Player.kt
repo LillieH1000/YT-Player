@@ -1330,10 +1330,8 @@ class Player: ComponentActivity(), Player.Listener {
 
     private val playerSearch = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == RESULT_OK) {
-            val data = result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-            if (data != null) {
-                createPlayer(null, data[0])
-            }
+            val data = result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS) ?: return@registerForActivityResult
+            createPlayer(null, data[0])
         }
     }
 
