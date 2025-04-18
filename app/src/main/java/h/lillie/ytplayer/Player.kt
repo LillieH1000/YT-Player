@@ -208,7 +208,9 @@ class Player: ComponentActivity(), Player.Listener {
 
     override fun onStop() {
         super.onStop()
-        playerHandler.removeCallbacksAndMessages(null)
+        if (this::playerHandler.isInitialized) {
+            playerHandler.removeCallbacksAndMessages(null)
+        }
     }
 
     override fun onDestroy() {
