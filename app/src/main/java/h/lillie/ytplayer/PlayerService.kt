@@ -333,13 +333,18 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                     playerTimer?.cancel()
                     playerTimer = null
 
-                    playerTimer = object : CountDownTimer(intent.extras!!.getLong("time"), 1000) {
+                    playerTimer = object: CountDownTimer(intent.extras!!.getLong("time"), 1000) {
                         override fun onTick(millisUntilFinished: Long) {
                         }
                         override fun onFinish() {
                             exoPlayer.pause()
                         }
-                    }.start()
+                    }
+
+                    withContext(Dispatchers.Main) {
+                        playerTimer?.start()
+                        return@withContext
+                    }
                 }
                 return@async
             }
