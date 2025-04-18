@@ -592,25 +592,27 @@ class Player: ComponentActivity(), Player.Listener {
                                     )
                                 }
                                 // Share Button
-                                IconButton(
-                                    modifier = Modifier.width(50.dp),
-                                    onClick = {
-                                        val shareIntent = Intent()
-                                        shareIntent.action = Intent.ACTION_SEND
-                                        shareIntent.putExtra(Intent.EXTRA_TEXT, "https://youtu.be/${player?.mediaMetadata?.extras?.getString("id")}")
-                                        shareIntent.type = "text/plain"
-                                        startActivity(Intent.createChooser(shareIntent, null))
+                                if (player?.mediaItemCount == 1) {
+                                    IconButton(
+                                        modifier = Modifier.width(50.dp),
+                                        onClick = {
+                                            val shareIntent = Intent()
+                                            shareIntent.action = Intent.ACTION_SEND
+                                            shareIntent.putExtra(Intent.EXTRA_TEXT, "https://youtu.be/${player?.mediaMetadata?.extras?.getString("id")}")
+                                            shareIntent.type = "text/plain"
+                                            startActivity(Intent.createChooser(shareIntent, null))
+                                        }
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.share),
+                                            tint = colorResource(R.color.white),
+                                            contentDescription = ""
+                                        )
                                     }
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.share),
-                                        tint = colorResource(R.color.white),
-                                        contentDescription = ""
-                                    )
                                 }
                             }
                             // Settings Button
-                            if (player?.mediaMetadata?.extras?.getBoolean("live") != true) {
+                            if (player?.mediaItemCount == 1) {
                                 IconButton(
                                     modifier = Modifier.width(50.dp),
                                     onClick = {
@@ -638,7 +640,7 @@ class Player: ComponentActivity(), Player.Listener {
 
         // Settings View
 
-        if (showSettings) {
+        if (showSettings && player?.mediaItemCount == 1) {
             Row(
                 modifier = if (deviceRotation == 1) {
                     Modifier
@@ -673,7 +675,7 @@ class Player: ComponentActivity(), Player.Listener {
                             onClick = {})
                 ) {
                     // Subtitles
-                    if (playerSubtitles != null) {
+                    if (playerSubtitles != null && player?.mediaMetadata?.extras?.getBoolean("live") != true) {
                         Row(
                             modifier = Modifier
                                 .height(40.dp)
@@ -753,103 +755,107 @@ class Player: ComponentActivity(), Player.Listener {
                         }
                     }
                     // Loop Video
-                    Row(
-                        modifier = Modifier
-                            .height(40.dp)
-                            .padding(start = 10.dp)
-                    ) {
-                        Column(
+                    if (player?.mediaMetadata?.extras?.getBoolean("live") != true) {
+                        Row(
                             modifier = Modifier
-                                .weight(1f)
-                                .align(Alignment.CenterVertically)
+                                .height(40.dp)
+                                .padding(start = 10.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .align(Alignment.CenterVertically)
+                            ) {
+                                Text(
+                                    text = "Loop Video",
+                                    color = colorResource(R.color.white),
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1
+                                )
+                            }
+                            Column(
+                                modifier = Modifier.align(Alignment.CenterVertically)
+                            ) {
+                                Switch(
+                                    modifier = Modifier.scale(0.8f),
+                                    checked = loopChecked,
+                                    onCheckedChange = {
+                                        if (playerController.value?.repeatMode == Player.REPEAT_MODE_OFF) {
+                                            playerController.value?.repeatMode = Player.REPEAT_MODE_ONE
+                                        } else {
+                                            playerController.value?.repeatMode = Player.REPEAT_MODE_OFF
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    // Playback Speed
+                    if (player?.mediaMetadata?.extras?.getBoolean("live") != true) {
+                        Row(
+                            modifier = Modifier
+                                .height(40.dp)
+                                .padding(start = 10.dp, end = 10.dp)
                         ) {
                             Text(
-                                text = "Loop Video",
+                                modifier = Modifier.align(Alignment.CenterVertically),
+                                text = "Speed: ${speed}x",
                                 color = colorResource(R.color.white),
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
                             )
                         }
-                        Column(
-                            modifier = Modifier.align(Alignment.CenterVertically)
-                        ) {
-                            Switch(
-                                modifier = Modifier.scale(0.8f),
-                                checked = loopChecked,
-                                onCheckedChange = {
-                                    if (playerController.value?.repeatMode == Player.REPEAT_MODE_OFF) {
-                                        playerController.value?.repeatMode = Player.REPEAT_MODE_ONE
-                                    } else {
-                                        playerController.value?.repeatMode = Player.REPEAT_MODE_OFF
-                                    }
-                                }
-                            )
-                        }
-                    }
-                    // Playback Speed
-                    Row(
-                        modifier = Modifier
-                            .height(40.dp)
-                            .padding(start = 10.dp, end = 10.dp)
-                    ) {
-                        Text(
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                            text = "Speed: ${speed}x",
-                            color = colorResource(R.color.white),
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1
-                        )
-                    }
-                    Row(
-                        modifier = Modifier
-                            .height(30.dp)
-                    ) {
-                        Column(
+                        Row(
                             modifier = Modifier
-                                .weight(1f)
-                                .align(Alignment.CenterVertically)
+                                .height(30.dp)
                         ) {
-                            IconButton(
+                            Column(
                                 modifier = Modifier
-                                    .scale(0.6f)
-                                    .align(Alignment.CenterHorizontally),
-                                onClick = {
-                                    val decimalFormat = DecimalFormat("#.#")
-                                    if (decimalFormat.format(playerController.value!!.playbackParameters.speed).toFloat() > 0.1f) {
-                                        playerController.value!!.playbackParameters = PlaybackParameters(decimalFormat.format(playerController.value!!.playbackParameters.speed).toFloat() - 0.1f)
-                                        playbackSpeed.value = decimalFormat.format(playerController.value!!.playbackParameters.speed)
-                                    }
-                                }
+                                    .weight(1f)
+                                    .align(Alignment.CenterVertically)
                             ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.remove),
-                                    tint = colorResource(R.color.white),
-                                    contentDescription = ""
-                                )
+                                IconButton(
+                                    modifier = Modifier
+                                        .scale(0.6f)
+                                        .align(Alignment.CenterHorizontally),
+                                    onClick = {
+                                        val decimalFormat = DecimalFormat("#.#")
+                                        if (decimalFormat.format(playerController.value!!.playbackParameters.speed).toFloat() > 0.1f) {
+                                            playerController.value!!.playbackParameters = PlaybackParameters(decimalFormat.format(playerController.value!!.playbackParameters.speed).toFloat() - 0.1f)
+                                            playbackSpeed.value = decimalFormat.format(playerController.value!!.playbackParameters.speed)
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.remove),
+                                        tint = colorResource(R.color.white),
+                                        contentDescription = ""
+                                    )
+                                }
                             }
-                        }
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .align(Alignment.CenterVertically)
-                        ) {
-                            IconButton(
+                            Column(
                                 modifier = Modifier
-                                    .scale(0.6f)
-                                    .align(Alignment.CenterHorizontally),
-                                onClick = {
-                                    val decimalFormat = DecimalFormat("#.#")
-                                    if (decimalFormat.format(playerController.value!!.playbackParameters.speed).toFloat() < 2.0f) {
-                                        playerController.value!!.playbackParameters = PlaybackParameters(decimalFormat.format(playerController.value!!.playbackParameters.speed).toFloat() + 0.1f)
-                                        playbackSpeed.value = decimalFormat.format(playerController.value!!.playbackParameters.speed)
-                                    }
-                                }
+                                    .weight(1f)
+                                    .align(Alignment.CenterVertically)
                             ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.add),
-                                    tint = colorResource(R.color.white),
-                                    contentDescription = ""
-                                )
+                                IconButton(
+                                    modifier = Modifier
+                                        .scale(0.6f)
+                                        .align(Alignment.CenterHorizontally),
+                                    onClick = {
+                                        val decimalFormat = DecimalFormat("#.#")
+                                        if (decimalFormat.format(playerController.value!!.playbackParameters.speed).toFloat() < 2.0f) {
+                                            playerController.value!!.playbackParameters = PlaybackParameters(decimalFormat.format(playerController.value!!.playbackParameters.speed).toFloat() + 0.1f)
+                                            playbackSpeed.value = decimalFormat.format(playerController.value!!.playbackParameters.speed)
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.add),
+                                        tint = colorResource(R.color.white),
+                                        contentDescription = ""
+                                    )
+                                }
                             }
                         }
                     }
@@ -859,7 +865,7 @@ class Player: ComponentActivity(), Player.Listener {
 
         // Subtitles View
 
-        if (showSubtitles) {
+        if (showSubtitles && player?.mediaItemCount == 1) {
             Row(
                 modifier = if (deviceRotation == 1) {
                     Modifier
@@ -982,7 +988,7 @@ class Player: ComponentActivity(), Player.Listener {
 
         // Sleep Timer View
 
-        if (showSleepTimer) {
+        if (showSleepTimer && player?.mediaItemCount == 1) {
             Row(
                 modifier = if (deviceRotation == 1) {
                     Modifier
