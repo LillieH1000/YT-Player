@@ -591,24 +591,30 @@ class Player: ComponentActivity(), Player.Listener {
                                         contentDescription = ""
                                     )
                                 }
-                                // Share Button
-                                if (player?.mediaItemCount == 1) {
-                                    IconButton(
-                                        modifier = Modifier.width(50.dp),
-                                        onClick = {
+                            }
+                            // Share Button
+                            if (player?.mediaItemCount == 1) {
+                                IconButton(
+                                    modifier = Modifier.width(50.dp),
+                                    onClick = {
+                                        if (chromeOSDevice) {
+                                            val clipManager: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                                            val clipData: ClipData = ClipData.newPlainText("", "https://youtu.be/${player?.mediaMetadata?.extras?.getString("id")}")
+                                            clipManager.setPrimaryClip(clipData)
+                                        } else {
                                             val shareIntent = Intent()
                                             shareIntent.action = Intent.ACTION_SEND
                                             shareIntent.putExtra(Intent.EXTRA_TEXT, "https://youtu.be/${player?.mediaMetadata?.extras?.getString("id")}")
                                             shareIntent.type = "text/plain"
                                             startActivity(Intent.createChooser(shareIntent, null))
                                         }
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(R.drawable.share),
-                                            tint = colorResource(R.color.white),
-                                            contentDescription = ""
-                                        )
                                     }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.share),
+                                        tint = colorResource(R.color.white),
+                                        contentDescription = ""
+                                    )
                                 }
                             }
                             // Settings Button
