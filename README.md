@@ -10,7 +10,9 @@ Features:
 - No Ads
 - Background Playback
 - Picture In Picture
+- Sleep Timer
 - Subtitles
+- Voice Search (Android only)
 - Android Auto (Audio only, supports voice search)
 - [SponsorBlock](https://sponsor.ajay.app/) (Only auto skips sponsors)
 
@@ -22,6 +24,7 @@ Requires: Android version 8 and above
 
 Usage:
 - Press the "Share" button on any video in the YouTube app, press the "More" button and press "YT Player".
+- Launch the "YT Player" app and press the voice search icon located in the overlay and say what video you want to play
 
 <br>
 
@@ -35,4 +38,4 @@ Usage:
 <br>
 
 ## Open Source Libraries
-- [AndroidX](https://github.com/androidx/androidx), [Chaquopy](https://github.com/chaquo/chaquopy), [Kotlinx Coroutines](https://github.com/Kotlin/kotlinx.coroutines), [Ktor](https://github.com/ktorio/ktor), [SponsorBlock](https://github.com/ajayyy/SponsorBlock), [yt-dlp](https://github.com/yt-dlp/yt-dlp)
+- [AndroidX](https://github.com/androidx/androidx), [Chaquopy](https://github.com/chaquo/chaquopy), [Gson](https://github.com/google/gson), [Kotlinx Coroutines](https://github.com/Kotlin/kotlinx.coroutines), [Ktor](https://github.com/ktorio/ktor), [Media3](https://github.com/androidx/media), [SponsorBlock](https://github.com/ajayyy/SponsorBlock), [yt-dlp](https://github.com/yt-dlp/yt-dlp)
