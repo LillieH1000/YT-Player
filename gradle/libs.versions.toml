@@ -20,7 +20,6 @@ androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreVers
 androidx-lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", version.ref = "lifecycleVersion" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleVersion" }
 androidx-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3Version" }
-androidx-media3-common = { module = "androidx.media3:media3-common", version.ref = "media3Version" }
 androidx-media3-common-ktx = { module = "androidx.media3:media3-common-ktx", version.ref = "media3Version" }
 androidx-media3-database = { module = "androidx.media3:media3-database", version.ref = "media3Version" }
 androidx-media3-datasource = { module = "androidx.media3:media3-datasource", version.ref = "media3Version" }
