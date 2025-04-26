@@ -70,6 +70,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.focus.focusProperties
+import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -351,6 +353,8 @@ class Player: ComponentActivity(), Player.Listener {
                     .systemBarsPadding()
                     .windowInsetsPadding(WindowInsets.displayCutout)
                     .fillMaxSize()
+                    .focusTarget()
+                    .focusProperties { canFocus = false }
             } else {
                 Modifier
                     .background(colorResource(R.color.black))
@@ -358,6 +362,8 @@ class Player: ComponentActivity(), Player.Listener {
                     .statusBarsPadding()
                     .systemBarsPadding()
                     .fillMaxSize()
+                    .focusTarget()
+                    .focusProperties { canFocus = false }
             },
             factory = { context ->
                 PlayerView(context).apply {
@@ -380,12 +386,16 @@ class Player: ComponentActivity(), Player.Listener {
                     .systemBarsPadding()
                     .windowInsetsPadding(WindowInsets.displayCutout)
                     .fillMaxSize()
+                    .focusTarget()
+                    .focusProperties { canFocus = false }
             } else {
                 Modifier
                     .navigationBarsPadding()
                     .statusBarsPadding()
                     .systemBarsPadding()
                     .fillMaxSize()
+                    .focusTarget()
+                    .focusProperties { canFocus = false }
             }
         ) {
             Box(
@@ -464,6 +474,8 @@ class Player: ComponentActivity(), Player.Listener {
                         .systemBarsPadding()
                         .windowInsetsPadding(WindowInsets.displayCutout)
                         .fillMaxSize()
+                        .focusTarget()
+                        .focusProperties { canFocus = false }
                         .background(colorResource(R.color.dimBlack))
                 } else {
                     Modifier
@@ -471,6 +483,8 @@ class Player: ComponentActivity(), Player.Listener {
                         .statusBarsPadding()
                         .systemBarsPadding()
                         .fillMaxSize()
+                        .focusTarget()
+                        .focusProperties { canFocus = false }
                         .background(colorResource(R.color.dimBlack))
                 }
             ) {
@@ -685,6 +699,8 @@ class Player: ComponentActivity(), Player.Listener {
                         .windowInsetsPadding(WindowInsets.displayCutout)
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
                         .wrapContentHeight()
+                        .focusTarget()
+                        .focusProperties { canFocus = false }
                 } else {
                     Modifier
                         .navigationBarsPadding()
@@ -692,6 +708,8 @@ class Player: ComponentActivity(), Player.Listener {
                         .systemBarsPadding()
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
                         .wrapContentHeight()
+                        .focusTarget()
+                        .focusProperties { canFocus = false }
                 }
             ) {
                 Box(
@@ -910,6 +928,8 @@ class Player: ComponentActivity(), Player.Listener {
                         .windowInsetsPadding(WindowInsets.displayCutout)
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
                         .wrapContentHeight()
+                        .focusTarget()
+                        .focusProperties { canFocus = false }
                 } else {
                     Modifier
                         .navigationBarsPadding()
@@ -917,6 +937,8 @@ class Player: ComponentActivity(), Player.Listener {
                         .systemBarsPadding()
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
                         .wrapContentHeight()
+                        .focusTarget()
+                        .focusProperties { canFocus = false }
                 }
             ) {
                 Box(
@@ -1033,6 +1055,8 @@ class Player: ComponentActivity(), Player.Listener {
                         .windowInsetsPadding(WindowInsets.displayCutout)
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
                         .wrapContentHeight()
+                        .focusTarget()
+                        .focusProperties { canFocus = false }
                 } else {
                     Modifier
                         .navigationBarsPadding()
@@ -1040,6 +1064,8 @@ class Player: ComponentActivity(), Player.Listener {
                         .systemBarsPadding()
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
                         .wrapContentHeight()
+                        .focusTarget()
+                        .focusProperties { canFocus = false }
                 }
             ) {
                 Box(
