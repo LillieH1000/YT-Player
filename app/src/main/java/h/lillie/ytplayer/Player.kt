@@ -213,6 +213,13 @@ class Player: ComponentActivity(), Player.Listener {
         }
     }
 
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && Build.VERSION.SDK_INT <= 30) {
+            enterPictureInPictureMode(PictureInPictureParams.Builder().build())
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         MediaController.releaseFuture(playerControllerFuture)
