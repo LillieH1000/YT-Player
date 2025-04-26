@@ -17,6 +17,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.speech.RecognizerIntent
+import android.view.KeyEvent
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
@@ -235,6 +236,27 @@ class Player: ComponentActivity(), Player.Listener {
             showSubtitles.value = false
             showSleepTimer.value = false
         }
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        when (keyCode) {
+            KeyEvent.KEYCODE_SPACE -> {
+                if (playerController.value != null) {
+                    if (!playerController.value!!.isPlaying) {
+                        playerController.value?.play()
+                    } else {
+                        playerController.value?.pause()
+                    }
+                }
+            }
+            KeyEvent.KEYCODE_DPAD_LEFT -> {
+                playerController.value?.seekBack()
+            }
+            KeyEvent.KEYCODE_DPAD_RIGHT -> {
+                playerController.value?.seekForward()
+            }
+        }
+        return super.onKeyDown(keyCode, event)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
