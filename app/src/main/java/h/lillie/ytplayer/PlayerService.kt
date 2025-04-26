@@ -160,19 +160,19 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
         val currentMediaItem: MediaItem? = exoPlayer.currentMediaItem
         if (currentMediaItem != null) {
             return Futures.immediateFuture(LibraryResult.ofItem(currentMediaItem, params))
-        } else {
-            val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
-                .setIsBrowsable(false)
-                .setIsPlayable(false)
-                .build()
-
-            val playerMediaItem: MediaItem = MediaItem.Builder()
-                .setMediaId("root")
-                .setMediaMetadata(playerMediaMetadata)
-                .build()
-
-            return Futures.immediateFuture(LibraryResult.ofItem(playerMediaItem, params))
         }
+
+        val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
+            .setIsBrowsable(false)
+            .setIsPlayable(false)
+            .build()
+
+        val playerMediaItem: MediaItem = MediaItem.Builder()
+            .setMediaId("root")
+            .setMediaMetadata(playerMediaMetadata)
+            .build()
+
+        return Futures.immediateFuture(LibraryResult.ofItem(playerMediaItem, params))
     }
 
     override fun onSetMediaItems(mediaSession: MediaSession, controller: MediaSession.ControllerInfo, mediaItems: MutableList<MediaItem>, startIndex: Int, startPositionMs: Long): ListenableFuture<MediaSession.MediaItemsWithStartPosition> {
@@ -189,11 +189,9 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
     override fun onCustomCommand(session: MediaSession, controller: MediaSession.ControllerInfo, customCommand: SessionCommand, args: Bundle): ListenableFuture<SessionResult> {
         if (customCommand.customAction == "back") {
             playerSession?.player?.seekBack()
-            return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
         }
         if (customCommand.customAction == "forward") {
             playerSession?.player?.seekForward()
-            return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
         }
         return super.onCustomCommand(session, controller, customCommand, args)
     }
