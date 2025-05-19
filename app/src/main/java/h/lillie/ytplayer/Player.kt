@@ -1418,6 +1418,7 @@ class Player: ComponentActivity(), Player.Listener {
         playerControllerFuture.addListener({
             playerController.value = playerControllerFuture.get()
             playerController.value!!.addListener(this)
+            playbackSpeed.value = "1"
 
             Collections.replaceAll(sleepTimerChecked.value, true, false)
             sleepTimerChecked.update { list ->
