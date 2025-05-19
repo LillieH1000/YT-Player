@@ -1,7 +1,6 @@
 package h.lillie.ytplayer
 
 import com.chaquo.python.Python
-import com.google.gson.Gson
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.get
@@ -10,6 +9,7 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 import org.json.JSONArray
 
 class Requests {
@@ -23,8 +23,7 @@ class Requests {
             return@withContext null
         }
 
-        val gson = Gson()
-        return@withContext gson.fromJson(rq, Info::class.java)
+        return@withContext Json.decodeFromString<Info>(rq)
     }
 
     suspend fun sponsorBlock(videoId: String): JSONArray? = withContext(Dispatchers.IO) {

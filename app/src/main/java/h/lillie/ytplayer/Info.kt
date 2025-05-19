@@ -1,5 +1,8 @@
 package h.lillie.ytplayer
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Info(
     val id: String,
     val title: String,

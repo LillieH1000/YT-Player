@@ -43,11 +43,11 @@ import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
-import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -239,9 +239,8 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                     .setMediaMetadata(playerMediaMetadata)
                     .setUri(info.url.toUri())
 
-                val gson = Gson()
                 if (info.subtitles != null) {
-                    val subtitles = JSONArray(gson.toJson(info.subtitles))
+                    val subtitles = JSONArray(Json.encodeToString(info.subtitles))
                     val subtitlesList = mutableListOf<MediaItem.SubtitleConfiguration>()
 
                     for (i in 0 until subtitles.length()) {
