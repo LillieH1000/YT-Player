@@ -111,9 +111,9 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
         intentFilter.addAction("h.lillie.ytplayer.service.info")
         intentFilter.addAction("h.lillie.ytplayer.service.timer")
         if (Build.VERSION.SDK_INT <= 32) {
-            registerReceiver(playerBroadcastReceiver, intentFilter)
+            registerReceiver(playerBroadcast, intentFilter)
         } else {
-            registerReceiver(playerBroadcastReceiver, intentFilter, RECEIVER_NOT_EXPORTED)
+            registerReceiver(playerBroadcast, intentFilter, RECEIVER_NOT_EXPORTED)
         }
 
         playerHandler = Handler(Looper.getMainLooper())
@@ -129,7 +129,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
         playerTimer = null
         sponsorBlock = null
         playerHandler.removeCallbacksAndMessages(null)
-        unregisterReceiver(playerBroadcastReceiver)
+        unregisterReceiver(playerBroadcast)
         playerCache.release()
         exoPlayer.release()
         playerSession?.release()
@@ -213,7 +213,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
         }
     }
 
-    private val playerBroadcastReceiver = object: BroadcastReceiver() {
+    private val playerBroadcast = object: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) = async {
             if (intent?.action == "h.lillie.ytplayer.service.info") {
                 val request = Requests()

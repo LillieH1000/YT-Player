@@ -149,9 +149,9 @@ class Player: ComponentActivity(), Player.Listener {
         val intentFilter = IntentFilter()
         intentFilter.addAction("h.lillie.ytplayer.activity.subtitles")
         if (Build.VERSION.SDK_INT <= 32) {
-            registerReceiver(playerBroadcastReceiver, intentFilter)
+            registerReceiver(playerBroadcast, intentFilter)
         } else {
-            registerReceiver(playerBroadcastReceiver, intentFilter, RECEIVER_NOT_EXPORTED)
+            registerReceiver(playerBroadcast, intentFilter, RECEIVER_NOT_EXPORTED)
         }
 
         when {
@@ -227,7 +227,7 @@ class Player: ComponentActivity(), Player.Listener {
         super.onDestroy()
         MediaController.releaseFuture(playerControllerFuture)
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        unregisterReceiver(playerBroadcastReceiver)
+        unregisterReceiver(playerBroadcast)
     }
 
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
@@ -1460,7 +1460,7 @@ class Player: ComponentActivity(), Player.Listener {
         }
     }
 
-    private val playerBroadcastReceiver = object: BroadcastReceiver() {
+    private val playerBroadcast = object: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) = async {
             if (intent?.action == "h.lillie.ytplayer.activity.subtitles") {
                 val subtitles = intent.extras!!.getString("subtitles")
