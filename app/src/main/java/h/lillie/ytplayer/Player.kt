@@ -61,12 +61,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -95,6 +90,7 @@ import com.google.common.util.concurrent.MoreExecutors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
@@ -133,13 +129,13 @@ class Player: ComponentActivity(), Player.Listener {
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
                     if (!chromeOSDevice) {
-                        deviceRotation.intValue = 0
+                        deviceRotation.value = 0
                         WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                     }
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
                     if (!chromeOSDevice) {
-                        deviceRotation.intValue = 1
+                        deviceRotation.value = 1
                         WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                     }
                 }
@@ -189,13 +185,13 @@ class Player: ComponentActivity(), Player.Listener {
         when (newConfig.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
                 if (!chromeOSDevice) {
-                    deviceRotation.intValue = 0
+                    deviceRotation.value = 0
                     WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                 }
             }
             Configuration.ORIENTATION_LANDSCAPE -> {
                 if (!chromeOSDevice) {
-                    deviceRotation.intValue = 1
+                    deviceRotation.value = 1
                     WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                 }
             }
@@ -281,13 +277,13 @@ class Player: ComponentActivity(), Player.Listener {
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
                     if (!chromeOSDevice) {
-                        deviceRotation.intValue = 0
+                        deviceRotation.value = 0
                         WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                     }
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
                     if (!chromeOSDevice) {
-                        deviceRotation.intValue = 1
+                        deviceRotation.value = 1
                         WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                     }
                 }
@@ -304,48 +300,47 @@ class Player: ComponentActivity(), Player.Listener {
         }
     }
 
-    private var deviceRotation = mutableIntStateOf(0)
-    private var isPlaying = mutableIntStateOf(0)
-    private var loopChecked = mutableStateOf(false)
-    private var playerDuration = mutableFloatStateOf(0f)
-    private var playerPosition = mutableFloatStateOf(0f)
+    private var deviceRotation = MutableStateFlow(0)
+    private var isPlaying = MutableStateFlow(0)
+    private var loopChecked = MutableStateFlow(false)
+    private var playerDuration = MutableStateFlow(0f)
+    private var playerPosition = MutableStateFlow(0f)
+    private var playbackSpeed = MutableStateFlow("1")
     private var playerTime = MutableStateFlow<String?>(null)
-    private var showOverlay = mutableStateOf(true)
-    private var showSettings = mutableStateOf(false)
-    private var showSubtitles = mutableStateOf(false)
-    private var showSleepTimer = mutableStateOf(false)
-    private var subtitlesChecked = mutableStateListOf<Boolean>()
-    private var sleepTimerChecked = mutableStateListOf(false, false, false, false, false)
+    private var showOverlay = MutableStateFlow(true)
+    private var showSettings = MutableStateFlow(false)
+    private var showSubtitles = MutableStateFlow(false)
+    private var showSleepTimer = MutableStateFlow(false)
+    private var subtitlesChecked = MutableStateFlow<List<Boolean>>(listOf())
+    private var sleepTimerChecked = MutableStateFlow(listOf(false, false, false, false, false))
 
     @Composable
     private fun CreatePlayerUI() {
         // Remembers
 
-        var showOverlay by remember { showOverlay }
-        var showSettings by remember { showSettings }
-        var showSubtitles by remember { showSubtitles }
-        var showSleepTimer by remember { showSleepTimer }
-        val playbackSpeed = remember { MutableStateFlow("1") }
-        val playerTime = remember { playerTime }
         val sliderSource = remember { MutableInteractionSource() }
-        val subtitlesChecked = remember { subtitlesChecked }
-        val sleepTimerChecked = remember { sleepTimerChecked }
-        val deviceRotation by remember { deviceRotation }
-        val isPlaying by remember { isPlaying }
-        val loopChecked by remember { loopChecked }
-        val playerDuration by remember { playerDuration }
-        val playerPosition by remember { playerPosition }
 
         // States
 
-        val player by playerController.collectAsState()
-        val speed by playbackSpeed.collectAsState()
-        val time by playerTime.collectAsState()
+        val deviceRotationState by deviceRotation.collectAsState()
+        val isPlayingState by isPlaying.collectAsState()
+        val loopCheckedState by loopChecked.collectAsState()
+        val playerControllerState by playerController.collectAsState()
+        val playerDurationState by playerDuration.collectAsState()
+        val playerPositionState by playerPosition.collectAsState()
+        val playbackSpeedState by playbackSpeed.collectAsState()
+        val playerTimeState by playerTime.collectAsState()
+        val showOverlayState by showOverlay.collectAsState()
+        val showSettingsState by showSettings.collectAsState()
+        val showSubtitlesState by showSubtitles.collectAsState()
+        val showSleepTimerState by showSleepTimer.collectAsState()
+        val subtitlesCheckedState by subtitlesChecked.collectAsState()
+        val sleepTimerCheckedState by sleepTimerChecked.collectAsState()
 
         // Player View
 
         AndroidView(
-            modifier = if (deviceRotation == 1) {
+            modifier = if (deviceRotationState == 1) {
                 Modifier
                     .background(colorResource(R.color.black))
                     .navigationBarsPadding()
@@ -367,19 +362,19 @@ class Player: ComponentActivity(), Player.Listener {
             },
             factory = { context ->
                 PlayerView(context).apply {
-                    this.player = player
+                    this.player = playerControllerState
                     this.useController = false
                 }
             },
             update = { playerView ->
-                playerView.player = player
+                playerView.player = playerControllerState
             }
         )
 
         // 3 View
 
         Row(
-            modifier = if (deviceRotation == 1) {
+            modifier = if (deviceRotationState == 1) {
                 Modifier
                     .navigationBarsPadding()
                     .statusBarsPadding()
@@ -405,14 +400,14 @@ class Player: ComponentActivity(), Player.Listener {
                     .pointerInput(Unit) {
                         detectTapGestures(
                             onTap = {
-                                if (!showOverlay) {
-                                    showOverlay = true
+                                if (!showOverlayState) {
+                                    showOverlay.value = true
                                 } else {
-                                    showOverlay = false
+                                    showOverlay.value = false
                                 }
-                                showSettings = false
-                                showSubtitles = false
-                                showSleepTimer = false
+                                showSettings.value = false
+                                showSubtitles.value = false
+                                showSleepTimer.value = false
                             },
                             onDoubleTap = {
                                 if (!chromeOSDevice) {
@@ -429,14 +424,14 @@ class Player: ComponentActivity(), Player.Listener {
                     .pointerInput(Unit) {
                         detectTapGestures(
                             onTap = {
-                                if (!showOverlay) {
-                                    showOverlay = true
+                                if (!showOverlayState) {
+                                    showOverlay.value = true
                                 } else {
-                                    showOverlay = false
+                                    showOverlay.value = false
                                 }
-                                showSettings = false
-                                showSubtitles = false
-                                showSleepTimer = false
+                                showSettings.value = false
+                                showSubtitles.value = false
+                                showSleepTimer.value = false
                             }
                         )
                     }
@@ -448,14 +443,14 @@ class Player: ComponentActivity(), Player.Listener {
                     .pointerInput(Unit) {
                         detectTapGestures(
                             onTap = {
-                                if (!showOverlay) {
-                                    showOverlay = true
+                                if (!showOverlayState) {
+                                    showOverlay.value = true
                                 } else {
-                                    showOverlay = false
+                                    showOverlay.value = false
                                 }
-                                showSettings = false
-                                showSubtitles = false
-                                showSleepTimer = false
+                                showSettings.value = false
+                                showSubtitles.value = false
+                                showSleepTimer.value = false
                             },
                             onDoubleTap = {
                                 if (!chromeOSDevice) {
@@ -469,9 +464,9 @@ class Player: ComponentActivity(), Player.Listener {
 
         // Overlay View
 
-        if (showOverlay) {
+        if (showOverlayState) {
             Box(
-                modifier = if (deviceRotation == 1) {
+                modifier = if (deviceRotationState == 1) {
                     Modifier
                         .navigationBarsPadding()
                         .statusBarsPadding()
@@ -506,17 +501,17 @@ class Player: ComponentActivity(), Player.Listener {
                             }
                         }
                     ) {
-                        if (isPlaying == 1) {
+                        if (isPlayingState == 1) {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(30.dp),
                                 strokeWidth = 3.dp,
                                 color = colorResource(R.color.white)
                             )
                         }
-                        if (isPlaying >= 2) {
+                        if (isPlayingState >= 2) {
                             Icon(
                                 modifier = Modifier.size(50.dp),
-                                painter = when (isPlaying) {
+                                painter = when (isPlayingState) {
                                     2 -> {
                                         painterResource(androidx.media3.session.R.drawable.media3_icon_play)
                                     }
@@ -554,17 +549,17 @@ class Player: ComponentActivity(), Player.Listener {
                                 }
                             }
                         ) {
-                            if (isPlaying == 1) {
+                            if (isPlayingState == 1) {
                                 CircularProgressIndicator(
                                     modifier = Modifier.size(20.dp),
                                     strokeWidth = 3.dp,
                                     color = colorResource(R.color.white)
                                 )
                             }
-                            if (isPlaying >= 2) {
+                            if (isPlayingState >= 2) {
                                 Icon(
                                     modifier = Modifier.size(25.dp),
-                                    painter = when (isPlaying) {
+                                    painter = when (isPlayingState) {
                                         2 -> {
                                             painterResource(androidx.media3.session.R.drawable.media3_icon_play)
                                         }
@@ -633,14 +628,14 @@ class Player: ComponentActivity(), Player.Listener {
                                 thumbTrackGapSize = 0.dp
                             )
                         },
-                        value = playerPosition,
-                        valueRange = 0f..playerDuration,
+                        value = playerPositionState,
+                        valueRange = 0f..playerDurationState,
                         onValueChange = { newValue ->
                             playerController.value?.seekTo(newValue.toLong())
                         }
                     )
                 }
-                if (time != null) {
+                if (playerTimeState != null) {
                     Text(
                         modifier = if (chromeOSDevice) {
                             Modifier
@@ -651,7 +646,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 .align(Alignment.BottomStart)
                                 .padding(start = 15.dp, end = 15.dp, bottom = 28.dp)
                         },
-                        text = time!!,
+                        text = playerTimeState!!,
                         color = colorResource(R.color.white),
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1
@@ -670,9 +665,9 @@ class Player: ComponentActivity(), Player.Listener {
                             .weight(1f)
                             .align(Alignment.CenterVertically)
                     ) {
-                        if (player?.mediaMetadata?.title != null) {
+                        if (playerControllerState?.mediaMetadata?.title != null) {
                             Text(
-                                text = player?.mediaMetadata?.title.toString(),
+                                text = playerControllerState?.mediaMetadata?.title.toString(),
                                 color = colorResource(R.color.white),
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
@@ -700,7 +695,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 IconButton(
                                     modifier = Modifier.width(50.dp),
                                     onClick = {
-                                        player?.pause()
+                                        playerControllerState?.pause()
                                         if (ContextCompat.checkSelfPermission(this@Player, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                                             ActivityCompat.requestPermissions(this@Player, listOf(Manifest.permission.RECORD_AUDIO).toTypedArray(), 0)
                                         } else {
@@ -722,18 +717,18 @@ class Player: ComponentActivity(), Player.Listener {
                                 }
                             }
                             // Share Button
-                            if (player?.mediaItemCount == 1) {
+                            if (playerControllerState?.mediaItemCount == 1) {
                                 IconButton(
                                     modifier = Modifier.width(50.dp),
                                     onClick = {
                                         if (chromeOSDevice) {
                                             val clipManager: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                                            val clipData: ClipData = ClipData.newPlainText("", "https://youtu.be/${player?.mediaMetadata?.extras?.getString("id")}")
+                                            val clipData: ClipData = ClipData.newPlainText("", "https://youtu.be/${playerControllerState?.mediaMetadata?.extras?.getString("id")}")
                                             clipManager.setPrimaryClip(clipData)
                                         } else {
                                             val shareIntent = Intent()
                                             shareIntent.action = Intent.ACTION_SEND
-                                            shareIntent.putExtra(Intent.EXTRA_TEXT, "https://youtu.be/${player?.mediaMetadata?.extras?.getString("id")}")
+                                            shareIntent.putExtra(Intent.EXTRA_TEXT, "https://youtu.be/${playerControllerState?.mediaMetadata?.extras?.getString("id")}")
                                             shareIntent.type = "text/plain"
                                             startActivity(Intent.createChooser(shareIntent, null))
                                         }
@@ -747,16 +742,16 @@ class Player: ComponentActivity(), Player.Listener {
                                 }
                             }
                             // Settings Button
-                            if (player?.mediaItemCount == 1) {
+                            if (playerControllerState?.mediaItemCount == 1) {
                                 IconButton(
                                     modifier = Modifier.width(50.dp),
                                     onClick = {
-                                        if (!showSettings && !showSubtitles && !showSleepTimer) {
-                                            showSettings = true
+                                        if (!showSettingsState && !showSubtitlesState && !showSleepTimerState) {
+                                            showSettings.value = true
                                         } else {
-                                            showSettings = false
-                                            showSubtitles = false
-                                            showSleepTimer = false
+                                            showSettings.value = false
+                                            showSubtitles.value = false
+                                            showSleepTimer.value = false
                                         }
                                     }
                                 ) {
@@ -775,9 +770,9 @@ class Player: ComponentActivity(), Player.Listener {
 
         // Settings View
 
-        if (showSettings && player?.mediaItemCount == 1) {
+        if (showSettingsState && playerControllerState?.mediaItemCount == 1) {
             Row(
-                modifier = if (deviceRotation == 1) {
+                modifier = if (deviceRotationState == 1) {
                     Modifier
                         .navigationBarsPadding()
                         .statusBarsPadding()
@@ -814,7 +809,7 @@ class Player: ComponentActivity(), Player.Listener {
                             onClick = {})
                 ) {
                     // Subtitles
-                    if (playerSubtitles != null && player?.mediaMetadata?.extras?.getBoolean("live") != true) {
+                    if (playerSubtitles != null && playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
                         Row(
                             modifier = Modifier
                                 .height(40.dp)
@@ -824,8 +819,8 @@ class Player: ComponentActivity(), Player.Listener {
                                     interactionSource = null,
                                     indication = null,
                                     onClick = {
-                                        showSettings = false
-                                        showSubtitles = true
+                                        showSettings.value = false
+                                        showSubtitles.value = true
                                     })
                         ) {
                             Column(
@@ -864,8 +859,8 @@ class Player: ComponentActivity(), Player.Listener {
                                 interactionSource = null,
                                 indication = null,
                                 onClick = {
-                                    showSettings = false
-                                    showSleepTimer = true
+                                    showSettings.value = false
+                                    showSleepTimer.value = true
                                 })
                     ) {
                         Column(
@@ -894,7 +889,7 @@ class Player: ComponentActivity(), Player.Listener {
                         }
                     }
                     // Loop Video
-                    if (player?.mediaMetadata?.extras?.getBoolean("live") != true) {
+                    if (playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
                         Row(
                             modifier = Modifier
                                 .height(40.dp)
@@ -917,7 +912,7 @@ class Player: ComponentActivity(), Player.Listener {
                             ) {
                                 Switch(
                                     modifier = Modifier.scale(0.8f),
-                                    checked = loopChecked,
+                                    checked = loopCheckedState,
                                     onCheckedChange = {
                                         if (playerController.value?.repeatMode == Player.REPEAT_MODE_OFF) {
                                             playerController.value?.repeatMode = Player.REPEAT_MODE_ONE
@@ -930,7 +925,7 @@ class Player: ComponentActivity(), Player.Listener {
                         }
                     }
                     // Playback Speed
-                    if (player?.mediaMetadata?.extras?.getBoolean("live") != true) {
+                    if (playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
                         Row(
                             modifier = Modifier
                                 .height(40.dp)
@@ -938,7 +933,7 @@ class Player: ComponentActivity(), Player.Listener {
                         ) {
                             Text(
                                 modifier = Modifier.align(Alignment.CenterVertically),
-                                text = "Speed: ${speed}x",
+                                text = "Speed: ${playbackSpeedState}x",
                                 color = colorResource(R.color.white),
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
@@ -1004,9 +999,9 @@ class Player: ComponentActivity(), Player.Listener {
 
         // Subtitles View
 
-        if (showSubtitles && player?.mediaItemCount == 1) {
+        if (showSubtitlesState && playerControllerState?.mediaItemCount == 1) {
             Row(
-                modifier = if (deviceRotation == 1) {
+                modifier = if (deviceRotationState == 1) {
                     Modifier
                         .navigationBarsPadding()
                         .statusBarsPadding()
@@ -1070,10 +1065,14 @@ class Player: ComponentActivity(), Player.Listener {
                                         .width(30.dp)
                                 ) {
                                     Checkbox(
-                                        checked = subtitlesChecked[0],
+                                        checked = subtitlesCheckedState[0],
                                         onCheckedChange = { checked ->
-                                            Collections.replaceAll(subtitlesChecked, true, false)
-                                            subtitlesChecked[0] = true
+                                            Collections.replaceAll(subtitlesChecked.value, true, false)
+                                            subtitlesChecked.update { list ->
+                                                list.toMutableList().apply {
+                                                    set(0, true)
+                                                }.toList()
+                                            }
                                             if (checked) {
                                                 playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
                                                     .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
@@ -1109,10 +1108,14 @@ class Player: ComponentActivity(), Player.Listener {
                                         .width(30.dp)
                                 ) {
                                     Checkbox(
-                                        checked = subtitlesChecked[index + 1],
+                                        checked = subtitlesCheckedState[index + 1],
                                         onCheckedChange = { checked ->
-                                            Collections.replaceAll(subtitlesChecked, true, false)
-                                            subtitlesChecked[index + 1] = true
+                                            Collections.replaceAll(subtitlesChecked.value, true, false)
+                                            subtitlesChecked.update { list ->
+                                                list.toMutableList().apply {
+                                                    set(index + 1, true)
+                                                }.toList()
+                                            }
                                             if (checked) {
                                                 playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
                                                     .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
@@ -1131,9 +1134,9 @@ class Player: ComponentActivity(), Player.Listener {
 
         // Sleep Timer View
 
-        if (showSleepTimer && player?.mediaItemCount == 1) {
+        if (showSleepTimerState && playerControllerState?.mediaItemCount == 1) {
             Row(
-                modifier = if (deviceRotation == 1) {
+                modifier = if (deviceRotationState == 1) {
                     Modifier
                         .navigationBarsPadding()
                         .statusBarsPadding()
@@ -1196,10 +1199,14 @@ class Player: ComponentActivity(), Player.Listener {
                                     .width(30.dp)
                             ) {
                                 Checkbox(
-                                    checked = sleepTimerChecked[0],
+                                    checked = sleepTimerCheckedState[0],
                                     onCheckedChange = { checked ->
-                                        Collections.replaceAll(sleepTimerChecked, true, false)
-                                        sleepTimerChecked[0] = true
+                                        Collections.replaceAll(sleepTimerChecked.value, true, false)
+                                        sleepTimerChecked.update { list ->
+                                            list.toMutableList().apply {
+                                                set(0, true)
+                                            }.toList()
+                                        }
                                         if (checked) {
                                             val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
                                             broadcastIntent.setPackage(this@Player.packageName)
@@ -1237,10 +1244,14 @@ class Player: ComponentActivity(), Player.Listener {
                                     .width(30.dp)
                             ) {
                                 Checkbox(
-                                    checked = sleepTimerChecked[1],
+                                    checked = sleepTimerCheckedState[1],
                                     onCheckedChange = { checked ->
-                                        Collections.replaceAll(sleepTimerChecked, true, false)
-                                        sleepTimerChecked[1] = true
+                                        Collections.replaceAll(sleepTimerChecked.value, true, false)
+                                        sleepTimerChecked.update { list ->
+                                            list.toMutableList().apply {
+                                                set(1, true)
+                                            }.toList()
+                                        }
                                         if (checked) {
                                             val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
                                             broadcastIntent.setPackage(this@Player.packageName)
@@ -1279,10 +1290,14 @@ class Player: ComponentActivity(), Player.Listener {
                                     .width(30.dp)
                             ) {
                                 Checkbox(
-                                    checked = sleepTimerChecked[2],
+                                    checked = sleepTimerCheckedState[2],
                                     onCheckedChange = { checked ->
-                                        Collections.replaceAll(sleepTimerChecked, true, false)
-                                        sleepTimerChecked[2] = true
+                                        Collections.replaceAll(sleepTimerChecked.value, true, false)
+                                        sleepTimerChecked.update { list ->
+                                            list.toMutableList().apply {
+                                                set(2, true)
+                                            }.toList()
+                                        }
                                         if (checked) {
                                             val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
                                             broadcastIntent.setPackage(this@Player.packageName)
@@ -1321,10 +1336,14 @@ class Player: ComponentActivity(), Player.Listener {
                                     .width(30.dp)
                             ) {
                                 Checkbox(
-                                    checked = sleepTimerChecked[3],
+                                    checked = sleepTimerCheckedState[3],
                                     onCheckedChange = { checked ->
-                                        Collections.replaceAll(sleepTimerChecked, true, false)
-                                        sleepTimerChecked[3] = true
+                                        Collections.replaceAll(sleepTimerChecked.value, true, false)
+                                        sleepTimerChecked.update { list ->
+                                            list.toMutableList().apply {
+                                                set(3, true)
+                                            }.toList()
+                                        }
                                         if (checked) {
                                             val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
                                             broadcastIntent.setPackage(this@Player.packageName)
@@ -1363,10 +1382,14 @@ class Player: ComponentActivity(), Player.Listener {
                                     .width(30.dp)
                             ) {
                                 Checkbox(
-                                    checked = sleepTimerChecked[4],
+                                    checked = sleepTimerCheckedState[4],
                                     onCheckedChange = { checked ->
-                                        Collections.replaceAll(sleepTimerChecked, true, false)
-                                        sleepTimerChecked[4] = true
+                                        Collections.replaceAll(sleepTimerChecked.value, true, false)
+                                        sleepTimerChecked.update { list ->
+                                            list.toMutableList().apply {
+                                                set(4, true)
+                                            }.toList()
+                                        }
                                         if (checked) {
                                             val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
                                             broadcastIntent.setPackage(this@Player.packageName)
@@ -1394,8 +1417,12 @@ class Player: ComponentActivity(), Player.Listener {
             playerController.value = playerControllerFuture.get()
             playerController.value!!.addListener(this)
 
-            Collections.replaceAll(sleepTimerChecked, true, false)
-            sleepTimerChecked[0] = true
+            Collections.replaceAll(sleepTimerChecked.value, true, false)
+            sleepTimerChecked.update { list ->
+                list.toMutableList().apply {
+                    set(0, true)
+                }.toList()
+            }
 
             if (packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && Build.VERSION.SDK_INT >= 31) {
                 setPictureInPictureParams(
@@ -1465,16 +1492,28 @@ class Player: ComponentActivity(), Player.Listener {
             if (intent?.action == "h.lillie.ytplayer.activity.subtitles") {
                 val subtitles = intent.extras!!.getString("subtitles")
 
-                if (subtitlesChecked.isNotEmpty()) {
-                    subtitlesChecked.clear()
+                if (subtitlesChecked.value.isNotEmpty()) {
+                    subtitlesChecked.update { list ->
+                        list.toMutableList().apply {
+                            clear()
+                        }.toList()
+                    }
                 }
 
                 if (subtitles != null) {
                     val subtitlesArray = JSONArray(subtitles)
                     playerSubtitles = subtitlesArray
-                    subtitlesChecked.add(true)
+                    subtitlesChecked.update { list ->
+                        list.toMutableList().apply {
+                            add(true)
+                        }.toList()
+                    }
                     for (i in 0 until subtitlesArray.length()) {
-                        subtitlesChecked.add(false)
+                        subtitlesChecked.update { list ->
+                            list.toMutableList().apply {
+                                add(false)
+                            }.toList()
+                        }
                     }
                 } else {
                     playerSubtitles = null
@@ -1496,16 +1535,16 @@ class Player: ComponentActivity(), Player.Listener {
             if (player != null && player.mediaItemCount == 1) {
                 when (player.playbackState) {
                     Player.STATE_BUFFERING -> {
-                        isPlaying.intValue = 1
+                        isPlaying.value = 1
                     }
                     Player.STATE_ENDED -> {
-                        isPlaying.intValue = 4
+                        isPlaying.value = 4
                     }
                     else -> {
                         if (!player.isPlaying) {
-                            isPlaying.intValue = 2
+                            isPlaying.value = 2
                         } else {
-                            isPlaying.intValue = 3
+                            isPlaying.value = 3
                         }
                     }
                 }
@@ -1513,13 +1552,13 @@ class Player: ComponentActivity(), Player.Listener {
                 val duration = player.duration
                 val position = player.currentPosition
                 if (duration >= 0 && position >= 0) {
-                    playerDuration.floatValue = duration.toFloat()
+                    playerDuration.value = duration.toFloat()
 
                     if (position <= duration) {
-                        playerPosition.floatValue = position.toFloat()
+                        playerPosition.value = position.toFloat()
                     }
                     if (position > duration) {
-                        playerPosition.floatValue = duration.toFloat()
+                        playerPosition.value = duration.toFloat()
                     }
 
                     playerTime.value = "${optTime(position)} / ${optTime(duration)}"
