@@ -221,7 +221,9 @@ class Player: ComponentActivity(), Player.Listener {
 
     override fun onDestroy() {
         super.onDestroy()
-        MediaController.releaseFuture(playerControllerFuture)
+        if (this::playerControllerFuture.isInitialized) {
+            MediaController.releaseFuture(playerControllerFuture)
+        }
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         unregisterReceiver(playerBroadcast)
     }

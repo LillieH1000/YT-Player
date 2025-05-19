@@ -128,10 +128,16 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
         playerTimer?.cancel()
         playerTimer = null
         sponsorBlock = null
-        playerHandler.removeCallbacksAndMessages(null)
+        if (this::playerHandler.isInitialized) {
+            playerHandler.removeCallbacksAndMessages(null)
+        }
         unregisterReceiver(playerBroadcast)
-        playerCache.release()
-        exoPlayer.release()
+        if (this::playerCache.isInitialized) {
+            playerCache.release()
+        }
+        if (this::exoPlayer.isInitialized) {
+            exoPlayer.release()
+        }
         playerSession?.release()
         playerSession = null
         super.onDestroy()
