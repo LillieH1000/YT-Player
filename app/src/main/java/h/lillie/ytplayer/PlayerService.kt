@@ -225,6 +225,8 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                 val request = Requests()
                 val info = request.ytdlp(intent.extras!!.getString("videoID"), intent.extras!!.getString("searchQuery")) ?: return@async
                 sponsorBlock = request.sponsorBlock(info.id)
+                playerTimer?.cancel()
+                playerTimer = null
 
                 val playerExtraInfo = Bundle()
                 playerExtraInfo.putString("id", info.id)
