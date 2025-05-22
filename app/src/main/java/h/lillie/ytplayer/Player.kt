@@ -405,105 +405,96 @@ class Player: ComponentActivity(), Player.Listener {
             var rightClick: Long = 0
             val rightJob = remember { MutableStateFlow<Job?>(null) }
             val rightScope = rememberCoroutineScope()
-            Box(
+            IconButton(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .weight(1f)
-                    .clickable(
-                        enabled = true,
-                        onClick = {
-                            val time = System.currentTimeMillis()
-                            leftJob.value?.cancel()
-                            if (time - leftClick < 300L) {
-                                if (!chromeOSDevice) {
-                                    playerController.value?.seekBack()
-                                }
-                                leftClick = 0
-                                leftJob.value = null
-                            } else {
-                                leftJob.value = leftScope.launch {
-                                    leftClick = time
-                                    delay(300)
-                                    if (!showOverlayState) {
-                                        showOverlay.value = true
-                                    } else {
-                                        showOverlay.value = false
-                                    }
-                                    showSettings.value = false
-                                    showSubtitles.value = false
-                                    showSleepTimer.value = false
-                                    leftClick = 0
-                                    leftJob.value = null
-                                }
-                            }
+                    .weight(1f),
+                onClick = {
+                    val time = System.currentTimeMillis()
+                    leftJob.value?.cancel()
+                    if (time - leftClick < 300L) {
+                        if (!chromeOSDevice) {
+                            playerController.value?.seekBack()
                         }
-                    )
-            )
-            Box(
+                        leftClick = 0
+                        leftJob.value = null
+                    } else {
+                        leftJob.value = leftScope.launch {
+                            leftClick = time
+                            delay(300)
+                            if (!showOverlayState) {
+                                showOverlay.value = true
+                            } else {
+                                showOverlay.value = false
+                            }
+                            showSettings.value = false
+                            showSubtitles.value = false
+                            showSleepTimer.value = false
+                            leftClick = 0
+                            leftJob.value = null
+                        }
+                    }
+                }
+            ) {}
+            IconButton(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .weight(1f)
-                    .clickable(
-                        enabled = true,
-                        onClick = {
-                            val time = System.currentTimeMillis()
-                            middleJob.value?.cancel()
-                            if (time - middleClick < 300L) {
-                                middleClick = 0
-                                middleJob.value = null
+                    .weight(1f),
+                onClick = {
+                    val time = System.currentTimeMillis()
+                    middleJob.value?.cancel()
+                    if (time - middleClick < 300L) {
+                        middleClick = 0
+                        middleJob.value = null
+                    } else {
+                        middleJob.value = middleScope.launch {
+                            middleClick = time
+                            delay(300)
+                            if (!showOverlayState) {
+                                showOverlay.value = true
                             } else {
-                                middleJob.value = middleScope.launch {
-                                    middleClick = time
-                                    delay(300)
-                                    if (!showOverlayState) {
-                                        showOverlay.value = true
-                                    } else {
-                                        showOverlay.value = false
-                                    }
-                                    showSettings.value = false
-                                    showSubtitles.value = false
-                                    showSleepTimer.value = false
-                                    middleClick = 0
-                                    middleJob.value = null
-                                }
+                                showOverlay.value = false
                             }
+                            showSettings.value = false
+                            showSubtitles.value = false
+                            showSleepTimer.value = false
+                            middleClick = 0
+                            middleJob.value = null
                         }
-                    )
-            )
-            Box(
+                    }
+                }
+            ) {}
+            IconButton(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .weight(1f)
-                    .clickable(
-                        enabled = true,
-                        onClick = {
-                            val time = System.currentTimeMillis()
-                            rightJob.value?.cancel()
-                            if (time - rightClick < 300L) {
-                                if (!chromeOSDevice) {
-                                    playerController.value?.seekForward()
-                                }
-                                rightClick = 0
-                                rightJob.value = null
-                            } else {
-                                rightJob.value = rightScope.launch {
-                                    rightClick = time
-                                    delay(300)
-                                    if (!showOverlayState) {
-                                        showOverlay.value = true
-                                    } else {
-                                        showOverlay.value = false
-                                    }
-                                    showSettings.value = false
-                                    showSubtitles.value = false
-                                    showSleepTimer.value = false
-                                    rightClick = 0
-                                    rightJob.value = null
-                                }
-                            }
+                    .weight(1f),
+                onClick = {
+                    val time = System.currentTimeMillis()
+                    rightJob.value?.cancel()
+                    if (time - rightClick < 300L) {
+                        if (!chromeOSDevice) {
+                            playerController.value?.seekForward()
                         }
-                    )
-            )
+                        rightClick = 0
+                        rightJob.value = null
+                    } else {
+                        rightJob.value = rightScope.launch {
+                            rightClick = time
+                            delay(300)
+                            if (!showOverlayState) {
+                                showOverlay.value = true
+                            } else {
+                                showOverlay.value = false
+                            }
+                            showSettings.value = false
+                            showSubtitles.value = false
+                            showSleepTimer.value = false
+                            rightClick = 0
+                            rightJob.value = null
+                        }
+                    }
+                }
+            ) {}
         }
 
         // Overlay View
