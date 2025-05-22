@@ -27,7 +27,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -62,12 +61,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusTarget
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -89,6 +88,8 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -395,72 +396,113 @@ class Player: ComponentActivity(), Player.Listener {
                     .focusProperties { canFocus = false }
             }
         ) {
+            var leftClick: Long = 0
+            val leftJob = remember { MutableStateFlow<Job?>(null) }
+            val leftScope = rememberCoroutineScope()
+            var middleClick: Long = 0
+            val middleJob = remember { MutableStateFlow<Job?>(null) }
+            val middleScope = rememberCoroutineScope()
+            var rightClick: Long = 0
+            val rightJob = remember { MutableStateFlow<Job?>(null) }
+            val rightScope = rememberCoroutineScope()
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(1f)
-                    .pointerInput(Unit) {
-                        detectTapGestures(
-                            onTap = {
-                                if (!showOverlayState) {
-                                    showOverlay.value = true
-                                } else {
-                                    showOverlay.value = false
-                                }
-                                showSettings.value = false
-                                showSubtitles.value = false
-                                showSleepTimer.value = false
-                            },
-                            onDoubleTap = {
+                    .clickable(
+                        enabled = true,
+                        onClick = {
+                            val time = System.currentTimeMillis()
+                            leftJob.value?.cancel()
+                            if (time - leftClick < 300L) {
                                 if (!chromeOSDevice) {
                                     playerController.value?.seekBack()
                                 }
+                                leftClick = 0
+                                leftJob.value = null
+                            } else {
+                                leftJob.value = leftScope.launch {
+                                    leftClick = time
+                                    delay(300)
+                                    if (!showOverlayState) {
+                                        showOverlay.value = true
+                                    } else {
+                                        showOverlay.value = false
+                                    }
+                                    showSettings.value = false
+                                    showSubtitles.value = false
+                                    showSleepTimer.value = false
+                                    leftClick = 0
+                                    leftJob.value = null
+                                }
                             }
-                        )
-                    }
+                        }
+                    )
             )
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(1f)
-                    .pointerInput(Unit) {
-                        detectTapGestures(
-                            onTap = {
-                                if (!showOverlayState) {
-                                    showOverlay.value = true
-                                } else {
-                                    showOverlay.value = false
+                    .clickable(
+                        enabled = true,
+                        onClick = {
+                            val time = System.currentTimeMillis()
+                            middleJob.value?.cancel()
+                            if (time - middleClick < 300L) {
+                                middleClick = 0
+                                middleJob.value = null
+                            } else {
+                                middleJob.value = middleScope.launch {
+                                    middleClick = time
+                                    delay(300)
+                                    if (!showOverlayState) {
+                                        showOverlay.value = true
+                                    } else {
+                                        showOverlay.value = false
+                                    }
+                                    showSettings.value = false
+                                    showSubtitles.value = false
+                                    showSleepTimer.value = false
+                                    middleClick = 0
+                                    middleJob.value = null
                                 }
-                                showSettings.value = false
-                                showSubtitles.value = false
-                                showSleepTimer.value = false
                             }
-                        )
-                    }
+                        }
+                    )
             )
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(1f)
-                    .pointerInput(Unit) {
-                        detectTapGestures(
-                            onTap = {
-                                if (!showOverlayState) {
-                                    showOverlay.value = true
-                                } else {
-                                    showOverlay.value = false
-                                }
-                                showSettings.value = false
-                                showSubtitles.value = false
-                                showSleepTimer.value = false
-                            },
-                            onDoubleTap = {
+                    .clickable(
+                        enabled = true,
+                        onClick = {
+                            val time = System.currentTimeMillis()
+                            rightJob.value?.cancel()
+                            if (time - rightClick < 300L) {
                                 if (!chromeOSDevice) {
                                     playerController.value?.seekForward()
                                 }
+                                rightClick = 0
+                                rightJob.value = null
+                            } else {
+                                rightJob.value = rightScope.launch {
+                                    rightClick = time
+                                    delay(300)
+                                    if (!showOverlayState) {
+                                        showOverlay.value = true
+                                    } else {
+                                        showOverlay.value = false
+                                    }
+                                    showSettings.value = false
+                                    showSubtitles.value = false
+                                    showSleepTimer.value = false
+                                    rightClick = 0
+                                    rightJob.value = null
+                                }
                             }
-                        )
-                    }
+                        }
+                    )
             )
         }
 

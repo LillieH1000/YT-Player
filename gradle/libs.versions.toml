@@ -1,7 +1,7 @@
 [versions]
 activityCompose = "1.10.1"
 chaquopy = "16.1.0"
-composeBom = "2025.04.00"
+composeBom = "2025.05.01"
 core = "1.16.0"
 kotlinxCoroutines = "1.10.2"
 kotlinxSerialization = "1.8.1"
