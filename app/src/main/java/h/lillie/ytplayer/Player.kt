@@ -48,6 +48,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -84,6 +85,10 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
+import com.composables.core.ScrollArea
+import com.composables.core.Thumb
+import com.composables.core.VerticalScrollbar
+import com.composables.core.rememberScrollAreaState
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import kotlinx.coroutines.CoroutineScope
@@ -1058,107 +1063,123 @@ class Player: ComponentActivity(), Player.Listener {
                 Box(
                     modifier = Modifier.weight(1f)
                 ) {}
-                LazyColumn(
-                    modifier = Modifier
-                        .wrapContentHeight()
-                        .heightIn(0.dp, 150.dp)
-                        .width(150.dp)
-                        .background(colorResource(R.color.darkGrey))
-                        .clickable(
-                            enabled = true,
-                            interactionSource = null,
-                            indication = null,
-                            onClick = {})
-                ) {
-                    val subtitles: JSONArray? = playerSubtitles
-                    if (subtitles != null) {
-                        item {
-                            Row(
-                                modifier = Modifier
-                                    .height(30.dp)
-                                    .padding(start = 10.dp)
-                            ) {
-                                Column(
+                val lazyState = rememberLazyListState()
+                val scrollState = rememberScrollAreaState(lazyState)
+                ScrollArea(state = scrollState) {
+                    LazyColumn(
+                        state = lazyState,
+                        modifier = Modifier
+                            .wrapContentHeight()
+                            .heightIn(0.dp, 150.dp)
+                            .width(150.dp)
+                            .background(colorResource(R.color.darkGrey))
+                            .clickable(
+                                enabled = true,
+                                interactionSource = null,
+                                indication = null,
+                                onClick = {})
+                    ) {
+                        val subtitles: JSONArray? = playerSubtitles
+                        if (subtitles != null) {
+                            item {
+                                Row(
                                     modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .weight(1f)
+                                        .height(30.dp)
+                                        .padding(start = 10.dp)
                                 ) {
-                                    Text(
-                                        text = "Off",
-                                        color = colorResource(R.color.white),
-                                        overflow = TextOverflow.Ellipsis,
-                                        maxLines = 1
-                                    )
+                                    Column(
+                                        modifier = Modifier
+                                            .align(Alignment.CenterVertically)
+                                            .weight(1f)
+                                    ) {
+                                        Text(
+                                            text = "Off",
+                                            color = colorResource(R.color.white),
+                                            overflow = TextOverflow.Ellipsis,
+                                            maxLines = 1
+                                        )
+                                    }
+                                    Column(
+                                        modifier = Modifier
+                                            .align(Alignment.CenterVertically)
+                                            .scale(0.6f)
+                                            .width(30.dp)
+                                    ) {
+                                        Checkbox(
+                                            checked = subtitlesCheckedState[0],
+                                            onCheckedChange = { checked ->
+                                                Collections.replaceAll(subtitlesChecked.value, true, false)
+                                                subtitlesChecked.update { list ->
+                                                    list.toMutableList().apply {
+                                                        set(0, true)
+                                                    }.toList()
+                                                }
+                                                if (checked) {
+                                                    playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
+                                                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                                                        .build()
+                                                }
+                                            }
+                                        )
+                                    }
                                 }
-                                Column(
+                            }
+                            items(subtitles.length()) { index ->
+                                Row(
                                     modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .scale(0.6f)
-                                        .width(30.dp)
+                                        .height(30.dp)
+                                        .padding(start = 10.dp)
                                 ) {
-                                    Checkbox(
-                                        checked = subtitlesCheckedState[0],
-                                        onCheckedChange = { checked ->
-                                            Collections.replaceAll(subtitlesChecked.value, true, false)
-                                            subtitlesChecked.update { list ->
-                                                list.toMutableList().apply {
-                                                    set(0, true)
-                                                }.toList()
+                                    Column(
+                                        modifier = Modifier
+                                            .align(Alignment.CenterVertically)
+                                            .weight(1f)
+                                    ) {
+                                        Text(
+                                            text = optString(subtitles.getJSONObject(index), "name")!!,
+                                            color = colorResource(R.color.white),
+                                            overflow = TextOverflow.Ellipsis,
+                                            maxLines = 1
+                                        )
+                                    }
+                                    Column(
+                                        modifier = Modifier
+                                            .align(Alignment.CenterVertically)
+                                            .scale(0.6f)
+                                            .width(30.dp)
+                                    ) {
+                                        Checkbox(
+                                            checked = subtitlesCheckedState[index + 1],
+                                            onCheckedChange = { checked ->
+                                                Collections.replaceAll(subtitlesChecked.value, true, false)
+                                                subtitlesChecked.update { list ->
+                                                    list.toMutableList().apply {
+                                                        set(index + 1, true)
+                                                    }.toList()
+                                                }
+                                                if (checked) {
+                                                    playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
+                                                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
+                                                        .setPreferredTextLanguage(optString(subtitles.getJSONObject(index), "id"))
+                                                        .build()
+                                                }
                                             }
-                                            if (checked) {
-                                                playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
-                                                    .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
-                                                    .build()
-                                            }
-                                        }
-                                    )
+                                        )
+                                    }
                                 }
                             }
                         }
-                        items(subtitles.length()) { index ->
-                            Row(
-                                modifier = Modifier
-                                    .height(30.dp)
-                                    .padding(start = 10.dp)
-                            ) {
-                                Column(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .weight(1f)
-                                ) {
-                                    Text(
-                                        text = optString(subtitles.getJSONObject(index), "name")!!,
-                                        color = colorResource(R.color.white),
-                                        overflow = TextOverflow.Ellipsis,
-                                        maxLines = 1
-                                    )
-                                }
-                                Column(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .scale(0.6f)
-                                        .width(30.dp)
-                                ) {
-                                    Checkbox(
-                                        checked = subtitlesCheckedState[index + 1],
-                                        onCheckedChange = { checked ->
-                                            Collections.replaceAll(subtitlesChecked.value, true, false)
-                                            subtitlesChecked.update { list ->
-                                                list.toMutableList().apply {
-                                                    set(index + 1, true)
-                                                }.toList()
-                                            }
-                                            if (checked) {
-                                                playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
-                                                    .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-                                                    .setPreferredTextLanguage(optString(subtitles.getJSONObject(index), "id"))
-                                                    .build()
-                                            }
-                                        }
-                                    )
-                                }
-                            }
-                        }
+                    }
+                    VerticalScrollbar(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .wrapContentHeight()
+                            .heightIn(0.dp, 150.dp)
+                            .width(4.dp)
+                    ) {
+                        Thumb(
+                            modifier = Modifier.background(colorResource(R.color.lightGrey))
+                        )
                     }
                 }
             }
@@ -1192,246 +1213,262 @@ class Player: ComponentActivity(), Player.Listener {
                 Box(
                     modifier = Modifier.weight(1f)
                 ) {}
-                LazyColumn(
-                    modifier = Modifier
-                        .wrapContentHeight()
-                        .heightIn(0.dp, 150.dp)
-                        .width(150.dp)
-                        .background(colorResource(R.color.darkGrey))
-                        .clickable(
-                            enabled = true,
-                            interactionSource = null,
-                            indication = null,
-                            onClick = {})
-                ) {
-                    // Off
-                    item {
-                        Row(
-                            modifier = Modifier
-                                .height(30.dp)
-                                .padding(start = 10.dp)
-                        ) {
-                            Column(
+                val lazyState = rememberLazyListState()
+                val scrollState = rememberScrollAreaState(lazyState)
+                ScrollArea(state = scrollState) {
+                    LazyColumn(
+                        state = lazyState,
+                        modifier = Modifier
+                            .wrapContentHeight()
+                            .heightIn(0.dp, 150.dp)
+                            .width(150.dp)
+                            .background(colorResource(R.color.darkGrey))
+                            .clickable(
+                                enabled = true,
+                                interactionSource = null,
+                                indication = null,
+                                onClick = {})
+                    ) {
+                        // Off
+                        item {
+                            Row(
                                 modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .weight(1f)
+                                    .height(30.dp)
+                                    .padding(start = 10.dp)
                             ) {
-                                Text(
-                                    text = "Off",
-                                    color = colorResource(R.color.white),
-                                    overflow = TextOverflow.Ellipsis,
-                                    maxLines = 1
-                                )
+                                Column(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .weight(1f)
+                                ) {
+                                    Text(
+                                        text = "Off",
+                                        color = colorResource(R.color.white),
+                                        overflow = TextOverflow.Ellipsis,
+                                        maxLines = 1
+                                    )
+                                }
+                                Column(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .scale(0.6f)
+                                        .width(30.dp)
+                                ) {
+                                    Checkbox(
+                                        checked = sleepTimerCheckedState[0],
+                                        onCheckedChange = { checked ->
+                                            Collections.replaceAll(sleepTimerChecked.value, true, false)
+                                            sleepTimerChecked.update { list ->
+                                                list.toMutableList().apply {
+                                                    set(0, true)
+                                                }.toList()
+                                            }
+                                            if (checked) {
+                                                val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
+                                                broadcastIntent.setPackage(this@Player.packageName)
+                                                broadcastIntent.putExtra("enable", false)
+                                                sendBroadcast(broadcastIntent)
+                                            }
+                                        }
+                                    )
+                                }
                             }
-                            Column(
+                        }
+                        // 15 Minutes
+                        item {
+                            Row(
                                 modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .scale(0.6f)
-                                    .width(30.dp)
+                                    .height(30.dp)
+                                    .padding(start = 10.dp)
                             ) {
-                                Checkbox(
-                                    checked = sleepTimerCheckedState[0],
-                                    onCheckedChange = { checked ->
-                                        Collections.replaceAll(sleepTimerChecked.value, true, false)
-                                        sleepTimerChecked.update { list ->
-                                            list.toMutableList().apply {
-                                                set(0, true)
-                                            }.toList()
+                                Column(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .weight(1f)
+                                ) {
+                                    Text(
+                                        text = "15 Minutes",
+                                        color = colorResource(R.color.white),
+                                        overflow = TextOverflow.Ellipsis,
+                                        maxLines = 1
+                                    )
+                                }
+                                Column(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .scale(0.6f)
+                                        .width(30.dp)
+                                ) {
+                                    Checkbox(
+                                        checked = sleepTimerCheckedState[1],
+                                        onCheckedChange = { checked ->
+                                            Collections.replaceAll(sleepTimerChecked.value, true, false)
+                                            sleepTimerChecked.update { list ->
+                                                list.toMutableList().apply {
+                                                    set(1, true)
+                                                }.toList()
+                                            }
+                                            if (checked) {
+                                                val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
+                                                broadcastIntent.setPackage(this@Player.packageName)
+                                                broadcastIntent.putExtra("enable", true)
+                                                broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(15))
+                                                sendBroadcast(broadcastIntent)
+                                            }
                                         }
-                                        if (checked) {
-                                            val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
-                                            broadcastIntent.setPackage(this@Player.packageName)
-                                            broadcastIntent.putExtra("enable", false)
-                                            sendBroadcast(broadcastIntent)
+                                    )
+                                }
+                            }
+                        }
+                        // 30 Minutes
+                        item {
+                            Row(
+                                modifier = Modifier
+                                    .height(30.dp)
+                                    .padding(start = 10.dp)
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .weight(1f)
+                                ) {
+                                    Text(
+                                        text = "30 Minutes",
+                                        color = colorResource(R.color.white),
+                                        overflow = TextOverflow.Ellipsis,
+                                        maxLines = 1
+                                    )
+                                }
+                                Column(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .scale(0.6f)
+                                        .width(30.dp)
+                                ) {
+                                    Checkbox(
+                                        checked = sleepTimerCheckedState[2],
+                                        onCheckedChange = { checked ->
+                                            Collections.replaceAll(sleepTimerChecked.value, true, false)
+                                            sleepTimerChecked.update { list ->
+                                                list.toMutableList().apply {
+                                                    set(2, true)
+                                                }.toList()
+                                            }
+                                            if (checked) {
+                                                val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
+                                                broadcastIntent.setPackage(this@Player.packageName)
+                                                broadcastIntent.putExtra("enable", true)
+                                                broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(30))
+                                                sendBroadcast(broadcastIntent)
+                                            }
                                         }
-                                    }
-                                )
+                                    )
+                                }
+                            }
+                        }
+                        // 45 Minutes
+                        item {
+                            Row(
+                                modifier = Modifier
+                                    .height(30.dp)
+                                    .padding(start = 10.dp)
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .weight(1f)
+                                ) {
+                                    Text(
+                                        text = "45 Minutes",
+                                        color = colorResource(R.color.white),
+                                        overflow = TextOverflow.Ellipsis,
+                                        maxLines = 1
+                                    )
+                                }
+                                Column(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .scale(0.6f)
+                                        .width(30.dp)
+                                ) {
+                                    Checkbox(
+                                        checked = sleepTimerCheckedState[3],
+                                        onCheckedChange = { checked ->
+                                            Collections.replaceAll(sleepTimerChecked.value, true, false)
+                                            sleepTimerChecked.update { list ->
+                                                list.toMutableList().apply {
+                                                    set(3, true)
+                                                }.toList()
+                                            }
+                                            if (checked) {
+                                                val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
+                                                broadcastIntent.setPackage(this@Player.packageName)
+                                                broadcastIntent.putExtra("enable", true)
+                                                broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(45))
+                                                sendBroadcast(broadcastIntent)
+                                            }
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                        // 1 Hour
+                        item {
+                            Row(
+                                modifier = Modifier
+                                    .height(30.dp)
+                                    .padding(start = 10.dp)
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .weight(1f)
+                                ) {
+                                    Text(
+                                        text = "1 Hour",
+                                        color = colorResource(R.color.white),
+                                        overflow = TextOverflow.Ellipsis,
+                                        maxLines = 1
+                                    )
+                                }
+                                Column(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .scale(0.6f)
+                                        .width(30.dp)
+                                ) {
+                                    Checkbox(
+                                        checked = sleepTimerCheckedState[4],
+                                        onCheckedChange = { checked ->
+                                            Collections.replaceAll(sleepTimerChecked.value, true, false)
+                                            sleepTimerChecked.update { list ->
+                                                list.toMutableList().apply {
+                                                    set(4, true)
+                                                }.toList()
+                                            }
+                                            if (checked) {
+                                                val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
+                                                broadcastIntent.setPackage(this@Player.packageName)
+                                                broadcastIntent.putExtra("enable", true)
+                                                broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(60))
+                                                sendBroadcast(broadcastIntent)
+                                            }
+                                        }
+                                    )
+                                }
                             }
                         }
                     }
-                    // 15 Minutes
-                    item {
-                        Row(
-                            modifier = Modifier
-                                .height(30.dp)
-                                .padding(start = 10.dp)
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .weight(1f)
-                            ) {
-                                Text(
-                                    text = "15 Minutes",
-                                    color = colorResource(R.color.white),
-                                    overflow = TextOverflow.Ellipsis,
-                                    maxLines = 1
-                                )
-                            }
-                            Column(
-                                modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .scale(0.6f)
-                                    .width(30.dp)
-                            ) {
-                                Checkbox(
-                                    checked = sleepTimerCheckedState[1],
-                                    onCheckedChange = { checked ->
-                                        Collections.replaceAll(sleepTimerChecked.value, true, false)
-                                        sleepTimerChecked.update { list ->
-                                            list.toMutableList().apply {
-                                                set(1, true)
-                                            }.toList()
-                                        }
-                                        if (checked) {
-                                            val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
-                                            broadcastIntent.setPackage(this@Player.packageName)
-                                            broadcastIntent.putExtra("enable", true)
-                                            broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(15))
-                                            sendBroadcast(broadcastIntent)
-                                        }
-                                    }
-                                )
-                            }
-                        }
-                    }
-                    // 30 Minutes
-                    item {
-                        Row(
-                            modifier = Modifier
-                                .height(30.dp)
-                                .padding(start = 10.dp)
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .weight(1f)
-                            ) {
-                                Text(
-                                    text = "30 Minutes",
-                                    color = colorResource(R.color.white),
-                                    overflow = TextOverflow.Ellipsis,
-                                    maxLines = 1
-                                )
-                            }
-                            Column(
-                                modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .scale(0.6f)
-                                    .width(30.dp)
-                            ) {
-                                Checkbox(
-                                    checked = sleepTimerCheckedState[2],
-                                    onCheckedChange = { checked ->
-                                        Collections.replaceAll(sleepTimerChecked.value, true, false)
-                                        sleepTimerChecked.update { list ->
-                                            list.toMutableList().apply {
-                                                set(2, true)
-                                            }.toList()
-                                        }
-                                        if (checked) {
-                                            val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
-                                            broadcastIntent.setPackage(this@Player.packageName)
-                                            broadcastIntent.putExtra("enable", true)
-                                            broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(30))
-                                            sendBroadcast(broadcastIntent)
-                                        }
-                                    }
-                                )
-                            }
-                        }
-                    }
-                    // 45 Minutes
-                    item {
-                        Row(
-                            modifier = Modifier
-                                .height(30.dp)
-                                .padding(start = 10.dp)
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .weight(1f)
-                            ) {
-                                Text(
-                                    text = "45 Minutes",
-                                    color = colorResource(R.color.white),
-                                    overflow = TextOverflow.Ellipsis,
-                                    maxLines = 1
-                                )
-                            }
-                            Column(
-                                modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .scale(0.6f)
-                                    .width(30.dp)
-                            ) {
-                                Checkbox(
-                                    checked = sleepTimerCheckedState[3],
-                                    onCheckedChange = { checked ->
-                                        Collections.replaceAll(sleepTimerChecked.value, true, false)
-                                        sleepTimerChecked.update { list ->
-                                            list.toMutableList().apply {
-                                                set(3, true)
-                                            }.toList()
-                                        }
-                                        if (checked) {
-                                            val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
-                                            broadcastIntent.setPackage(this@Player.packageName)
-                                            broadcastIntent.putExtra("enable", true)
-                                            broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(45))
-                                            sendBroadcast(broadcastIntent)
-                                        }
-                                    }
-                                )
-                            }
-                        }
-                    }
-                    // 1 Hour
-                    item {
-                        Row(
-                            modifier = Modifier
-                                .height(30.dp)
-                                .padding(start = 10.dp)
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .weight(1f)
-                            ) {
-                                Text(
-                                    text = "1 Hour",
-                                    color = colorResource(R.color.white),
-                                    overflow = TextOverflow.Ellipsis,
-                                    maxLines = 1
-                                )
-                            }
-                            Column(
-                                modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .scale(0.6f)
-                                    .width(30.dp)
-                            ) {
-                                Checkbox(
-                                    checked = sleepTimerCheckedState[4],
-                                    onCheckedChange = { checked ->
-                                        Collections.replaceAll(sleepTimerChecked.value, true, false)
-                                        sleepTimerChecked.update { list ->
-                                            list.toMutableList().apply {
-                                                set(4, true)
-                                            }.toList()
-                                        }
-                                        if (checked) {
-                                            val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
-                                            broadcastIntent.setPackage(this@Player.packageName)
-                                            broadcastIntent.putExtra("enable", true)
-                                            broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(60))
-                                            sendBroadcast(broadcastIntent)
-                                        }
-                                    }
-                                )
-                            }
-                        }
+                    VerticalScrollbar(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .wrapContentHeight()
+                            .heightIn(0.dp, 150.dp)
+                            .width(4.dp)
+                    ) {
+                        Thumb(
+                            modifier = Modifier.background(colorResource(R.color.lightGrey))
+                        )
                     }
                 }
             }
