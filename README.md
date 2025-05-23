@@ -38,4 +38,4 @@ Usage:
 <br>
 
 ## Open Source Libraries
-- [AndroidX](https://github.com/androidx/androidx), [Chaquopy](https://github.com/chaquo/chaquopy), [Gson](https://github.com/google/gson), [Kotlinx Coroutines](https://github.com/Kotlin/kotlinx.coroutines), [Ktor](https://github.com/ktorio/ktor), [Media3](https://github.com/androidx/media), [SponsorBlock](https://github.com/ajayyy/SponsorBlock), [yt-dlp](https://github.com/yt-dlp/yt-dlp)
+- [AndroidX](https://github.com/androidx/androidx), [Chaquopy](https://github.com/chaquo/chaquopy), [Compose Unstyled](https://github.com/composablehorizons/compose-unstyled/), [Kotlin](https://github.com/JetBrains/kotlin), [Kotlinx Coroutines](https://github.com/Kotlin/kotlinx.coroutines), [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization), [Ktor](https://github.com/ktorio/ktor), [Media3](https://github.com/androidx/media), [SponsorBlock](https://github.com/ajayyy/SponsorBlock), [yt-dlp](https://github.com/yt-dlp/yt-dlp)
