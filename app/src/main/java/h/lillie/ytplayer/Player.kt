@@ -830,8 +830,7 @@ class Player: ComponentActivity(), Player.Listener {
             ) {
                 Box(
                     modifier = Modifier.weight(1f)
-                ) {
-                }
+                ) {}
                 Column(
                     modifier = Modifier
                         .wrapContentHeight()
@@ -975,8 +974,7 @@ class Player: ComponentActivity(), Player.Listener {
                             )
                         }
                         Row(
-                            modifier = Modifier
-                                .height(30.dp)
+                            modifier = Modifier.height(30.dp)
                         ) {
                             Column(
                                 modifier = Modifier
@@ -1059,8 +1057,7 @@ class Player: ComponentActivity(), Player.Listener {
             ) {
                 Box(
                     modifier = Modifier.weight(1f)
-                ) {
-                }
+                ) {}
                 LazyColumn(
                     modifier = Modifier
                         .wrapContentHeight()
@@ -1194,8 +1191,7 @@ class Player: ComponentActivity(), Player.Listener {
             ) {
                 Box(
                     modifier = Modifier.weight(1f)
-                ) {
-                }
+                ) {}
                 LazyColumn(
                     modifier = Modifier
                         .wrapContentHeight()
