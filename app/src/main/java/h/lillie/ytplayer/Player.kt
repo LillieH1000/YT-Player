@@ -324,10 +324,6 @@ class Player: ComponentActivity(), Player.Listener {
 
     @Composable
     private fun CreatePlayerUI() {
-        // Remembers
-
-        val sliderSource = remember { MutableInteractionSource() }
-
         // States
 
         val deviceRotationState by deviceRotation.collectAsState()
@@ -645,6 +641,7 @@ class Player: ComponentActivity(), Player.Listener {
                         }
                     }
                     // Progress Slider
+                    val sliderSource = remember { MutableInteractionSource() }
                     Slider(
                         interactionSource = sliderSource,
                         steps = 0,
