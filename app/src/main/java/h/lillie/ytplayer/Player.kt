@@ -89,6 +89,7 @@ import com.composables.core.ScrollArea
 import com.composables.core.Thumb
 import com.composables.core.VerticalScrollbar
 import com.composables.core.rememberScrollAreaState
+import com.composeunstyled.Button
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import kotlinx.coroutines.CoroutineScope
@@ -406,10 +407,12 @@ class Player: ComponentActivity(), Player.Listener {
             var rightClick: Long = 0
             val rightJob = remember { MutableStateFlow<Job?>(null) }
             val rightScope = rememberCoroutineScope()
-            IconButton(
+            Button(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(1f),
+                interactionSource = remember { MutableInteractionSource() },
+                indication = IndicationFactory,
                 onClick = {
                     val time = System.currentTimeMillis()
                     leftJob.value?.cancel()
@@ -437,10 +440,12 @@ class Player: ComponentActivity(), Player.Listener {
                     }
                 }
             ) {}
-            IconButton(
+            Button(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(1f),
+                interactionSource = remember { MutableInteractionSource() },
+                indication = IndicationFactory,
                 onClick = {
                     val time = System.currentTimeMillis()
                     middleJob.value?.cancel()
@@ -465,10 +470,12 @@ class Player: ComponentActivity(), Player.Listener {
                     }
                 }
             ) {}
-            IconButton(
+            Button(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(1f),
+                interactionSource = remember { MutableInteractionSource() },
+                indication = IndicationFactory,
                 onClick = {
                     val time = System.currentTimeMillis()
                     rightJob.value?.cancel()
