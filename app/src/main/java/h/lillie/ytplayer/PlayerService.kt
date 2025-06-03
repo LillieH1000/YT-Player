@@ -20,6 +20,7 @@ import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.MimeTypes
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
@@ -30,6 +31,7 @@ import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.exoplayer.DefaultRenderersFactory
+import androidx.media3.exoplayer.ExoPlaybackException
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
@@ -56,7 +58,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
 @OptIn(UnstableApi::class)
-@SuppressLint("UnspecifiedRegisterReceiverFlag")
+@SuppressLint("SwitchIntDef", "UnspecifiedRegisterReceiverFlag")
 class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Callback, Player.Listener {
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var playerCache: SimpleCache
@@ -202,6 +204,24 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
         return super.onCustomCommand(session, controller, customCommand, args)
     }
 
+    override fun onPlayerError(error: PlaybackException) {
+        super.onPlayerError(error)
+        when ((error as ExoPlaybackException).type) {
+            ExoPlaybackException.TYPE_SOURCE -> {
+                val id: String? = exoPlayer.mediaMetadata.extras?.getString("id")
+                val live: Boolean? = exoPlayer.mediaMetadata.extras?.getBoolean("live")
+                val expiration: String? = exoPlayer.mediaMetadata.extras?.getString("expiration")
+                if (id != null && expiration != null && live == true && expiration.toLong() < System.currentTimeMillis()) {
+                    val broadcastIntent = Intent("h.lillie.ytplayer.service.info")
+                    broadcastIntent.setPackage(this.packageName)
+                    broadcastIntent.putExtra("videoID", id)
+                    broadcastIntent.putExtra("searchQuery", null as String?)
+                    sendBroadcast(broadcastIntent)
+                }
+            }
+        }
+    }
+
     private fun optString(info: JSONObject, key: String): String? {
         if (info.isNull(key)) {
             return null
@@ -231,6 +251,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                 val playerExtraInfo = Bundle()
                 playerExtraInfo.putString("id", info.id)
                 playerExtraInfo.putBoolean("live", info.live)
+                playerExtraInfo.putString("expiration", info.expiration)
 
                 val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
                     .setTitle(info.title)
