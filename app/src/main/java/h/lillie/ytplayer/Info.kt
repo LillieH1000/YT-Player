@@ -10,5 +10,6 @@ data class Info(
     val artwork: String,
     val live: Boolean,
     val url: String,
+    val expiration: String,
     val subtitles: ArrayList<InfoSubs>?
 )
