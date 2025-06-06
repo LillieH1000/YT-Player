@@ -367,24 +367,13 @@ class Player: ComponentActivity(), Player.Listener {
         // 3 View
 
         Row(
-            modifier = if (deviceRotationState == 1) {
-                Modifier
-                    .navigationBarsPadding()
-                    .statusBarsPadding()
-                    .systemBarsPadding()
-                    .windowInsetsPadding(WindowInsets.displayCutout)
-                    .fillMaxSize()
-                    .focusTarget()
-                    .focusProperties { canFocus = false }
-            } else {
-                Modifier
-                    .navigationBarsPadding()
-                    .statusBarsPadding()
-                    .systemBarsPadding()
-                    .fillMaxSize()
-                    .focusTarget()
-                    .focusProperties { canFocus = false }
-            }
+            modifier = Modifier
+                .navigationBarsPadding()
+                .statusBarsPadding()
+                .systemBarsPadding()
+                .fillMaxSize()
+                .focusTarget()
+                .focusProperties { canFocus = false }
         ) {
             var leftClick: Long = 0
             val leftJob = remember { MutableStateFlow<Job?>(null) }
