@@ -345,26 +345,14 @@ class Player: ComponentActivity(), Player.Listener {
         // Player View
 
         AndroidView(
-            modifier = if (deviceRotationState == 1) {
-                Modifier
-                    .background(colorResource(R.color.black))
-                    .navigationBarsPadding()
-                    .statusBarsPadding()
-                    .systemBarsPadding()
-                    .windowInsetsPadding(WindowInsets.displayCutout)
-                    .fillMaxSize()
-                    .focusTarget()
-                    .focusProperties { canFocus = false }
-            } else {
-                Modifier
-                    .background(colorResource(R.color.black))
-                    .navigationBarsPadding()
-                    .statusBarsPadding()
-                    .systemBarsPadding()
-                    .fillMaxSize()
-                    .focusTarget()
-                    .focusProperties { canFocus = false }
-            },
+            modifier = Modifier
+                .background(colorResource(R.color.black))
+                .navigationBarsPadding()
+                .statusBarsPadding()
+                .systemBarsPadding()
+                .fillMaxSize()
+                .focusTarget()
+                .focusProperties { canFocus = false },
             factory = { context ->
                 PlayerView(context).apply {
                     this.player = playerControllerState
