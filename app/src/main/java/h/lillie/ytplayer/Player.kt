@@ -488,6 +488,7 @@ class Player: ComponentActivity(), Player.Listener {
             Box(
                 modifier = if (deviceRotationState == 1) {
                     Modifier
+                        .background(colorResource(R.color.dimBlack))
                         .navigationBarsPadding()
                         .statusBarsPadding()
                         .systemBarsPadding()
@@ -495,16 +496,15 @@ class Player: ComponentActivity(), Player.Listener {
                         .fillMaxSize()
                         .focusTarget()
                         .focusProperties { canFocus = false }
-                        .background(colorResource(R.color.dimBlack))
                 } else {
                     Modifier
+                        .background(colorResource(R.color.dimBlack))
                         .navigationBarsPadding()
                         .statusBarsPadding()
                         .systemBarsPadding()
                         .fillMaxSize()
                         .focusTarget()
                         .focusProperties { canFocus = false }
-                        .background(colorResource(R.color.dimBlack))
                 }
             ) {
                 // Play/Pause/Restart Button (Android)
