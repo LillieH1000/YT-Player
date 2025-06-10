@@ -49,6 +49,18 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Forward10
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.Replay
+import androidx.compose.material.icons.filled.Replay10
+import androidx.compose.material.icons.filled.YoutubeSearchedFor
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -69,7 +81,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -531,15 +542,15 @@ class Player: ComponentActivity(), Player.Listener {
                         if (isPlayingState >= 2) {
                             Icon(
                                 modifier = Modifier.size(50.dp),
-                                painter = when (isPlayingState) {
+                                imageVector = when (isPlayingState) {
                                     2 -> {
-                                        painterResource(androidx.media3.session.R.drawable.media3_icon_play)
+                                        Icons.Default.PlayArrow
                                     }
                                     3 -> {
-                                        painterResource(androidx.media3.session.R.drawable.media3_icon_pause)
+                                        Icons.Default.Pause
                                     }
                                     else -> {
-                                        painterResource(androidx.media3.session.R.drawable.media3_icon_skip_back)
+                                        Icons.Default.Replay
                                     }
                                 },
                                 tint = colorResource(R.color.white),
@@ -579,17 +590,15 @@ class Player: ComponentActivity(), Player.Listener {
                             if (isPlayingState >= 2) {
                                 Icon(
                                     modifier = Modifier.size(25.dp),
-                                    painter = when (isPlayingState) {
+                                    imageVector = when (isPlayingState) {
                                         2 -> {
-                                            painterResource(androidx.media3.session.R.drawable.media3_icon_play)
+                                            Icons.Default.PlayArrow
                                         }
-
                                         3 -> {
-                                            painterResource(androidx.media3.session.R.drawable.media3_icon_pause)
+                                            Icons.Default.Pause
                                         }
-
                                         else -> {
-                                            painterResource(androidx.media3.session.R.drawable.media3_icon_skip_back)
+                                            Icons.Default.Replay
                                         }
                                     },
                                     tint = colorResource(R.color.white),
@@ -605,7 +614,7 @@ class Player: ComponentActivity(), Player.Listener {
                         ) {
                             Icon(
                                 modifier = Modifier.size(25.dp),
-                                painter = painterResource(androidx.media3.session.R.drawable.media3_icon_skip_back_10),
+                                imageVector = Icons.Default.Replay10,
                                 tint = colorResource(R.color.white),
                                 contentDescription = ""
                             )
@@ -618,7 +627,7 @@ class Player: ComponentActivity(), Player.Listener {
                         ) {
                             Icon(
                                 modifier = Modifier.size(25.dp),
-                                painter = painterResource(androidx.media3.session.R.drawable.media3_icon_skip_forward_10),
+                                imageVector = Icons.Default.Forward10,
                                 tint = colorResource(R.color.white),
                                 contentDescription = ""
                             )
@@ -731,7 +740,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     }
                                 ) {
                                     Icon(
-                                        painter = painterResource(R.drawable.search),
+                                        imageVector = Icons.Default.YoutubeSearchedFor,
                                         tint = colorResource(R.color.white),
                                         contentDescription = ""
                                     )
@@ -756,7 +765,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     }
                                 ) {
                                     Icon(
-                                        painter = painterResource(R.drawable.share),
+                                        imageVector = Icons.Outlined.Share,
                                         tint = colorResource(R.color.white),
                                         contentDescription = ""
                                     )
@@ -777,7 +786,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     }
                                 ) {
                                     Icon(
-                                        painter = painterResource(R.drawable.settings),
+                                        imageVector = Icons.Outlined.Settings,
                                         tint = colorResource(R.color.white),
                                         contentDescription = ""
                                     )
@@ -862,7 +871,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     .width(30.dp)
                             ) {
                                 Icon(
-                                    painter = painterResource(R.drawable.forward),
+                                    imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
                                     tint = colorResource(R.color.white),
                                     contentDescription = ""
                                 )
@@ -902,7 +911,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 .width(30.dp)
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.forward),
+                                imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
                                 tint = colorResource(R.color.white),
                                 contentDescription = ""
                             )
@@ -980,7 +989,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     }
                                 ) {
                                     Icon(
-                                        painter = painterResource(R.drawable.remove),
+                                        imageVector = Icons.Default.Remove,
                                         tint = colorResource(R.color.white),
                                         contentDescription = ""
                                     )
@@ -1004,7 +1013,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     }
                                 ) {
                                     Icon(
-                                        painter = painterResource(R.drawable.add),
+                                        imageVector = Icons.Default.Add,
                                         tint = colorResource(R.color.white),
                                         contentDescription = ""
                                     )
