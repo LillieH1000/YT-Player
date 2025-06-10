@@ -116,8 +116,6 @@ import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
-@kotlin.OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("SwitchIntDef", "UnspecifiedRegisterReceiverFlag")
 class Player: ComponentActivity(), Player.Listener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
     private lateinit var playerHandler: Handler
@@ -126,6 +124,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var chromeOSDevice: Boolean = false
     private var isFirstLaunch: Boolean = false
 
+    @SuppressLint("SwitchIntDef", "UnspecifiedRegisterReceiverFlag")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -195,6 +194,7 @@ class Player: ComponentActivity(), Player.Listener {
         }
     }
 
+    @SuppressLint("SwitchIntDef")
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         when (newConfig.orientation) {
@@ -274,6 +274,7 @@ class Player: ComponentActivity(), Player.Listener {
         return super.onKeyDown(keyCode, event)
     }
 
+    @SuppressLint("SwitchIntDef")
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) {
@@ -332,6 +333,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var sleepTimerChecked = MutableStateFlow(listOf(false, false, false, false, false))
 
     @Composable
+    @kotlin.OptIn(ExperimentalMaterial3Api::class)
     private fun CreatePlayerUI() {
         // States
 
