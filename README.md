@@ -18,6 +18,14 @@ Features:
 
 <br>
 
+## Donate
+
+BTC - Bitcoin: 3PmQzwG2dbUZtjvH8W8K81NWvcMZTGGLWQ
+
+ETH - Ethereum: 0x92eb80c1fb54D881793641590a860fEc82011656
+
+<br>
+
 ## Android
 
 Requires: Android version 8 and above
