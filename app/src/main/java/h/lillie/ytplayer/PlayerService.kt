@@ -58,7 +58,6 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
 @OptIn(UnstableApi::class)
-@SuppressLint("SwitchIntDef", "UnspecifiedRegisterReceiverFlag")
 class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Callback, Player.Listener {
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var playerCache: SimpleCache
@@ -69,6 +68,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
     private var playerTimer: CountDownTimer? = null
     private var sponsorBlock: JSONArray? = null
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onCreate() {
         super.onCreate()
 
@@ -204,6 +204,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
         return super.onCustomCommand(session, controller, customCommand, args)
     }
 
+    @SuppressLint("SwitchIntDef")
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
         when ((error as ExoPlaybackException).type) {
