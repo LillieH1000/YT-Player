@@ -333,7 +333,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var sleepTimerChecked = MutableStateFlow(listOf(false, false, false, false, false))
 
     @Composable
-    @kotlin.OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class)
     private fun CreatePlayerUI() {
         // States
 
