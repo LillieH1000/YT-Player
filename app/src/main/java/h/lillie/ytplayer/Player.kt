@@ -63,8 +63,11 @@ import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Switch
@@ -79,6 +82,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusTarget
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpSize
@@ -86,6 +91,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.C
@@ -157,6 +163,7 @@ class Player: ComponentActivity(), Player.Listener {
         }
 
         val intentFilter = IntentFilter()
+        intentFilter.addAction("h.lillie.ytplayer.activity.artwork")
         intentFilter.addAction("h.lillie.ytplayer.activity.subtitles")
         if (Build.VERSION.SDK_INT <= 32) {
             registerReceiver(playerBroadcastReceiver, intentFilter)
@@ -321,6 +328,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var deviceRotation = MutableStateFlow(0)
     private var isPlaying = MutableStateFlow(0)
     private var loopChecked = MutableStateFlow(false)
+    private var playerColour = MutableStateFlow(Color.Unspecified)
     private var playerDuration = MutableStateFlow(0f)
     private var playerPosition = MutableStateFlow(0f)
     private var playbackSpeed = MutableStateFlow("1")
@@ -340,6 +348,7 @@ class Player: ComponentActivity(), Player.Listener {
         val deviceRotationState by deviceRotation.collectAsState()
         val isPlayingState by isPlaying.collectAsState()
         val loopCheckedState by loopChecked.collectAsState()
+        val playerColourState by playerColour.collectAsState()
         val playerControllerState by playerController.collectAsState()
         val playerDurationState by playerDuration.collectAsState()
         val playerPositionState by playerPosition.collectAsState()
@@ -519,42 +528,89 @@ class Player: ComponentActivity(), Player.Listener {
             ) {
                 // Play/Pause/Restart Button (Android)
                 if (!chromeOSDevice) {
-                    IconButton(
-                        modifier = Modifier.align(Alignment.Center),
-                        onClick = {
-                            if (playerController.value != null) {
-                                if (!playerController.value!!.isPlaying) {
-                                    playerController.value?.play()
-                                } else {
-                                    playerController.value?.pause()
+                    if (Build.VERSION.SDK_INT <= 35) {
+                        IconButton(
+                            modifier = Modifier.align(Alignment.Center),
+                            onClick = {
+                                if (playerController.value != null) {
+                                    if (!playerController.value!!.isPlaying) {
+                                        playerController.value?.play()
+                                    } else {
+                                        playerController.value?.pause()
+                                    }
                                 }
                             }
+                        ) {
+                            if (isPlayingState == 1) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(30.dp),
+                                    strokeWidth = 3.dp,
+                                    color = colorResource(R.color.white)
+                                )
+                            }
+                            if (isPlayingState >= 2) {
+                                Icon(
+                                    modifier = Modifier.size(50.dp),
+                                    imageVector = when (isPlayingState) {
+                                        2 -> {
+                                            Icons.Default.PlayArrow
+                                        }
+                                        3 -> {
+                                            Icons.Default.Pause
+                                        }
+                                        else -> {
+                                            Icons.Default.Replay
+                                        }
+                                    },
+                                    tint = colorResource(R.color.white),
+                                    contentDescription = ""
+                                )
+                            }
                         }
-                    ) {
-                        if (isPlayingState == 1) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(30.dp),
-                                strokeWidth = 3.dp,
-                                color = colorResource(R.color.white)
-                            )
-                        }
-                        if (isPlayingState >= 2) {
-                            Icon(
-                                modifier = Modifier.size(50.dp),
-                                imageVector = when (isPlayingState) {
-                                    2 -> {
-                                        Icons.Default.PlayArrow
+                    } else {
+                        FilledIconButton(
+                            modifier = Modifier.align(Alignment.Center),
+                            colors = IconButtonColors(
+                                containerColor = playerColourState,
+                                contentColor = IconButtonDefaults.filledIconButtonColors().contentColor,
+                                disabledContainerColor = IconButtonDefaults.filledIconButtonColors().disabledContainerColor,
+                                disabledContentColor = IconButtonDefaults.filledIconButtonColors().disabledContentColor
+                            ),
+                            onClick = {
+                                if (playerController.value != null) {
+                                    if (!playerController.value!!.isPlaying) {
+                                        playerController.value?.play()
+                                    } else {
+                                        playerController.value?.pause()
                                     }
-                                    3 -> {
-                                        Icons.Default.Pause
-                                    }
-                                    else -> {
-                                        Icons.Default.Replay
-                                    }
-                                },
-                                tint = colorResource(R.color.white),
-                                contentDescription = ""
-                            )
+                                }
+                            }
+                        ) {
+                            if (isPlayingState == 1) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(30.dp),
+                                    strokeWidth = 3.dp,
+                                    color = colorResource(R.color.white)
+                                )
+                            }
+                            if (isPlayingState >= 2) {
+                                Icon(
+                                    modifier = Modifier.size(50.dp),
+                                    imageVector = when (isPlayingState) {
+                                        2 -> {
+                                            Icons.Default.PlayArrow
+                                        }
+                                        3 -> {
+                                            Icons.Default.Pause
+                                        }
+                                        else -> {
+                                            Icons.Default.Replay
+                                        }
+                                    },
+                                    tint = colorResource(R.color.white),
+                                    contentDescription = ""
+                                )
+                            }
                         }
                     }
                 }
@@ -1547,6 +1603,9 @@ class Player: ComponentActivity(), Player.Listener {
 
     private val playerBroadcastReceiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) = async {
+            if (intent?.action == "h.lillie.ytplayer.activity.artwork") {
+                playerColour.value = Color(ColorUtils.blendARGB(intent.extras!!.getInt("rgb"), Color.White.toArgb(), 0.3F))
+            }
             if (intent?.action == "h.lillie.ytplayer.activity.subtitles") {
                 val subtitles = intent.extras!!.getString("subtitles")
 
