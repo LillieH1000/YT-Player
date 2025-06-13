@@ -744,6 +744,11 @@ class Player: ComponentActivity(), Player.Listener {
                             .align(Alignment.CenterVertically)
                     ) {
                         Text(
+                            modifier = if (Build.VERSION.SDK_INT <= 35) {
+                                Modifier
+                            } else {
+                                Modifier.padding(start = 10.dp)
+                            },
                             text = if (playerControllerState?.mediaMetadata?.title != null) {
                                 playerControllerState?.mediaMetadata?.title.toString()
                             } else {
