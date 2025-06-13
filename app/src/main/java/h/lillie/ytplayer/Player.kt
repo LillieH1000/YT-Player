@@ -102,6 +102,7 @@ import com.composables.core.ScrollArea
 import com.composables.core.Thumb
 import com.composables.core.VerticalScrollbar
 import com.composables.core.rememberScrollAreaState
+import com.composeunstyled.Button
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import kotlinx.coroutines.CoroutineScope
@@ -394,116 +395,107 @@ class Player: ComponentActivity(), Player.Listener {
             var leftClick: Long = 0
             val leftJob = remember { MutableStateFlow<Job?>(null) }
             val leftScope = rememberCoroutineScope()
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(1f)
-                    .clickable(
-                        enabled = true,
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = IndicationFactory,
-                        onClick = {
-                            val time = System.currentTimeMillis()
-                            leftJob.value?.cancel()
-                            if (time - leftClick < 300L) {
-                                if (!chromeOSDevice) {
-                                    playerController.value?.seekBack()
-                                }
-                                leftClick = 0
-                                leftJob.value = null
-                            } else {
-                                leftJob.value = leftScope.launch {
-                                    leftClick = time
-                                    delay(300)
-                                    if (!showOverlayState) {
-                                        showOverlay.value = true
-                                    } else {
-                                        showOverlay.value = false
-                                    }
-                                    showSettings.value = false
-                                    showSubtitles.value = false
-                                    showSleepTimer.value = false
-                                    leftClick = 0
-                                    leftJob.value = null
-                                }
-                            }
-                        }
-                    )
-            ) {}
             var middleClick: Long = 0
             val middleJob = remember { MutableStateFlow<Job?>(null) }
             val middleScope = rememberCoroutineScope()
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(1f)
-                    .clickable(
-                        enabled = true,
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = IndicationFactory,
-                        onClick = {
-                            val time = System.currentTimeMillis()
-                            middleJob.value?.cancel()
-                            if (time - middleClick < 300L) {
-                                middleClick = 0
-                                middleJob.value = null
-                            } else {
-                                middleJob.value = middleScope.launch {
-                                    middleClick = time
-                                    delay(300)
-                                    if (!showOverlayState) {
-                                        showOverlay.value = true
-                                    } else {
-                                        showOverlay.value = false
-                                    }
-                                    showSettings.value = false
-                                    showSubtitles.value = false
-                                    showSleepTimer.value = false
-                                    middleClick = 0
-                                    middleJob.value = null
-                                }
-                            }
-                        }
-                    )
-            ) {}
             var rightClick: Long = 0
             val rightJob = remember { MutableStateFlow<Job?>(null) }
             val rightScope = rememberCoroutineScope()
-            Box(
+            Button(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .weight(1f)
-                    .clickable(
-                        enabled = true,
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = IndicationFactory,
-                        onClick = {
-                            val time = System.currentTimeMillis()
-                            rightJob.value?.cancel()
-                            if (time - rightClick < 300L) {
-                                if (!chromeOSDevice) {
-                                    playerController.value?.seekForward()
-                                }
-                                rightClick = 0
-                                rightJob.value = null
-                            } else {
-                                rightJob.value = rightScope.launch {
-                                    rightClick = time
-                                    delay(300)
-                                    if (!showOverlayState) {
-                                        showOverlay.value = true
-                                    } else {
-                                        showOverlay.value = false
-                                    }
-                                    showSettings.value = false
-                                    showSubtitles.value = false
-                                    showSleepTimer.value = false
-                                    rightClick = 0
-                                    rightJob.value = null
-                                }
-                            }
+                    .weight(1f),
+                interactionSource = remember { MutableInteractionSource() },
+                indication = IndicationFactory,
+                onClick = {
+                    val time = System.currentTimeMillis()
+                    leftJob.value?.cancel()
+                    if (time - leftClick < 300L) {
+                        if (!chromeOSDevice) {
+                            playerController.value?.seekBack()
                         }
-                    )
+                        leftClick = 0
+                        leftJob.value = null
+                    } else {
+                        leftJob.value = leftScope.launch {
+                            leftClick = time
+                            delay(300)
+                            if (!showOverlayState) {
+                                showOverlay.value = true
+                            } else {
+                                showOverlay.value = false
+                            }
+                            showSettings.value = false
+                            showSubtitles.value = false
+                            showSleepTimer.value = false
+                            leftClick = 0
+                            leftJob.value = null
+                        }
+                    }
+                }
+            ) {}
+            Button(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f),
+                interactionSource = remember { MutableInteractionSource() },
+                indication = IndicationFactory,
+                onClick = {
+                    val time = System.currentTimeMillis()
+                    middleJob.value?.cancel()
+                    if (time - middleClick < 300L) {
+                        middleClick = 0
+                        middleJob.value = null
+                    } else {
+                        middleJob.value = middleScope.launch {
+                            middleClick = time
+                            delay(300)
+                            if (!showOverlayState) {
+                                showOverlay.value = true
+                            } else {
+                                showOverlay.value = false
+                            }
+                            showSettings.value = false
+                            showSubtitles.value = false
+                            showSleepTimer.value = false
+                            middleClick = 0
+                            middleJob.value = null
+                        }
+                    }
+                }
+            ) {}
+            Button(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f),
+                interactionSource = remember { MutableInteractionSource() },
+                indication = IndicationFactory,
+                onClick = {
+                    val time = System.currentTimeMillis()
+                    rightJob.value?.cancel()
+                    if (time - rightClick < 300L) {
+                        if (!chromeOSDevice) {
+                            playerController.value?.seekForward()
+                        }
+                        rightClick = 0
+                        rightJob.value = null
+                    } else {
+                        rightJob.value = rightScope.launch {
+                            rightClick = time
+                            delay(300)
+                            if (!showOverlayState) {
+                                showOverlay.value = true
+                            } else {
+                                showOverlay.value = false
+                            }
+                            showSettings.value = false
+                            showSubtitles.value = false
+                            showSleepTimer.value = false
+                            rightClick = 0
+                            rightJob.value = null
+                        }
+                    }
+                }
             ) {}
         }
 
