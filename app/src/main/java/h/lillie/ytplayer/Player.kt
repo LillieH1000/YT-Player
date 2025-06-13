@@ -548,19 +548,15 @@ class Player: ComponentActivity(), Player.Listener {
                 // Play/Pause/Restart Button (Android)
                 if (!chromeOSDevice) {
                     Button(
-                        modifier = if (Build.VERSION.SDK_INT <= 35) {
-                            Modifier
-                                .align(Alignment.Center)
-                                .size(50.dp)
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .size(50.dp),
+                        backgroundColor = if (Build.VERSION.SDK_INT <= 35) {
+                            Color.Unspecified
                         } else {
-                            Modifier
-                                .background(
-                                    color = playerColourState,
-                                    shape = CircleShape
-                                )
-                                .align(Alignment.Center)
-                                .size(50.dp)
+                            playerColourState
                         },
+                        shape = CircleShape,
                         interactionSource = remember { MutableInteractionSource() },
                         indication = IndicationFactory,
                         onClick = {
