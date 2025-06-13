@@ -743,21 +743,16 @@ class Player: ComponentActivity(), Player.Listener {
                             .weight(1f)
                             .align(Alignment.CenterVertically)
                     ) {
-                        if (playerControllerState?.mediaMetadata?.title != null) {
-                            Text(
-                                text = playerControllerState?.mediaMetadata?.title.toString(),
-                                color = colorResource(R.color.white),
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1
-                            )
-                        } else {
-                            Text(
-                                text = "No Video Loaded",
-                                color = colorResource(R.color.white),
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1
-                            )
-                        }
+                        Text(
+                            text = if (playerControllerState?.mediaMetadata?.title != null) {
+                                playerControllerState?.mediaMetadata?.title.toString()
+                            } else {
+                                "No Video Loaded"
+                            },
+                            color = colorResource(R.color.white),
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
                     }
                     // Menu Buttons
                     Column(
