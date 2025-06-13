@@ -512,24 +512,45 @@ class Player: ComponentActivity(), Player.Listener {
         if (showOverlayState) {
             Box(
                 modifier = if (deviceRotationState == 1) {
-                    Modifier
-                        .background(colorResource(R.color.dimBlack))
-                        .navigationBarsPadding()
-                        .statusBarsPadding()
-                        .systemBarsPadding()
-                        .windowInsetsPadding(WindowInsets.displayCutout)
-                        .fillMaxSize()
-                        .focusTarget()
-                        .focusProperties { canFocus = false }
+                    if (Build.VERSION.SDK_INT <= 35) {
+                        Modifier
+                            .background(colorResource(R.color.dimBlack))
+                            .navigationBarsPadding()
+                            .statusBarsPadding()
+                            .systemBarsPadding()
+                            .windowInsetsPadding(WindowInsets.displayCutout)
+                            .fillMaxSize()
+                            .focusTarget()
+                            .focusProperties { canFocus = false }
+                    } else {
+                        Modifier
+                            .navigationBarsPadding()
+                            .statusBarsPadding()
+                            .systemBarsPadding()
+                            .windowInsetsPadding(WindowInsets.displayCutout)
+                            .fillMaxSize()
+                            .focusTarget()
+                            .focusProperties { canFocus = false }
+                    }
                 } else {
-                    Modifier
-                        .background(colorResource(R.color.dimBlack))
-                        .navigationBarsPadding()
-                        .statusBarsPadding()
-                        .systemBarsPadding()
-                        .fillMaxSize()
-                        .focusTarget()
-                        .focusProperties { canFocus = false }
+                    if (Build.VERSION.SDK_INT <= 35) {
+                        Modifier
+                            .background(colorResource(R.color.dimBlack))
+                            .navigationBarsPadding()
+                            .statusBarsPadding()
+                            .systemBarsPadding()
+                            .fillMaxSize()
+                            .focusTarget()
+                            .focusProperties { canFocus = false }
+                    } else {
+                        Modifier
+                            .navigationBarsPadding()
+                            .statusBarsPadding()
+                            .systemBarsPadding()
+                            .fillMaxSize()
+                            .focusTarget()
+                            .focusProperties { canFocus = false }
+                    }
                 }
             ) {
                 // Play/Pause/Restart Button (Android)
