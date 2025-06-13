@@ -547,9 +547,11 @@ class Player: ComponentActivity(), Player.Listener {
             ) {
                 // Play/Pause/Restart Button (Android)
                 if (!chromeOSDevice) {
-                    IconButton(
+                    Button(
                         modifier = if (Build.VERSION.SDK_INT <= 35) {
-                            Modifier.align(Alignment.Center)
+                            Modifier
+                                .align(Alignment.Center)
+                                .size(50.dp)
                         } else {
                             Modifier
                                 .background(
@@ -557,7 +559,10 @@ class Player: ComponentActivity(), Player.Listener {
                                     shape = CircleShape
                                 )
                                 .align(Alignment.Center)
+                                .size(50.dp)
                         },
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = IndicationFactory,
                         onClick = {
                             if (playerController.value != null) {
                                 if (!playerController.value!!.isPlaying) {
@@ -577,7 +582,7 @@ class Player: ComponentActivity(), Player.Listener {
                         }
                         if (isPlayingState >= 2) {
                             Icon(
-                                modifier = Modifier.size(50.dp),
+                                modifier = Modifier.size(40.dp),
                                 imageVector = when (isPlayingState) {
                                     2 -> {
                                         Icons.Default.PlayArrow
