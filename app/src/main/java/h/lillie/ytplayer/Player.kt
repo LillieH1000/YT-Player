@@ -395,12 +395,6 @@ class Player: ComponentActivity(), Player.Listener {
             var leftClick: Long = 0
             val leftJob = remember { MutableStateFlow<Job?>(null) }
             val leftScope = rememberCoroutineScope()
-            var middleClick: Long = 0
-            val middleJob = remember { MutableStateFlow<Job?>(null) }
-            val middleScope = rememberCoroutineScope()
-            var rightClick: Long = 0
-            val rightJob = remember { MutableStateFlow<Job?>(null) }
-            val rightScope = rememberCoroutineScope()
             Button(
                 modifier = Modifier
                     .fillMaxHeight()
@@ -434,6 +428,9 @@ class Player: ComponentActivity(), Player.Listener {
                     }
                 }
             ) {}
+            var middleClick: Long = 0
+            val middleJob = remember { MutableStateFlow<Job?>(null) }
+            val middleScope = rememberCoroutineScope()
             Button(
                 modifier = Modifier
                     .fillMaxHeight()
@@ -464,6 +461,9 @@ class Player: ComponentActivity(), Player.Listener {
                     }
                 }
             ) {}
+            var rightClick: Long = 0
+            val rightJob = remember { MutableStateFlow<Job?>(null) }
+            val rightScope = rememberCoroutineScope()
             Button(
                 modifier = Modifier
                     .fillMaxHeight()
