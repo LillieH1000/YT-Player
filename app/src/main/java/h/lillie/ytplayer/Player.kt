@@ -1590,7 +1590,7 @@ class Player: ComponentActivity(), Player.Listener {
     private val playerBroadcastReceiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) = async {
             if (intent?.action == "h.lillie.ytplayer.activity.artwork") {
-                playerColour.value = Color(ColorUtils.blendARGB(intent.extras!!.getInt("rgb"), Color.White.toArgb(), 0.3F))
+                playerColour.value = Color(ColorUtils.blendARGB(intent.extras!!.getInt("rgb"), Color.White.toArgb(), 0.3F)).copy(alpha = 0.8F)
             }
             if (intent?.action == "h.lillie.ytplayer.activity.subtitles") {
                 val subtitles = intent.extras!!.getString("subtitles")
