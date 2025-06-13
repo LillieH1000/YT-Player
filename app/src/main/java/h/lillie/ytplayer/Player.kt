@@ -725,10 +725,21 @@ class Player: ComponentActivity(), Player.Listener {
                 }
                 // Top Row
                 Row(
-                    modifier = Modifier
-                        .padding(start = 10.dp, end = 10.dp)
-                        .height(50.dp)
-                        .fillMaxWidth()
+                    modifier = if (Build.VERSION.SDK_INT <= 35) {
+                        Modifier
+                            .padding(start = 10.dp, end = 10.dp)
+                            .height(50.dp)
+                            .fillMaxWidth()
+                    } else {
+                        Modifier
+                            .padding(start = 10.dp, end = 10.dp)
+                            .height(50.dp)
+                            .fillMaxWidth()
+                            .background(
+                                color = playerColourState,
+                                shape = CircleShape
+                            )
+                    }
                 ) {
                     // Title View
                     Column(
