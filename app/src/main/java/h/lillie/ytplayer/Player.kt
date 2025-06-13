@@ -48,6 +48,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Add
@@ -63,11 +64,8 @@ import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonColors
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Switch
@@ -536,89 +534,51 @@ class Player: ComponentActivity(), Player.Listener {
             ) {
                 // Play/Pause/Restart Button (Android)
                 if (!chromeOSDevice) {
-                    if (Build.VERSION.SDK_INT <= 35) {
-                        IconButton(
-                            modifier = Modifier.align(Alignment.Center),
-                            onClick = {
-                                if (playerController.value != null) {
-                                    if (!playerController.value!!.isPlaying) {
-                                        playerController.value?.play()
-                                    } else {
-                                        playerController.value?.pause()
-                                    }
+                    IconButton(
+                        modifier = if (Build.VERSION.SDK_INT <= 35) {
+                            Modifier.align(Alignment.Center)
+                        } else {
+                            Modifier
+                                .background(
+                                    color = playerColourState,
+                                    shape = CircleShape
+                                )
+                                .align(Alignment.Center)
+                        },
+                        onClick = {
+                            if (playerController.value != null) {
+                                if (!playerController.value!!.isPlaying) {
+                                    playerController.value?.play()
+                                } else {
+                                    playerController.value?.pause()
                                 }
-                            }
-                        ) {
-                            if (isPlayingState == 1) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(30.dp),
-                                    strokeWidth = 3.dp,
-                                    color = colorResource(R.color.white)
-                                )
-                            }
-                            if (isPlayingState >= 2) {
-                                Icon(
-                                    modifier = Modifier.size(50.dp),
-                                    imageVector = when (isPlayingState) {
-                                        2 -> {
-                                            Icons.Default.PlayArrow
-                                        }
-                                        3 -> {
-                                            Icons.Default.Pause
-                                        }
-                                        else -> {
-                                            Icons.Default.Replay
-                                        }
-                                    },
-                                    tint = colorResource(R.color.white),
-                                    contentDescription = ""
-                                )
                             }
                         }
-                    } else {
-                        FilledIconButton(
-                            modifier = Modifier.align(Alignment.Center),
-                            colors = IconButtonColors(
-                                containerColor = playerColourState,
-                                contentColor = IconButtonDefaults.filledIconButtonColors().contentColor,
-                                disabledContainerColor = IconButtonDefaults.filledIconButtonColors().disabledContainerColor,
-                                disabledContentColor = IconButtonDefaults.filledIconButtonColors().disabledContentColor
-                            ),
-                            onClick = {
-                                if (playerController.value != null) {
-                                    if (!playerController.value!!.isPlaying) {
-                                        playerController.value?.play()
-                                    } else {
-                                        playerController.value?.pause()
+                    ) {
+                        if (isPlayingState == 1) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(30.dp),
+                                strokeWidth = 3.dp,
+                                color = colorResource(R.color.white)
+                            )
+                        }
+                        if (isPlayingState >= 2) {
+                            Icon(
+                                modifier = Modifier.size(50.dp),
+                                imageVector = when (isPlayingState) {
+                                    2 -> {
+                                        Icons.Default.PlayArrow
                                     }
-                                }
-                            }
-                        ) {
-                            if (isPlayingState == 1) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(30.dp),
-                                    strokeWidth = 3.dp,
-                                    color = colorResource(R.color.white)
-                                )
-                            }
-                            if (isPlayingState >= 2) {
-                                Icon(
-                                    modifier = Modifier.size(50.dp),
-                                    imageVector = when (isPlayingState) {
-                                        2 -> {
-                                            Icons.Default.PlayArrow
-                                        }
-                                        3 -> {
-                                            Icons.Default.Pause
-                                        }
-                                        else -> {
-                                            Icons.Default.Replay
-                                        }
-                                    },
-                                    tint = colorResource(R.color.white),
-                                    contentDescription = ""
-                                )
-                            }
+                                    3 -> {
+                                        Icons.Default.Pause
+                                    }
+                                    else -> {
+                                        Icons.Default.Replay
+                                    }
+                                },
+                                tint = colorResource(R.color.white),
+                                contentDescription = ""
+                            )
                         }
                     }
                 }
