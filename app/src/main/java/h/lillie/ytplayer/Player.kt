@@ -504,45 +504,24 @@ class Player: ComponentActivity(), Player.Listener {
         if (showOverlayState) {
             Box(
                 modifier = if (deviceRotationState == 1) {
-                    if (Build.VERSION.SDK_INT <= 35) {
-                        Modifier
-                            .background(colorResource(R.color.dimBlack))
-                            .navigationBarsPadding()
-                            .statusBarsPadding()
-                            .systemBarsPadding()
-                            .windowInsetsPadding(WindowInsets.displayCutout)
-                            .fillMaxSize()
-                            .focusTarget()
-                            .focusProperties { canFocus = false }
-                    } else {
-                        Modifier
-                            .navigationBarsPadding()
-                            .statusBarsPadding()
-                            .systemBarsPadding()
-                            .windowInsetsPadding(WindowInsets.displayCutout)
-                            .fillMaxSize()
-                            .focusTarget()
-                            .focusProperties { canFocus = false }
-                    }
+                    Modifier
+                        .background(colorResource(R.color.dimBlack))
+                        .navigationBarsPadding()
+                        .statusBarsPadding()
+                        .systemBarsPadding()
+                        .windowInsetsPadding(WindowInsets.displayCutout)
+                        .fillMaxSize()
+                        .focusTarget()
+                        .focusProperties { canFocus = false }
                 } else {
-                    if (Build.VERSION.SDK_INT <= 35) {
-                        Modifier
-                            .background(colorResource(R.color.dimBlack))
-                            .navigationBarsPadding()
-                            .statusBarsPadding()
-                            .systemBarsPadding()
-                            .fillMaxSize()
-                            .focusTarget()
-                            .focusProperties { canFocus = false }
-                    } else {
-                        Modifier
-                            .navigationBarsPadding()
-                            .statusBarsPadding()
-                            .systemBarsPadding()
-                            .fillMaxSize()
-                            .focusTarget()
-                            .focusProperties { canFocus = false }
-                    }
+                    Modifier
+                        .background(colorResource(R.color.dimBlack))
+                        .navigationBarsPadding()
+                        .statusBarsPadding()
+                        .systemBarsPadding()
+                        .fillMaxSize()
+                        .focusTarget()
+                        .focusProperties { canFocus = false }
                 }
             ) {
                 // Play/Pause/Restart Button (Android)
@@ -551,11 +530,6 @@ class Player: ComponentActivity(), Player.Listener {
                         modifier = Modifier
                             .align(Alignment.Center)
                             .size(50.dp),
-                        backgroundColor = if (Build.VERSION.SDK_INT <= 35) {
-                            Color.Unspecified
-                        } else {
-                            playerColourState
-                        },
                         shape = CircleShape,
                         interactionSource = remember { MutableInteractionSource() },
                         indication = IndicationFactory,
@@ -721,21 +695,10 @@ class Player: ComponentActivity(), Player.Listener {
                 }
                 // Top Row
                 Row(
-                    modifier = if (Build.VERSION.SDK_INT <= 35) {
-                        Modifier
-                            .padding(start = 10.dp, end = 10.dp)
-                            .height(50.dp)
-                            .fillMaxWidth()
-                    } else {
-                        Modifier
-                            .padding(start = 10.dp, end = 10.dp)
-                            .height(50.dp)
-                            .fillMaxWidth()
-                            .background(
-                                color = playerColourState,
-                                shape = CircleShape
-                            )
-                    }
+                    modifier = Modifier
+                        .padding(start = 10.dp, end = 10.dp)
+                        .height(50.dp)
+                        .fillMaxWidth()
                 ) {
                     // Title View
                     Column(
@@ -744,11 +707,6 @@ class Player: ComponentActivity(), Player.Listener {
                             .align(Alignment.CenterVertically)
                     ) {
                         Text(
-                            modifier = if (Build.VERSION.SDK_INT <= 35) {
-                                Modifier
-                            } else {
-                                Modifier.padding(start = 10.dp)
-                            },
                             text = if (playerControllerState?.mediaMetadata?.title != null) {
                                 playerControllerState?.mediaMetadata?.title.toString()
                             } else {
