@@ -80,6 +80,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusTarget
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.colorResource
@@ -505,7 +506,10 @@ class Player: ComponentActivity(), Player.Listener {
             Box(
                 modifier = if (deviceRotationState == 1) {
                     Modifier
-                        .background(colorResource(R.color.dimBlack))
+                        .background(
+                            brush = Brush.linearGradient(listOf(playerColourState, colorResource(R.color.black))),
+                            alpha = 0.4F
+                        )
                         .navigationBarsPadding()
                         .statusBarsPadding()
                         .systemBarsPadding()
@@ -515,7 +519,10 @@ class Player: ComponentActivity(), Player.Listener {
                         .focusProperties { canFocus = false }
                 } else {
                     Modifier
-                        .background(colorResource(R.color.dimBlack))
+                        .background(
+                            brush = Brush.linearGradient(listOf(playerColourState, colorResource(R.color.black))),
+                            alpha = 0.4F
+                        )
                         .navigationBarsPadding()
                         .statusBarsPadding()
                         .systemBarsPadding()
