@@ -735,8 +735,11 @@ class Player: ComponentActivity(), Player.Listener {
                         ) {
                             if (!chromeOSDevice) {
                                 // Voice Search Button
-                                IconButton(
+                                Button(
                                     modifier = Modifier.width(50.dp),
+                                    shape = CircleShape,
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = IndicationFactory,
                                     onClick = {
                                         playerControllerState?.pause()
                                         if (ContextCompat.checkSelfPermission(this@Player, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
@@ -761,8 +764,11 @@ class Player: ComponentActivity(), Player.Listener {
                             }
                             // Share Button
                             if (playerControllerState?.mediaItemCount == 1) {
-                                IconButton(
+                                Button(
                                     modifier = Modifier.width(50.dp),
+                                    shape = CircleShape,
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = IndicationFactory,
                                     onClick = {
                                         if (chromeOSDevice) {
                                             val clipManager: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
@@ -786,8 +792,11 @@ class Player: ComponentActivity(), Player.Listener {
                             }
                             // Settings Button
                             if (playerControllerState?.mediaItemCount == 1) {
-                                IconButton(
+                                Button(
                                     modifier = Modifier.width(50.dp),
+                                    shape = CircleShape,
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = IndicationFactory,
                                     onClick = {
                                         if (!showSettingsState && !showSubtitlesState && !showSleepTimerState) {
                                             showSettings.value = true
