@@ -327,7 +327,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var deviceRotation = MutableStateFlow(0)
     private var isPlaying = MutableStateFlow(0)
     private var loopChecked = MutableStateFlow(false)
-    private var playerColour = MutableStateFlow(Color.Unspecified)
+    private var playerColour = MutableStateFlow(Color.Black)
     private var playerDuration = MutableStateFlow(0f)
     private var playerPosition = MutableStateFlow(0f)
     private var playbackSpeed = MutableStateFlow("1")
