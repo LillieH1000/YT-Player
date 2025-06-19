@@ -406,9 +406,7 @@ class Player: ComponentActivity(), Player.Listener {
                     val time = System.currentTimeMillis()
                     leftJob.value?.cancel()
                     if (time - leftClick < 300L) {
-                        if (!chromeOSDevice) {
-                            playerController.value?.seekBack()
-                        }
+                        playerController.value?.seekBack()
                         leftClick = 0
                         leftJob.value = null
                     } else {
@@ -475,9 +473,7 @@ class Player: ComponentActivity(), Player.Listener {
                     val time = System.currentTimeMillis()
                     rightJob.value?.cancel()
                     if (time - rightClick < 300L) {
-                        if (!chromeOSDevice) {
-                            playerController.value?.seekForward()
-                        }
+                        playerController.value?.seekForward()
                         rightClick = 0
                         rightJob.value = null
                     } else {
@@ -531,169 +527,89 @@ class Player: ComponentActivity(), Player.Listener {
                         .focusProperties { canFocus = false }
                 }
             ) {
-                // Play/Pause/Restart Button (Android)
-                if (!chromeOSDevice) {
-                    Button(
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .size(50.dp),
-                        shape = CircleShape,
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = IndicationFactory,
-                        onClick = {
-                            if (playerController.value != null) {
-                                if (!playerController.value!!.isPlaying) {
-                                    playerController.value?.play()
-                                } else {
-                                    playerController.value?.pause()
-                                }
+                // Play/Pause/Restart Button
+                Button(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(50.dp),
+                    shape = CircleShape,
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = IndicationFactory,
+                    onClick = {
+                        if (playerController.value != null) {
+                            if (!playerController.value!!.isPlaying) {
+                                playerController.value?.play()
+                            } else {
+                                playerController.value?.pause()
                             }
                         }
-                    ) {
-                        if (isPlayingState == 1) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(30.dp),
-                                strokeWidth = 3.dp,
-                                color = colorResource(R.color.white)
-                            )
-                        }
-                        if (isPlayingState >= 2) {
-                            Icon(
-                                modifier = Modifier.size(40.dp),
-                                imageVector = when (isPlayingState) {
-                                    2 -> {
-                                        Icons.Default.PlayArrow
-                                    }
-                                    3 -> {
-                                        Icons.Default.Pause
-                                    }
-                                    else -> {
-                                        Icons.Default.Replay
-                                    }
-                                },
-                                tint = colorResource(R.color.white),
-                                contentDescription = ""
-                            )
-                        }
+                    }
+                ) {
+                    if (isPlayingState == 1) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(30.dp),
+                            strokeWidth = 3.dp,
+                            color = colorResource(R.color.white)
+                        )
+                    }
+                    if (isPlayingState >= 2) {
+                        Icon(
+                            modifier = Modifier.size(40.dp),
+                            imageVector = when (isPlayingState) {
+                                2 -> {
+                                    Icons.Default.PlayArrow
+                                }
+                                3 -> {
+                                    Icons.Default.Pause
+                                }
+                                else -> {
+                                    Icons.Default.Replay
+                                }
+                            },
+                            tint = colorResource(R.color.white),
+                            contentDescription = ""
+                        )
                     }
                 }
-                // Bottom Row
-                Row(
+                // Progress Slider
+                val sliderSource = remember { MutableInteractionSource() }
+                Slider(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
-                        .padding(start = 10.dp, end = 10.dp, bottom = 40.dp)
-                        .height(25.dp)
-                        .fillMaxWidth()
-                ) {
-                    if (chromeOSDevice) {
-                        // Play/Pause/Restart Button (ChromeOS)
-                        IconButton(
-                            onClick = {
-                                if (playerController.value != null) {
-                                    if (!playerController.value!!.isPlaying) {
-                                        playerController.value?.play()
-                                    } else {
-                                        playerController.value?.pause()
-                                    }
-                                }
-                            }
-                        ) {
-                            if (isPlayingState == 1) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(20.dp),
-                                    strokeWidth = 3.dp,
-                                    color = colorResource(R.color.white)
-                                )
-                            }
-                            if (isPlayingState >= 2) {
-                                Icon(
-                                    modifier = Modifier.size(25.dp),
-                                    imageVector = when (isPlayingState) {
-                                        2 -> {
-                                            Icons.Default.PlayArrow
-                                        }
-                                        3 -> {
-                                            Icons.Default.Pause
-                                        }
-                                        else -> {
-                                            Icons.Default.Replay
-                                        }
-                                    },
-                                    tint = colorResource(R.color.white),
-                                    contentDescription = ""
-                                )
-                            }
-                        }
-                        // Seek Back Button (ChromeOS)
-                        IconButton(
-                            onClick = {
-                                playerController.value?.seekBack()
-                            }
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(25.dp),
-                                imageVector = Icons.Default.Replay10,
-                                tint = colorResource(R.color.white),
-                                contentDescription = ""
-                            )
-                        }
-                        // Seek Forward Button (ChromeOS)
-                        IconButton(
-                            onClick = {
-                                playerController.value?.seekForward()
-                            }
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(25.dp),
-                                imageVector = Icons.Default.Forward10,
-                                tint = colorResource(R.color.white),
-                                contentDescription = ""
-                            )
-                        }
+                        .padding(start = 10.dp, end = 10.dp, bottom = 50.dp),
+                    interactionSource = sliderSource,
+                    steps = 0,
+                    thumb = {
+                        SliderDefaults.Thumb(
+                            interactionSource = sliderSource,
+                            modifier = Modifier.size(0.dp),
+                            thumbSize = DpSize.Zero
+                        )
+                    },
+                    track = { sliderState ->
+                        SliderDefaults.Track(
+                            colors = SliderDefaults.colors(
+                                activeTickColor = colorResource(R.color.clear),
+                                inactiveTickColor = colorResource(R.color.clear),
+                                activeTrackColor = colorResource(R.color.lightGrey),
+                                inactiveTrackColor = colorResource(R.color.darkGrey)
+                            ),
+                            modifier = Modifier.height(5.dp),
+                            sliderState = sliderState,
+                            thumbTrackGapSize = 0.dp
+                        )
+                    },
+                    value = playerPositionState,
+                    valueRange = 0f..playerDurationState,
+                    onValueChange = { newValue ->
+                        playerController.value?.seekTo(newValue.toLong())
                     }
-                    // Progress Slider
-                    val sliderSource = remember { MutableInteractionSource() }
-                    Slider(
-                        interactionSource = sliderSource,
-                        steps = 0,
-                        thumb = {
-                            SliderDefaults.Thumb(
-                                interactionSource = sliderSource,
-                                modifier = Modifier.size(0.dp),
-                                thumbSize = DpSize.Zero
-                            )
-                        },
-                        track = { sliderState ->
-                            SliderDefaults.Track(
-                                colors = SliderDefaults.colors(
-                                    activeTickColor = colorResource(R.color.clear),
-                                    inactiveTickColor = colorResource(R.color.clear),
-                                    activeTrackColor = colorResource(R.color.lightGrey),
-                                    inactiveTrackColor = colorResource(R.color.darkGrey)
-                                ),
-                                modifier = Modifier.height(5.dp),
-                                sliderState = sliderState,
-                                thumbTrackGapSize = 0.dp
-                            )
-                        },
-                        value = playerPositionState,
-                        valueRange = 0f..playerDurationState,
-                        onValueChange = { newValue ->
-                            playerController.value?.seekTo(newValue.toLong())
-                        }
-                    )
-                }
+                )
                 if (playerTimeState != null) {
                     Text(
-                        modifier = if (chromeOSDevice) {
-                            Modifier
-                                .align(Alignment.BottomStart)
-                                .padding(start = 160.dp, end = 15.dp, bottom = 28.dp)
-                        } else {
-                            Modifier
-                                .align(Alignment.BottomStart)
-                                .padding(start = 15.dp, end = 15.dp, bottom = 28.dp)
-                        },
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(start = 15.dp, end = 15.dp, bottom = 45.dp),
                         text = playerTimeState!!,
                         color = colorResource(R.color.white),
                         overflow = TextOverflow.Ellipsis,
