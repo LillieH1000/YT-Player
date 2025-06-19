@@ -10,7 +10,8 @@ def getInfo(videoID, searchQuery):
             }
         },
         "format": "bestvideo[protocol=m3u8_native]",
-        "noplaylist": True
+        "noplaylist": True,
+        "cachedir": False
     }
 
     info = {}
