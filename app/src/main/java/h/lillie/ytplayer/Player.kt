@@ -852,7 +852,7 @@ class Player: ComponentActivity(), Player.Listener {
                     modifier = Modifier
                         .wrapContentHeight()
                         .width(150.dp)
-                        .background(colorResource(R.color.darkGrey))
+                        .background(Brush.linearGradient(listOf(playerColourState, colorResource(R.color.black))))
                         .clickable(
                             enabled = true,
                             interactionSource = null,
@@ -1084,7 +1084,7 @@ class Player: ComponentActivity(), Player.Listener {
                             .wrapContentHeight()
                             .heightIn(0.dp, 150.dp)
                             .width(150.dp)
-                            .background(colorResource(R.color.darkGrey))
+                            .background(Brush.linearGradient(listOf(playerColourState, colorResource(R.color.black))))
                             .clickable(
                                 enabled = true,
                                 interactionSource = null,
@@ -1234,7 +1234,7 @@ class Player: ComponentActivity(), Player.Listener {
                             .wrapContentHeight()
                             .heightIn(0.dp, 150.dp)
                             .width(150.dp)
-                            .background(colorResource(R.color.darkGrey))
+                            .background(Brush.linearGradient(listOf(playerColourState, colorResource(R.color.black))))
                             .clickable(
                                 enabled = true,
                                 interactionSource = null,
