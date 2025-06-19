@@ -42,8 +42,10 @@ import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
 import androidx.palette.graphics.Palette
+import coil3.Image
 import coil3.ImageLoader
 import coil3.request.ImageRequest
+import coil3.request.ImageResult
 import coil3.request.allowHardware
 import coil3.size.Size
 import coil3.toBitmap
@@ -261,12 +263,20 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                     .size(Size.ORIGINAL)
                     .allowHardware(false)
                     .build()
-                val artworkResult = artworkLoader.execute(artworkRequest)
-                Palette.from(artworkResult.image?.toBitmap()!!).generate { palette ->
-                    val broadcastIntent = Intent("h.lillie.ytplayer.activity.artwork")
-                    broadcastIntent.setPackage(this@PlayerService.packageName)
-                    broadcastIntent.putExtra("rgb", palette?.vibrantSwatch?.rgb)
-                    sendBroadcast(broadcastIntent)
+                val artworkResult: ImageResult = artworkLoader.execute(artworkRequest)
+                val artworkImage: Image? = artworkResult.image
+                if (artworkImage != null) {
+                    Palette.from(artworkImage.toBitmap()).generate { palette ->
+                        if (palette != null) {
+                            val artworkSwatch: Palette.Swatch? = palette.vibrantSwatch
+                            if (artworkSwatch != null) {
+                                val broadcastIntent = Intent("h.lillie.ytplayer.activity.artwork")
+                                broadcastIntent.setPackage(this@PlayerService.packageName)
+                                broadcastIntent.putExtra("rgb", artworkSwatch.rgb)
+                                sendBroadcast(broadcastIntent)
+                            }
+                        }
+                    }
                 }
 
                 val playerExtraInfo = Bundle()
