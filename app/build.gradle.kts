@@ -14,7 +14,7 @@ android {
         applicationId = "h.lillie.ytplayer"
         minSdk = 26
         targetSdk = 36
-        versionCode = 62
+        versionCode = 63
         versionName = "2.1.08"
         ndk {
             abiFilters += listOf("arm64-v8a", "x86_64")
@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.androidx.foundation)
     implementation(libs.androidx.lifecycle.common)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.material.icons.core)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.media3.common.ktx)
