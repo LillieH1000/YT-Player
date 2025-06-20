@@ -82,6 +82,7 @@ import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -364,7 +365,7 @@ class Player: ComponentActivity(), Player.Listener {
 
         AndroidView(
             modifier = Modifier
-                .background(colorResource(R.color.black))
+                .background(Brush.linearGradient(listOf(playerColourState, colorResource(R.color.black))))
                 .navigationBarsPadding()
                 .statusBarsPadding()
                 .systemBarsPadding()
@@ -503,7 +504,7 @@ class Player: ComponentActivity(), Player.Listener {
                 modifier = if (deviceRotationState == 1) {
                     Modifier
                         .background(
-                            brush = Brush.linearGradient(listOf(playerColourState, colorResource(R.color.black))),
+                            brush = SolidColor(colorResource(R.color.black)),
                             alpha = 0.4F
                         )
                         .navigationBarsPadding()
@@ -516,7 +517,7 @@ class Player: ComponentActivity(), Player.Listener {
                 } else {
                     Modifier
                         .background(
-                            brush = Brush.linearGradient(listOf(playerColourState, colorResource(R.color.black))),
+                            brush = SolidColor(colorResource(R.color.black)),
                             alpha = 0.4F
                         )
                         .navigationBarsPadding()
@@ -1487,7 +1488,7 @@ class Player: ComponentActivity(), Player.Listener {
     private val playerBroadcastReceiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) = async {
             if (intent?.action == "h.lillie.ytplayer.activity.artwork") {
-                playerColour.value = Color(ColorUtils.blendARGB(intent.extras!!.getInt("rgb"), Color.White.toArgb(), 0.3F)).copy(alpha = 0.8F)
+                playerColour.value = Color(ColorUtils.blendARGB(intent.extras!!.getInt("rgb"), Color.White.toArgb(), 0.3F))
             }
             if (intent?.action == "h.lillie.ytplayer.activity.subtitles") {
                 val subtitles = intent.extras!!.getString("subtitles")
