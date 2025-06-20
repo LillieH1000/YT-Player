@@ -323,6 +323,7 @@ class Player: ComponentActivity(), Player.Listener {
         }
     }
 
+    private var ambientBackgroundChecked = MutableStateFlow(true)
     private var deviceRotation = MutableStateFlow(0)
     private var isPlaying = MutableStateFlow(0)
     private var loopChecked = MutableStateFlow(false)
@@ -343,6 +344,7 @@ class Player: ComponentActivity(), Player.Listener {
     private fun CreatePlayerUI() {
         // States
 
+        val ambientBackgroundCheckedState by ambientBackgroundChecked.collectAsState()
         val deviceRotationState by deviceRotation.collectAsState()
         val isPlayingState by isPlaying.collectAsState()
         val loopCheckedState by loopChecked.collectAsState()
@@ -362,14 +364,25 @@ class Player: ComponentActivity(), Player.Listener {
         // Player View
 
         AndroidView(
-            modifier = Modifier
-                .background(Brush.linearGradient(listOf(playerColourState, colorResource(R.color.black))))
-                .navigationBarsPadding()
-                .statusBarsPadding()
-                .systemBarsPadding()
-                .fillMaxSize()
-                .focusTarget()
-                .focusProperties { canFocus = false },
+            modifier = if (!ambientBackgroundCheckedState) {
+                Modifier
+                    .background(colorResource(R.color.black))
+                    .navigationBarsPadding()
+                    .statusBarsPadding()
+                    .systemBarsPadding()
+                    .fillMaxSize()
+                    .focusTarget()
+                    .focusProperties { canFocus = false }
+            } else {
+                Modifier
+                    .background(Brush.linearGradient(listOf(playerColourState, colorResource(R.color.black))))
+                    .navigationBarsPadding()
+                    .statusBarsPadding()
+                    .systemBarsPadding()
+                    .fillMaxSize()
+                    .focusTarget()
+                    .focusProperties { canFocus = false }
+            },
             factory = { context ->
                 PlayerView(context).apply {
                     this.player = playerControllerState
@@ -851,6 +864,40 @@ class Player: ComponentActivity(), Player.Listener {
                                 imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
                                 tint = colorResource(R.color.white),
                                 contentDescription = ""
+                            )
+                        }
+                    }
+                    // Ambient Background
+                    Row(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .padding(start = 10.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .align(Alignment.CenterVertically)
+                        ) {
+                            Text(
+                                text = "Ambient Background",
+                                color = colorResource(R.color.white),
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1
+                            )
+                        }
+                        Column(
+                            modifier = Modifier.align(Alignment.CenterVertically)
+                        ) {
+                            Switch(
+                                modifier = Modifier.scale(0.8f),
+                                checked = ambientBackgroundCheckedState,
+                                onCheckedChange = {
+                                    if (!ambientBackgroundCheckedState) {
+                                        ambientBackgroundChecked.value = true
+                                    } else {
+                                        ambientBackgroundChecked.value = false
+                                    }
+                                }
                             )
                         }
                     }
