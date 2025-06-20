@@ -52,12 +52,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Forward10
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Replay
-import androidx.compose.material.icons.filled.Replay10
 import androidx.compose.material.icons.filled.YoutubeSearchedFor
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Share
