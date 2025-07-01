@@ -283,6 +283,8 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                 playerExtraInfo.putString("id", info.id)
                 playerExtraInfo.putBoolean("live", info.live)
                 playerExtraInfo.putString("expiration", info.expiration)
+                playerExtraInfo.putInt("views", info.views)
+                playerExtraInfo.putInt("likes", info.likes)
 
                 val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
                     .setTitle(info.title)

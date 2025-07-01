@@ -9,6 +9,8 @@ data class Info(
     val author: String,
     val artwork: String,
     val live: Boolean,
+    val views: Int,
+    val likes: Int,
     val url: String,
     val expiration: String,
     val subtitles: ArrayList<InfoSubs>?
