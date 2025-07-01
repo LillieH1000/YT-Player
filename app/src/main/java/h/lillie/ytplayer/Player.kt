@@ -637,12 +637,13 @@ class Player: ComponentActivity(), Player.Listener {
                         .height(50.dp)
                         .fillMaxWidth()
                 ) {
-                    // Title Button
+                    // Title View
                     Column(
                         modifier = Modifier
                             .weight(1f)
                             .align(Alignment.CenterVertically)
                     ) {
+                        // Title Button
                         Button(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = IndicationFactory,
