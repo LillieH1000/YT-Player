@@ -10,15 +10,12 @@
         android:allowBackup="false"
         android:appCategory="audio"
         android:hardwareAccelerated="true"
-        android:icon="@mipmap/icon"
         android:label="YT Player"
         android:largeHeap="true"
         android:name=".Application"
-        android:roundIcon="@mipmap/icon_round"
         android:supportsRtl="false"
         android:theme="@android:style/Theme.Material.NoActionBar"
-        tools:ignore="DataExtractionRules">
-        <meta-data android:name="androidx.car.app.TintableAttributionIcon" android:resource="@drawable/music" />
+        tools:ignore="DataExtractionRules, MissingApplicationIcon">
         <meta-data android:name="com.google.android.gms.car.application" android:resource="@xml/auto" />
         <activity
             android:name=".Player"
