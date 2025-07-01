@@ -1311,8 +1311,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 indication = null,
                                 onClick = {})
                     ) {
-                        // Off
-                        item {
+                        items(5) { index ->
                             Row(
                                 modifier = Modifier
                                     .height(30.dp)
@@ -1324,7 +1323,13 @@ class Player: ComponentActivity(), Player.Listener {
                                         .weight(1f)
                                 ) {
                                     Text(
-                                        text = "Off",
+                                        text = when (index) {
+                                            1 -> "15 Minutes"
+                                            2 -> "30 Minutes"
+                                            3 -> "45 Minutes"
+                                            4 -> "1 Hour"
+                                            else -> "Off"
+                                        },
                                         color = colorResource(R.color.white),
                                         overflow = TextOverflow.Ellipsis,
                                         maxLines = 1
@@ -1337,202 +1342,24 @@ class Player: ComponentActivity(), Player.Listener {
                                         .width(30.dp)
                                 ) {
                                     Checkbox(
-                                        checked = sleepTimerCheckedState[0],
+                                        checked = sleepTimerCheckedState[index],
                                         onCheckedChange = { checked ->
                                             Collections.replaceAll(sleepTimerChecked.value, true, false)
                                             sleepTimerChecked.update { list ->
                                                 list.toMutableList().apply {
-                                                    set(0, true)
+                                                    set(index, true)
                                                 }.toList()
                                             }
                                             if (checked) {
                                                 val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
                                                 broadcastIntent.setPackage(this@Player.packageName)
-                                                broadcastIntent.putExtra("enable", false)
-                                                sendBroadcast(broadcastIntent)
-                                            }
-                                        }
-                                    )
-                                }
-                            }
-                        }
-                        // 15 Minutes
-                        item {
-                            Row(
-                                modifier = Modifier
-                                    .height(30.dp)
-                                    .padding(start = 10.dp)
-                            ) {
-                                Column(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .weight(1f)
-                                ) {
-                                    Text(
-                                        text = "15 Minutes",
-                                        color = colorResource(R.color.white),
-                                        overflow = TextOverflow.Ellipsis,
-                                        maxLines = 1
-                                    )
-                                }
-                                Column(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .scale(0.6f)
-                                        .width(30.dp)
-                                ) {
-                                    Checkbox(
-                                        checked = sleepTimerCheckedState[1],
-                                        onCheckedChange = { checked ->
-                                            Collections.replaceAll(sleepTimerChecked.value, true, false)
-                                            sleepTimerChecked.update { list ->
-                                                list.toMutableList().apply {
-                                                    set(1, true)
-                                                }.toList()
-                                            }
-                                            if (checked) {
-                                                val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
-                                                broadcastIntent.setPackage(this@Player.packageName)
-                                                broadcastIntent.putExtra("enable", true)
-                                                broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(15))
-                                                sendBroadcast(broadcastIntent)
-                                            }
-                                        }
-                                    )
-                                }
-                            }
-                        }
-                        // 30 Minutes
-                        item {
-                            Row(
-                                modifier = Modifier
-                                    .height(30.dp)
-                                    .padding(start = 10.dp)
-                            ) {
-                                Column(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .weight(1f)
-                                ) {
-                                    Text(
-                                        text = "30 Minutes",
-                                        color = colorResource(R.color.white),
-                                        overflow = TextOverflow.Ellipsis,
-                                        maxLines = 1
-                                    )
-                                }
-                                Column(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .scale(0.6f)
-                                        .width(30.dp)
-                                ) {
-                                    Checkbox(
-                                        checked = sleepTimerCheckedState[2],
-                                        onCheckedChange = { checked ->
-                                            Collections.replaceAll(sleepTimerChecked.value, true, false)
-                                            sleepTimerChecked.update { list ->
-                                                list.toMutableList().apply {
-                                                    set(2, true)
-                                                }.toList()
-                                            }
-                                            if (checked) {
-                                                val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
-                                                broadcastIntent.setPackage(this@Player.packageName)
-                                                broadcastIntent.putExtra("enable", true)
-                                                broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(30))
-                                                sendBroadcast(broadcastIntent)
-                                            }
-                                        }
-                                    )
-                                }
-                            }
-                        }
-                        // 45 Minutes
-                        item {
-                            Row(
-                                modifier = Modifier
-                                    .height(30.dp)
-                                    .padding(start = 10.dp)
-                            ) {
-                                Column(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .weight(1f)
-                                ) {
-                                    Text(
-                                        text = "45 Minutes",
-                                        color = colorResource(R.color.white),
-                                        overflow = TextOverflow.Ellipsis,
-                                        maxLines = 1
-                                    )
-                                }
-                                Column(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .scale(0.6f)
-                                        .width(30.dp)
-                                ) {
-                                    Checkbox(
-                                        checked = sleepTimerCheckedState[3],
-                                        onCheckedChange = { checked ->
-                                            Collections.replaceAll(sleepTimerChecked.value, true, false)
-                                            sleepTimerChecked.update { list ->
-                                                list.toMutableList().apply {
-                                                    set(3, true)
-                                                }.toList()
-                                            }
-                                            if (checked) {
-                                                val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
-                                                broadcastIntent.setPackage(this@Player.packageName)
-                                                broadcastIntent.putExtra("enable", true)
-                                                broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(45))
-                                                sendBroadcast(broadcastIntent)
-                                            }
-                                        }
-                                    )
-                                }
-                            }
-                        }
-                        // 1 Hour
-                        item {
-                            Row(
-                                modifier = Modifier
-                                    .height(30.dp)
-                                    .padding(start = 10.dp)
-                            ) {
-                                Column(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .weight(1f)
-                                ) {
-                                    Text(
-                                        text = "1 Hour",
-                                        color = colorResource(R.color.white),
-                                        overflow = TextOverflow.Ellipsis,
-                                        maxLines = 1
-                                    )
-                                }
-                                Column(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .scale(0.6f)
-                                        .width(30.dp)
-                                ) {
-                                    Checkbox(
-                                        checked = sleepTimerCheckedState[4],
-                                        onCheckedChange = { checked ->
-                                            Collections.replaceAll(sleepTimerChecked.value, true, false)
-                                            sleepTimerChecked.update { list ->
-                                                list.toMutableList().apply {
-                                                    set(4, true)
-                                                }.toList()
-                                            }
-                                            if (checked) {
-                                                val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
-                                                broadcastIntent.setPackage(this@Player.packageName)
-                                                broadcastIntent.putExtra("enable", true)
-                                                broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(60))
+                                                when (index) {
+                                                    1 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(15))
+                                                    2 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(30))
+                                                    3 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(45))
+                                                    4 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(60))
+                                                    else -> broadcastIntent.putExtra("time", 0L)
+                                                }
                                                 sendBroadcast(broadcastIntent)
                                             }
                                         }

@@ -388,15 +388,12 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
             }
 
             if (intent?.action == "h.lillie.ytplayer.service.timer") {
-                val enable: Boolean = intent.extras!!.getBoolean("enable")
-                if (!enable) {
-                    playerTimer?.cancel()
-                    playerTimer = null
-                } else {
-                    playerTimer?.cancel()
-                    playerTimer = null
+                val time: Long = intent.extras!!.getLong("time")
+                playerTimer?.cancel()
+                playerTimer = null
+                if (time != 0L) {
                     withContext(Dispatchers.Main) {
-                        playerTimer = object: CountDownTimer(intent.extras!!.getLong("time"), 1000) {
+                        playerTimer = object: CountDownTimer(time, 1000) {
                             override fun onTick(millisUntilFinished: Long) {
                             }
                             override fun onFinish() {
