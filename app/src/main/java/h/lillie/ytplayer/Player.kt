@@ -253,6 +253,7 @@ class Player: ComponentActivity(), Player.Listener {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         if (isInPictureInPictureMode) {
             showOverlay.value = false
+            showInfo.value = false
             showSettings.value = false
             showSubtitles.value = false
             showSleepTimer.value = false
