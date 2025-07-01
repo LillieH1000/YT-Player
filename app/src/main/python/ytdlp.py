@@ -32,6 +32,8 @@ def getInfo(videoID, searchQuery):
         info["author"] = y["uploader"]
         info["artwork"] = y["thumbnail"]
         info["live"] = y["is_live"]
+        info["views"] = y["view_count"]
+        info["likes"] = y["like_count"]
         info["url"] = y["manifest_url"]
         info["expiration"] = re.search("/expire/(\\d+)/", y["manifest_url"]).group(1)
         for a in y["subtitles"]:
