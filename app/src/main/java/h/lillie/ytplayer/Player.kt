@@ -636,17 +636,6 @@ class Player: ComponentActivity(), Player.Listener {
                         maxLines = 1
                     )
                 }
-                if (BuildConfig.DEBUG) {
-                    Text(
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .padding(start = 15.dp, end = 15.dp, bottom = 45.dp),
-                        text = "(Debug)",
-                        color = colorResource(R.color.white),
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1
-                    )
-                }
                 // Top Row
                 Row(
                     modifier = Modifier
