@@ -82,7 +82,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -370,7 +369,7 @@ class Player: ComponentActivity(), Player.Listener {
         AndroidView(
             modifier = if (!ambientBackgroundCheckedState) {
                 Modifier
-                    .background(colorResource(R.color.black))
+                    .background(Color.Black)
                     .navigationBarsPadding()
                     .statusBarsPadding()
                     .systemBarsPadding()
@@ -379,7 +378,7 @@ class Player: ComponentActivity(), Player.Listener {
                     .focusProperties { canFocus = false }
             } else {
                 Modifier
-                    .background(Brush.linearGradient(listOf(playerColourState, colorResource(R.color.black))))
+                    .background(Brush.linearGradient(listOf(playerColourState, Color.Black)))
                     .navigationBarsPadding()
                     .statusBarsPadding()
                     .systemBarsPadding()
@@ -522,7 +521,7 @@ class Player: ComponentActivity(), Player.Listener {
                 modifier = if (deviceRotationState == 1) {
                     Modifier
                         .background(
-                            brush = SolidColor(colorResource(R.color.black)),
+                            brush = SolidColor(Color.Black),
                             alpha = 0.4F
                         )
                         .navigationBarsPadding()
@@ -535,7 +534,7 @@ class Player: ComponentActivity(), Player.Listener {
                 } else {
                     Modifier
                         .background(
-                            brush = SolidColor(colorResource(R.color.black)),
+                            brush = SolidColor(Color.Black),
                             alpha = 0.4F
                         )
                         .navigationBarsPadding()
@@ -568,7 +567,7 @@ class Player: ComponentActivity(), Player.Listener {
                         CircularProgressIndicator(
                             modifier = Modifier.size(30.dp),
                             strokeWidth = 3.dp,
-                            color = colorResource(R.color.white)
+                            color = Color.White
                         )
                     }
                     if (isPlayingState >= 2) {
@@ -585,7 +584,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     Icons.Default.Replay
                                 }
                             },
-                            tint = colorResource(R.color.white),
+                            tint = Color.White,
                             contentDescription = ""
                         )
                     }
@@ -608,10 +607,10 @@ class Player: ComponentActivity(), Player.Listener {
                     track = { sliderState ->
                         SliderDefaults.Track(
                             colors = SliderDefaults.colors(
-                                activeTickColor = colorResource(R.color.clear),
-                                inactiveTickColor = colorResource(R.color.clear),
-                                activeTrackColor = colorResource(R.color.lightGrey),
-                                inactiveTrackColor = colorResource(R.color.darkGrey)
+                                activeTickColor = Color.Transparent,
+                                inactiveTickColor = Color.Transparent,
+                                activeTrackColor = Color.LightGray,
+                                inactiveTrackColor = Color.DarkGray
                             ),
                             modifier = Modifier.height(5.dp),
                             sliderState = sliderState,
@@ -631,7 +630,7 @@ class Player: ComponentActivity(), Player.Listener {
                             .align(Alignment.BottomStart)
                             .padding(start = 15.dp, end = 15.dp, bottom = 45.dp),
                         text = playerTimeState!!,
-                        color = colorResource(R.color.white),
+                        color = Color.White,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1
                     )
@@ -667,7 +666,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 } else {
                                     "No Video Loaded"
                                 },
-                                color = colorResource(R.color.white),
+                                color = Color.White,
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
                             )
@@ -706,7 +705,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.YoutubeSearchedFor,
-                                        tint = colorResource(R.color.white),
+                                        tint = Color.White,
                                         contentDescription = ""
                                     )
                                 }
@@ -734,7 +733,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 ) {
                                     Icon(
                                         imageVector = Icons.Outlined.Share,
-                                        tint = colorResource(R.color.white),
+                                        tint = Color.White,
                                         contentDescription = ""
                                     )
                                 }
@@ -758,7 +757,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 ) {
                                     Icon(
                                         imageVector = Icons.Outlined.Settings,
-                                        tint = colorResource(R.color.white),
+                                        tint = Color.White,
                                         contentDescription = ""
                                     )
                                 }
@@ -814,7 +813,7 @@ class Player: ComponentActivity(), Player.Listener {
                         Text(
                             modifier = Modifier.align(Alignment.CenterVertically),
                             text = "Views: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getInt("views"))}",
-                            color = colorResource(R.color.white),
+                            color = Color.White,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
                         )
@@ -828,7 +827,7 @@ class Player: ComponentActivity(), Player.Listener {
                         Text(
                             modifier = Modifier.align(Alignment.CenterVertically),
                             text = "Likes: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getInt("likes"))}",
-                            color = colorResource(R.color.white),
+                            color = Color.White,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
                         )
@@ -843,7 +842,7 @@ class Player: ComponentActivity(), Player.Listener {
                             Text(
                                 modifier = Modifier.align(Alignment.CenterVertically),
                                 text = "Dislikes: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getInt("dislikes"))}",
-                                color = colorResource(R.color.white),
+                                color = Color.White,
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
                             )
@@ -917,7 +916,7 @@ class Player: ComponentActivity(), Player.Listener {
                             ) {
                                 Text(
                                     text = "Subtitles",
-                                    color = colorResource(R.color.white),
+                                    color = Color.White,
                                     overflow = TextOverflow.Ellipsis,
                                     maxLines = 1
                                 )
@@ -930,7 +929,7 @@ class Player: ComponentActivity(), Player.Listener {
                             ) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
-                                    tint = colorResource(R.color.white),
+                                    tint = Color.White,
                                     contentDescription = ""
                                 )
                             }
@@ -957,7 +956,7 @@ class Player: ComponentActivity(), Player.Listener {
                         ) {
                             Text(
                                 text = "Sleep Timer",
-                                color = colorResource(R.color.white),
+                                color = Color.White,
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
                             )
@@ -970,7 +969,7 @@ class Player: ComponentActivity(), Player.Listener {
                         ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
-                                tint = colorResource(R.color.white),
+                                tint = Color.White,
                                 contentDescription = ""
                             )
                         }
@@ -988,7 +987,7 @@ class Player: ComponentActivity(), Player.Listener {
                         ) {
                             Text(
                                 text = "Ambient Background",
-                                color = colorResource(R.color.white),
+                                color = Color.White,
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
                             )
@@ -1023,7 +1022,7 @@ class Player: ComponentActivity(), Player.Listener {
                             ) {
                                 Text(
                                     text = "Loop Video",
-                                    color = colorResource(R.color.white),
+                                    color = Color.White,
                                     overflow = TextOverflow.Ellipsis,
                                     maxLines = 1
                                 )
@@ -1055,7 +1054,7 @@ class Player: ComponentActivity(), Player.Listener {
                             Text(
                                 modifier = Modifier.align(Alignment.CenterVertically),
                                 text = "Speed: ${playbackSpeedState}x",
-                                color = colorResource(R.color.white),
+                                color = Color.White,
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
                             )
@@ -1082,7 +1081,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Remove,
-                                        tint = colorResource(R.color.white),
+                                        tint = Color.White,
                                         contentDescription = ""
                                     )
                                 }
@@ -1106,7 +1105,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Add,
-                                        tint = colorResource(R.color.white),
+                                        tint = Color.White,
                                         contentDescription = ""
                                     )
                                 }
@@ -1179,7 +1178,7 @@ class Player: ComponentActivity(), Player.Listener {
                                                 0 -> "Off"
                                                 else -> optString(subtitles.getJSONObject(index), "name")!!
                                             },
-                                            color = colorResource(R.color.white),
+                                            color = Color.White,
                                             overflow = TextOverflow.Ellipsis,
                                             maxLines = 1
                                         )
@@ -1229,7 +1228,7 @@ class Player: ComponentActivity(), Player.Listener {
                             .width(4.dp)
                     ) {
                         Thumb(
-                            modifier = Modifier.background(colorResource(R.color.lightGrey))
+                            modifier = Modifier.background(Color.LightGray)
                         )
                     }
                 }
@@ -1299,7 +1298,7 @@ class Player: ComponentActivity(), Player.Listener {
                                             4 -> "1 Hour"
                                             else -> "Off"
                                         },
-                                        color = colorResource(R.color.white),
+                                        color = Color.White,
                                         overflow = TextOverflow.Ellipsis,
                                         maxLines = 1
                                     )
@@ -1345,7 +1344,7 @@ class Player: ComponentActivity(), Player.Listener {
                             .width(4.dp)
                     ) {
                         Thumb(
-                            modifier = Modifier.background(colorResource(R.color.lightGrey))
+                            modifier = Modifier.background(Color.LightGray)
                         )
                     }
                 }
