@@ -1163,7 +1163,7 @@ class Player: ComponentActivity(), Player.Listener {
                     ) {
                         val subtitles: JSONArray? = playerSubtitles
                         if (subtitles != null) {
-                            item {
+                            items(subtitles.length() + 1) { index ->
                                 Row(
                                     modifier = Modifier
                                         .height(30.dp)
@@ -1175,7 +1175,10 @@ class Player: ComponentActivity(), Player.Listener {
                                             .weight(1f)
                                     ) {
                                         Text(
-                                            text = "Off",
+                                            text = when (index) {
+                                                0 -> "Off"
+                                                else -> optString(subtitles.getJSONObject(index), "name")!!
+                                            },
                                             color = colorResource(R.color.white),
                                             overflow = TextOverflow.Ellipsis,
                                             maxLines = 1
@@ -1188,62 +1191,28 @@ class Player: ComponentActivity(), Player.Listener {
                                             .width(30.dp)
                                     ) {
                                         Checkbox(
-                                            checked = subtitlesCheckedState[0],
+                                            checked = subtitlesCheckedState[index],
                                             onCheckedChange = { checked ->
                                                 Collections.replaceAll(subtitlesChecked.value, true, false)
                                                 subtitlesChecked.update { list ->
                                                     list.toMutableList().apply {
-                                                        set(0, true)
+                                                        set(index, true)
                                                     }.toList()
                                                 }
                                                 if (checked) {
-                                                    playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
-                                                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
-                                                        .build()
-                                                }
-                                            }
-                                        )
-                                    }
-                                }
-                            }
-                            items(subtitles.length()) { index ->
-                                Row(
-                                    modifier = Modifier
-                                        .height(30.dp)
-                                        .padding(start = 10.dp)
-                                ) {
-                                    Column(
-                                        modifier = Modifier
-                                            .align(Alignment.CenterVertically)
-                                            .weight(1f)
-                                    ) {
-                                        Text(
-                                            text = optString(subtitles.getJSONObject(index), "name")!!,
-                                            color = colorResource(R.color.white),
-                                            overflow = TextOverflow.Ellipsis,
-                                            maxLines = 1
-                                        )
-                                    }
-                                    Column(
-                                        modifier = Modifier
-                                            .align(Alignment.CenterVertically)
-                                            .scale(0.6f)
-                                            .width(30.dp)
-                                    ) {
-                                        Checkbox(
-                                            checked = subtitlesCheckedState[index + 1],
-                                            onCheckedChange = { checked ->
-                                                Collections.replaceAll(subtitlesChecked.value, true, false)
-                                                subtitlesChecked.update { list ->
-                                                    list.toMutableList().apply {
-                                                        set(index + 1, true)
-                                                    }.toList()
-                                                }
-                                                if (checked) {
-                                                    playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
-                                                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-                                                        .setPreferredTextLanguage(optString(subtitles.getJSONObject(index), "id"))
-                                                        .build()
+                                                    when (index) {
+                                                        0 -> {
+                                                            playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
+                                                                .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                                                                .build()
+                                                        }
+                                                        else -> {
+                                                            playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
+                                                                .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
+                                                                .setPreferredTextLanguage(optString(subtitles.getJSONObject(index), "id"))
+                                                                .build()
+                                                        }
+                                                    }
                                                 }
                                             }
                                         )
