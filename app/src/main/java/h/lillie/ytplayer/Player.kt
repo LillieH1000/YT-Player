@@ -433,6 +433,7 @@ class Player: ComponentActivity(), Player.Listener {
                             } else {
                                 showOverlay.value = false
                             }
+                            showInfo.value = false
                             showSettings.value = false
                             showSubtitles.value = false
                             showSleepTimer.value = false
@@ -466,6 +467,7 @@ class Player: ComponentActivity(), Player.Listener {
                             } else {
                                 showOverlay.value = false
                             }
+                            showInfo.value = false
                             showSettings.value = false
                             showSubtitles.value = false
                             showSleepTimer.value = false
@@ -500,6 +502,7 @@ class Player: ComponentActivity(), Player.Listener {
                             } else {
                                 showOverlay.value = false
                             }
+                            showInfo.value = false
                             showSettings.value = false
                             showSubtitles.value = false
                             showSleepTimer.value = false
