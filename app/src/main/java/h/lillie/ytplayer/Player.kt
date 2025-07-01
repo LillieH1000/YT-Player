@@ -332,6 +332,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var playerPosition = MutableStateFlow(0f)
     private var playbackSpeed = MutableStateFlow("1")
     private var playerTime = MutableStateFlow<String?>(null)
+    private var showInfo = MutableStateFlow(false)
     private var showOverlay = MutableStateFlow(true)
     private var showSettings = MutableStateFlow(false)
     private var showSubtitles = MutableStateFlow(false)
@@ -354,6 +355,7 @@ class Player: ComponentActivity(), Player.Listener {
         val playerPositionState by playerPosition.collectAsState()
         val playbackSpeedState by playbackSpeed.collectAsState()
         val playerTimeState by playerTime.collectAsState()
+        val showInfoState by showInfo.collectAsState()
         val showOverlayState by showOverlay.collectAsState()
         val showSettingsState by showSettings.collectAsState()
         val showSubtitlesState by showSubtitles.collectAsState()
@@ -635,22 +637,34 @@ class Player: ComponentActivity(), Player.Listener {
                         .height(50.dp)
                         .fillMaxWidth()
                 ) {
-                    // Title View
+                    // Title Button
                     Column(
                         modifier = Modifier
                             .weight(1f)
                             .align(Alignment.CenterVertically)
                     ) {
-                        Text(
-                            text = if (playerControllerState?.mediaMetadata?.title != null) {
-                                playerControllerState?.mediaMetadata?.title.toString()
-                            } else {
-                                "No Video Loaded"
-                            },
-                            color = colorResource(R.color.white),
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1
-                        )
+                        Button(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = IndicationFactory,
+                            onClick = {
+                                if (!showInfoState) {
+                                    showInfo.value = true
+                                } else {
+                                    showInfo.value = false
+                                }
+                            }
+                        ) {
+                            Text(
+                                text = if (playerControllerState?.mediaMetadata?.title != null) {
+                                    playerControllerState?.mediaMetadata?.title.toString()
+                                } else {
+                                    "No Video Loaded"
+                                },
+                                color = colorResource(R.color.white),
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1
+                            )
+                        }
                     }
                     // Menu Buttons
                     Column(
@@ -745,6 +759,91 @@ class Player: ComponentActivity(), Player.Listener {
                         }
                     }
                 }
+            }
+        }
+
+        // Info View
+
+        if (showInfoState && playerControllerState?.mediaItemCount == 1) {
+            Row(
+                modifier = if (deviceRotationState == 1) {
+                    Modifier
+                        .navigationBarsPadding()
+                        .statusBarsPadding()
+                        .systemBarsPadding()
+                        .windowInsetsPadding(WindowInsets.displayCutout)
+                        .padding(start = 10.dp, end = 10.dp, top = 50.dp)
+                        .wrapContentHeight()
+                        .focusTarget()
+                        .focusProperties { canFocus = false }
+                } else {
+                    Modifier
+                        .navigationBarsPadding()
+                        .statusBarsPadding()
+                        .systemBarsPadding()
+                        .padding(start = 10.dp, end = 10.dp, top = 50.dp)
+                        .wrapContentHeight()
+                        .focusTarget()
+                        .focusProperties { canFocus = false }
+                }
+            ) {
+                Column(
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .width(150.dp)
+                        .background(playerColourState)
+                        .clickable(
+                            enabled = true,
+                            interactionSource = null,
+                            indication = null,
+                            onClick = {})
+                ) {
+                    // Views
+                    Row(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .padding(start = 10.dp)
+                    ) {
+                        Text(
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                            text = "Views: 100000000",
+                            color = colorResource(R.color.white),
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
+                    }
+                    // Likes
+                    Row(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .padding(start = 10.dp)
+                    ) {
+                        Text(
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                            text = "Likes: 100000000",
+                            color = colorResource(R.color.white),
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
+                    }
+                    // Dislikes
+                    Row(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .padding(start = 10.dp)
+                    ) {
+                        Text(
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                            text = "Dislikes: 100000000",
+                            color = colorResource(R.color.white),
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
+                    }
+                }
+                Box(
+                    modifier = Modifier.weight(1f)
+                ) {}
             }
         }
 
