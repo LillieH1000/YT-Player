@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import org.json.JSONArray
+import org.json.JSONObject
 
 class Requests {
     suspend fun ytdlp(videoID: String?, searchQuery: String?): Info? = withContext(Dispatchers.IO) {
@@ -24,6 +25,16 @@ class Requests {
         }
 
         return@withContext Json.decodeFromString<Info>(rq)
+    }
+
+    suspend fun returnYouTubeDislike(videoId: String): Int? = withContext(Dispatchers.IO) {
+        val client = HttpClient(CIO)
+        val response: HttpResponse = client.get("https://returnyoutubedislikeapi.com/votes?videoId=$videoId")
+        if (!response.status.isSuccess()) {
+            return@withContext null
+        }
+
+        return@withContext JSONObject(response.bodyAsText()).getInt("dislikes")
     }
 
     suspend fun sponsorBlock(videoId: String): JSONArray? = withContext(Dispatchers.IO) {
