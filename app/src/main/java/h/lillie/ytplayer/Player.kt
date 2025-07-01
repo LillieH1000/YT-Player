@@ -624,6 +624,7 @@ class Player: ComponentActivity(), Player.Listener {
                         playerController.value?.seekTo(newValue.toLong())
                     }
                 )
+                // Player Time
                 if (playerTimeState != null) {
                     Text(
                         modifier = Modifier
