@@ -115,6 +115,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.DecimalFormat
+import java.text.NumberFormat
 import java.util.Collections
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
@@ -807,7 +808,7 @@ class Player: ComponentActivity(), Player.Listener {
                     ) {
                         Text(
                             modifier = Modifier.align(Alignment.CenterVertically),
-                            text = "Views: 100000000",
+                            text = "Views: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getInt("views"))}",
                             color = colorResource(R.color.white),
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
@@ -821,25 +822,27 @@ class Player: ComponentActivity(), Player.Listener {
                     ) {
                         Text(
                             modifier = Modifier.align(Alignment.CenterVertically),
-                            text = "Likes: 100000000",
+                            text = "Likes: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getInt("likes"))}",
                             color = colorResource(R.color.white),
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
                         )
                     }
                     // Dislikes
-                    Row(
-                        modifier = Modifier
-                            .height(40.dp)
-                            .padding(start = 10.dp)
-                    ) {
-                        Text(
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                            text = "Dislikes: 100000000",
-                            color = colorResource(R.color.white),
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1
-                        )
+                    if (playerControllerState?.mediaMetadata?.extras?.getInt("dislikes") != null) {
+                        Row(
+                            modifier = Modifier
+                                .height(40.dp)
+                                .padding(start = 10.dp)
+                        ) {
+                            Text(
+                                modifier = Modifier.align(Alignment.CenterVertically),
+                                text = "Dislikes: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getInt("dislikes"))}",
+                                color = colorResource(R.color.white),
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1
+                            )
+                        }
                     }
                 }
                 Box(
