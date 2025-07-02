@@ -770,7 +770,7 @@ class Player: ComponentActivity(), Player.Listener {
 
         // Info View
 
-        if (showInfoState && playerControllerState?.mediaItemCount == 1) {
+        if (showInfoState && playerControllerState?.mediaItemCount == 1 && playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
             Row(
                 modifier = if (deviceRotationState == 1) {
                     Modifier
