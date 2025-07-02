@@ -12,6 +12,7 @@ def getInfo(videoID, searchQuery):
         "format": "bestvideo[protocol=m3u8_native]/best[protocol=m3u8_native]",
         "allow_multiple_audio_streams": True,
         "allow_multiple_video_streams": True,
+        "check_formats": "selected",
         "noplaylist": True,
         "cachedir": False
     }
