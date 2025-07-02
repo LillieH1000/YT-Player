@@ -18,14 +18,6 @@ Features:
 
 <br>
 
-## Donate
-
-BTC - Bitcoin: 3PmQzwG2dbUZtjvH8W8K81NWvcMZTGGLWQ
-
-ETH - Ethereum: 0x92eb80c1fb54D881793641590a860fEc82011656
-
-<br>
-
 ## Android
 
 Requires: Android version 8 and above
@@ -46,4 +38,4 @@ Usage:
 <br>
 
 ## Open Source Libraries
-- [AndroidX](https://github.com/androidx/androidx), [Chaquopy](https://github.com/chaquo/chaquopy), [Compose Unstyled](https://github.com/composablehorizons/compose-unstyled/), [Kotlin](https://github.com/JetBrains/kotlin), [Kotlinx Coroutines](https://github.com/Kotlin/kotlinx.coroutines), [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization), [Ktor](https://github.com/ktorio/ktor), [Media3](https://github.com/androidx/media), [SponsorBlock](https://github.com/ajayyy/SponsorBlock), [yt-dlp](https://github.com/yt-dlp/yt-dlp)
+- [AndroidX](https://github.com/androidx/androidx), [Chaquopy](https://github.com/chaquo/chaquopy), [Compose Unstyled](https://github.com/composablehorizons/compose-unstyled/), [Kotlin](https://github.com/JetBrains/kotlin), [Kotlinx Coroutines](https://github.com/Kotlin/kotlinx.coroutines), [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization), [Ktor](https://github.com/ktorio/ktor), [Media3](https://github.com/androidx/media), [Return YouTube Dislike](https://github.com/Anarios/return-youtube-dislike), [SponsorBlock](https://github.com/ajayyy/SponsorBlock), [yt-dlp](https://github.com/yt-dlp/yt-dlp)
