@@ -1437,10 +1437,9 @@ class Player: ComponentActivity(), Player.Listener {
         override fun onReceive(context: Context?, intent: Intent?) = async {
             if (intent?.action == "h.lillie.ytplayer.activity.artwork") {
                 playerColour.value = Color(ColorUtils.blendARGB(intent.extras!!.getInt("rgb"), Color.White.toArgb(), 0.3F))
+                return@async
             }
             if (intent?.action == "h.lillie.ytplayer.activity.subtitles") {
-                val subtitles = intent.extras!!.getString("subtitles")
-
                 if (subtitlesChecked.value.isNotEmpty()) {
                     subtitlesChecked.update { list ->
                         list.toMutableList().apply {
@@ -1449,24 +1448,27 @@ class Player: ComponentActivity(), Player.Listener {
                     }
                 }
 
-                if (subtitles != null) {
-                    val subtitlesArray = JSONArray(subtitles)
-                    playerSubtitles = subtitlesArray
+                val subtitles = intent.extras!!.getString("subtitles")
+                if (subtitles == null) {
+                    playerSubtitles = null
+                    return@async
+                }
+
+                val subtitlesArray = JSONArray(subtitles)
+                playerSubtitles = subtitlesArray
+                subtitlesChecked.update { list ->
+                    list.toMutableList().apply {
+                        add(true)
+                    }.toList()
+                }
+                for (i in 0 until subtitlesArray.length()) {
                     subtitlesChecked.update { list ->
                         list.toMutableList().apply {
-                            add(true)
+                            add(false)
                         }.toList()
                     }
-                    for (i in 0 until subtitlesArray.length()) {
-                        subtitlesChecked.update { list ->
-                            list.toMutableList().apply {
-                                add(false)
-                            }.toList()
-                        }
-                    }
-                } else {
-                    playerSubtitles = null
                 }
+                return@async
             }
         }
     }
