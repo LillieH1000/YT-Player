@@ -10,6 +10,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
@@ -52,6 +53,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Fullscreen
+import androidx.compose.material.icons.filled.FullscreenExit
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Remove
@@ -589,40 +592,75 @@ class Player: ComponentActivity(), Player.Listener {
                         )
                     }
                 }
-                // Progress Slider
-                val sliderSource = remember { MutableInteractionSource() }
-                Slider(
+                // Bottom Row
+                Row(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
-                        .padding(start = 10.dp, end = 10.dp, bottom = 50.dp),
-                    interactionSource = sliderSource,
-                    steps = 0,
-                    thumb = {
-                        SliderDefaults.Thumb(
-                            interactionSource = sliderSource,
-                            modifier = Modifier.size(0.dp),
-                            thumbSize = DpSize.Zero
+                        .padding(start = 10.dp, end = 10.dp, bottom = 50.dp)
+                        .height(50.dp)
+                        .fillMaxWidth()
+                ) {
+                    // Progress Slider
+                    val sliderSource = remember { MutableInteractionSource() }
+                    Slider(
+                        modifier = Modifier
+                            .weight(1f)
+                            .align(Alignment.CenterVertically),
+                        interactionSource = sliderSource,
+                        steps = 0,
+                        thumb = {
+                            SliderDefaults.Thumb(
+                                interactionSource = sliderSource,
+                                modifier = Modifier.size(0.dp),
+                                thumbSize = DpSize.Zero
+                            )
+                        },
+                        track = { sliderState ->
+                            SliderDefaults.Track(
+                                colors = SliderDefaults.colors(
+                                    activeTickColor = Color.Transparent,
+                                    inactiveTickColor = Color.Transparent,
+                                    activeTrackColor = Color.LightGray,
+                                    inactiveTrackColor = Color.DarkGray
+                                ),
+                                modifier = Modifier.height(5.dp),
+                                sliderState = sliderState,
+                                thumbTrackGapSize = 0.dp
+                            )
+                        },
+                        value = playerPositionState,
+                        valueRange = 0f..playerDurationState,
+                        onValueChange = { newValue ->
+                            playerController.value?.seekTo(newValue.toLong())
+                        }
+                    )
+                    // Fullscreen Button
+                    Button(
+                        modifier = Modifier
+                            .width(50.dp)
+                            .align(Alignment.CenterVertically),
+                        shape = CircleShape,
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = IndicationFactory,
+                        onClick = {
+                            if (deviceRotationState == 1) {
+                                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                            } else {
+                                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = if (deviceRotationState == 1) {
+                                Icons.Default.FullscreenExit
+                            } else {
+                                Icons.Default.Fullscreen
+                            },
+                            tint = Color.White,
+                            contentDescription = ""
                         )
-                    },
-                    track = { sliderState ->
-                        SliderDefaults.Track(
-                            colors = SliderDefaults.colors(
-                                activeTickColor = Color.Transparent,
-                                inactiveTickColor = Color.Transparent,
-                                activeTrackColor = Color.LightGray,
-                                inactiveTrackColor = Color.DarkGray
-                            ),
-                            modifier = Modifier.height(5.dp),
-                            sliderState = sliderState,
-                            thumbTrackGapSize = 0.dp
-                        )
-                    },
-                    value = playerPositionState,
-                    valueRange = 0f..playerDurationState,
-                    onValueChange = { newValue ->
-                        playerController.value?.seekTo(newValue.toLong())
                     }
-                )
+                }
                 // Player Time
                 if (playerTimeState != null) {
                     Text(
