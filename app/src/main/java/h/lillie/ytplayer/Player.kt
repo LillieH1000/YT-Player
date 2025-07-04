@@ -125,7 +125,6 @@ import kotlin.coroutines.EmptyCoroutineContext
 
 class Player: ComponentActivity(), Player.Listener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
-    private lateinit var playerHandler: Handler
     private var playerController = MutableStateFlow<MediaController?>(null)
     private var playerHandler: Handler = Handler(Looper.getMainLooper())
     private var playerSubtitles: JSONArray? = null
