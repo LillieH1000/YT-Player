@@ -17,6 +17,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.Settings
 import android.speech.RecognizerIntent
 import android.view.KeyEvent
 import android.view.WindowManager
@@ -324,6 +325,7 @@ class Player: ComponentActivity(), Player.Listener {
     }
 
     private var ambientBackgroundChecked = MutableStateFlow(true)
+    private var autoRotateEnabled = MutableStateFlow(true)
     private var deviceRotation = MutableStateFlow(0)
     private var isPlaying = MutableStateFlow(0)
     private var loopChecked = MutableStateFlow(false)
@@ -346,6 +348,7 @@ class Player: ComponentActivity(), Player.Listener {
         // States
 
         val ambientBackgroundCheckedState by ambientBackgroundChecked.collectAsState()
+        val autoRotateEnabledState by autoRotateEnabled.collectAsState()
         val deviceRotationState by deviceRotation.collectAsState()
         val isPlayingState by isPlaying.collectAsState()
         val loopCheckedState by loopChecked.collectAsState()
@@ -631,30 +634,32 @@ class Player: ComponentActivity(), Player.Listener {
                         }
                     )
                     // Fullscreen Button
-                    Button(
-                        modifier = Modifier
-                            .width(50.dp)
-                            .align(Alignment.CenterVertically),
-                        shape = CircleShape,
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = IndicationFactory,
-                        onClick = {
-                            if (deviceRotationState == 1) {
-                                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-                            } else {
-                                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                    if (!autoRotateEnabledState) {
+                        Button(
+                            modifier = Modifier
+                                .width(50.dp)
+                                .align(Alignment.CenterVertically),
+                            shape = CircleShape,
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = IndicationFactory,
+                            onClick = {
+                                if (deviceRotationState == 1) {
+                                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                                } else {
+                                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                                }
                             }
+                        ) {
+                            Icon(
+                                imageVector = if (deviceRotationState == 1) {
+                                    Icons.Default.FullscreenExit
+                                } else {
+                                    Icons.Default.Fullscreen
+                                },
+                                tint = Color.White,
+                                contentDescription = ""
+                            )
                         }
-                    ) {
-                        Icon(
-                            imageVector = if (deviceRotationState == 1) {
-                                Icons.Default.FullscreenExit
-                            } else {
-                                Icons.Default.Fullscreen
-                            },
-                            tint = Color.White,
-                            contentDescription = ""
-                        )
                     }
                 }
                 // Player Time
@@ -1513,6 +1518,14 @@ class Player: ComponentActivity(), Player.Listener {
 
     private val playerTask = object: Runnable {
         override fun run() {
+            // Rotation
+            if (Settings.System.getInt(this@Player.contentResolver, Settings.System.ACCELEROMETER_ROTATION, 0) == 0) {
+                autoRotateEnabled.value = false
+            } else {
+                autoRotateEnabled.value = true
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            }
+            // Player
             val player: MediaController? = playerController.value
             if (player != null && player.mediaItemCount == 1) {
                 when (player.playbackState) {
