@@ -127,6 +127,7 @@ class Player: ComponentActivity(), Player.Listener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
     private lateinit var playerHandler: Handler
     private var playerController = MutableStateFlow<MediaController?>(null)
+    private var playerHandler: Handler = Handler(Looper.getMainLooper())
     private var playerSubtitles: JSONArray? = null
     private var chromeOSDevice: Boolean = false
     private var isFirstLaunch: Boolean = false
@@ -223,16 +224,12 @@ class Player: ComponentActivity(), Player.Listener {
 
     override fun onResume() {
         super.onResume()
-        if (this::playerHandler.isInitialized) {
-            playerHandler.post(playerTask)
-        }
+        playerHandler.post(playerTask)
     }
 
     override fun onStop() {
         super.onStop()
-        if (this::playerHandler.isInitialized) {
-            playerHandler.removeCallbacksAndMessages(null)
-        }
+        playerHandler.removeCallbacksAndMessages(null)
     }
 
     override fun onUserLeaveHint() {
@@ -1416,9 +1413,6 @@ class Player: ComponentActivity(), Player.Listener {
                         .build()
                 )
             }
-
-            playerHandler = Handler(Looper.getMainLooper())
-            playerHandler.post(playerTask)
 
             val broadcastIntent = Intent("h.lillie.ytplayer.service.info")
             broadcastIntent.setPackage(this.packageName)
