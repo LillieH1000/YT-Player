@@ -13,6 +13,10 @@ import android.content.IntentFilter
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -124,10 +128,12 @@ import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
-class Player: ComponentActivity(), Player.Listener {
+class Player: ComponentActivity(), Player.Listener, SensorEventListener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
     private var playerController = MutableStateFlow<MediaController?>(null)
     private var playerHandler: Handler = Handler(Looper.getMainLooper())
+    private var playerRotationSensor: Sensor? = null
+    private var playerRotationSensorValue: Int = 0
     private var playerSubtitles: JSONArray? = null
     private var chromeOSDevice: Boolean = false
     private var isFirstLaunch: Boolean = false
@@ -146,6 +152,10 @@ class Player: ComponentActivity(), Player.Listener {
         setContent {
             CreatePlayerUI()
         }
+
+        val sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
+        playerRotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        sensorManager.registerListener(this, playerRotationSensor, SensorManager.SENSOR_DELAY_NORMAL)
 
         onBackPressedDispatcher.addCallback(this) {
             when (resources.configuration.orientation) {
@@ -310,6 +320,23 @@ class Player: ComponentActivity(), Player.Listener {
                         deviceRotation.value = 1
                         WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                     }
+                }
+            }
+        }
+    }
+
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+    }
+
+    override fun onSensorChanged(event: SensorEvent?) {
+        if (event != null && event.sensor == playerRotationSensor) {
+            if (event.values[1] > event.values[0] && event.values[1] > 1) {
+                playerRotationSensorValue = 0
+            } else {
+                if (event.values[0] > 1) {
+                    playerRotationSensorValue = 1
+                } else if (event.values[0] < -1) {
+                    playerRotationSensorValue = 2
                 }
             }
         }
