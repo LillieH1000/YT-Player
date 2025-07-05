@@ -661,7 +661,7 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
                         }
                     )
                     // Fullscreen Button
-                    if (!autoRotateEnabledState) {
+                    if (!autoRotateEnabledState && !chromeOSDevice) {
                         Button(
                             modifier = Modifier
                                 .width(50.dp)
