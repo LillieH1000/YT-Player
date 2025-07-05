@@ -670,10 +670,10 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
                             interactionSource = remember { MutableInteractionSource() },
                             indication = IndicationFactory,
                             onClick = {
-                                if (deviceRotationState == 1) {
-                                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-                                } else {
-                                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                                when (playerRotationSensorValue) {
+                                    1 -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                                    2 -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
+                                    else -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
                                 }
                             }
                         ) {
