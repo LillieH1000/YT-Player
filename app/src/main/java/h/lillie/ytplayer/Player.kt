@@ -333,10 +333,8 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
             if (event.values[1] > event.values[0] && event.values[1] > 1) {
                 playerRotationSensorValue = 0
             } else {
-                if (event.values[0] > 1) {
+                if (event.values[0] > 1 || event.values[0] < -1) {
                     playerRotationSensorValue = 1
-                } else if (event.values[0] < -1) {
-                    playerRotationSensorValue = 2
                 }
             }
         }
@@ -672,15 +670,8 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
                             onClick = {
                                 when (playerRotationSensorValue) {
                                     1 -> {
-                                        if (requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-                                            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                                        } else {
-                                            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-                                        }
-                                    }
-                                    2 -> {
-                                        if (requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
-                                            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
+                                        if (requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE) {
+                                            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
                                         } else {
                                             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
                                         }
@@ -689,7 +680,7 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
                                         if (requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
                                             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
                                         } else {
-                                            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                                            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
                                         }
                                     }
                                 }
