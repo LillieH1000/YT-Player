@@ -132,8 +132,7 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
     private var playerController = MutableStateFlow<MediaController?>(null)
     private var playerHandler: Handler = Handler(Looper.getMainLooper())
-    private var playerRotationSensor: Sensor? = null
-    private var playerRotationSensorValue: Int = 0
+    private var playerRotationSensor = mutableListOf(null as Sensor?, 0)
     private var playerSubtitles: JSONArray? = null
     private var chromeOSDevice: Boolean = false
     private var isFirstLaunch: Boolean = false
@@ -154,8 +153,8 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
         }
 
         val sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
-        playerRotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-        sensorManager.registerListener(this, playerRotationSensor, SensorManager.SENSOR_DELAY_NORMAL)
+        playerRotationSensor[0] = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        sensorManager.registerListener(this, playerRotationSensor[0] as Sensor, SensorManager.SENSOR_DELAY_NORMAL)
 
         onBackPressedDispatcher.addCallback(this) {
             when (resources.configuration.orientation) {
@@ -329,12 +328,12 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        if (event != null && event.sensor == playerRotationSensor) {
+        if (event != null && event.sensor == playerRotationSensor[0]) {
             if (event.values[1] > event.values[0] && event.values[1] > 1) {
-                playerRotationSensorValue = 0
+                playerRotationSensor[1] = 0
             } else {
                 if (event.values[0] > 1 || event.values[0] < -1) {
-                    playerRotationSensorValue = 1
+                    playerRotationSensor[1] = 1
                 }
             }
         }
@@ -668,7 +667,7 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
                             interactionSource = remember { MutableInteractionSource() },
                             indication = IndicationFactory,
                             onClick = {
-                                when (playerRotationSensorValue) {
+                                when (playerRotationSensor[1]) {
                                     1 -> {
                                         if (requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE) {
                                             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
