@@ -671,9 +671,27 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
                             indication = IndicationFactory,
                             onClick = {
                                 when (playerRotationSensorValue) {
-                                    1 -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                                    2 -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
-                                    else -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                                    1 -> {
+                                        if (requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+                                            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                                        } else {
+                                            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                                        }
+                                    }
+                                    2 -> {
+                                        if (requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
+                                            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
+                                        } else {
+                                            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                                        }
+                                    }
+                                    else -> {
+                                        if (requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
+                                            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                                        } else {
+                                            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                                        }
+                                    }
                                 }
                             }
                         ) {
