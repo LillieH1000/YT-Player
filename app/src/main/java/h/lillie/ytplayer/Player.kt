@@ -881,7 +881,7 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
                     // Views
                     Row(
                         modifier = Modifier
-                            .height(40.dp)
+                            .height(30.dp)
                             .padding(start = 10.dp)
                     ) {
                         Text(
@@ -895,7 +895,7 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
                     // Likes
                     Row(
                         modifier = Modifier
-                            .height(40.dp)
+                            .height(30.dp)
                             .padding(start = 10.dp)
                     ) {
                         Text(
@@ -910,7 +910,7 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
                     if (playerControllerState?.mediaMetadata?.extras?.getInt("dislikes") != null) {
                         Row(
                             modifier = Modifier
-                                .height(40.dp)
+                                .height(30.dp)
                                 .padding(start = 10.dp)
                         ) {
                             Text(
