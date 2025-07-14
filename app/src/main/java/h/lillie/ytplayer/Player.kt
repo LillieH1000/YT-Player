@@ -925,7 +925,7 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
                 }
                 Box(
                     modifier = Modifier.weight(1f)
-                ) {}
+                )
             }
         }
 
@@ -956,7 +956,7 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
             ) {
                 Box(
                     modifier = Modifier.weight(1f)
-                ) {}
+                )
                 Column(
                     modifier = Modifier
                         .wrapContentHeight()
@@ -1217,7 +1217,7 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
             ) {
                 Box(
                     modifier = Modifier.weight(1f)
-                ) {}
+                )
                 val lazyState = rememberLazyListState()
                 val scrollState = rememberScrollAreaState(lazyState)
                 ScrollArea(state = scrollState) {
@@ -1336,7 +1336,7 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
             ) {
                 Box(
                     modifier = Modifier.weight(1f)
-                ) {}
+                )
                 val lazyState = rememberLazyListState()
                 val scrollState = rememberScrollAreaState(lazyState)
                 ScrollArea(state = scrollState) {
