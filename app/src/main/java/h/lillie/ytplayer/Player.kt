@@ -887,7 +887,7 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
                         Text(
                             modifier = Modifier.align(Alignment.CenterVertically),
                             text = "Views: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getInt("views"))}",
-                            color = Color.White,
+                            color = optColour(playerColourState),
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
                         )
@@ -901,7 +901,7 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
                         Text(
                             modifier = Modifier.align(Alignment.CenterVertically),
                             text = "Likes: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getInt("likes"))}",
-                            color = Color.White,
+                            color = optColour(playerColourState),
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
                         )
@@ -916,7 +916,7 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
                             Text(
                                 modifier = Modifier.align(Alignment.CenterVertically),
                                 text = "Dislikes: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getInt("dislikes"))}",
-                                color = Color.White,
+                                color = optColour(playerColourState),
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
                             )
@@ -990,7 +990,7 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
                             ) {
                                 Text(
                                     text = "Subtitles",
-                                    color = Color.White,
+                                    color = optColour(playerColourState),
                                     overflow = TextOverflow.Ellipsis,
                                     maxLines = 1
                                 )
@@ -1030,7 +1030,7 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
                         ) {
                             Text(
                                 text = "Sleep Timer",
-                                color = Color.White,
+                                color = optColour(playerColourState),
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
                             )
@@ -1061,7 +1061,7 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
                         ) {
                             Text(
                                 text = "Ambient Background",
-                                color = Color.White,
+                                color = optColour(playerColourState),
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
                             )
@@ -1096,7 +1096,7 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
                             ) {
                                 Text(
                                     text = "Loop Video",
-                                    color = Color.White,
+                                    color = optColour(playerColourState),
                                     overflow = TextOverflow.Ellipsis,
                                     maxLines = 1
                                 )
@@ -1128,7 +1128,7 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
                             Text(
                                 modifier = Modifier.align(Alignment.CenterVertically),
                                 text = "Speed: ${playbackSpeedState}x",
-                                color = Color.White,
+                                color = optColour(playerColourState),
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
                             )
@@ -1252,7 +1252,7 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
                                                 0 -> "Off"
                                                 else -> optString(subtitles.getJSONObject(index), "name")!!
                                             },
-                                            color = Color.White,
+                                            color = optColour(playerColourState),
                                             overflow = TextOverflow.Ellipsis,
                                             maxLines = 1
                                         )
@@ -1372,7 +1372,7 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
                                             4 -> "1 Hour"
                                             else -> "Off"
                                         },
-                                        color = Color.White,
+                                        color = optColour(playerColourState),
                                         overflow = TextOverflow.Ellipsis,
                                         maxLines = 1
                                     )
@@ -1459,6 +1459,14 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
             broadcastIntent.putExtra("searchQuery", searchQuery)
             sendBroadcast(broadcastIntent)
         }, MoreExecutors.directExecutor())
+    }
+
+    private fun optColour(colour: Color): Color {
+        val luminance = ColorUtils.calculateLuminance(colour.toArgb())
+        if (luminance > 0.5) {
+            return Color.Black
+        }
+        return Color.White
     }
 
     private fun optString(info: JSONObject, key: String): String? {
