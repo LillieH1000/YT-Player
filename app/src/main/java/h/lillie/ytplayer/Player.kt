@@ -69,7 +69,6 @@ import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Switch
@@ -1108,10 +1107,12 @@ class Player: ComponentActivity(), Player.Listener {
                                     .weight(1f)
                                     .align(Alignment.CenterVertically)
                             ) {
-                                IconButton(
+                                Button(
                                     modifier = Modifier
                                         .scale(0.6f)
                                         .align(Alignment.CenterHorizontally),
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = IndicationFactory,
                                     onClick = {
                                         val decimalFormat = DecimalFormat("#.#")
                                         if (decimalFormat.format(playerController.value!!.playbackParameters.speed).toFloat() > 0.1f) {
@@ -1132,10 +1133,12 @@ class Player: ComponentActivity(), Player.Listener {
                                     .weight(1f)
                                     .align(Alignment.CenterVertically)
                             ) {
-                                IconButton(
+                                Button(
                                     modifier = Modifier
                                         .scale(0.6f)
                                         .align(Alignment.CenterHorizontally),
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = IndicationFactory,
                                     onClick = {
                                         val decimalFormat = DecimalFormat("#.#")
                                         if (decimalFormat.format(playerController.value!!.playbackParameters.speed).toFloat() < 2.0f) {
