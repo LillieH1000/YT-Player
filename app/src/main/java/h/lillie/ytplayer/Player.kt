@@ -64,6 +64,8 @@ import androidx.compose.material.icons.filled.YoutubeSearchedFor
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxColors
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -968,7 +970,7 @@ class Player: ComponentActivity(), Player.Listener {
                             ) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
-                                    tint = Color.White,
+                                    tint = optColour(playerColourState),
                                     contentDescription = ""
                                 )
                             }
@@ -1008,7 +1010,7 @@ class Player: ComponentActivity(), Player.Listener {
                         ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
-                                tint = Color.White,
+                                tint = optColour(playerColourState),
                                 contentDescription = ""
                             )
                         }
@@ -1120,7 +1122,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Remove,
-                                        tint = Color.White,
+                                        tint = optColour(playerColourState),
                                         contentDescription = ""
                                     )
                                 }
@@ -1144,7 +1146,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Add,
-                                        tint = Color.White,
+                                        tint = optColour(playerColourState),
                                         contentDescription = ""
                                     )
                                 }
@@ -1229,6 +1231,20 @@ class Player: ComponentActivity(), Player.Listener {
                                             .width(30.dp)
                                     ) {
                                         Checkbox(
+                                            colors = CheckboxColors(
+                                                checkedCheckmarkColor = CheckboxDefaults.colors().checkedCheckmarkColor,
+                                                uncheckedCheckmarkColor = CheckboxDefaults.colors().uncheckedCheckmarkColor,
+                                                checkedBoxColor = CheckboxDefaults.colors().checkedBoxColor,
+                                                uncheckedBoxColor = CheckboxDefaults.colors().uncheckedBoxColor,
+                                                disabledCheckedBoxColor = CheckboxDefaults.colors().disabledCheckedBoxColor,
+                                                disabledUncheckedBoxColor = CheckboxDefaults.colors().disabledUncheckedBoxColor,
+                                                disabledIndeterminateBoxColor = CheckboxDefaults.colors().disabledIndeterminateBoxColor,
+                                                checkedBorderColor = optColour(playerColourState),
+                                                uncheckedBorderColor = optColour(playerColourState),
+                                                disabledBorderColor = CheckboxDefaults.colors().disabledBorderColor,
+                                                disabledUncheckedBorderColor = CheckboxDefaults.colors().disabledUncheckedBorderColor,
+                                                disabledIndeterminateBorderColor = CheckboxDefaults.colors().disabledIndeterminateBorderColor
+                                            ),
                                             checked = subtitlesCheckedState[index],
                                             onCheckedChange = { checked ->
                                                 Collections.replaceAll(subtitlesChecked.value, true, false)
@@ -1349,6 +1365,20 @@ class Player: ComponentActivity(), Player.Listener {
                                         .width(30.dp)
                                 ) {
                                     Checkbox(
+                                        colors = CheckboxColors(
+                                            checkedCheckmarkColor = CheckboxDefaults.colors().checkedCheckmarkColor,
+                                            uncheckedCheckmarkColor = CheckboxDefaults.colors().uncheckedCheckmarkColor,
+                                            checkedBoxColor = CheckboxDefaults.colors().checkedBoxColor,
+                                            uncheckedBoxColor = CheckboxDefaults.colors().uncheckedBoxColor,
+                                            disabledCheckedBoxColor = CheckboxDefaults.colors().disabledCheckedBoxColor,
+                                            disabledUncheckedBoxColor = CheckboxDefaults.colors().disabledUncheckedBoxColor,
+                                            disabledIndeterminateBoxColor = CheckboxDefaults.colors().disabledIndeterminateBoxColor,
+                                            checkedBorderColor = optColour(playerColourState),
+                                            uncheckedBorderColor = optColour(playerColourState),
+                                            disabledBorderColor = CheckboxDefaults.colors().disabledBorderColor,
+                                            disabledUncheckedBorderColor = CheckboxDefaults.colors().disabledUncheckedBorderColor,
+                                            disabledIndeterminateBorderColor = CheckboxDefaults.colors().disabledIndeterminateBorderColor
+                                        ),
                                         checked = sleepTimerCheckedState[index],
                                         onCheckedChange = { checked ->
                                             Collections.replaceAll(sleepTimerChecked.value, true, false)
