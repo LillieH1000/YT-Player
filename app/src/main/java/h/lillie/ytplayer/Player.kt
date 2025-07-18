@@ -1235,10 +1235,10 @@ class Player: ComponentActivity(), Player.Listener {
                                     ) {
                                         Checkbox(
                                             colors = CheckboxColors(
-                                                checkedCheckmarkColor = CheckboxDefaults.colors().checkedCheckmarkColor,
-                                                uncheckedCheckmarkColor = CheckboxDefaults.colors().uncheckedCheckmarkColor,
-                                                checkedBoxColor = CheckboxDefaults.colors().checkedBoxColor,
-                                                uncheckedBoxColor = CheckboxDefaults.colors().uncheckedBoxColor,
+                                                checkedCheckmarkColor = optColour(playerColourState),
+                                                uncheckedCheckmarkColor = Color.Transparent,
+                                                checkedBoxColor = Color.Transparent,
+                                                uncheckedBoxColor = Color.Transparent,
                                                 disabledCheckedBoxColor = CheckboxDefaults.colors().disabledCheckedBoxColor,
                                                 disabledUncheckedBoxColor = CheckboxDefaults.colors().disabledUncheckedBoxColor,
                                                 disabledIndeterminateBoxColor = CheckboxDefaults.colors().disabledIndeterminateBoxColor,
@@ -1369,10 +1369,10 @@ class Player: ComponentActivity(), Player.Listener {
                                 ) {
                                     Checkbox(
                                         colors = CheckboxColors(
-                                            checkedCheckmarkColor = CheckboxDefaults.colors().checkedCheckmarkColor,
-                                            uncheckedCheckmarkColor = CheckboxDefaults.colors().uncheckedCheckmarkColor,
-                                            checkedBoxColor = CheckboxDefaults.colors().checkedBoxColor,
-                                            uncheckedBoxColor = CheckboxDefaults.colors().uncheckedBoxColor,
+                                            checkedCheckmarkColor = optColour(playerColourState),
+                                            uncheckedCheckmarkColor = Color.Transparent,
+                                            checkedBoxColor = Color.Transparent,
+                                            uncheckedBoxColor = Color.Transparent,
                                             disabledCheckedBoxColor = CheckboxDefaults.colors().disabledCheckedBoxColor,
                                             disabledUncheckedBoxColor = CheckboxDefaults.colors().disabledUncheckedBoxColor,
                                             disabledIndeterminateBoxColor = CheckboxDefaults.colors().disabledIndeterminateBoxColor,
