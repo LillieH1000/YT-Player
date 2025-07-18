@@ -13,10 +13,6 @@ import android.content.IntentFilter
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -128,11 +124,10 @@ import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
-class Player: ComponentActivity(), Player.Listener, SensorEventListener {
+class Player: ComponentActivity(), Player.Listener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
     private var playerController = MutableStateFlow<MediaController?>(null)
     private var playerHandler: Handler = Handler(Looper.getMainLooper())
-    private var playerRotationSensor = mutableListOf(null as Sensor?, 0)
     private var playerSubtitles: JSONArray? = null
     private var chromeOSDevice: Boolean = false
     private var isFirstLaunch: Boolean = false
@@ -151,10 +146,6 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
         setContent {
             CreatePlayerUI()
         }
-
-        val sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
-        playerRotationSensor[0] = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-        sensorManager.registerListener(this, playerRotationSensor[0] as Sensor, SensorManager.SENSOR_DELAY_NORMAL)
 
         onBackPressedDispatcher.addCallback(this) {
             when (resources.configuration.orientation) {
@@ -319,21 +310,6 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
                         deviceRotation.value = 1
                         WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                     }
-                }
-            }
-        }
-    }
-
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-    }
-
-    override fun onSensorChanged(event: SensorEvent?) {
-        if (event != null && event.sensor == playerRotationSensor[0]) {
-            if (event.values[1] > event.values[0] && event.values[1] > 1) {
-                playerRotationSensor[1] = 0
-            } else {
-                if (event.values[0] > 1 || event.values[0] < -1) {
-                    playerRotationSensor[1] = 1
                 }
             }
         }
@@ -667,21 +643,10 @@ class Player: ComponentActivity(), Player.Listener, SensorEventListener {
                             interactionSource = remember { MutableInteractionSource() },
                             indication = IndicationFactory,
                             onClick = {
-                                when (playerRotationSensor[1]) {
-                                    1 -> {
-                                        if (requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE) {
-                                            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-                                        } else {
-                                            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-                                        }
-                                    }
-                                    else -> {
-                                        if (requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
-                                            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-                                        } else {
-                                            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-                                        }
-                                    }
+                                if (requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
+                                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                                } else {
+                                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
                                 }
                             }
                         ) {
