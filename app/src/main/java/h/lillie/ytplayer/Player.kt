@@ -758,14 +758,21 @@ class Player: ComponentActivity(), Player.Listener {
                                     interactionSource = remember { MutableInteractionSource() },
                                     indication = IndicationFactory,
                                     onClick = {
+                                        val url: String
+                                        val type: String? = playerControllerState?.mediaMetadata?.extras?.getString("type")
+                                        if (type == "short") {
+                                            url = "https://youtube.com/shorts/${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
+                                        } else {
+                                            url = "https://youtube.com/watch?v=${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
+                                        }
                                         if (chromeOSDevice) {
                                             val clipManager: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                                            val clipData: ClipData = ClipData.newPlainText("", "https://youtu.be/${playerControllerState?.mediaMetadata?.extras?.getString("id")}")
+                                            val clipData: ClipData = ClipData.newPlainText("", url)
                                             clipManager.setPrimaryClip(clipData)
                                         } else {
                                             val shareIntent = Intent()
                                             shareIntent.action = Intent.ACTION_SEND
-                                            shareIntent.putExtra(Intent.EXTRA_TEXT, "https://youtu.be/${playerControllerState?.mediaMetadata?.extras?.getString("id")}")
+                                            shareIntent.putExtra(Intent.EXTRA_TEXT, url)
                                             shareIntent.type = "text/plain"
                                             startActivity(Intent.createChooser(shareIntent, null))
                                         }
