@@ -234,7 +234,6 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
         if (info.isNull(key)) {
             return null
         }
-
         return info.optString(key)
     }
 

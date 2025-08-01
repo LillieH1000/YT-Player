@@ -1471,7 +1471,6 @@ class Player: ComponentActivity(), Player.Listener {
         if (info.isNull(key)) {
             return null
         }
-
         return info.optString(key)
     }
 
