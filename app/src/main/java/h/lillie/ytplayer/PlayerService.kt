@@ -280,6 +280,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
 
                 val playerExtraInfo = Bundle()
                 playerExtraInfo.putString("id", info.id)
+                playerExtraInfo.putString("type", info.type)
                 playerExtraInfo.putBoolean("live", info.live)
                 playerExtraInfo.putString("expiration", info.expiration)
                 playerExtraInfo.putInt("views", info.views)
