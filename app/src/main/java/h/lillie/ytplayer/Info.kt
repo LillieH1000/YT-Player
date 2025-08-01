@@ -11,6 +11,7 @@ data class Info(
     val live: Boolean,
     val views: Int,
     val likes: Int,
+    val type: String,
     val url: String,
     val expiration: String,
     val subtitles: ArrayList<InfoSubs>?

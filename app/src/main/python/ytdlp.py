@@ -26,6 +26,7 @@ def getInfo(videoID, searchQuery):
             x = ytdlp.extract_info(f"ytsearch:{searchQuery}", download=False)
             z = json.loads(json.dumps(ytdlp.sanitize_info(x)))
             y = z["entries"][0]
+
         info["id"] = y["id"]
         info["title"] = y["title"]
         info["author"] = y["uploader"]
@@ -33,6 +34,7 @@ def getInfo(videoID, searchQuery):
         info["live"] = y["is_live"]
         info["views"] = y["view_count"]
         info["likes"] = y["like_count"]
+        info["type"] = y["media_type"]
         info["url"] = y["manifest_url"]
         info["expiration"] = re.search("/expire/(\\d+)/", y["manifest_url"]).group(1)
         for a in y["subtitles"]:
