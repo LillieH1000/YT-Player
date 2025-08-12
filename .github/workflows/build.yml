@@ -25,6 +25,8 @@ jobs:
           architecture: "x64"
 
       - name: Gradle Build
+        env:
+          GRADLE_OPTS: -Xmx4608m
         run: |
           chmod +x ./gradlew
           ./gradlew build
