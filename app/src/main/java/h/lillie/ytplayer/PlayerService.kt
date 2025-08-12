@@ -5,11 +5,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.http.HttpEngine
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
+import android.os.ext.SdkExtensions
 import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.core.net.toUri
@@ -23,10 +25,11 @@ import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.StandaloneDatabaseProvider
+import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.HttpEngineDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
-import androidx.media3.datasource.cronet.CronetDataSource
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlaybackException
 import androidx.media3.exoplayer.ExoPlayer
@@ -55,7 +58,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
-import org.chromium.net.CronetEngine
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -338,21 +340,36 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                 val cacheDataSource: CacheDataSource.Factory = CacheDataSource.Factory().setCache(playerCache)
                 val hlsMediaSource: HlsMediaSource
 
-                val cronetEngine: CronetEngine = CronetEngine.Builder(this@PlayerService)
-                    .enableHttp2(true)
-                    .build()
+                if (Build.VERSION.SDK_INT >= 34 && SdkExtensions.getExtensionVersion(Build.VERSION_CODES.S) >= 7) {
+                    val httpEngine: HttpEngine = HttpEngine.Builder(this@PlayerService)
+                        .setEnableHttp2(true)
+                        .build()
 
-                val cronetEngineDataSource = CronetDataSource.Factory(cronetEngine, MoreExecutors.directExecutor())
-                if (!info.live) {
-                    cacheDataSource.setUpstreamDataSourceFactory(cronetEngineDataSource)
+                    val httpEngineDataSource: HttpEngineDataSource.Factory = HttpEngineDataSource.Factory(httpEngine, MoreExecutors.directExecutor())
+                    if (!info.live) {
+                        cacheDataSource.setUpstreamDataSourceFactory(httpEngineDataSource)
 
-                    hlsMediaSource = HlsMediaSource.Factory(cacheDataSource)
-                        .setAllowChunklessPreparation(false)
-                        .createMediaSource(playerMediaItem.build())
+                        hlsMediaSource = HlsMediaSource.Factory(cacheDataSource)
+                            .setAllowChunklessPreparation(false)
+                            .createMediaSource(playerMediaItem.build())
+                    } else {
+                        hlsMediaSource = HlsMediaSource.Factory(httpEngineDataSource)
+                            .setAllowChunklessPreparation(false)
+                            .createMediaSource(playerMediaItem.build())
+                    }
                 } else {
-                    hlsMediaSource = HlsMediaSource.Factory(cronetEngineDataSource)
-                        .setAllowChunklessPreparation(false)
-                        .createMediaSource(playerMediaItem.build())
+                    val defaultDataSource: DefaultDataSource.Factory = DefaultDataSource.Factory(this@PlayerService)
+                    if (!info.live) {
+                        cacheDataSource.setUpstreamDataSourceFactory(defaultDataSource)
+
+                        hlsMediaSource = HlsMediaSource.Factory(cacheDataSource)
+                            .setAllowChunklessPreparation(false)
+                            .createMediaSource(playerMediaItem.build())
+                    } else {
+                        hlsMediaSource = HlsMediaSource.Factory(defaultDataSource)
+                            .setAllowChunklessPreparation(false)
+                            .createMediaSource(playerMediaItem.build())
+                    }
                 }
 
                 withContext(Dispatchers.Main) {
