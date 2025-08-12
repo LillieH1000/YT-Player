@@ -34,6 +34,19 @@ android {
         }
     }
 
+    flavorDimensions += "os"
+    productFlavors {
+        create("androidos") {
+            dimension = "os"
+        }
+        create("chromeos") {
+            dimension = "os"
+        }
+        create("questos") {
+            dimension = "os"
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21

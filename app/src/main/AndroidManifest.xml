@@ -18,28 +18,6 @@
         android:theme="@android:style/Theme.Material.NoActionBar"
         tools:ignore="DataExtractionRules">
         <meta-data android:name="com.google.android.gms.car.application" android:resource="@xml/auto" />
-        <activity
-            android:name=".Player"
-            android:enabled="true"
-            android:exported="true"
-            android:launchMode="singleInstance"
-            android:supportsPictureInPicture="true"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode">
-            <property android:name="android.window.PROPERTY_COMPAT_ALLOW_RESTRICTED_RESIZABILITY" android:value="true" />
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/plain" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
         <service
             android:name=".PlayerService"
             android:enabled="true"
