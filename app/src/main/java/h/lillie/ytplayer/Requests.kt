@@ -1,11 +1,15 @@
 package h.lillie.ytplayer
 
+import android.content.Context
 import com.chaquo.python.Python
+import com.google.android.gms.net.CronetProviderInstaller
+import com.google.net.cronet.okhttptransport.CronetInterceptor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.chromium.net.CronetEngine
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -23,15 +27,25 @@ class Requests {
         return@withContext Json.decodeFromString<Info>(rq)
     }
 
-    suspend fun returnYouTubeDislike(videoID: String): Int? = withContext(Dispatchers.IO) {
-        val client = OkHttpClient.Builder().build()
+    suspend fun returnYouTubeDislike(context: Context, videoID: String): Int? = withContext(Dispatchers.IO) {
+        val client = OkHttpClient.Builder()
+
+        if (CronetProviderInstaller.isInstalled()) {
+            val engine: CronetEngine = CronetEngine.Builder(context)
+                .enableHttp2(true)
+                .enableQuic(true)
+                .build()
+
+            val interceptor = CronetInterceptor.newBuilder(engine).build()
+            client.addInterceptor(interceptor)
+        }
 
         val request = Request.Builder()
             .method("GET", null)
             .url("https://returnyoutubedislikeapi.com/votes?videoId=$videoID")
             .build()
 
-        val response = client.newCall(request).execute()
+        val response = client.build().newCall(request).execute()
         if (!response.isSuccessful) {
             return@withContext null
         }
@@ -39,15 +53,25 @@ class Requests {
         return@withContext JSONObject(response.body.string()).getInt("dislikes")
     }
 
-    suspend fun sponsorBlock(videoID: String): JSONArray? = withContext(Dispatchers.IO) {
-        val client = OkHttpClient.Builder().build()
+    suspend fun sponsorBlock(context: Context, videoID: String): JSONArray? = withContext(Dispatchers.IO) {
+        val client = OkHttpClient.Builder()
+
+        if (CronetProviderInstaller.isInstalled()) {
+            val engine: CronetEngine = CronetEngine.Builder(context)
+                .enableHttp2(true)
+                .enableQuic(true)
+                .build()
+
+            val interceptor = CronetInterceptor.newBuilder(engine).build()
+            client.addInterceptor(interceptor)
+        }
 
         val request = Request.Builder()
             .method("GET", null)
             .url("https://sponsor.ajay.app/api/skipSegments?videoID=$videoID&category=sponsor")
             .build()
 
-        val response = client.newCall(request).execute()
+        val response = client.build().newCall(request).execute()
         if (!response.isSuccessful) {
             return@withContext null
         }

@@ -38,15 +38,18 @@ import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
+import com.google.android.gms.net.CronetProviderInstaller
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
+import com.google.net.cronet.okhttptransport.CronetInterceptor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
+import org.chromium.net.CronetEngine
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -242,8 +245,8 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
             if (intent?.action == "h.lillie.ytplayer.service.info") {
                 val request = Requests()
                 val info = request.ytdlp(intent.extras!!.getString("videoID"), intent.extras!!.getString("searchQuery")) ?: return@async
-                val dislikes = request.returnYouTubeDislike(info.id)
-                sponsorBlock = request.sponsorBlock(info.id)
+                val dislikes = request.returnYouTubeDislike(this@PlayerService, info.id)
+                sponsorBlock = request.sponsorBlock(this@PlayerService, info.id)
                 playerTimer?.cancel()
                 playerTimer = null
 
@@ -306,10 +309,19 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                 playerCache = SimpleCache(File(cacheDir, "media"), LeastRecentlyUsedCacheEvictor(256 * 1024 * 1024), StandaloneDatabaseProvider(this@PlayerService))
                 val cacheDataSource: CacheDataSource.Factory = CacheDataSource.Factory().setCache(playerCache)
                 val hlsMediaSource: HlsMediaSource
+                val client = OkHttpClient.Builder()
 
-                val client = OkHttpClient.Builder().build()
+                if (CronetProviderInstaller.isInstalled()) {
+                    val engine: CronetEngine = CronetEngine.Builder(context)
+                        .enableHttp2(true)
+                        .enableQuic(true)
+                        .build()
 
-                val okhttpDataSource = OkHttpDataSource.Factory(client)
+                    val interceptor = CronetInterceptor.newBuilder(engine).build()
+                    client.addInterceptor(interceptor)
+                }
+
+                val okhttpDataSource = OkHttpDataSource.Factory(client.build())
                 if (!info.live) {
                     cacheDataSource.setUpstreamDataSourceFactory(okhttpDataSource)
 
