@@ -679,29 +679,16 @@ class Player: ComponentActivity(), Player.Listener {
                             .weight(1f)
                             .align(Alignment.CenterVertically)
                     ) {
-                        // Title Button
-                        Button(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = IndicationFactory,
-                            onClick = {
-                                if (!showInfoState) {
-                                    showInfo.value = true
-                                } else {
-                                    showInfo.value = false
-                                }
-                            }
-                        ) {
-                            Text(
-                                text = if (playerControllerState?.mediaMetadata?.title != null) {
-                                    playerControllerState?.mediaMetadata?.title.toString()
-                                } else {
-                                    "No Video Loaded"
-                                },
-                                color = Color.White,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1
-                            )
-                        }
+                        Text(
+                            text = if (playerControllerState?.mediaMetadata?.title != null) {
+                                playerControllerState?.mediaMetadata?.title.toString()
+                            } else {
+                                "No Video Loaded"
+                            },
+                            color = Color.White,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
                     }
                     // Menu Buttons
                     Column(
@@ -755,10 +742,11 @@ class Player: ComponentActivity(), Player.Listener {
                                     interactionSource = remember { MutableInteractionSource() },
                                     indication = IndicationFactory,
                                     onClick = {
-                                        if (!showSettingsState && !showSubtitlesState && !showSleepTimerState) {
+                                        if (!showSettingsState && !showInfoState && !showSubtitlesState && !showSleepTimerState) {
                                             showSettings.value = true
                                         } else {
                                             showSettings.value = false
+                                            showInfo.value = false
                                             showSubtitles.value = false
                                             showSleepTimer.value = false
                                         }
@@ -774,93 +762,6 @@ class Player: ComponentActivity(), Player.Listener {
                         }
                     }
                 }
-            }
-        }
-
-        // Info View
-
-        if (showInfoState && playerControllerState?.mediaItemCount == 1 && playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
-            Row(
-                modifier = if (deviceRotationState == 1) {
-                    Modifier
-                        .navigationBarsPadding()
-                        .statusBarsPadding()
-                        .systemBarsPadding()
-                        .windowInsetsPadding(WindowInsets.displayCutout)
-                        .padding(start = 10.dp, end = 10.dp, top = 50.dp)
-                        .wrapContentHeight()
-                        .focusTarget()
-                        .focusProperties { canFocus = false }
-                } else {
-                    Modifier
-                        .navigationBarsPadding()
-                        .statusBarsPadding()
-                        .systemBarsPadding()
-                        .padding(start = 10.dp, end = 10.dp, top = 50.dp)
-                        .wrapContentHeight()
-                        .focusTarget()
-                        .focusProperties { canFocus = false }
-                }
-            ) {
-                Column(
-                    modifier = Modifier
-                        .wrapContentHeight()
-                        .width(150.dp)
-                        .background(Color.DarkGray)
-                        .clickable(
-                            enabled = true,
-                            interactionSource = null,
-                            indication = null,
-                            onClick = {})
-                ) {
-                    // Views
-                    Row(
-                        modifier = Modifier
-                            .height(30.dp)
-                            .padding(start = 10.dp)
-                    ) {
-                        Text(
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                            text = "Views: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getInt("views"))}",
-                            color = Color.White,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1
-                        )
-                    }
-                    // Likes
-                    Row(
-                        modifier = Modifier
-                            .height(30.dp)
-                            .padding(start = 10.dp)
-                    ) {
-                        Text(
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                            text = "Likes: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getInt("likes"))}",
-                            color = Color.White,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1
-                        )
-                    }
-                    // Dislikes
-                    if (playerControllerState?.mediaMetadata?.extras?.getInt("dislikes") != null) {
-                        Row(
-                            modifier = Modifier
-                                .height(30.dp)
-                                .padding(start = 10.dp)
-                        ) {
-                            Text(
-                                modifier = Modifier.align(Alignment.CenterVertically),
-                                text = "Dislikes: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getInt("dislikes"))}",
-                                color = Color.White,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1
-                            )
-                        }
-                    }
-                }
-                Box(
-                    modifier = Modifier.weight(1f)
-                )
             }
         }
 
@@ -903,6 +804,45 @@ class Player: ComponentActivity(), Player.Listener {
                             indication = null,
                             onClick = {})
                 ) {
+                    // Info
+                    Row(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .padding(start = 10.dp)
+                            .clickable(
+                                enabled = true,
+                                interactionSource = null,
+                                indication = null,
+                                onClick = {
+                                    showSettings.value = false
+                                    showInfo.value = true
+                                })
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .weight(1f)
+                        ) {
+                            Text(
+                                text = "Info",
+                                color = Color.White,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1
+                            )
+                        }
+                        Column(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .scale(0.6f)
+                                .width(30.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
+                                tint = Color.White,
+                                contentDescription = ""
+                            )
+                        }
+                    }
                     // Subtitles
                     if (playerSubtitles != null && playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
                         Row(
@@ -1123,6 +1063,94 @@ class Player: ComponentActivity(), Player.Listener {
                                     )
                                 }
                             }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Info View
+
+        if (showInfoState && playerControllerState?.mediaItemCount == 1 && playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
+            Row(
+                modifier = if (deviceRotationState == 1) {
+                    Modifier
+                        .navigationBarsPadding()
+                        .statusBarsPadding()
+                        .systemBarsPadding()
+                        .windowInsetsPadding(WindowInsets.displayCutout)
+                        .padding(start = 10.dp, end = 10.dp, top = 50.dp)
+                        .wrapContentHeight()
+                        .focusTarget()
+                        .focusProperties { canFocus = false }
+                } else {
+                    Modifier
+                        .navigationBarsPadding()
+                        .statusBarsPadding()
+                        .systemBarsPadding()
+                        .padding(start = 10.dp, end = 10.dp, top = 50.dp)
+                        .wrapContentHeight()
+                        .focusTarget()
+                        .focusProperties { canFocus = false }
+                }
+            ) {
+                Box(
+                    modifier = Modifier.weight(1f)
+                )
+                Column(
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .heightIn(0.dp, 150.dp)
+                        .width(150.dp)
+                        .background(Color.DarkGray)
+                        .clickable(
+                            enabled = true,
+                            interactionSource = null,
+                            indication = null,
+                            onClick = {})
+                ) {
+                    // Views
+                    Row(
+                        modifier = Modifier
+                            .height(30.dp)
+                            .padding(start = 10.dp)
+                    ) {
+                        Text(
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                            text = "Views: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getInt("views"))}",
+                            color = Color.White,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
+                    }
+                    // Likes
+                    Row(
+                        modifier = Modifier
+                            .height(30.dp)
+                            .padding(start = 10.dp)
+                    ) {
+                        Text(
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                            text = "Likes: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getInt("likes"))}",
+                            color = Color.White,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
+                    }
+                    // Dislikes
+                    if (playerControllerState?.mediaMetadata?.extras?.getInt("dislikes") != null) {
+                        Row(
+                            modifier = Modifier
+                                .height(30.dp)
+                                .padding(start = 10.dp)
+                        ) {
+                            Text(
+                                modifier = Modifier.align(Alignment.CenterVertically),
+                                text = "Dislikes: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getInt("dislikes"))}",
+                                color = Color.White,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1
+                            )
                         }
                     }
                 }
