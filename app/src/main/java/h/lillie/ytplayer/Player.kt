@@ -444,15 +444,17 @@ class Player: ComponentActivity(), Player.Listener {
                         middleJob.value = middleScope.launch {
                             middleClick = time
                             delay(300)
-                            if (!showOverlayState) {
-                                showOverlay.value = true
-                            } else {
-                                showOverlay.value = false
+                            if (playerControllerState?.mediaItemCount == 1) {
+                                if (!showOverlayState) {
+                                    showOverlay.value = true
+                                } else {
+                                    showOverlay.value = false
+                                }
+                                showInfo.value = false
+                                showSettings.value = false
+                                showSubtitles.value = false
+                                showSleepTimer.value = false
                             }
-                            showInfo.value = false
-                            showSettings.value = false
-                            showSubtitles.value = false
-                            showSleepTimer.value = false
                             middleClick = 0
                             middleJob.value = null
                         }
