@@ -79,15 +79,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusTarget
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.graphics.ColorUtils
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.C
@@ -326,7 +323,6 @@ class Player: ComponentActivity(), Player.Listener {
     private var deviceRotation = MutableStateFlow(0)
     private var isPlaying = MutableStateFlow(0)
     private var loopChecked = MutableStateFlow(false)
-    private var playerColour = MutableStateFlow(Color.Black)
     private var playerDuration = MutableStateFlow(0f)
     private var playerPosition = MutableStateFlow(0f)
     private var playbackSpeed = MutableStateFlow("1")
@@ -349,7 +345,6 @@ class Player: ComponentActivity(), Player.Listener {
         val deviceRotationState by deviceRotation.collectAsState()
         val isPlayingState by isPlaying.collectAsState()
         val loopCheckedState by loopChecked.collectAsState()
-        val playerColourState by playerColour.collectAsState()
         val playerControllerState by playerController.collectAsState()
         val playerDurationState by playerDuration.collectAsState()
         val playerPositionState by playerPosition.collectAsState()
@@ -377,7 +372,7 @@ class Player: ComponentActivity(), Player.Listener {
                     .focusProperties { canFocus = false }
             } else {
                 Modifier
-                    .background(Brush.linearGradient(listOf(playerColourState, Color.Black)))
+                    .background(Color.Black)
                     .navigationBarsPadding()
                     .statusBarsPadding()
                     .systemBarsPadding()
@@ -811,7 +806,7 @@ class Player: ComponentActivity(), Player.Listener {
                     modifier = Modifier
                         .wrapContentHeight()
                         .width(150.dp)
-                        .background(playerColourState)
+                        .background(Color.DarkGray)
                         .clickable(
                             enabled = true,
                             interactionSource = null,
@@ -827,7 +822,7 @@ class Player: ComponentActivity(), Player.Listener {
                         Text(
                             modifier = Modifier.align(Alignment.CenterVertically),
                             text = "Views: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getInt("views"))}",
-                            color = optColour(playerColourState),
+                            color = Color.White,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
                         )
@@ -841,7 +836,7 @@ class Player: ComponentActivity(), Player.Listener {
                         Text(
                             modifier = Modifier.align(Alignment.CenterVertically),
                             text = "Likes: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getInt("likes"))}",
-                            color = optColour(playerColourState),
+                            color = Color.White,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
                         )
@@ -856,7 +851,7 @@ class Player: ComponentActivity(), Player.Listener {
                             Text(
                                 modifier = Modifier.align(Alignment.CenterVertically),
                                 text = "Dislikes: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getInt("dislikes"))}",
-                                color = optColour(playerColourState),
+                                color = Color.White,
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
                             )
@@ -901,7 +896,7 @@ class Player: ComponentActivity(), Player.Listener {
                     modifier = Modifier
                         .wrapContentHeight()
                         .width(150.dp)
-                        .background(playerColourState)
+                        .background(Color.DarkGray)
                         .clickable(
                             enabled = true,
                             interactionSource = null,
@@ -930,7 +925,7 @@ class Player: ComponentActivity(), Player.Listener {
                             ) {
                                 Text(
                                     text = "Subtitles",
-                                    color = optColour(playerColourState),
+                                    color = Color.White,
                                     overflow = TextOverflow.Ellipsis,
                                     maxLines = 1
                                 )
@@ -943,7 +938,7 @@ class Player: ComponentActivity(), Player.Listener {
                             ) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
-                                    tint = optColour(playerColourState),
+                                    tint = Color.White,
                                     contentDescription = ""
                                 )
                             }
@@ -970,7 +965,7 @@ class Player: ComponentActivity(), Player.Listener {
                         ) {
                             Text(
                                 text = "Sleep Timer",
-                                color = optColour(playerColourState),
+                                color = Color.White,
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
                             )
@@ -983,7 +978,7 @@ class Player: ComponentActivity(), Player.Listener {
                         ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
-                                tint = optColour(playerColourState),
+                                tint = Color.White,
                                 contentDescription = ""
                             )
                         }
@@ -1001,7 +996,7 @@ class Player: ComponentActivity(), Player.Listener {
                         ) {
                             Text(
                                 text = "Ambient Background",
-                                color = optColour(playerColourState),
+                                color = Color.White,
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
                             )
@@ -1036,7 +1031,7 @@ class Player: ComponentActivity(), Player.Listener {
                             ) {
                                 Text(
                                     text = "Loop Video",
-                                    color = optColour(playerColourState),
+                                    color = Color.White,
                                     overflow = TextOverflow.Ellipsis,
                                     maxLines = 1
                                 )
@@ -1068,7 +1063,7 @@ class Player: ComponentActivity(), Player.Listener {
                             Text(
                                 modifier = Modifier.align(Alignment.CenterVertically),
                                 text = "Speed: ${playbackSpeedState}x",
-                                color = optColour(playerColourState),
+                                color = Color.White,
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
                             )
@@ -1097,7 +1092,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Remove,
-                                        tint = optColour(playerColourState),
+                                        tint = Color.White,
                                         contentDescription = ""
                                     )
                                 }
@@ -1123,7 +1118,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Add,
-                                        tint = optColour(playerColourState),
+                                        tint = Color.White,
                                         contentDescription = ""
                                     )
                                 }
@@ -1171,7 +1166,7 @@ class Player: ComponentActivity(), Player.Listener {
                             .wrapContentHeight()
                             .heightIn(0.dp, 150.dp)
                             .width(150.dp)
-                            .background(playerColourState)
+                            .background(Color.DarkGray)
                             .clickable(
                                 enabled = true,
                                 interactionSource = null,
@@ -1196,7 +1191,7 @@ class Player: ComponentActivity(), Player.Listener {
                                                 0 -> "Off"
                                                 else -> optString(subtitles.getJSONObject(index), "name")!!
                                             },
-                                            color = optColour(playerColourState),
+                                            color = Color.White,
                                             overflow = TextOverflow.Ellipsis,
                                             maxLines = 1
                                         )
@@ -1209,15 +1204,15 @@ class Player: ComponentActivity(), Player.Listener {
                                     ) {
                                         Checkbox(
                                             colors = CheckboxColors(
-                                                checkedCheckmarkColor = optColour(playerColourState),
+                                                checkedCheckmarkColor = Color.White,
                                                 uncheckedCheckmarkColor = Color.Transparent,
                                                 checkedBoxColor = Color.Transparent,
                                                 uncheckedBoxColor = Color.Transparent,
                                                 disabledCheckedBoxColor = CheckboxDefaults.colors().disabledCheckedBoxColor,
                                                 disabledUncheckedBoxColor = CheckboxDefaults.colors().disabledUncheckedBoxColor,
                                                 disabledIndeterminateBoxColor = CheckboxDefaults.colors().disabledIndeterminateBoxColor,
-                                                checkedBorderColor = optColour(playerColourState),
-                                                uncheckedBorderColor = optColour(playerColourState),
+                                                checkedBorderColor = Color.White,
+                                                uncheckedBorderColor = Color.White,
                                                 disabledBorderColor = CheckboxDefaults.colors().disabledBorderColor,
                                                 disabledUncheckedBorderColor = CheckboxDefaults.colors().disabledUncheckedBorderColor,
                                                 disabledIndeterminateBorderColor = CheckboxDefaults.colors().disabledIndeterminateBorderColor
@@ -1304,7 +1299,7 @@ class Player: ComponentActivity(), Player.Listener {
                             .wrapContentHeight()
                             .heightIn(0.dp, 150.dp)
                             .width(150.dp)
-                            .background(playerColourState)
+                            .background(Color.DarkGray)
                             .clickable(
                                 enabled = true,
                                 interactionSource = null,
@@ -1330,7 +1325,7 @@ class Player: ComponentActivity(), Player.Listener {
                                             4 -> "1 Hour"
                                             else -> "Off"
                                         },
-                                        color = optColour(playerColourState),
+                                        color = Color.White,
                                         overflow = TextOverflow.Ellipsis,
                                         maxLines = 1
                                     )
@@ -1343,15 +1338,15 @@ class Player: ComponentActivity(), Player.Listener {
                                 ) {
                                     Checkbox(
                                         colors = CheckboxColors(
-                                            checkedCheckmarkColor = optColour(playerColourState),
+                                            checkedCheckmarkColor = Color.White,
                                             uncheckedCheckmarkColor = Color.Transparent,
                                             checkedBoxColor = Color.Transparent,
                                             uncheckedBoxColor = Color.Transparent,
                                             disabledCheckedBoxColor = CheckboxDefaults.colors().disabledCheckedBoxColor,
                                             disabledUncheckedBoxColor = CheckboxDefaults.colors().disabledUncheckedBoxColor,
                                             disabledIndeterminateBoxColor = CheckboxDefaults.colors().disabledIndeterminateBoxColor,
-                                            checkedBorderColor = optColour(playerColourState),
-                                            uncheckedBorderColor = optColour(playerColourState),
+                                            checkedBorderColor = Color.White,
+                                            uncheckedBorderColor = Color.White,
                                             disabledBorderColor = CheckboxDefaults.colors().disabledBorderColor,
                                             disabledUncheckedBorderColor = CheckboxDefaults.colors().disabledUncheckedBorderColor,
                                             disabledIndeterminateBorderColor = CheckboxDefaults.colors().disabledIndeterminateBorderColor
@@ -1431,14 +1426,6 @@ class Player: ComponentActivity(), Player.Listener {
             broadcastIntent.putExtra("searchQuery", null as String?)
             sendBroadcast(broadcastIntent)
         }, MoreExecutors.directExecutor())
-    }
-
-    private fun optColour(colour: Color): Color {
-        val luminance = ColorUtils.calculateLuminance(colour.toArgb())
-        if (luminance > 0.5) {
-            return Color.Black
-        }
-        return Color.White
     }
 
     private fun optString(info: JSONObject, key: String): String? {
