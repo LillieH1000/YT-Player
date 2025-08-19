@@ -1,6 +1,5 @@
 package h.lillie.ytplayer
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.PictureInPictureParams
 import android.content.BroadcastReceiver
@@ -18,14 +17,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
-import android.speech.RecognizerIntent
 import android.view.KeyEvent
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -60,7 +57,6 @@ import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Replay
-import androidx.compose.material.icons.filled.YoutubeSearchedFor
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Checkbox
@@ -91,8 +87,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -184,7 +178,7 @@ class Player: ComponentActivity(), Player.Listener {
                     val youtubeRegex = Regex("^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/|live/)|(?:(?:watch)?\\?vi?=|&vi?=))([^#&?]*).*")
                     val info = intent.getStringExtra(Intent.EXTRA_TEXT)!!
                     if (youtubeRegex.containsMatchIn(info)) {
-                        createPlayer(youtubeRegex.findAll(info).map { it.groupValues[1] }.joinToString(), null)
+                        createPlayer(youtubeRegex.findAll(info).map { it.groupValues[1] }.joinToString())
                     }
                 }
             }
@@ -199,7 +193,7 @@ class Player: ComponentActivity(), Player.Listener {
                     val youtubeRegex = Regex("^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/|live/)|(?:(?:watch)?\\?vi?=|&vi?=))([^#&?]*).*")
                     val info = intent.getStringExtra(Intent.EXTRA_TEXT)!!
                     if (youtubeRegex.containsMatchIn(info)) {
-                        createPlayer(youtubeRegex.findAll(info).map { it.groupValues[1] }.joinToString(), null)
+                        createPlayer(youtubeRegex.findAll(info).map { it.groupValues[1] }.joinToString())
                     }
                 }
             }
@@ -296,7 +290,7 @@ class Player: ComponentActivity(), Player.Listener {
                         val youtubeRegex = Regex("^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/|live/)|(?:(?:watch)?\\?vi?=|&vi?=))([^#&?]*).*")
                         val info = clipData.getItemAt(0).text.toString()
                         if (youtubeRegex.containsMatchIn(info)) {
-                            createPlayer(youtubeRegex.findAll(info).map { it.groupValues[1] }.joinToString(), null)
+                            createPlayer(youtubeRegex.findAll(info).map { it.groupValues[1] }.joinToString())
                         }
                     }
                 }
@@ -723,35 +717,6 @@ class Player: ComponentActivity(), Player.Listener {
                         Row(
                             modifier = Modifier.wrapContentWidth()
                         ) {
-                            if (!chromeOSDevice && !questOSDevice) {
-                                // Voice Search Button
-                                Button(
-                                    modifier = Modifier.width(50.dp),
-                                    shape = CircleShape,
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = IndicationFactory,
-                                    onClick = {
-                                        playerControllerState?.pause()
-                                        if (ContextCompat.checkSelfPermission(this@Player, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                                            ActivityCompat.requestPermissions(this@Player, listOf(Manifest.permission.RECORD_AUDIO).toTypedArray(), 0)
-                                        } else {
-                                            val voiceIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-                                            voiceIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, this@Player.packageName)
-                                            voiceIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.EXTRA_LANGUAGE_MODEL)
-                                            voiceIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
-                                            voiceIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en")
-                                            voiceIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say the video name you wish to search")
-                                            playerSearch.launch(voiceIntent)
-                                        }
-                                    }
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.YoutubeSearchedFor,
-                                        tint = Color.White,
-                                        contentDescription = ""
-                                    )
-                                }
-                            }
                             // Share Button
                             if (playerControllerState?.mediaItemCount == 1) {
                                 Button(
@@ -1433,7 +1398,7 @@ class Player: ComponentActivity(), Player.Listener {
         }
     }
 
-    private fun createPlayer(videoID: String?, searchQuery: String?) {
+    private fun createPlayer(videoID: String?) {
         playerController.value?.stop()
         playerController.value?.removeMediaItem(0)
 
@@ -1463,7 +1428,7 @@ class Player: ComponentActivity(), Player.Listener {
             val broadcastIntent = Intent("h.lillie.ytplayer.service.info")
             broadcastIntent.setPackage(this.packageName)
             broadcastIntent.putExtra("videoID", videoID)
-            broadcastIntent.putExtra("searchQuery", searchQuery)
+            broadcastIntent.putExtra("searchQuery", null as String?)
             sendBroadcast(broadcastIntent)
         }, MoreExecutors.directExecutor())
     }
@@ -1551,13 +1516,6 @@ class Player: ComponentActivity(), Player.Listener {
                 }
                 return@async
             }
-        }
-    }
-
-    private val playerSearch = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            val data = result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS) ?: return@registerForActivityResult
-            createPlayer(null, data[0])
         }
     }
 
