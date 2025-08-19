@@ -4,6 +4,12 @@
 
 A simple YouTube video player for [Android](#android) and [ChromeOS](#chromeos) with features such as no ads, background playback and more!
 
+<br>
+
+## Notice
+
+I feel like this project has been going a bit to far off being a simple YouTube video player and overstepping what I can maintain myself while working full-time, so I have removed all prebuilt releases and I am working on a new version that will be more focused on redoing this project in the way I meant it to be.
+
 </div><br>
 
 Features:
