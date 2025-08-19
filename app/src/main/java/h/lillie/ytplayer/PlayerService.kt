@@ -51,7 +51,6 @@ import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import org.chromium.net.CronetEngine
 import org.json.JSONArray
-import org.json.JSONObject
 import java.io.File
 import java.text.DecimalFormat
 import kotlin.coroutines.CoroutineContext
@@ -224,13 +223,6 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
         }
     }
 
-    private fun optString(info: JSONObject, key: String): String? {
-        if (info.isNull(key)) {
-            return null
-        }
-        return info.optString(key)
-    }
-
     private fun BroadcastReceiver.async(coroutineContext: CoroutineContext = EmptyCoroutineContext, block: suspend CoroutineScope.() -> Unit) {
         val pendingResult = goAsync()
         CoroutineScope(Dispatchers.IO).launch(coroutineContext) {
@@ -281,10 +273,10 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                     val subtitlesList = mutableListOf<MediaItem.SubtitleConfiguration>()
 
                     for (i in 0 until subtitles.length()) {
-                        val playerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(optString(subtitles.getJSONObject(i), "url")!!.toUri())
+                        val playerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(subtitles.getJSONObject(i).optString("url").toUri())
                             .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
                             .setMimeType(MimeTypes.TEXT_VTT)
-                            .setLanguage(optString(subtitles.getJSONObject(i), "id"))
+                            .setLanguage(subtitles.getJSONObject(i).optString("id"))
                             .build()
 
                         subtitlesList.add(playerCaptions)

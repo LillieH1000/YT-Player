@@ -108,7 +108,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.json.JSONArray
-import org.json.JSONObject
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Collections
@@ -1168,7 +1167,7 @@ class Player: ComponentActivity(), Player.Listener {
                                         Text(
                                             text = when (index) {
                                                 0 -> "Off"
-                                                else -> optString(subtitles.getJSONObject(index), "name")!!
+                                                else -> subtitles.getJSONObject(index).optString("name")
                                             },
                                             color = Color.White,
                                             overflow = TextOverflow.Ellipsis,
@@ -1214,7 +1213,7 @@ class Player: ComponentActivity(), Player.Listener {
                                                         else -> {
                                                             playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
                                                                 .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-                                                                .setPreferredTextLanguage(optString(subtitles.getJSONObject(index), "id"))
+                                                                .setPreferredTextLanguage(subtitles.getJSONObject(index).optString("id"))
                                                                 .build()
                                                         }
                                                     }
@@ -1410,13 +1409,6 @@ class Player: ComponentActivity(), Player.Listener {
             broadcastIntent.putExtra("searchQuery", null as String?)
             sendBroadcast(broadcastIntent)
         }, MoreExecutors.directExecutor())
-    }
-
-    private fun optString(info: JSONObject, key: String): String? {
-        if (info.isNull(key)) {
-            return null
-        }
-        return info.optString(key)
     }
 
     private fun optTime(time: Long): String {
