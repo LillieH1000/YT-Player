@@ -14,5 +14,5 @@ data class Info(
     val type: String,
     val url: String,
     val expiration: String,
-    val subtitles: ArrayList<InfoSubs>?
+    val subtitles: ArrayList<SubtitlesInfo>?
 )
