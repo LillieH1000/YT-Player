@@ -170,7 +170,6 @@ class Player: ComponentActivity(), Player.Listener {
         }
 
         val intentFilter = IntentFilter()
-        intentFilter.addAction("h.lillie.ytplayer.activity.artwork")
         intentFilter.addAction("h.lillie.ytplayer.activity.subtitles")
         if (Build.VERSION.SDK_INT <= 32) {
             registerReceiver(playerBroadcastReceiver, intentFilter)
@@ -1522,10 +1521,6 @@ class Player: ComponentActivity(), Player.Listener {
 
     private val playerBroadcastReceiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) = async {
-            if (intent?.action == "h.lillie.ytplayer.activity.artwork") {
-                playerColour.value = Color(ColorUtils.blendARGB(intent.extras!!.getInt("rgb"), Color.White.toArgb(), 0.3F))
-                return@async
-            }
             if (intent?.action == "h.lillie.ytplayer.activity.subtitles") {
                 if (subtitlesChecked.value.isNotEmpty()) {
                     subtitlesChecked.update { list ->

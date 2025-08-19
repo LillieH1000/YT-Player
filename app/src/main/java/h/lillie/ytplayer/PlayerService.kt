@@ -41,14 +41,6 @@ import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
-import androidx.palette.graphics.Palette
-import coil3.Image
-import coil3.ImageLoader
-import coil3.request.ImageRequest
-import coil3.request.ImageResult
-import coil3.request.allowHardware
-import coil3.size.Size
-import coil3.toBitmap
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
@@ -257,28 +249,6 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                 sponsorBlock = request.sponsorBlock(info.id)
                 playerTimer?.cancel()
                 playerTimer = null
-
-                val artworkLoader = ImageLoader(this@PlayerService)
-                val artworkRequest: ImageRequest = ImageRequest.Builder(this@PlayerService)
-                    .data(info.artwork)
-                    .size(Size.ORIGINAL)
-                    .allowHardware(false)
-                    .build()
-                val artworkResult: ImageResult = artworkLoader.execute(artworkRequest)
-                val artworkImage: Image? = artworkResult.image
-                if (artworkImage != null) {
-                    Palette.from(artworkImage.toBitmap()).generate { palette ->
-                        if (palette != null) {
-                            val artworkSwatch: Palette.Swatch? = palette.vibrantSwatch
-                            if (artworkSwatch != null) {
-                                val broadcastIntent = Intent("h.lillie.ytplayer.activity.artwork")
-                                broadcastIntent.setPackage(this@PlayerService.packageName)
-                                broadcastIntent.putExtra("rgb", artworkSwatch.rgb)
-                                sendBroadcast(broadcastIntent)
-                            }
-                        }
-                    }
-                }
 
                 val playerExtraInfo = Bundle()
                 playerExtraInfo.putString("id", info.id)
