@@ -327,7 +327,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var playbackSpeed = MutableStateFlow("1")
     private var playerTime = MutableStateFlow<String?>(null)
     private var showInfo = MutableStateFlow(false)
-    private var showOverlay = MutableStateFlow(true)
+    private var showOverlay = MutableStateFlow(false)
     private var showSettings = MutableStateFlow(false)
     private var showSubtitles = MutableStateFlow(false)
     private var showSleepTimer = MutableStateFlow(false)
@@ -409,15 +409,17 @@ class Player: ComponentActivity(), Player.Listener {
                         leftJob.value = leftScope.launch {
                             leftClick = time
                             delay(300)
-                            if (!showOverlayState) {
-                                showOverlay.value = true
-                            } else {
-                                showOverlay.value = false
+                            if (playerControllerState?.mediaItemCount == 1) {
+                                if (!showOverlayState) {
+                                    showOverlay.value = true
+                                } else {
+                                    showOverlay.value = false
+                                }
+                                showInfo.value = false
+                                showSettings.value = false
+                                showSubtitles.value = false
+                                showSleepTimer.value = false
                             }
-                            showInfo.value = false
-                            showSettings.value = false
-                            showSubtitles.value = false
-                            showSleepTimer.value = false
                             leftClick = 0
                             leftJob.value = null
                         }
@@ -478,15 +480,17 @@ class Player: ComponentActivity(), Player.Listener {
                         rightJob.value = rightScope.launch {
                             rightClick = time
                             delay(300)
-                            if (!showOverlayState) {
-                                showOverlay.value = true
-                            } else {
-                                showOverlay.value = false
+                            if (playerControllerState?.mediaItemCount == 1) {
+                                if (!showOverlayState) {
+                                    showOverlay.value = true
+                                } else {
+                                    showOverlay.value = false
+                                }
+                                showInfo.value = false
+                                showSettings.value = false
+                                showSubtitles.value = false
+                                showSleepTimer.value = false
                             }
-                            showInfo.value = false
-                            showSettings.value = false
-                            showSubtitles.value = false
-                            showSleepTimer.value = false
                             rightClick = 0
                             rightJob.value = null
                         }
@@ -667,11 +671,7 @@ class Player: ComponentActivity(), Player.Listener {
                             .align(Alignment.CenterVertically)
                     ) {
                         Text(
-                            text = if (playerControllerState?.mediaMetadata?.title != null) {
-                                playerControllerState?.mediaMetadata?.title.toString()
-                            } else {
-                                "No Video Loaded"
-                            },
+                            text = playerControllerState?.mediaMetadata?.title.toString(),
                             color = Color.White,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
@@ -687,64 +687,60 @@ class Player: ComponentActivity(), Player.Listener {
                             modifier = Modifier.wrapContentWidth()
                         ) {
                             // Share Button
-                            if (playerControllerState?.mediaItemCount == 1) {
-                                Button(
-                                    modifier = Modifier.width(50.dp),
-                                    shape = CircleShape,
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = IndicationFactory,
-                                    onClick = {
-                                        val url: String
-                                        val type: String? = playerControllerState?.mediaMetadata?.extras?.getString("type")
-                                        if (type == "short") {
-                                            url = "https://youtube.com/shorts/${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
-                                        } else {
-                                            url = "https://youtube.com/watch?v=${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
-                                        }
-                                        if (chromeOSDevice || questOSDevice) {
-                                            val clipManager: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                                            val clipData: ClipData = ClipData.newPlainText("", url)
-                                            clipManager.setPrimaryClip(clipData)
-                                        } else {
-                                            val shareIntent = Intent()
-                                            shareIntent.action = Intent.ACTION_SEND
-                                            shareIntent.putExtra(Intent.EXTRA_TEXT, url)
-                                            shareIntent.type = "text/plain"
-                                            startActivity(Intent.createChooser(shareIntent, null))
-                                        }
+                            Button(
+                                modifier = Modifier.width(50.dp),
+                                shape = CircleShape,
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = IndicationFactory,
+                                onClick = {
+                                    val url: String
+                                    val type: String? = playerControllerState?.mediaMetadata?.extras?.getString("type")
+                                    if (type == "short") {
+                                        url = "https://youtube.com/shorts/${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
+                                    } else {
+                                        url = "https://youtube.com/watch?v=${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
                                     }
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Outlined.Share,
-                                        tint = Color.White,
-                                        contentDescription = ""
-                                    )
+                                    if (chromeOSDevice || questOSDevice) {
+                                        val clipManager: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                                        val clipData: ClipData = ClipData.newPlainText("", url)
+                                        clipManager.setPrimaryClip(clipData)
+                                    } else {
+                                        val shareIntent = Intent()
+                                        shareIntent.action = Intent.ACTION_SEND
+                                        shareIntent.putExtra(Intent.EXTRA_TEXT, url)
+                                        shareIntent.type = "text/plain"
+                                        startActivity(Intent.createChooser(shareIntent, null))
+                                    }
                                 }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Share,
+                                    tint = Color.White,
+                                    contentDescription = ""
+                                )
                             }
                             // Settings Button
-                            if (playerControllerState?.mediaItemCount == 1) {
-                                Button(
-                                    modifier = Modifier.width(50.dp),
-                                    shape = CircleShape,
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = IndicationFactory,
-                                    onClick = {
-                                        if (!showSettingsState && !showInfoState && !showSubtitlesState && !showSleepTimerState) {
-                                            showSettings.value = true
-                                        } else {
-                                            showSettings.value = false
-                                            showInfo.value = false
-                                            showSubtitles.value = false
-                                            showSleepTimer.value = false
-                                        }
+                            Button(
+                                modifier = Modifier.width(50.dp),
+                                shape = CircleShape,
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = IndicationFactory,
+                                onClick = {
+                                    if (!showSettingsState && !showInfoState && !showSubtitlesState && !showSleepTimerState) {
+                                        showSettings.value = true
+                                    } else {
+                                        showSettings.value = false
+                                        showInfo.value = false
+                                        showSubtitles.value = false
+                                        showSleepTimer.value = false
                                     }
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Outlined.Settings,
-                                        tint = Color.White,
-                                        contentDescription = ""
-                                    )
                                 }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Settings,
+                                    tint = Color.White,
+                                    contentDescription = ""
+                                )
                             }
                         }
                     }
@@ -754,7 +750,7 @@ class Player: ComponentActivity(), Player.Listener {
 
         // Settings View
 
-        if (showSettingsState && playerControllerState?.mediaItemCount == 1) {
+        if (showSettingsState) {
             Row(
                 modifier = if (deviceRotationState == 1) {
                     Modifier
@@ -1024,7 +1020,7 @@ class Player: ComponentActivity(), Player.Listener {
 
         // Info View
 
-        if (showInfoState && playerControllerState?.mediaItemCount == 1 && playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
+        if (showInfoState && playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
             Row(
                 modifier = if (deviceRotationState == 1) {
                     Modifier
@@ -1112,7 +1108,7 @@ class Player: ComponentActivity(), Player.Listener {
 
         // Subtitles View
 
-        if (showSubtitlesState && playerControllerState?.mediaItemCount == 1) {
+        if (showSubtitlesState) {
             Row(
                 modifier = if (deviceRotationState == 1) {
                     Modifier
@@ -1245,7 +1241,7 @@ class Player: ComponentActivity(), Player.Listener {
 
         // Sleep Timer View
 
-        if (showSleepTimerState && playerControllerState?.mediaItemCount == 1) {
+        if (showSleepTimerState) {
             Row(
                 modifier = if (deviceRotationState == 1) {
                     Modifier
@@ -1377,6 +1373,11 @@ class Player: ComponentActivity(), Player.Listener {
     private fun createPlayer(videoID: String?) {
         playerController.value?.stop()
         playerController.value?.removeMediaItem(0)
+        showOverlay.value = false
+        showInfo.value = false
+        showSettings.value = false
+        showSubtitles.value = false
+        showSleepTimer.value = false
 
         val sessionToken = SessionToken(this, ComponentName(this, PlayerService::class.java))
         playerControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
