@@ -1,15 +1,11 @@
 package h.lillie.ytplayer
 
 import com.chaquo.python.Python
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.request.get
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.bodyAsText
-import io.ktor.http.isSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -27,23 +23,35 @@ class Requests {
         return@withContext Json.decodeFromString<Info>(rq)
     }
 
-    suspend fun returnYouTubeDislike(videoId: String): Int? = withContext(Dispatchers.IO) {
-        val client = HttpClient(CIO)
-        val response: HttpResponse = client.get("https://returnyoutubedislikeapi.com/votes?videoId=$videoId")
-        if (!response.status.isSuccess()) {
+    suspend fun returnYouTubeDislike(videoID: String): Int? = withContext(Dispatchers.IO) {
+        val client = OkHttpClient.Builder().build()
+
+        val request = Request.Builder()
+            .method("GET", null)
+            .url("https://returnyoutubedislikeapi.com/votes?videoId=$videoID")
+            .build()
+
+        val response = client.newCall(request).execute()
+        if (!response.isSuccessful) {
             return@withContext null
         }
 
-        return@withContext JSONObject(response.bodyAsText()).getInt("dislikes")
+        return@withContext JSONObject(response.body.string()).getInt("dislikes")
     }
 
-    suspend fun sponsorBlock(videoId: String): JSONArray? = withContext(Dispatchers.IO) {
-        val client = HttpClient(CIO)
-        val response: HttpResponse = client.get("https://sponsor.ajay.app/api/skipSegments?videoID=$videoId&category=sponsor")
-        if (!response.status.isSuccess()) {
+    suspend fun sponsorBlock(videoID: String): JSONArray? = withContext(Dispatchers.IO) {
+        val client = OkHttpClient.Builder().build()
+
+        val request = Request.Builder()
+            .method("GET", null)
+            .url("https://sponsor.ajay.app/api/skipSegments?videoID=$videoID&category=sponsor")
+            .build()
+
+        val response = client.newCall(request).execute()
+        if (!response.isSuccessful) {
             return@withContext null
         }
 
-        return@withContext JSONArray(response.bodyAsText())
+        return@withContext JSONArray(response.body.string())
     }
 }
