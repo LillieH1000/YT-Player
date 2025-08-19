@@ -318,7 +318,6 @@ class Player: ComponentActivity(), Player.Listener {
         }
     }
 
-    private var ambientBackgroundChecked = MutableStateFlow(true)
     private var autoRotateEnabled = MutableStateFlow(true)
     private var deviceRotation = MutableStateFlow(0)
     private var isPlaying = MutableStateFlow(0)
@@ -340,7 +339,6 @@ class Player: ComponentActivity(), Player.Listener {
     private fun CreatePlayerUI() {
         // States
 
-        val ambientBackgroundCheckedState by ambientBackgroundChecked.collectAsState()
         val autoRotateEnabledState by autoRotateEnabled.collectAsState()
         val deviceRotationState by deviceRotation.collectAsState()
         val isPlayingState by isPlaying.collectAsState()
@@ -361,25 +359,14 @@ class Player: ComponentActivity(), Player.Listener {
         // Player View
 
         AndroidView(
-            modifier = if (!ambientBackgroundCheckedState) {
-                Modifier
-                    .background(Color.Black)
-                    .navigationBarsPadding()
-                    .statusBarsPadding()
-                    .systemBarsPadding()
-                    .fillMaxSize()
-                    .focusTarget()
-                    .focusProperties { canFocus = false }
-            } else {
-                Modifier
-                    .background(Color.Black)
-                    .navigationBarsPadding()
-                    .statusBarsPadding()
-                    .systemBarsPadding()
-                    .fillMaxSize()
-                    .focusTarget()
-                    .focusProperties { canFocus = false }
-            },
+            modifier = Modifier
+                .background(Color.Black)
+                .navigationBarsPadding()
+                .statusBarsPadding()
+                .systemBarsPadding()
+                .fillMaxSize()
+                .focusTarget()
+                .focusProperties { canFocus = false },
             factory = { context ->
                 PlayerView(context).apply {
                     this.player = playerControllerState
@@ -920,40 +907,6 @@ class Player: ComponentActivity(), Player.Listener {
                                 imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
                                 tint = Color.White,
                                 contentDescription = ""
-                            )
-                        }
-                    }
-                    // Ambient Background
-                    Row(
-                        modifier = Modifier
-                            .height(40.dp)
-                            .padding(start = 10.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .align(Alignment.CenterVertically)
-                        ) {
-                            Text(
-                                text = "Ambient Background",
-                                color = Color.White,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1
-                            )
-                        }
-                        Column(
-                            modifier = Modifier.align(Alignment.CenterVertically)
-                        ) {
-                            Switch(
-                                modifier = Modifier.scale(0.8f),
-                                checked = ambientBackgroundCheckedState,
-                                onCheckedChange = {
-                                    if (!ambientBackgroundCheckedState) {
-                                        ambientBackgroundChecked.value = true
-                                    } else {
-                                        ambientBackgroundChecked.value = false
-                                    }
-                                }
                             )
                         }
                     }
