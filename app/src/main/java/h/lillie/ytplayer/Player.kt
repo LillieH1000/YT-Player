@@ -788,42 +788,44 @@ class Player: ComponentActivity(), Player.Listener {
                             onClick = {})
                 ) {
                     // Info
-                    Row(
-                        modifier = Modifier
-                            .height(40.dp)
-                            .padding(start = 10.dp)
-                            .clickable(
-                                enabled = true,
-                                interactionSource = null,
-                                indication = null,
-                                onClick = {
-                                    showSettings.value = false
-                                    showInfo.value = true
-                                })
-                    ) {
-                        Column(
+                    if (playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
+                        Row(
                             modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .weight(1f)
+                                .height(40.dp)
+                                .padding(start = 10.dp)
+                                .clickable(
+                                    enabled = true,
+                                    interactionSource = null,
+                                    indication = null,
+                                    onClick = {
+                                        showSettings.value = false
+                                        showInfo.value = true
+                                    })
                         ) {
-                            Text(
-                                text = "Info",
-                                color = Color.White,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1
-                            )
-                        }
-                        Column(
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .scale(0.6f)
-                                .width(30.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
-                                tint = Color.White,
-                                contentDescription = ""
-                            )
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .weight(1f)
+                            ) {
+                                Text(
+                                    text = "Info",
+                                    color = Color.White,
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1
+                                )
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .scale(0.6f)
+                                    .width(30.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
+                                    tint = Color.White,
+                                    contentDescription = ""
+                                )
+                            }
                         }
                     }
                     // Subtitles
@@ -1020,7 +1022,7 @@ class Player: ComponentActivity(), Player.Listener {
 
         // Info View
 
-        if (showInfoState && playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
+        if (showInfoState) {
             Row(
                 modifier = if (deviceRotationState == 1) {
                     Modifier
