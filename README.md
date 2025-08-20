@@ -4,12 +4,6 @@
 
 A simple YouTube video player for [Android](#android) and [ChromeOS](#chromeos) with features such as no ads, background playback and more!
 
-<br>
-
-## Notice
-
-I feel like this project has been going a bit to far off being a simple YouTube video player and overstepping what I can maintain myself while working full-time, so I have removed all prebuilt releases and I am working on a new version that will be more focused on redoing this project in the way I meant it to be.
-
 </div><br>
 
 Features:
@@ -18,7 +12,7 @@ Features:
 - Picture In Picture
 - Sleep Timer
 - Subtitles
-- Voice Search (Android only)
+- Video Info (Views, Likes, Dislikes)
 - Android Auto (Audio only, supports voice search)
 - [SponsorBlock](https://sponsor.ajay.app/) (Only auto skips sponsors)
 
@@ -30,11 +24,10 @@ Requires: Android version 8 and above
 
 Usage:
 - Press the "Share" button on any video in the YouTube app, press the "More" button and press "YT Player".
-- Launch the "YT Player" app and press the voice search icon located in the overlay and say what video you want to play
 
 <br>
 
-## ChromeOS
+## ChromeOS && Meta Quest 3/3s
 
 Requires: Android version 8 and above
 
@@ -44,4 +37,4 @@ Usage:
 <br>
 
 ## Open Source Libraries
-- [AndroidX](https://github.com/androidx/androidx), [Chaquopy](https://github.com/chaquo/chaquopy), [Compose Unstyled](https://github.com/composablehorizons/compose-unstyled/), [Kotlin](https://github.com/JetBrains/kotlin), [Kotlinx Coroutines](https://github.com/Kotlin/kotlinx.coroutines), [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization), [Ktor](https://github.com/ktorio/ktor), [Media3](https://github.com/androidx/media), [Return YouTube Dislike](https://github.com/Anarios/return-youtube-dislike), [SponsorBlock](https://github.com/ajayyy/SponsorBlock), [yt-dlp](https://github.com/yt-dlp/yt-dlp)
+- [AndroidX](https://github.com/androidx/androidx), [Chaquopy](https://github.com/chaquo/chaquopy), [Compose Unstyled](https://github.com/composablehorizons/compose-unstyled/), [Cronet Transport for OkHttp](https://github.com/google/cronet-transport-for-okhttp), [Kotlin](https://github.com/JetBrains/kotlin), [Kotlinx Coroutines](https://github.com/Kotlin/kotlinx.coroutines), [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization), [Media3](https://github.com/androidx/media), [OkHttp](https://github.com/square/okhttp), [Return YouTube Dislike](https://github.com/Anarios/return-youtube-dislike), [SponsorBlock](https://github.com/ajayyy/SponsorBlock), [yt-dlp](https://github.com/yt-dlp/yt-dlp)

@@ -2,9 +2,9 @@ name: Generate Apks
 
 on:
   push:
-    branches: [ "v2" ]
+    branches: [ "v3" ]
   pull_request:
-    branches: [ "v2" ]
+    branches: [ "v3" ]
     
 jobs:
   build:
