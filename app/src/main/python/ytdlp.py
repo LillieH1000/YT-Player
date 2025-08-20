@@ -6,10 +6,10 @@ def getInfo(videoID, searchQuery):
     ytdlp_opts = {
         "extractor_args": {
             "youtube": {
-                "player_client": ["ios","web_safari"]
+                "player_client": ["ios"]
             }
         },
-        "format": "bestvideo[protocol=m3u8_native]/best[protocol=m3u8_native]",
+        "format": "bestvideo[protocol=m3u8_native]",
         "check_formats": "selected",
         "noplaylist": True,
         "cachedir": False
