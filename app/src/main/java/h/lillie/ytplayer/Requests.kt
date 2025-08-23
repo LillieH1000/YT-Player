@@ -9,6 +9,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 import org.chromium.net.CronetEngine
 import org.json.JSONArray
 import org.json.JSONObject
@@ -28,7 +29,7 @@ class Requests {
     }
 
     suspend fun returnYouTubeDislike(context: Context, videoID: String): Int? = withContext(Dispatchers.IO) {
-        val client = OkHttpClient.Builder()
+        val client: OkHttpClient.Builder = OkHttpClient.Builder()
 
         if (CronetProviderInstaller.isInstalled()) {
             val engine: CronetEngine = CronetEngine.Builder(context)
@@ -36,16 +37,16 @@ class Requests {
                 .enableQuic(true)
                 .build()
 
-            val interceptor = CronetInterceptor.newBuilder(engine).build()
+            val interceptor: CronetInterceptor = CronetInterceptor.newBuilder(engine).build()
             client.addInterceptor(interceptor)
         }
 
-        val request = Request.Builder()
+        val request: Request = Request.Builder()
             .method("GET", null)
             .url("https://returnyoutubedislikeapi.com/votes?videoId=$videoID")
             .build()
 
-        val response = client.build().newCall(request).execute()
+        val response: Response = client.build().newCall(request).execute()
         if (!response.isSuccessful) {
             return@withContext null
         }
@@ -54,7 +55,7 @@ class Requests {
     }
 
     suspend fun sponsorBlock(context: Context, videoID: String): JSONArray? = withContext(Dispatchers.IO) {
-        val client = OkHttpClient.Builder()
+        val client: OkHttpClient.Builder = OkHttpClient.Builder()
 
         if (CronetProviderInstaller.isInstalled()) {
             val engine: CronetEngine = CronetEngine.Builder(context)
@@ -62,16 +63,16 @@ class Requests {
                 .enableQuic(true)
                 .build()
 
-            val interceptor = CronetInterceptor.newBuilder(engine).build()
+            val interceptor: CronetInterceptor = CronetInterceptor.newBuilder(engine).build()
             client.addInterceptor(interceptor)
         }
 
-        val request = Request.Builder()
+        val request: Request = Request.Builder()
             .method("GET", null)
             .url("https://sponsor.ajay.app/api/skipSegments?videoID=$videoID&category=sponsor")
             .build()
 
-        val response = client.build().newCall(request).execute()
+        val response: Response = client.build().newCall(request).execute()
         if (!response.isSuccessful) {
             return@withContext null
         }

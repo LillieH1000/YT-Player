@@ -301,7 +301,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                 playerCache = SimpleCache(File(cacheDir, "media"), LeastRecentlyUsedCacheEvictor(256 * 1024 * 1024), StandaloneDatabaseProvider(this@PlayerService))
                 val cacheDataSource: CacheDataSource.Factory = CacheDataSource.Factory().setCache(playerCache)
                 val hlsMediaSource: HlsMediaSource
-                val client = OkHttpClient.Builder()
+                val client: OkHttpClient.Builder = OkHttpClient.Builder()
 
                 if (CronetProviderInstaller.isInstalled()) {
                     val engine: CronetEngine = CronetEngine.Builder(context)
@@ -309,11 +309,11 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                         .enableQuic(true)
                         .build()
 
-                    val interceptor = CronetInterceptor.newBuilder(engine).build()
+                    val interceptor: CronetInterceptor = CronetInterceptor.newBuilder(engine).build()
                     client.addInterceptor(interceptor)
                 }
 
-                val okhttpDataSource = OkHttpDataSource.Factory(client.build())
+                val okhttpDataSource: OkHttpDataSource.Factory = OkHttpDataSource.Factory(client.build())
                 if (!info.live) {
                     cacheDataSource.setUpstreamDataSourceFactory(okhttpDataSource)
 
