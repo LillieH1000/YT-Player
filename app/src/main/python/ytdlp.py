@@ -6,6 +6,7 @@ def getInfo(videoID, searchQuery):
     ytdlp_opts = {
         "extractor_args": {
             "youtube": {
+                "formats": ["missing_pot"],
                 "player_client": ["ios"]
             }
         },
