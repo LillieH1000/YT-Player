@@ -695,12 +695,11 @@ class Player: ComponentActivity(), Player.Listener {
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = Indication,
                                 onClick = {
-                                    val url: String
                                     val type: String? = playerControllerState?.mediaMetadata?.extras?.getString("type")
-                                    if (type == "short") {
-                                        url = "https://youtube.com/shorts/${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
+                                    val url: String = if (type == "short") {
+                                        "https://youtube.com/shorts/${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
                                     } else {
-                                        url = "https://youtube.com/watch?v=${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
+                                        "https://youtube.com/watch?v=${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
                                     }
                                     if (chromeOSDevice || questOSDevice) {
                                         val clipManager: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
