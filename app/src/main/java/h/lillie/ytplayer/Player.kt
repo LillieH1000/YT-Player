@@ -706,6 +706,7 @@ class Player: ComponentActivity(), Player.Listener {
                                         val clipManager: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                                         val clipData: ClipData = ClipData.newPlainText("", url)
                                         clipManager.setPrimaryClip(clipData)
+                                        Toast.makeText(this@Player, "Copied to clipboard", Toast.LENGTH_SHORT).show()
                                     } else {
                                         val shareIntent = Intent()
                                         shareIntent.action = Intent.ACTION_SEND
