@@ -397,7 +397,7 @@ class Player: ComponentActivity(), Player.Listener {
                     .fillMaxHeight()
                     .weight(1f),
                 interactionSource = remember { MutableInteractionSource() },
-                indication = IndicationFactory,
+                indication = Indication,
                 onClick = {
                     val time = System.currentTimeMillis()
                     leftJob.value?.cancel()
@@ -434,7 +434,7 @@ class Player: ComponentActivity(), Player.Listener {
                     .fillMaxHeight()
                     .weight(1f),
                 interactionSource = remember { MutableInteractionSource() },
-                indication = IndicationFactory,
+                indication = Indication,
                 onClick = {
                     val time = System.currentTimeMillis()
                     middleJob.value?.cancel()
@@ -470,7 +470,7 @@ class Player: ComponentActivity(), Player.Listener {
                     .fillMaxHeight()
                     .weight(1f),
                 interactionSource = remember { MutableInteractionSource() },
-                indication = IndicationFactory,
+                indication = Indication,
                 onClick = {
                     val time = System.currentTimeMillis()
                     rightJob.value?.cancel()
@@ -539,7 +539,7 @@ class Player: ComponentActivity(), Player.Listener {
                         .size(50.dp),
                     shape = CircleShape,
                     interactionSource = remember { MutableInteractionSource() },
-                    indication = IndicationFactory,
+                    indication = Indication,
                     onClick = {
                         if (playerController.value != null) {
                             if (!playerController.value!!.isPlaying) {
@@ -626,7 +626,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 .align(Alignment.CenterVertically),
                             shape = CircleShape,
                             interactionSource = remember { MutableInteractionSource() },
-                            indication = IndicationFactory,
+                            indication = Indication,
                             onClick = {
                                 if (requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
                                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
@@ -693,7 +693,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 modifier = Modifier.width(50.dp),
                                 shape = CircleShape,
                                 interactionSource = remember { MutableInteractionSource() },
-                                indication = IndicationFactory,
+                                indication = Indication,
                                 onClick = {
                                     val url: String
                                     val type: String? = playerControllerState?.mediaMetadata?.extras?.getString("type")
@@ -726,7 +726,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 modifier = Modifier.width(50.dp),
                                 shape = CircleShape,
                                 interactionSource = remember { MutableInteractionSource() },
-                                indication = IndicationFactory,
+                                indication = Indication,
                                 onClick = {
                                     if (!showSettingsState && !showInfoState && !showSubtitlesState && !showSleepTimerState) {
                                         showSettings.value = true
@@ -974,7 +974,7 @@ class Player: ComponentActivity(), Player.Listener {
                                         .scale(0.6f)
                                         .align(Alignment.CenterHorizontally),
                                     interactionSource = remember { MutableInteractionSource() },
-                                    indication = IndicationFactory,
+                                    indication = Indication,
                                     onClick = {
                                         val decimalFormat = DecimalFormat("#.#")
                                         if (decimalFormat.format(playerController.value!!.playbackParameters.speed).toFloat() > 0.1f) {
@@ -1000,7 +1000,7 @@ class Player: ComponentActivity(), Player.Listener {
                                         .scale(0.6f)
                                         .align(Alignment.CenterHorizontally),
                                     interactionSource = remember { MutableInteractionSource() },
-                                    indication = IndicationFactory,
+                                    indication = Indication,
                                     onClick = {
                                         val decimalFormat = DecimalFormat("#.#")
                                         if (decimalFormat.format(playerController.value!!.playbackParameters.speed).toFloat() < 2.0f) {
