@@ -19,6 +19,7 @@ import android.os.Looper
 import android.provider.Settings
 import android.view.KeyEvent
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
 import androidx.activity.compose.setContent
@@ -1381,6 +1382,8 @@ class Player: ComponentActivity(), Player.Listener {
         showSettings.value = false
         showSubtitles.value = false
         showSleepTimer.value = false
+
+        Toast.makeText(this, "Loading, please wait", Toast.LENGTH_SHORT).show()
 
         val sessionToken = SessionToken(this, ComponentName(this, PlayerService::class.java))
         playerControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
