@@ -295,14 +295,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                     sendBroadcast(broadcastIntent)
                 }
 
-                if (this@PlayerService::playerCache.isInitialized) {
-                    playerCache.release()
-                }
-                playerCache = SimpleCache(File(cacheDir, "media"), LeastRecentlyUsedCacheEvictor(256 * 1024 * 1024), StandaloneDatabaseProvider(this@PlayerService))
-                val cacheDataSource: CacheDataSource.Factory = CacheDataSource.Factory().setCache(playerCache)
-                val hlsMediaSource: HlsMediaSource
                 val client: OkHttpClient.Builder = OkHttpClient.Builder()
-
                 if (CronetProviderInstaller.isInstalled()) {
                     val engine: CronetEngine = CronetEngine.Builder(context)
                         .enableHttp2(true)
@@ -312,9 +305,17 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                     val interceptor: CronetInterceptor = CronetInterceptor.newBuilder(engine).build()
                     client.addInterceptor(interceptor)
                 }
-
+                
                 val okhttpDataSource: OkHttpDataSource.Factory = OkHttpDataSource.Factory(client.build())
+                if (this@PlayerService::playerCache.isInitialized) {
+                    playerCache.release()
+                }
+
+                val hlsMediaSource: HlsMediaSource
                 if (!info.live) {
+                    playerCache = SimpleCache(File(cacheDir, "media"), LeastRecentlyUsedCacheEvictor(256 * 1024 * 1024), StandaloneDatabaseProvider(this@PlayerService))
+
+                    val cacheDataSource: CacheDataSource.Factory = CacheDataSource.Factory().setCache(playerCache)
                     cacheDataSource.setUpstreamDataSourceFactory(okhttpDataSource)
 
                     hlsMediaSource = HlsMediaSource.Factory(cacheDataSource)
