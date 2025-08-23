@@ -378,7 +378,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
 
                     if (position >= segment0 && position < segment1) {
                         exoPlayer.seekTo(decimalFormat.format(segment1 * 1000.0).toLong())
-                        Toast.makeText(this@PlayerService, "Sponsor Skipped", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@PlayerService, "Sponsor skipped", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
