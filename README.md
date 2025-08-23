@@ -2,7 +2,7 @@
 
 # YT Player
 
-A simple YouTube video player for [Android](#android) and [ChromeOS](#chromeos) with features such as no ads, background playback and more!
+A simple YouTube video player for [Android](#android), [ChromeOS](#chromeos--meta-quest-33s) and [Meta Quest 3/3s](#chromeos--meta-quest-33s) with features such as no ads, background playback and more!
 
 </div><br>
 
@@ -12,7 +12,7 @@ Features:
 - Picture In Picture
 - Sleep Timer
 - Subtitles
-- Video Info (Views, Likes, Dislikes)
+- Video Info (Views, likes, dislikes)
 - Android Auto (Audio only, supports voice search)
 - [SponsorBlock](https://sponsor.ajay.app/) (Only auto skips sponsors)
 
@@ -27,7 +27,7 @@ Usage:
 
 <br>
 
-## ChromeOS && Meta Quest 3/3s
+## ChromeOS & Meta Quest 3/3s
 
 Requires: Android version 8 and above
 
