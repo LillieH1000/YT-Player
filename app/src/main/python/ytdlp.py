@@ -7,10 +7,10 @@ def getInfo(videoID, searchQuery):
         "extractor_args": {
             "youtube": {
                 "formats": ["missing_pot"],
-                "player_client": ["ios"]
+                "player_client": ["ios","web_safari"]
             }
         },
-        "format": "bestvideo[protocol=m3u8_native]",
+        "format": "bestvideo[protocol=m3u8_native]/best[protocol=m3u8_native]",
         "check_formats": "selected",
         "noplaylist": True,
         "cachedir": False
