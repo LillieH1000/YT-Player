@@ -14,5 +14,12 @@ data class Info(
     val type: String,
     val url: String,
     val expiration: String,
-    val subtitles: ArrayList<SubtitlesInfo>?
-)
+    val subtitles: ArrayList<Subtitles>?
+) {
+    @Serializable
+    data class Subtitles(
+        val id: String,
+        val name: String,
+        val url: String
+    )
+}
