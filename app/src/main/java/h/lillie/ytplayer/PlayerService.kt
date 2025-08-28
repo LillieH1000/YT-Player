@@ -297,7 +297,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
 
                 val client: OkHttpClient.Builder = OkHttpClient.Builder()
                 if (CronetProviderInstaller.isInstalled()) {
-                    val engine: CronetEngine = CronetEngine.Builder(context)
+                    val engine: CronetEngine = CronetEngine.Builder(this@PlayerService)
                         .enableHttp2(true)
                         .enableQuic(true)
                         .build()
