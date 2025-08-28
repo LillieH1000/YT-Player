@@ -315,8 +315,10 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                 if (!info.live) {
                     playerCache = SimpleCache(File(cacheDir, "media"), LeastRecentlyUsedCacheEvictor(256 * 1024 * 1024), StandaloneDatabaseProvider(this@PlayerService))
 
-                    val cacheDataSource: CacheDataSource.Factory = CacheDataSource.Factory().setCache(playerCache)
-                    cacheDataSource.setUpstreamDataSourceFactory(okhttpDataSource)
+                    val cacheDataSource: CacheDataSource.Factory = CacheDataSource.Factory()
+                        .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
+                        .setUpstreamDataSourceFactory(okhttpDataSource)
+                        .setCache(playerCache)
 
                     hlsMediaSource = HlsMediaSource.Factory(cacheDataSource)
                         .setAllowChunklessPreparation(false)
