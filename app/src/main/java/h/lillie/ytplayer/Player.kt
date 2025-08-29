@@ -264,12 +264,8 @@ class Player: ComponentActivity(), Player.Listener {
                     }
                 }
             }
-            KeyEvent.KEYCODE_DPAD_LEFT -> {
-                playerController.value?.seekBack()
-            }
-            KeyEvent.KEYCODE_DPAD_RIGHT -> {
-                playerController.value?.seekForward()
-            }
+            KeyEvent.KEYCODE_DPAD_LEFT -> playerController.value?.seekBack()
+            KeyEvent.KEYCODE_DPAD_RIGHT -> playerController.value?.seekForward()
         }
         return super.onKeyDown(keyCode, event)
     }
@@ -561,15 +557,9 @@ class Player: ComponentActivity(), Player.Listener {
                         Icon(
                             modifier = Modifier.size(40.dp),
                             imageVector = when (isPlayingState) {
-                                2 -> {
-                                    Icons.Default.PlayArrow
-                                }
-                                3 -> {
-                                    Icons.Default.Pause
-                                }
-                                else -> {
-                                    Icons.Default.Replay
-                                }
+                                2 -> Icons.Default.PlayArrow
+                                3 -> Icons.Default.Pause
+                                else -> Icons.Default.Replay
                             },
                             tint = Color.White,
                             contentDescription = ""
@@ -1500,12 +1490,8 @@ class Player: ComponentActivity(), Player.Listener {
             val player: MediaController? = playerController.value
             if (player != null && player.mediaItemCount == 1) {
                 when (player.playbackState) {
-                    Player.STATE_BUFFERING -> {
-                        isPlaying.value = 1
-                    }
-                    Player.STATE_ENDED -> {
-                        isPlaying.value = 4
-                    }
+                    Player.STATE_BUFFERING -> isPlaying.value = 1
+                    Player.STATE_ENDED -> isPlaying.value = 4
                     else -> {
                         if (!player.isPlaying) {
                             isPlaying.value = 2
