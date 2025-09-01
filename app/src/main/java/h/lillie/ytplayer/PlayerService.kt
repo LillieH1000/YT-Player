@@ -23,6 +23,7 @@ import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.StandaloneDatabaseProvider
+import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
@@ -46,6 +47,7 @@ import com.google.net.cronet.okhttptransport.CronetInterceptor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
@@ -84,8 +86,46 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
             )
         }
 
+        val client: OkHttpClient.Builder = OkHttpClient.Builder()
+        if (CronetProviderInstaller.isInstalled()) {
+            val engine: CronetEngine = CronetEngine.Builder(this)
+                .enableHttp2(true)
+                .enableQuic(true)
+                .build()
+
+            val interceptor: CronetInterceptor = CronetInterceptor.newBuilder(engine).build()
+            client.addInterceptor(interceptor)
+        }
+        val okhttpDataSource: OkHttpDataSource.Factory = OkHttpDataSource.Factory(client.build())
+
+        if (this@PlayerService::playerCache.isInitialized) {
+            playerCache.release()
+        }
+        playerCache = SimpleCache(File(cacheDir, "media"), LeastRecentlyUsedCacheEvictor(256 * 1024 * 1024), StandaloneDatabaseProvider(this@PlayerService))
+
+        val cacheDataSource: CacheDataSource.Factory = CacheDataSource.Factory()
+            .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
+            .setUpstreamDataSourceFactory(okhttpDataSource)
+            .setCache(playerCache)
+
+        val dualDataSource = DataSource.Factory {
+            val mediaMetadata: MediaMetadata
+            runBlocking(Dispatchers.Main) {
+                mediaMetadata = exoPlayer.mediaMetadata
+            }
+            if (mediaMetadata.extras?.getBoolean("live") != true) {
+                cacheDataSource.createDataSource()
+            } else {
+                okhttpDataSource.createDataSource()
+            }
+        }
+
+        val hlsMediaSource: HlsMediaSource.Factory = HlsMediaSource.Factory(dualDataSource)
+            .setAllowChunklessPreparation(false)
+
         exoPlayer = ExoPlayer.Builder(this)
             .setAudioAttributes(audioAttributes, true)
+            .setMediaSourceFactory(hlsMediaSource)
             .setRenderersFactory(renderersFactory)
             .setTrackSelector(trackSelector)
             .setSeekBackIncrementMs(10000)
@@ -295,42 +335,8 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                     sendBroadcast(broadcastIntent)
                 }
 
-                val client: OkHttpClient.Builder = OkHttpClient.Builder()
-                if (CronetProviderInstaller.isInstalled()) {
-                    val engine: CronetEngine = CronetEngine.Builder(this@PlayerService)
-                        .enableHttp2(true)
-                        .enableQuic(true)
-                        .build()
-
-                    val interceptor: CronetInterceptor = CronetInterceptor.newBuilder(engine).build()
-                    client.addInterceptor(interceptor)
-                }
-                
-                val okhttpDataSource: OkHttpDataSource.Factory = OkHttpDataSource.Factory(client.build())
-                if (this@PlayerService::playerCache.isInitialized) {
-                    playerCache.release()
-                }
-
-                val hlsMediaSource: HlsMediaSource
-                if (!info.live) {
-                    playerCache = SimpleCache(File(cacheDir, "media"), LeastRecentlyUsedCacheEvictor(256 * 1024 * 1024), StandaloneDatabaseProvider(this@PlayerService))
-
-                    val cacheDataSource: CacheDataSource.Factory = CacheDataSource.Factory()
-                        .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
-                        .setUpstreamDataSourceFactory(okhttpDataSource)
-                        .setCache(playerCache)
-
-                    hlsMediaSource = HlsMediaSource.Factory(cacheDataSource)
-                        .setAllowChunklessPreparation(false)
-                        .createMediaSource(playerMediaItem.build())
-                } else {
-                    hlsMediaSource = HlsMediaSource.Factory(okhttpDataSource)
-                        .setAllowChunklessPreparation(false)
-                        .createMediaSource(playerMediaItem.build())
-                }
-
                 withContext(Dispatchers.Main) {
-                    exoPlayer.setMediaSource(hlsMediaSource)
+                    exoPlayer.setMediaItem(playerMediaItem.build())
                     exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
                     exoPlayer.playbackParameters = PlaybackParameters(1.0f)
                     exoPlayer.trackSelectionParameters = exoPlayer.trackSelectionParameters.buildUpon()
