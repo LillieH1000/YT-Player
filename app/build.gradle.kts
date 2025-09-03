@@ -16,8 +16,8 @@ android {
         applicationId = "h.lillie.ytplayer"
         minSdk = 25
         targetSdk = 36
-        versionCode = 114
-        versionName = "3.0.2"
+        versionCode = 115
+        versionName = "3.1.0"
         ndk {
             abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64", "x86")
         }
