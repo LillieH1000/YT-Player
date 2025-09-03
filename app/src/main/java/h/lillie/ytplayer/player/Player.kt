@@ -230,7 +230,7 @@ class Player: ComponentActivity(), androidx.media3.common.Player.Listener {
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        if (packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && Build.VERSION.SDK_INT <= 30) {
+        if (Build.VERSION.SDK_INT <= 30 && Build.VERSION.SDK_INT >= 26 && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
             enterPictureInPictureMode(PictureInPictureParams.Builder().build())
         }
     }
@@ -1461,7 +1461,7 @@ class Player: ComponentActivity(), androidx.media3.common.Player.Listener {
                 }.toList()
             }
 
-            if (packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && Build.VERSION.SDK_INT >= 31) {
+            if (Build.VERSION.SDK_INT >= 31 && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
                 setPictureInPictureParams(
                     PictureInPictureParams.Builder()
                         .setAutoEnterEnabled(true)

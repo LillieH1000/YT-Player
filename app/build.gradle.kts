@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId = "h.lillie.ytplayer"
-        minSdk = 26
+        minSdk = 25
         targetSdk = 36
         versionCode = 114
         versionName = "3.0.2"
