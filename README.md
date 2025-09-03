@@ -9,7 +9,7 @@ A simple YouTube video player for [Android](#android), [ChromeOS](#chromeos--met
 Features:
 - No Ads
 - Background Playback
-- Picture In Picture
+- Picture In Picture (Android version 8 and above)
 - Sleep Timer
 - Subtitles
 - Video Info (Views, likes, dislikes)
@@ -20,7 +20,7 @@ Features:
 
 ## Android
 
-Requires: Android version 8 and above
+Requires: Android version 7.1 and above
 
 Usage:
 - Press the "Share" button on any video in the YouTube app, press the "More" button and press "YT Player".
@@ -29,7 +29,7 @@ Usage:
 
 ## ChromeOS & Meta Quest 3/3s
 
-Requires: Android version 8 and above
+Requires: Android version 7.1 and above
 
 Usage:
 - Copy the YouTube video url to your clipboard then launch the "YT Player" app.
