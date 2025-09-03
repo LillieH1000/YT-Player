@@ -1,4 +1,4 @@
-package h.lillie.ytplayer
+package h.lillie.ytplayer.player
 
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
@@ -44,6 +44,7 @@ import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.net.cronet.okhttptransport.CronetInterceptor
+import h.lillie.ytplayer.requests.Requests
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -59,7 +60,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
 @OptIn(UnstableApi::class)
-class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Callback, Player.Listener {
+class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Callback, Player.Listener {
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var playerCache: SimpleCache
     private lateinit var playerHandler: Handler
@@ -98,10 +99,14 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
         }
         val okhttpDataSource: OkHttpDataSource.Factory = OkHttpDataSource.Factory(client.build())
 
-        if (this@PlayerService::playerCache.isInitialized) {
+        if (this@Service::playerCache.isInitialized) {
             playerCache.release()
         }
-        playerCache = SimpleCache(File(cacheDir, "media"), LeastRecentlyUsedCacheEvictor(256 * 1024 * 1024), StandaloneDatabaseProvider(this@PlayerService))
+        playerCache = SimpleCache(
+            File(cacheDir, "media"),
+            LeastRecentlyUsedCacheEvictor(256 * 1024 * 1024),
+            StandaloneDatabaseProvider(this@Service)
+        )
 
         val cacheDataSource: CacheDataSource.Factory = CacheDataSource.Factory()
             .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
@@ -186,14 +191,16 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
 
     override fun onConnect(session: MediaSession, controller: MediaSession.ControllerInfo): MediaSession.ConnectionResult {
         val connectionResult: MediaSession.ConnectionResult = MediaSession.ConnectionResult.AcceptedResultBuilder(session)
-            .setAvailablePlayerCommands(MediaSession.ConnectionResult.DEFAULT_PLAYER_COMMANDS.buildUpon()
+            .setAvailablePlayerCommands(
+                MediaSession.ConnectionResult.DEFAULT_PLAYER_COMMANDS.buildUpon()
                 .remove(Player.COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
                 .remove(Player.COMMAND_SEEK_TO_PREVIOUS)
                 .remove(Player.COMMAND_SEEK_TO_NEXT_MEDIA_ITEM)
                 .remove(Player.COMMAND_SEEK_TO_NEXT)
                 .build()
             )
-            .setAvailableSessionCommands(MediaSession.ConnectionResult.DEFAULT_SESSION_COMMANDS.buildUpon()
+            .setAvailableSessionCommands(
+                MediaSession.ConnectionResult.DEFAULT_SESSION_COMMANDS.buildUpon()
                 .add(SessionCommand.COMMAND_CODE_LIBRARY_GET_LIBRARY_ROOT)
                 .add(backCommand)
                 .add(forwardCommand)
@@ -277,8 +284,8 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
             if (intent?.action == "h.lillie.ytplayer.service.info") {
                 val request = Requests()
                 val info = request.ytdlp(intent.extras!!.getString("videoID"), intent.extras!!.getString("searchQuery")) ?: return@async
-                val dislikes = request.returnYouTubeDislike(this@PlayerService, info.id)
-                sponsorBlock = request.sponsorBlock(this@PlayerService, info.id)
+                val dislikes = request.returnYouTubeDislike(this@Service, info.id)
+                sponsorBlock = request.sponsorBlock(this@Service, info.id)
                 playerTimer?.cancel()
                 playerTimer = null
 
@@ -309,7 +316,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                     .setUri(info.url.toUri())
 
                 if (info.subtitles != null) {
-                    val subtitles = JSONArray(Json.encodeToString(info.subtitles))
+                    val subtitles = JSONArray(Json.Default.encodeToString(info.subtitles))
                     val subtitlesList = mutableListOf<MediaItem.SubtitleConfiguration>()
 
                     for (i in 0 until subtitles.length()) {
@@ -325,12 +332,12 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                     playerMediaItem.setSubtitleConfigurations(subtitlesList)
 
                     val broadcastIntent = Intent("h.lillie.ytplayer.activity.subtitles")
-                    broadcastIntent.setPackage(this@PlayerService.packageName)
+                    broadcastIntent.setPackage(this@Service.packageName)
                     broadcastIntent.putExtra("subtitles", subtitles.toString())
                     sendBroadcast(broadcastIntent)
                 } else {
                     val broadcastIntent = Intent("h.lillie.ytplayer.activity.subtitles")
-                    broadcastIntent.setPackage(this@PlayerService.packageName)
+                    broadcastIntent.setPackage(this@Service.packageName)
                     broadcastIntent.putExtra("subtitles", null as String?)
                     sendBroadcast(broadcastIntent)
                 }
@@ -339,9 +346,10 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                     exoPlayer.setMediaItem(playerMediaItem.build())
                     exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
                     exoPlayer.playbackParameters = PlaybackParameters(1.0f)
-                    exoPlayer.trackSelectionParameters = exoPlayer.trackSelectionParameters.buildUpon()
-                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
-                        .build()
+                    exoPlayer.trackSelectionParameters =
+                        exoPlayer.trackSelectionParameters.buildUpon()
+                            .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                            .build()
                     exoPlayer.playWhenReady = true
                     exoPlayer.prepare()
 
@@ -357,9 +365,10 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
                 playerTimer = null
                 if (time != 0L) {
                     withContext(Dispatchers.Main) {
-                        playerTimer = object: CountDownTimer(time, 1000) {
+                        playerTimer = object : CountDownTimer(time, 1000) {
                             override fun onTick(millisUntilFinished: Long) {
                             }
+
                             override fun onFinish() {
                                 exoPlayer.pause()
                             }
@@ -375,7 +384,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
     private val playerTask = object: Runnable {
         override fun run() {
             val sponsorBlock: JSONArray? = sponsorBlock
-            if (sponsorBlock != null && this@PlayerService::exoPlayer.isInitialized && exoPlayer.mediaMetadata.extras?.getBoolean("live") != true) {
+            if (sponsorBlock != null && this@Service::exoPlayer.isInitialized && exoPlayer.mediaMetadata.extras?.getBoolean("live") != true) {
                 for (i in 0 until sponsorBlock.length()) {
                     val decimalFormat = DecimalFormat("#.###")
 
@@ -386,7 +395,7 @@ class PlayerService: MediaLibraryService(), MediaLibraryService.MediaLibrarySess
 
                     if (position >= segment0 && position < segment1) {
                         exoPlayer.seekTo(decimalFormat.format(segment1 * 1000.0).toLong())
-                        Toast.makeText(this@PlayerService, "Sponsor skipped", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@Service, "Sponsor skipped", Toast.LENGTH_SHORT).show()
                     }
                 }
             }

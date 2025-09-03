@@ -1,4 +1,4 @@
-package h.lillie.ytplayer
+package h.lillie.ytplayer.requests
 
 import kotlinx.serialization.Serializable
 

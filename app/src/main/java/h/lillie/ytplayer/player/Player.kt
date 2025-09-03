@@ -1,4 +1,4 @@
-package h.lillie.ytplayer
+package h.lillie.ytplayer.player
 
 import android.annotation.SuppressLint
 import android.app.PictureInPictureParams
@@ -90,7 +90,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.C
 import androidx.media3.common.PlaybackParameters
-import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
@@ -101,6 +100,7 @@ import com.composables.core.rememberScrollAreaState
 import com.composeunstyled.Button
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
+import h.lillie.ytplayer.Indication
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -116,7 +116,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
-class Player: ComponentActivity(), Player.Listener {
+class Player: ComponentActivity(), androidx.media3.common.Player.Listener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
     private var playerController = MutableStateFlow<MediaController?>(null)
     private var playerHandler: Handler = Handler(Looper.getMainLooper())
@@ -148,13 +148,15 @@ class Player: ComponentActivity(), Player.Listener {
                 Configuration.ORIENTATION_PORTRAIT -> {
                     if (!chromeOSDevice && !questOSDevice) {
                         deviceRotation.value = 0
-                        WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
+                        WindowInsetsControllerCompat(window, window.decorView).show(
+                            WindowInsetsCompat.Type.systemBars())
                     }
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
                     if (!chromeOSDevice && !questOSDevice) {
                         deviceRotation.value = 1
-                        WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
+                        WindowInsetsControllerCompat(window, window.decorView).hide(
+                            WindowInsetsCompat.Type.systemBars())
                     }
                 }
             }
@@ -292,13 +294,15 @@ class Player: ComponentActivity(), Player.Listener {
                 Configuration.ORIENTATION_PORTRAIT -> {
                     if (!chromeOSDevice && !questOSDevice) {
                         deviceRotation.value = 0
-                        WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
+                        WindowInsetsControllerCompat(window, window.decorView).show(
+                            WindowInsetsCompat.Type.systemBars())
                     }
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
                     if (!chromeOSDevice && !questOSDevice) {
                         deviceRotation.value = 1
-                        WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
+                        WindowInsetsControllerCompat(window, window.decorView).hide(
+                            WindowInsetsCompat.Type.systemBars())
                     }
                 }
             }
@@ -307,7 +311,7 @@ class Player: ComponentActivity(), Player.Listener {
 
     override fun onRepeatModeChanged(repeatMode: Int) {
         super.onRepeatModeChanged(repeatMode)
-        if (repeatMode == Player.REPEAT_MODE_OFF) {
+        if (repeatMode == androidx.media3.common.Player.REPEAT_MODE_OFF) {
             loopChecked.value = false
         } else {
             loopChecked.value = true
@@ -619,9 +623,11 @@ class Player: ComponentActivity(), Player.Listener {
                             indication = Indication,
                             onClick = {
                                 if (requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
-                                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                                    requestedOrientation =
+                                        ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
                                 } else {
-                                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                                    requestedOrientation =
+                                        ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
                                 }
                             }
                         ) {
@@ -685,17 +691,37 @@ class Player: ComponentActivity(), Player.Listener {
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = Indication,
                                 onClick = {
-                                    val type: String? = playerControllerState?.mediaMetadata?.extras?.getString("type")
+                                    val type: String? =
+                                        playerControllerState?.mediaMetadata?.extras?.getString("type")
                                     val url: String = when (type) {
-                                        "livestream" -> "https://youtube.com/live/${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
-                                        "short" -> "https://youtube.com/shorts/${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
-                                        else -> "https://youtube.com/watch?v=${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
+                                        "livestream" -> "https://youtube.com/live/${
+                                            playerControllerState?.mediaMetadata?.extras?.getString(
+                                                "id"
+                                            )
+                                        }"
+
+                                        "short" -> "https://youtube.com/shorts/${
+                                            playerControllerState?.mediaMetadata?.extras?.getString(
+                                                "id"
+                                            )
+                                        }"
+
+                                        else -> "https://youtube.com/watch?v=${
+                                            playerControllerState?.mediaMetadata?.extras?.getString(
+                                                "id"
+                                            )
+                                        }"
                                     }
                                     if (chromeOSDevice || questOSDevice) {
-                                        val clipManager: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                                        val clipManager: ClipboardManager =
+                                            getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                                         val clipData: ClipData = ClipData.newPlainText("", url)
                                         clipManager.setPrimaryClip(clipData)
-                                        Toast.makeText(this@Player, "Copied to clipboard", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(
+                                            this@Player,
+                                            "Copied to clipboard",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     } else {
                                         val shareIntent = Intent()
                                         shareIntent.action = Intent.ACTION_SEND
@@ -821,7 +847,10 @@ class Player: ComponentActivity(), Player.Listener {
                         }
                     }
                     // Subtitles
-                    if (playerSubtitles != null && playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
+                    if (playerSubtitles != null && playerControllerState?.mediaMetadata?.extras?.getBoolean(
+                            "live"
+                        ) != true
+                    ) {
                         Row(
                             modifier = Modifier
                                 .height(40.dp)
@@ -926,10 +955,12 @@ class Player: ComponentActivity(), Player.Listener {
                                     modifier = Modifier.scale(0.8f),
                                     checked = loopCheckedState,
                                     onCheckedChange = {
-                                        if (playerController.value?.repeatMode == Player.REPEAT_MODE_OFF) {
-                                            playerController.value?.repeatMode = Player.REPEAT_MODE_ONE
+                                        if (playerController.value?.repeatMode == androidx.media3.common.Player.REPEAT_MODE_OFF) {
+                                            playerController.value?.repeatMode =
+                                                androidx.media3.common.Player.REPEAT_MODE_ONE
                                         } else {
-                                            playerController.value?.repeatMode = Player.REPEAT_MODE_OFF
+                                            playerController.value?.repeatMode =
+                                                androidx.media3.common.Player.REPEAT_MODE_OFF
                                         }
                                     }
                                 )
@@ -967,9 +998,16 @@ class Player: ComponentActivity(), Player.Listener {
                                     indication = Indication,
                                     onClick = {
                                         val decimalFormat = DecimalFormat("#.#")
-                                        if (decimalFormat.format(playerController.value!!.playbackParameters.speed).toFloat() > 0.1f) {
-                                            playerController.value!!.playbackParameters = PlaybackParameters(decimalFormat.format(playerController.value!!.playbackParameters.speed).toFloat() - 0.1f)
-                                            playbackSpeed.value = decimalFormat.format(playerController.value!!.playbackParameters.speed)
+                                        if (decimalFormat.format(playerController.value!!.playbackParameters.speed)
+                                                .toFloat() > 0.1f
+                                        ) {
+                                            playerController.value!!.playbackParameters =
+                                                PlaybackParameters(
+                                                    decimalFormat.format(playerController.value!!.playbackParameters.speed)
+                                                        .toFloat() - 0.1f
+                                                )
+                                            playbackSpeed.value =
+                                                decimalFormat.format(playerController.value!!.playbackParameters.speed)
                                         }
                                     }
                                 ) {
@@ -993,9 +1031,16 @@ class Player: ComponentActivity(), Player.Listener {
                                     indication = Indication,
                                     onClick = {
                                         val decimalFormat = DecimalFormat("#.#")
-                                        if (decimalFormat.format(playerController.value!!.playbackParameters.speed).toFloat() < 2.0f) {
-                                            playerController.value!!.playbackParameters = PlaybackParameters(decimalFormat.format(playerController.value!!.playbackParameters.speed).toFloat() + 0.1f)
-                                            playbackSpeed.value = decimalFormat.format(playerController.value!!.playbackParameters.speed)
+                                        if (decimalFormat.format(playerController.value!!.playbackParameters.speed)
+                                                .toFloat() < 2.0f
+                                        ) {
+                                            playerController.value!!.playbackParameters =
+                                                PlaybackParameters(
+                                                    decimalFormat.format(playerController.value!!.playbackParameters.speed)
+                                                        .toFloat() + 0.1f
+                                                )
+                                            playbackSpeed.value =
+                                                decimalFormat.format(playerController.value!!.playbackParameters.speed)
                                         }
                                     }
                                 ) {
@@ -1060,7 +1105,10 @@ class Player: ComponentActivity(), Player.Listener {
                     ) {
                         Text(
                             modifier = Modifier.align(Alignment.CenterVertically),
-                            text = "Views: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getInt("views"))}",
+                            text = "Views: ${
+                                NumberFormat.getInstance()
+                                    .format(playerControllerState?.mediaMetadata?.extras?.getInt("views"))
+                            }",
                             color = Color.White,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
@@ -1074,7 +1122,10 @@ class Player: ComponentActivity(), Player.Listener {
                     ) {
                         Text(
                             modifier = Modifier.align(Alignment.CenterVertically),
-                            text = "Likes: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getInt("likes"))}",
+                            text = "Likes: ${
+                                NumberFormat.getInstance()
+                                    .format(playerControllerState?.mediaMetadata?.extras?.getInt("likes"))
+                            }",
                             color = Color.White,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
@@ -1089,7 +1140,11 @@ class Player: ComponentActivity(), Player.Listener {
                         ) {
                             Text(
                                 modifier = Modifier.align(Alignment.CenterVertically),
-                                text = "Dislikes: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getInt("dislikes"))}",
+                                text = "Dislikes: ${
+                                    NumberFormat.getInstance().format(
+                                        playerControllerState?.mediaMetadata?.extras?.getInt("dislikes")
+                                    )
+                                }",
                                 color = Color.White,
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
@@ -1160,7 +1215,8 @@ class Player: ComponentActivity(), Player.Listener {
                                         Text(
                                             text = when (index) {
                                                 0 -> "Off"
-                                                else -> subtitles.getJSONObject(index).optString("name")
+                                                else -> subtitles.getJSONObject(index)
+                                                    .optString("name")
                                             },
                                             color = Color.White,
                                             overflow = TextOverflow.Ellipsis,
@@ -1190,7 +1246,11 @@ class Player: ComponentActivity(), Player.Listener {
                                             ),
                                             checked = subtitlesCheckedState[index],
                                             onCheckedChange = { checked ->
-                                                Collections.replaceAll(subtitlesChecked.value, true, false)
+                                                Collections.replaceAll(
+                                                    subtitlesChecked.value,
+                                                    true,
+                                                    false
+                                                )
                                                 subtitlesChecked.update { list ->
                                                     list.toMutableList().apply {
                                                         set(index, true)
@@ -1199,15 +1259,28 @@ class Player: ComponentActivity(), Player.Listener {
                                                 if (checked) {
                                                     when (index) {
                                                         0 -> {
-                                                            playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
-                                                                .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
-                                                                .build()
+                                                            playerController.value?.trackSelectionParameters =
+                                                                playerController.value?.trackSelectionParameters!!.buildUpon()
+                                                                    .setTrackTypeDisabled(
+                                                                        C.TRACK_TYPE_TEXT,
+                                                                        true
+                                                                    )
+                                                                    .build()
                                                         }
+
                                                         else -> {
-                                                            playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
-                                                                .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-                                                                .setPreferredTextLanguage(subtitles.getJSONObject(index).optString("id"))
-                                                                .build()
+                                                            playerController.value?.trackSelectionParameters =
+                                                                playerController.value?.trackSelectionParameters!!.buildUpon()
+                                                                    .setTrackTypeDisabled(
+                                                                        C.TRACK_TYPE_TEXT,
+                                                                        false
+                                                                    )
+                                                                    .setPreferredTextLanguage(
+                                                                        subtitles.getJSONObject(
+                                                                            index
+                                                                        ).optString("id")
+                                                                    )
+                                                                    .build()
                                                         }
                                                     }
                                                 }
@@ -1324,20 +1397,41 @@ class Player: ComponentActivity(), Player.Listener {
                                         ),
                                         checked = sleepTimerCheckedState[index],
                                         onCheckedChange = { checked ->
-                                            Collections.replaceAll(sleepTimerChecked.value, true, false)
+                                            Collections.replaceAll(
+                                                sleepTimerChecked.value,
+                                                true,
+                                                false
+                                            )
                                             sleepTimerChecked.update { list ->
                                                 list.toMutableList().apply {
                                                     set(index, true)
                                                 }.toList()
                                             }
                                             if (checked) {
-                                                val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
+                                                val broadcastIntent =
+                                                    Intent("h.lillie.ytplayer.service.timer")
                                                 broadcastIntent.setPackage(this@Player.packageName)
                                                 when (index) {
-                                                    1 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(15))
-                                                    2 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(30))
-                                                    3 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(45))
-                                                    4 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(60))
+                                                    1 -> broadcastIntent.putExtra(
+                                                        "time",
+                                                        TimeUnit.MINUTES.toMillis(15)
+                                                    )
+
+                                                    2 -> broadcastIntent.putExtra(
+                                                        "time",
+                                                        TimeUnit.MINUTES.toMillis(30)
+                                                    )
+
+                                                    3 -> broadcastIntent.putExtra(
+                                                        "time",
+                                                        TimeUnit.MINUTES.toMillis(45)
+                                                    )
+
+                                                    4 -> broadcastIntent.putExtra(
+                                                        "time",
+                                                        TimeUnit.MINUTES.toMillis(60)
+                                                    )
+
                                                     else -> broadcastIntent.putExtra("time", 0L)
                                                 }
                                                 sendBroadcast(broadcastIntent)
@@ -1375,7 +1469,7 @@ class Player: ComponentActivity(), Player.Listener {
 
         Toast.makeText(this, "Loading, please wait", Toast.LENGTH_SHORT).show()
 
-        val sessionToken = SessionToken(this, ComponentName(this, PlayerService::class.java))
+        val sessionToken = SessionToken(this, ComponentName(this, Service::class.java))
         playerControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
         playerControllerFuture.addListener({
             playerController.value = playerControllerFuture.get()
@@ -1408,8 +1502,10 @@ class Player: ComponentActivity(), Player.Listener {
 
     private fun optTime(time: Long): String {
         val hours: Int = TimeUnit.MILLISECONDS.toHours(time).toInt()
-        val minutes: Int = (TimeUnit.MILLISECONDS.toMinutes(time) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(time))).toInt()
-        val seconds: Int = (TimeUnit.MILLISECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(time))).toInt()
+        val minutes: Int = (TimeUnit.MILLISECONDS.toMinutes(time) - TimeUnit.HOURS.toMinutes(
+            TimeUnit.MILLISECONDS.toHours(time))).toInt()
+        val seconds: Int = (TimeUnit.MILLISECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(
+            TimeUnit.MILLISECONDS.toMinutes(time))).toInt()
         var formatted = ""
         if (hours != 0) {
             formatted += "$hours:"
@@ -1490,8 +1586,8 @@ class Player: ComponentActivity(), Player.Listener {
             val player: MediaController? = playerController.value
             if (player != null && player.mediaItemCount == 1) {
                 when (player.playbackState) {
-                    Player.STATE_BUFFERING -> isPlaying.value = 1
-                    Player.STATE_ENDED -> isPlaying.value = 4
+                    androidx.media3.common.Player.STATE_BUFFERING -> isPlaying.value = 1
+                    androidx.media3.common.Player.STATE_ENDED -> isPlaying.value = 4
                     else -> {
                         if (!player.isPlaying) {
                             isPlaying.value = 2
