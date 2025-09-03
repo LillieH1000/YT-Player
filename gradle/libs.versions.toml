@@ -1,6 +1,6 @@
 [versions]
 activity = "1.10.1"
-android = "8.12.2"
+android = "8.13.0"
 chaquopy = "16.1.0"
 composables = "1.43.1"
 compose = "2025.08.01"
