@@ -13,6 +13,7 @@ data class Info(
     val likes: Int,
     val type: String,
     val url: String,
+    val agent: String,
     val expiration: String,
     val subtitles: ArrayList<Subtitles>?
 ) {

@@ -35,6 +35,7 @@ def getInfo(videoID, searchQuery):
         info["likes"] = y["like_count"]
         info["type"] = y["media_type"]
         info["url"] = y["manifest_url"]
+        info["agent"] = y["http_headers"]["User-Agent"]
         info["expiration"] = re.search("/expire/(\\d+)/", y["manifest_url"]).group(1)
         subtitles = []
         for a in y["subtitles"]:
