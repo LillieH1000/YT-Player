@@ -1,4 +1,4 @@
-package h.lillie.ytplayer
+package h.lillie.ytplayer.application
 
 import android.app.Application
 import com.chaquo.python.Python
