@@ -16,7 +16,7 @@ android {
         applicationId = "h.lillie.ytplayer"
         minSdk = 25
         targetSdk = 36
-        versionCode = 116
+        versionCode = 117
         versionName = "3.1.0"
         ndk {
             abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64", "x86")
@@ -100,6 +100,8 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.logging.interceptor)
     implementation(libs.okhttp)
+    implementation(platform(libs.okhttp.bom))
     implementation(libs.play.services.cronet)
 }

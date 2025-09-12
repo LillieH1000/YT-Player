@@ -9,6 +9,7 @@ coroutines = "1.10.2"
 cronetokhttp = "0.1.0"
 kotlin = "2.2.20"
 lifecycle = "2.9.3"
+loggingInterceptor = "5.1.0"
 media3 = "1.8.0"
 okhttp = "5.1.0"
 playcronet = "18.1.0"
@@ -42,7 +43,9 @@ cronet-okhttp = {  group = "com.google.net.cronet", name = "cronet-okhttp", vers
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
-okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp" }
+okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "okhttp" }
 play-services-cronet = { group = "com.google.android.gms", name = "play-services-cronet", version.ref = "playcronet" }
 
 [plugins]
