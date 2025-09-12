@@ -119,8 +119,6 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Collections
 import java.util.concurrent.TimeUnit
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
 
 class Player: ComponentActivity(), Player.Listener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
@@ -1428,10 +1426,10 @@ class Player: ComponentActivity(), Player.Listener {
         return formatted
     }
 
-    private fun BroadcastReceiver.async(coroutineContext: CoroutineContext = EmptyCoroutineContext, block: suspend CoroutineScope.() -> Unit) {
-        val pendingResult = goAsync()
-        CoroutineScope(Dispatchers.IO).launch(coroutineContext) {
-            block()
+    private fun BroadcastReceiver.coroutineScope(onReceive: suspend () -> Unit) {
+        val pendingResult: BroadcastReceiver.PendingResult = goAsync()
+        CoroutineScope(Dispatchers.IO).launch {
+            onReceive()
         }.invokeOnCompletion {
             pendingResult.finish()
         }
@@ -1462,7 +1460,7 @@ class Player: ComponentActivity(), Player.Listener {
     }
 
     private val playerBroadcastReceiver = object: BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) = async {
+        override fun onReceive(context: Context?, intent: Intent?) = coroutineScope {
             if (intent?.action == "h.lillie.ytplayer.activity.subtitles") {
                 if (subtitlesChecked.value.isNotEmpty()) {
                     subtitlesChecked.update { list ->
@@ -1475,7 +1473,7 @@ class Player: ComponentActivity(), Player.Listener {
                 val subtitles = intent.extras!!.getString("subtitles")
                 if (subtitles == null) {
                     playerSubtitles = null
-                    return@async
+                    return@coroutineScope
                 }
 
                 val subtitlesArray = JSONArray(subtitles)
@@ -1492,7 +1490,7 @@ class Player: ComponentActivity(), Player.Listener {
                         }.toList()
                     }
                 }
-                return@async
+                return@coroutineScope
             }
         }
     }

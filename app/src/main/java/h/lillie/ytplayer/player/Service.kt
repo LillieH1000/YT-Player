@@ -57,8 +57,6 @@ import org.chromium.net.CronetEngine
 import org.json.JSONArray
 import java.io.File
 import java.text.DecimalFormat
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
 
 @OptIn(UnstableApi::class)
 class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Callback, Player.Listener {
@@ -273,20 +271,20 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         }
     }
 
-    private fun BroadcastReceiver.async(coroutineContext: CoroutineContext = EmptyCoroutineContext, block: suspend CoroutineScope.() -> Unit) {
-        val pendingResult = goAsync()
-        CoroutineScope(Dispatchers.IO).launch(coroutineContext) {
-            block()
+    private fun BroadcastReceiver.coroutineScope(onReceive: suspend () -> Unit) {
+        val pendingResult: BroadcastReceiver.PendingResult = goAsync()
+        CoroutineScope(Dispatchers.IO).launch {
+            onReceive()
         }.invokeOnCompletion {
             pendingResult.finish()
         }
     }
 
     private val playerBroadcastReceiver = object: BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) = async {
+        override fun onReceive(context: Context?, intent: Intent?) = coroutineScope {
             if (intent?.action == "h.lillie.ytplayer.service.info") {
                 val request = Requests()
-                val info = request.ytdlp(intent.extras!!.getString("videoID"), intent.extras!!.getString("searchQuery")) ?: return@async
+                val info = request.ytdlp(intent.extras!!.getString("videoID"), intent.extras!!.getString("searchQuery")) ?: return@coroutineScope
                 val dislikes = request.returnYouTubeDislike(this@Service, info.id)
                 sponsorBlock = request.sponsorBlock(this@Service, info.id)
                 playerTimer?.cancel()
@@ -358,7 +356,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     return@withContext
                 }
 
-                return@async
+                return@coroutineScope
             }
 
             if (intent?.action == "h.lillie.ytplayer.service.timer") {
@@ -377,7 +375,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                         return@withContext
                     }
                 }
-                return@async
+                return@coroutineScope
             }
         }
     }
