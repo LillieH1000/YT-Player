@@ -23,57 +23,55 @@ class Requests {
         }.getOrNull()
     }
 
-    suspend fun returnYouTubeDislike(context: Context, videoID: String): Int? =
-        withContext(Dispatchers.IO) {
-            val client: OkHttpClient.Builder = OkHttpClient.Builder()
+    suspend fun returnYouTubeDislike(context: Context, videoID: String): Int? = withContext(Dispatchers.IO) {
+        val client: OkHttpClient.Builder = OkHttpClient.Builder()
 
-            if (CronetProviderInstaller.isInstalled()) {
-                val engine: CronetEngine = CronetEngine.Builder(context)
-                    .enableHttp2(true)
-                    .enableQuic(true)
-                    .build()
-
-                val interceptor: CronetInterceptor = CronetInterceptor.newBuilder(engine).build()
-                client.addInterceptor(interceptor)
-            }
-
-            val request: Request = Request.Builder()
-                .method("GET", null)
-                .url("https://returnyoutubedislikeapi.com/votes?videoId=$videoID")
+        if (CronetProviderInstaller.isInstalled()) {
+            val engine: CronetEngine = CronetEngine.Builder(context)
+                .enableHttp2(true)
+                .enableQuic(true)
                 .build()
 
-            val response: Response = client.build().newCall(request).execute()
-            if (!response.isSuccessful) {
-                return@withContext null
-            }
-
-            return@withContext JSONObject(response.body.string()).getInt("dislikes")
+            val interceptor: CronetInterceptor = CronetInterceptor.newBuilder(engine).build()
+            client.addInterceptor(interceptor)
         }
 
-    suspend fun sponsorBlock(context: Context, videoID: String): JSONArray? =
-        withContext(Dispatchers.IO) {
-            val client: OkHttpClient.Builder = OkHttpClient.Builder()
+        val request: Request = Request.Builder()
+            .method("GET", null)
+            .url("https://returnyoutubedislikeapi.com/votes?videoId=$videoID")
+            .build()
 
-            if (CronetProviderInstaller.isInstalled()) {
-                val engine: CronetEngine = CronetEngine.Builder(context)
-                    .enableHttp2(true)
-                    .enableQuic(true)
-                    .build()
+        val response: Response = client.build().newCall(request).execute()
+        if (!response.isSuccessful) {
+            return@withContext null
+        }
 
-                val interceptor: CronetInterceptor = CronetInterceptor.newBuilder(engine).build()
-                client.addInterceptor(interceptor)
-            }
+        return@withContext JSONObject(response.body.string()).getInt("dislikes")
+    }
 
-            val request: Request = Request.Builder()
-                .method("GET", null)
-                .url("https://sponsor.ajay.app/api/skipSegments?videoID=$videoID&category=sponsor")
+    suspend fun sponsorBlock(context: Context, videoID: String): JSONArray? = withContext(Dispatchers.IO) {
+        val client: OkHttpClient.Builder = OkHttpClient.Builder()
+
+        if (CronetProviderInstaller.isInstalled()) {
+            val engine: CronetEngine = CronetEngine.Builder(context)
+                .enableHttp2(true)
+                .enableQuic(true)
                 .build()
 
-            val response: Response = client.build().newCall(request).execute()
-            if (!response.isSuccessful) {
-                return@withContext null
-            }
-
-            return@withContext JSONArray(response.body.string())
+            val interceptor: CronetInterceptor = CronetInterceptor.newBuilder(engine).build()
+            client.addInterceptor(interceptor)
         }
+
+        val request: Request = Request.Builder()
+            .method("GET", null)
+            .url("https://sponsor.ajay.app/api/skipSegments?videoID=$videoID&category=sponsor")
+            .build()
+
+        val response: Response = client.build().newCall(request).execute()
+        if (!response.isSuccessful) {
+            return@withContext null
+        }
+
+        return@withContext JSONArray(response.body.string())
+    }
 }
