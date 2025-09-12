@@ -92,6 +92,7 @@ import androidx.compose.ui.node.DrawModifierNode
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.C
@@ -99,6 +100,7 @@ import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
+import androidx.media3.ui.PlayerView
 import com.composables.core.ScrollArea
 import com.composables.core.Thumb
 import com.composables.core.VerticalScrollbar
@@ -145,7 +147,6 @@ class Player: ComponentActivity(), Player.Listener {
         }
         enableEdgeToEdge()
         setContent {
-            Player(playerController.collectAsState().value)
             CreatePlayerUI()
         }
 
@@ -357,6 +358,28 @@ class Player: ComponentActivity(), Player.Listener {
         val showSleepTimerState by showSleepTimer.collectAsState()
         val subtitlesCheckedState by subtitlesChecked.collectAsState()
         val sleepTimerCheckedState by sleepTimerChecked.collectAsState()
+
+        // Player View
+
+        AndroidView(
+            modifier = Modifier
+                .background(Color.Black)
+                .navigationBarsPadding()
+                .statusBarsPadding()
+                .systemBarsPadding()
+                .fillMaxSize()
+                .focusTarget()
+                .focusProperties { canFocus = false },
+            factory = { context ->
+                PlayerView(context).apply {
+                    this.player = playerControllerState
+                    this.useController = false
+                }
+            },
+            update = { playerView ->
+                playerView.player = playerControllerState
+            }
+        )
 
         // 3 View
 
