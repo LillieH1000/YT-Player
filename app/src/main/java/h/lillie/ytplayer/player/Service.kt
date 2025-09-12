@@ -52,6 +52,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.chromium.net.CronetEngine
 import org.json.JSONArray
 import java.io.File
@@ -87,7 +88,12 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
             )
         }
 
+        val httpLoggingInterceptor = HttpLoggingInterceptor()
+            .setLevel(HttpLoggingInterceptor.Level.HEADERS)
+
         val client: OkHttpClient.Builder = OkHttpClient.Builder()
+            .addInterceptor(httpLoggingInterceptor)
+
         if (CronetProviderInstaller.isInstalled()) {
             val engine: CronetEngine = CronetEngine.Builder(this)
                 .enableHttp2(true)
@@ -97,6 +103,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
             val interceptor: CronetInterceptor = CronetInterceptor.newBuilder(engine).build()
             client.addInterceptor(interceptor)
         }
+
         val okhttpDataSource: OkHttpDataSource.Factory = OkHttpDataSource.Factory(client.build())
 
         if (this@Service::playerCache.isInitialized) {
