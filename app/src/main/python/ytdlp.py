@@ -17,8 +17,6 @@ def getInfo(videoID, searchQuery):
     }
 
     info = {}
-    subtitles = []
-
     with yt_dlp.YoutubeDL(ytdlp_opts) as ytdlp:
         if (searchQuery == None):
             x = ytdlp.extract_info(f"https://www.youtube.com/watch?v={videoID}", download=False)
@@ -38,6 +36,7 @@ def getInfo(videoID, searchQuery):
         info["type"] = y["media_type"]
         info["url"] = y["manifest_url"]
         info["expiration"] = re.search("/expire/(\\d+)/", y["manifest_url"]).group(1)
+        subtitles = []
         for a in y["subtitles"]:
             c = {}
             for b in y["subtitles"][a]:
