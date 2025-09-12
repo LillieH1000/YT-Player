@@ -24,8 +24,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.IndicationNodeFactory
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -77,11 +79,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.drawscope.ContentDrawScope
+import androidx.compose.ui.node.DelegatableNode
+import androidx.compose.ui.node.DrawModifierNode
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -95,10 +102,8 @@ import com.composables.core.ScrollArea
 import com.composables.core.Thumb
 import com.composables.core.VerticalScrollbar
 import com.composables.core.rememberScrollAreaState
-import com.composeunstyled.Button
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
-import h.lillie.ytplayer.Indication
 import h.lillie.ytplayer.views.Player
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -370,113 +375,107 @@ class Player: ComponentActivity(), androidx.media3.common.Player.Listener {
             var leftClick: Long = 0
             val leftJob = remember { MutableStateFlow<Job?>(null) }
             val leftScope = rememberCoroutineScope()
-            Button(
+            Box(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .weight(1f),
-                interactionSource = remember { MutableInteractionSource() },
-                indication = Indication,
-                onClick = {
-                    val time = System.currentTimeMillis()
-                    leftJob.value?.cancel()
-                    if (time - leftClick < 300L) {
-                        playerController.value?.seekBack()
-                        leftClick = 0
-                        leftJob.value = null
-                    } else {
-                        leftJob.value = leftScope.launch {
-                            leftClick = time
-                            delay(300)
-                            if (playerControllerState?.mediaItemCount == 1) {
-                                if (!showOverlayState) {
-                                    showOverlay.value = true
-                                } else {
-                                    showOverlay.value = false
-                                }
-                                showInfo.value = false
-                                showSettings.value = false
-                                showSubtitles.value = false
-                                showSleepTimer.value = false
-                            }
+                    .weight(1f)
+                    .noRippleClickable {
+                        val time = System.currentTimeMillis()
+                        leftJob.value?.cancel()
+                        if (time - leftClick < 300L) {
+                            playerController.value?.seekBack()
                             leftClick = 0
                             leftJob.value = null
+                        } else {
+                            leftJob.value = leftScope.launch {
+                                leftClick = time
+                                delay(300)
+                                if (playerControllerState?.mediaItemCount == 1) {
+                                    if (!showOverlayState) {
+                                        showOverlay.value = true
+                                    } else {
+                                        showOverlay.value = false
+                                    }
+                                    showInfo.value = false
+                                    showSettings.value = false
+                                    showSubtitles.value = false
+                                    showSleepTimer.value = false
+                                }
+                                leftClick = 0
+                                leftJob.value = null
+                            }
                         }
                     }
-                }
-            ) {}
+            )
             var middleClick: Long = 0
             val middleJob = remember { MutableStateFlow<Job?>(null) }
             val middleScope = rememberCoroutineScope()
-            Button(
+            Box(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .weight(1f),
-                interactionSource = remember { MutableInteractionSource() },
-                indication = Indication,
-                onClick = {
-                    val time = System.currentTimeMillis()
-                    middleJob.value?.cancel()
-                    if (time - middleClick < 300L) {
-                        middleClick = 0
-                        middleJob.value = null
-                    } else {
-                        middleJob.value = middleScope.launch {
-                            middleClick = time
-                            delay(300)
-                            if (playerControllerState?.mediaItemCount == 1) {
-                                if (!showOverlayState) {
-                                    showOverlay.value = true
-                                } else {
-                                    showOverlay.value = false
-                                }
-                                showInfo.value = false
-                                showSettings.value = false
-                                showSubtitles.value = false
-                                showSleepTimer.value = false
-                            }
+                    .weight(1f)
+                    .noRippleClickable {
+                        val time = System.currentTimeMillis()
+                        middleJob.value?.cancel()
+                        if (time - middleClick < 300L) {
                             middleClick = 0
                             middleJob.value = null
+                        } else {
+                            middleJob.value = middleScope.launch {
+                                middleClick = time
+                                delay(300)
+                                if (playerControllerState?.mediaItemCount == 1) {
+                                    if (!showOverlayState) {
+                                        showOverlay.value = true
+                                    } else {
+                                        showOverlay.value = false
+                                    }
+                                    showInfo.value = false
+                                    showSettings.value = false
+                                    showSubtitles.value = false
+                                    showSleepTimer.value = false
+                                }
+                                middleClick = 0
+                                middleJob.value = null
+                            }
                         }
                     }
-                }
-            ) {}
+            )
             var rightClick: Long = 0
             val rightJob = remember { MutableStateFlow<Job?>(null) }
             val rightScope = rememberCoroutineScope()
-            Button(
+            Box(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .weight(1f),
-                interactionSource = remember { MutableInteractionSource() },
-                indication = Indication,
-                onClick = {
-                    val time = System.currentTimeMillis()
-                    rightJob.value?.cancel()
-                    if (time - rightClick < 300L) {
-                        playerController.value?.seekForward()
-                        rightClick = 0
-                        rightJob.value = null
-                    } else {
-                        rightJob.value = rightScope.launch {
-                            rightClick = time
-                            delay(300)
-                            if (playerControllerState?.mediaItemCount == 1) {
-                                if (!showOverlayState) {
-                                    showOverlay.value = true
-                                } else {
-                                    showOverlay.value = false
-                                }
-                                showInfo.value = false
-                                showSettings.value = false
-                                showSubtitles.value = false
-                                showSleepTimer.value = false
-                            }
+                    .weight(1f)
+                    .noRippleClickable {
+                        val time = System.currentTimeMillis()
+                        rightJob.value?.cancel()
+                        if (time - rightClick < 300L) {
+                            playerController.value?.seekForward()
                             rightClick = 0
                             rightJob.value = null
+                        } else {
+                            rightJob.value = rightScope.launch {
+                                rightClick = time
+                                delay(300)
+                                if (playerControllerState?.mediaItemCount == 1) {
+                                    if (!showOverlayState) {
+                                        showOverlay.value = true
+                                    } else {
+                                        showOverlay.value = false
+                                    }
+                                    showInfo.value = false
+                                    showSettings.value = false
+                                    showSubtitles.value = false
+                                    showSleepTimer.value = false
+                                }
+                                rightClick = 0
+                                rightJob.value = null
+                            }
                         }
                     }
-                }
-            ) {}
+            )
         }
 
         // Overlay View
@@ -511,22 +510,20 @@ class Player: ComponentActivity(), androidx.media3.common.Player.Listener {
                 }
             ) {
                 // Play/Pause/Restart Button
-                Button(
+                Box(
                     modifier = Modifier
                         .align(Alignment.Center)
-                        .size(50.dp),
-                    shape = CircleShape,
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = Indication,
-                    onClick = {
-                        if (playerController.value != null) {
-                            if (!playerController.value!!.isPlaying) {
-                                playerController.value?.play()
-                            } else {
-                                playerController.value?.pause()
+                        .size(50.dp)
+                        .clip(CircleShape)
+                        .noRippleClickable {
+                            if (playerController.value != null) {
+                                if (!playerController.value!!.isPlaying) {
+                                    playerController.value?.play()
+                                } else {
+                                    playerController.value?.pause()
+                                }
                             }
                         }
-                    }
                 ) {
                     if (isPlayingState == 1) {
                         CircularProgressIndicator(
@@ -592,22 +589,18 @@ class Player: ComponentActivity(), androidx.media3.common.Player.Listener {
                     )
                     // Fullscreen Button
                     if (!autoRotateEnabledState && !chromeOSDevice && !questOSDevice) {
-                        Button(
+                        Box(
                             modifier = Modifier
                                 .width(50.dp)
-                                .align(Alignment.CenterVertically),
-                            shape = CircleShape,
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = Indication,
-                            onClick = {
-                                if (requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
-                                    requestedOrientation =
-                                        ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-                                } else {
-                                    requestedOrientation =
-                                        ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                                .align(Alignment.CenterVertically)
+                                .clip(CircleShape)
+                                .noRippleClickable {
+                                    if (requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
+                                        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                                    } else {
+                                        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                                    }
                                 }
-                            }
                         ) {
                             Icon(
                                 imageVector = if (deviceRotationState == 1) {
@@ -663,51 +656,50 @@ class Player: ComponentActivity(), androidx.media3.common.Player.Listener {
                             modifier = Modifier.wrapContentWidth()
                         ) {
                             // Share Button
-                            Button(
-                                modifier = Modifier.width(50.dp),
-                                shape = CircleShape,
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = Indication,
-                                onClick = {
-                                    val type: String? =
-                                        playerControllerState?.mediaMetadata?.extras?.getString("type")
-                                    val url: String = when (type) {
-                                        "livestream" -> "https://youtube.com/live/${
-                                            playerControllerState?.mediaMetadata?.extras?.getString(
-                                                "id"
-                                            )
-                                        }"
+                            Box(
+                                modifier = Modifier
+                                    .width(50.dp)
+                                    .clip(CircleShape)
+                                    .noRippleClickable {
+                                        val type: String? =
+                                            playerControllerState?.mediaMetadata?.extras?.getString("type")
+                                        val url: String = when (type) {
+                                            "livestream" -> "https://youtube.com/live/${
+                                                playerControllerState?.mediaMetadata?.extras?.getString(
+                                                    "id"
+                                                )
+                                            }"
 
-                                        "short" -> "https://youtube.com/shorts/${
-                                            playerControllerState?.mediaMetadata?.extras?.getString(
-                                                "id"
-                                            )
-                                        }"
+                                            "short" -> "https://youtube.com/shorts/${
+                                                playerControllerState?.mediaMetadata?.extras?.getString(
+                                                    "id"
+                                                )
+                                            }"
 
-                                        else -> "https://youtube.com/watch?v=${
-                                            playerControllerState?.mediaMetadata?.extras?.getString(
-                                                "id"
-                                            )
-                                        }"
+                                            else -> "https://youtube.com/watch?v=${
+                                                playerControllerState?.mediaMetadata?.extras?.getString(
+                                                    "id"
+                                                )
+                                            }"
+                                        }
+                                        if (chromeOSDevice || questOSDevice) {
+                                            val clipManager: ClipboardManager =
+                                                getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                                            val clipData: ClipData = ClipData.newPlainText("", url)
+                                            clipManager.setPrimaryClip(clipData)
+                                            Toast.makeText(
+                                                this@Player,
+                                                "Copied to clipboard",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        } else {
+                                            val shareIntent = Intent()
+                                            shareIntent.action = Intent.ACTION_SEND
+                                            shareIntent.putExtra(Intent.EXTRA_TEXT, url)
+                                            shareIntent.type = "text/plain"
+                                            startActivity(Intent.createChooser(shareIntent, null))
+                                        }
                                     }
-                                    if (chromeOSDevice || questOSDevice) {
-                                        val clipManager: ClipboardManager =
-                                            getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                                        val clipData: ClipData = ClipData.newPlainText("", url)
-                                        clipManager.setPrimaryClip(clipData)
-                                        Toast.makeText(
-                                            this@Player,
-                                            "Copied to clipboard",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    } else {
-                                        val shareIntent = Intent()
-                                        shareIntent.action = Intent.ACTION_SEND
-                                        shareIntent.putExtra(Intent.EXTRA_TEXT, url)
-                                        shareIntent.type = "text/plain"
-                                        startActivity(Intent.createChooser(shareIntent, null))
-                                    }
-                                }
                             ) {
                                 Icon(
                                     imageVector = Icons.Outlined.Share,
@@ -716,21 +708,20 @@ class Player: ComponentActivity(), androidx.media3.common.Player.Listener {
                                 )
                             }
                             // Settings Button
-                            Button(
-                                modifier = Modifier.width(50.dp),
-                                shape = CircleShape,
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = Indication,
-                                onClick = {
-                                    if (!showSettingsState && !showInfoState && !showSubtitlesState && !showSleepTimerState) {
-                                        showSettings.value = true
-                                    } else {
-                                        showSettings.value = false
-                                        showInfo.value = false
-                                        showSubtitles.value = false
-                                        showSleepTimer.value = false
+                            Box(
+                                modifier = Modifier
+                                    .width(50.dp)
+                                    .clip(CircleShape)
+                                    .noRippleClickable {
+                                        if (!showSettingsState && !showInfoState && !showSubtitlesState && !showSleepTimerState) {
+                                            showSettings.value = true
+                                        } else {
+                                            showSettings.value = false
+                                            showInfo.value = false
+                                            showSubtitles.value = false
+                                            showSleepTimer.value = false
+                                        }
                                     }
-                                }
                             ) {
                                 Icon(
                                     imageVector = Icons.Outlined.Settings,
@@ -968,26 +959,24 @@ class Player: ComponentActivity(), androidx.media3.common.Player.Listener {
                                     .weight(1f)
                                     .align(Alignment.CenterVertically)
                             ) {
-                                Button(
+                                Box(
                                     modifier = Modifier
                                         .scale(0.6f)
-                                        .align(Alignment.CenterHorizontally),
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = Indication,
-                                    onClick = {
-                                        val decimalFormat = DecimalFormat("#.#")
-                                        if (decimalFormat.format(playerController.value!!.playbackParameters.speed)
-                                                .toFloat() > 0.1f
-                                        ) {
-                                            playerController.value!!.playbackParameters =
-                                                PlaybackParameters(
+                                        .align(Alignment.CenterHorizontally)
+                                        .noRippleClickable {
+                                            val decimalFormat = DecimalFormat("#.#")
+                                            if (decimalFormat.format(playerController.value!!.playbackParameters.speed)
+                                                    .toFloat() > 0.1f
+                                            ) {
+                                                playerController.value!!.playbackParameters =
+                                                    PlaybackParameters(
+                                                        decimalFormat.format(playerController.value!!.playbackParameters.speed)
+                                                            .toFloat() - 0.1f
+                                                    )
+                                                playbackSpeed.value =
                                                     decimalFormat.format(playerController.value!!.playbackParameters.speed)
-                                                        .toFloat() - 0.1f
-                                                )
-                                            playbackSpeed.value =
-                                                decimalFormat.format(playerController.value!!.playbackParameters.speed)
+                                            }
                                         }
-                                    }
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Remove,
@@ -1001,26 +990,24 @@ class Player: ComponentActivity(), androidx.media3.common.Player.Listener {
                                     .weight(1f)
                                     .align(Alignment.CenterVertically)
                             ) {
-                                Button(
+                                Box(
                                     modifier = Modifier
                                         .scale(0.6f)
-                                        .align(Alignment.CenterHorizontally),
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = Indication,
-                                    onClick = {
-                                        val decimalFormat = DecimalFormat("#.#")
-                                        if (decimalFormat.format(playerController.value!!.playbackParameters.speed)
-                                                .toFloat() < 2.0f
-                                        ) {
-                                            playerController.value!!.playbackParameters =
-                                                PlaybackParameters(
+                                        .align(Alignment.CenterHorizontally)
+                                        .noRippleClickable {
+                                            val decimalFormat = DecimalFormat("#.#")
+                                            if (decimalFormat.format(playerController.value!!.playbackParameters.speed)
+                                                    .toFloat() < 2.0f
+                                            ) {
+                                                playerController.value!!.playbackParameters =
+                                                    PlaybackParameters(
+                                                        decimalFormat.format(playerController.value!!.playbackParameters.speed)
+                                                            .toFloat() + 0.1f
+                                                    )
+                                                playbackSpeed.value =
                                                     decimalFormat.format(playerController.value!!.playbackParameters.speed)
-                                                        .toFloat() + 0.1f
-                                                )
-                                            playbackSpeed.value =
-                                                decimalFormat.format(playerController.value!!.playbackParameters.speed)
+                                            }
                                         }
-                                    }
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Add,
@@ -1512,6 +1499,30 @@ class Player: ComponentActivity(), androidx.media3.common.Player.Listener {
             block()
         }.invokeOnCompletion {
             pendingResult.finish()
+        }
+    }
+
+    @Composable
+    private fun Modifier.noRippleClickable(onClick: () -> Unit): Modifier = composed {
+        clickable(
+            interactionSource = remember { MutableInteractionSource() },
+            indication = object: IndicationNodeFactory {
+                override fun create(interactionSource: InteractionSource): DelegatableNode {
+                    return object: Modifier.Node(), DrawModifierNode {
+                        override fun ContentDrawScope.draw() {
+                            drawContent()
+                        }
+                    }
+                }
+                override fun equals(other: Any?): Boolean {
+                    return other === this
+                }
+                override fun hashCode(): Int {
+                    return -1
+                }
+            }
+        ) {
+            onClick()
         }
     }
 
