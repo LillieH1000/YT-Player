@@ -102,11 +102,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         if (this@Service::playerCache.isInitialized) {
             playerCache.release()
         }
-        playerCache = SimpleCache(
-            File(cacheDir, "media"),
-            LeastRecentlyUsedCacheEvictor(256 * 1024 * 1024),
-            StandaloneDatabaseProvider(this@Service)
-        )
+        playerCache = SimpleCache(File(cacheDir, "media"), LeastRecentlyUsedCacheEvictor(256 * 1024 * 1024), StandaloneDatabaseProvider(this@Service))
 
         val cacheDataSource: CacheDataSource.Factory = CacheDataSource.Factory()
             .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
@@ -346,10 +342,9 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     exoPlayer.setMediaItem(playerMediaItem.build())
                     exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
                     exoPlayer.playbackParameters = PlaybackParameters(1.0f)
-                    exoPlayer.trackSelectionParameters =
-                        exoPlayer.trackSelectionParameters.buildUpon()
-                            .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
-                            .build()
+                    exoPlayer.trackSelectionParameters = exoPlayer.trackSelectionParameters.buildUpon()
+                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                        .build()
                     exoPlayer.playWhenReady = true
                     exoPlayer.prepare()
 
@@ -365,10 +360,9 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 playerTimer = null
                 if (time != 0L) {
                     withContext(Dispatchers.Main) {
-                        playerTimer = object : CountDownTimer(time, 1000) {
+                        playerTimer = object: CountDownTimer(time, 1000) {
                             override fun onTick(millisUntilFinished: Long) {
                             }
-
                             override fun onFinish() {
                                 exoPlayer.pause()
                             }
