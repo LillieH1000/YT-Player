@@ -17,15 +17,10 @@ import org.json.JSONObject
 class Requests {
     suspend fun ytdlp(videoID: String?, searchQuery: String?): Info? = withContext(Dispatchers.IO) {
         val py: Python = Python.getInstance()
-        var rq = ""
 
         runCatching {
-            rq = py.getModule("ytdlp").callAttr("getInfo", videoID, searchQuery).toString()
-        }.onFailure {
-            return@withContext null
-        }
-
-        return@withContext Json.Default.decodeFromString<Info>(rq)
+            Json.decodeFromString<Info>(py.getModule("ytdlp").callAttr("getInfo", videoID, searchQuery).toString())
+        }.getOrNull()
     }
 
     suspend fun returnYouTubeDislike(context: Context, videoID: String): Int? =
