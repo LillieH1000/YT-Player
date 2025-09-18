@@ -354,7 +354,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 }
 
                 if (info.subtitles != null) {
-                    val subtitles = JSONArray(Json.Default.encodeToString(info.subtitles))
+                    val subtitles = JSONArray(Json.encodeToString(info.subtitles))
 
                     for (i in 0 until subtitles.length()) {
                         val playerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(subtitles.getJSONObject(i).optString("url").toUri())
