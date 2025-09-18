@@ -263,6 +263,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         super.onPlaybackStateChanged(playbackState)
         when (playbackState) {
             Player.STATE_BUFFERING -> {
+                playerBufferingTimer?.cancel()
                 playerBufferingTimer = object: CountDownTimer(TimeUnit.SECONDS.toMillis(10), 1000) {
                     override fun onTick(millisUntilFinished: Long) {
                     }
