@@ -290,13 +290,10 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         super.onPlayerError(error)
         when ((error as ExoPlaybackException).type) {
             ExoPlaybackException.TYPE_SOURCE -> {
-                val id: String? = exoPlayer.mediaMetadata.extras?.getString("id")
-                val live: Boolean? = exoPlayer.mediaMetadata.extras?.getBoolean("live")
-                val expiration: String? = exoPlayer.mediaMetadata.extras?.getString("expiration")
-                if (id != null && expiration != null && live == true && expiration.toLong() < System.currentTimeMillis()) {
+                if (exoPlayer.mediaMetadata.extras?.getBoolean("live") == true && exoPlayer.mediaMetadata.extras?.getString("expiration")!!.toLong() < System.currentTimeMillis()) {
                     val broadcastIntent = Intent("h.lillie.ytplayer.service.info")
                     broadcastIntent.setPackage(this.packageName)
-                    broadcastIntent.putExtra("videoID", id)
+                    broadcastIntent.putExtra("videoID", exoPlayer.mediaMetadata.extras?.getString("id"))
                     broadcastIntent.putExtra("searchQuery", null as String?)
                     sendBroadcast(broadcastIntent)
                 }
