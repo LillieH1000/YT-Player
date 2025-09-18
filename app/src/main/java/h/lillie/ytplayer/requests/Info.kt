@@ -12,7 +12,7 @@ data class Info(
     val views: Int,
     val likes: Int,
     val type: String,
-    val iosurl: String,
+    val iosurl: String?,
     val safariurl: String,
     val agent: String,
     val expiration: String,
