@@ -12,7 +12,8 @@ data class Info(
     val views: Int,
     val likes: Int,
     val type: String,
-    val url: String,
+    val iosurl: String,
+    val safariurl: String,
     val agent: String,
     val expiration: String,
     val subtitles: ArrayList<Subtitles>?
