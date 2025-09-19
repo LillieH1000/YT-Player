@@ -528,6 +528,7 @@ class Player: ComponentActivity(), Player.Listener {
             ) {
                 // Play/Pause/Restart Button
                 Box(
+                    contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .align(Alignment.Center)
                         .size(50.dp)
@@ -607,6 +608,7 @@ class Player: ComponentActivity(), Player.Listener {
                     // Fullscreen Button
                     if (!autoRotateEnabledState && !chromeOSDevice && !questOSDevice) {
                         Box(
+                            contentAlignment = Alignment.Center,
                             modifier = Modifier
                                 .width(50.dp)
                                 .align(Alignment.CenterVertically)
@@ -674,6 +676,7 @@ class Player: ComponentActivity(), Player.Listener {
                         ) {
                             // Share Button
                             Box(
+                                contentAlignment = Alignment.Center,
                                 modifier = Modifier
                                     .width(50.dp)
                                     .clip(CircleShape)
@@ -706,6 +709,7 @@ class Player: ComponentActivity(), Player.Listener {
                             }
                             // Settings Button
                             Box(
+                                contentAlignment = Alignment.Center,
                                 modifier = Modifier
                                     .width(50.dp)
                                     .clip(CircleShape)
@@ -952,6 +956,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     .align(Alignment.CenterVertically)
                             ) {
                                 Box(
+                                    contentAlignment = Alignment.Center,
                                     modifier = Modifier
                                         .scale(0.6f)
                                         .align(Alignment.CenterHorizontally)
@@ -976,6 +981,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     .align(Alignment.CenterVertically)
                             ) {
                                 Box(
+                                    contentAlignment = Alignment.Center,
                                     modifier = Modifier
                                         .scale(0.6f)
                                         .align(Alignment.CenterHorizontally)
