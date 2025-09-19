@@ -20,7 +20,6 @@
         <meta-data android:name="com.google.android.gms.car.application" android:resource="@xml/auto" />
         <service
             android:name=".player.Service"
-            android:enabled="true"
             android:exported="true"
             android:stopWithTask="true"
             android:foregroundServiceType="mediaPlayback"
