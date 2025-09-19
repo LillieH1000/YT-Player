@@ -311,7 +311,7 @@ class Player: ComponentActivity(), Player.Listener {
 
     override fun onRepeatModeChanged(repeatMode: Int) {
         super.onRepeatModeChanged(repeatMode)
-        if (repeatMode == androidx.media3.common.Player.REPEAT_MODE_OFF) {
+        if (repeatMode == Player.REPEAT_MODE_OFF) {
             loopChecked.value = false
         } else {
             loopChecked.value = true
@@ -918,12 +918,10 @@ class Player: ComponentActivity(), Player.Listener {
                                     modifier = Modifier.scale(0.8f),
                                     checked = loopCheckedState,
                                     onCheckedChange = {
-                                        if (playerController.value?.repeatMode == androidx.media3.common.Player.REPEAT_MODE_OFF) {
-                                            playerController.value?.repeatMode =
-                                                androidx.media3.common.Player.REPEAT_MODE_ONE
+                                        if (playerController.value?.repeatMode == Player.REPEAT_MODE_OFF) {
+                                            playerController.value?.repeatMode = Player.REPEAT_MODE_ONE
                                         } else {
-                                            playerController.value?.repeatMode =
-                                                androidx.media3.common.Player.REPEAT_MODE_OFF
+                                            playerController.value?.repeatMode = Player.REPEAT_MODE_OFF
                                         }
                                     }
                                 )
@@ -1508,8 +1506,8 @@ class Player: ComponentActivity(), Player.Listener {
             val player: MediaController? = playerController.value
             if (player != null && player.mediaItemCount == 1) {
                 when (player.playbackState) {
-                    androidx.media3.common.Player.STATE_BUFFERING -> isPlaying.value = 1
-                    androidx.media3.common.Player.STATE_ENDED -> isPlaying.value = 4
+                    Player.STATE_BUFFERING -> isPlaying.value = 1
+                    Player.STATE_ENDED -> isPlaying.value = 4
                     else -> {
                         if (!player.isPlaying) {
                             isPlaying.value = 2
