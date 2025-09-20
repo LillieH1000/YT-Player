@@ -6,13 +6,11 @@ def getInfo(videoID, searchQuery):
     ytdlp_opts = {
         "extractor_args": {
             "youtube": {
-                "formats": ["duplicate","missing_pot"],
-                "player_client": ["ios","web_safari"]
+                "formats": ["dashy"],
+                "player_client": ["default","-ios"]
             }
         },
-        "format": "bestvideo[protocol=m3u8_native]+best[protocol=m3u8_native]/best[protocol=m3u8_native]",
-        "allow_multiple_audio_streams": True,
-        "allow_multiple_video_streams": True,
+        "format": "bestvideo+bestaudio/best[protocol=m3u8_native]",
         "check_formats": "selected",
         "noplaylist": True,
         "cachedir": False
@@ -37,13 +35,15 @@ def getInfo(videoID, searchQuery):
         info["likes"] = y["like_count"]
         info["type"] = y["media_type"]
         if ("requested_formats" in y):
-            info["iosurl"] = y["requested_formats"][0]["manifest_url"]
-            info["safariurl"] = y["requested_formats"][1]["manifest_url"]
+            info["videourl"] = y["requested_formats"][0]["url"]
+            info["audiourl"] = y["requested_formats"][1]["url"]
+            info["streamurl"] = None
             info["agent"] = y["requested_formats"][0]["http_headers"]["User-Agent"]
-            info["expiration"] = re.search("/expire/(\\d+)/", y["requested_formats"][0]["manifest_url"]).group(1)
+            info["expiration"] = re.search("[?]expire=(\\d+)", y["requested_formats"][0]["url"]).group(1)
         else:
-            info["iosurl"] = None
-            info["safariurl"] = y["manifest_url"]
+            info["videourl"] = None
+            info["audiourl"] = None
+            info["streamurl"] = y["manifest_url"]
             info["agent"] = y["http_headers"]["User-Agent"]
             info["expiration"] = re.search("/expire/(\\d+)/", y["manifest_url"]).group(1)
         subtitles = []

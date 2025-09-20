@@ -12,8 +12,9 @@ data class Info(
     val views: Int,
     val likes: Int,
     val type: String,
-    val iosurl: String?,
-    val safariurl: String,
+    val videourl: String?,
+    val audiourl: String?,
+    val streamurl: String?,
     val agent: String,
     val expiration: String,
     val subtitles: ArrayList<Subtitles>?

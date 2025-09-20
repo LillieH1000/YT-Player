@@ -23,7 +23,6 @@ import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.StandaloneDatabaseProvider
-import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
@@ -32,6 +31,8 @@ import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlaybackException
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.hls.HlsMediaSource
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.exoplayer.source.MergingMediaSource
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.session.CommandButton
 import androidx.media3.session.LibraryResult
@@ -48,7 +49,6 @@ import h.lillie.ytplayer.requests.Requests
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
@@ -58,7 +58,6 @@ import org.json.JSONArray
 import java.io.File
 import java.text.DecimalFormat
 import java.util.Locale
-import java.util.concurrent.TimeUnit
 
 @OptIn(UnstableApi::class)
 class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Callback, Player.Listener {
@@ -68,7 +67,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
     private val backCommand = SessionCommand("back", Bundle.EMPTY)
     private val forwardCommand = SessionCommand("forward", Bundle.EMPTY)
     private val subtitlesList = mutableListOf<MediaItem.SubtitleConfiguration>()
-    private var playerBufferingTimer: CountDownTimer? = null
     private var playerSession: MediaLibrarySession? = null
     private var playerTimer: CountDownTimer? = null
     private var sponsorBlock: JSONArray? = null
@@ -91,54 +89,8 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
             )
         }
 
-        val httpLoggingInterceptor = HttpLoggingInterceptor()
-            .setLevel(HttpLoggingInterceptor.Level.HEADERS)
-
-        val client: OkHttpClient.Builder = OkHttpClient.Builder()
-            .addInterceptor(httpLoggingInterceptor)
-
-        if (CronetProviderInstaller.isInstalled()) {
-            val engine: CronetEngine = CronetEngine.Builder(this)
-                .enableHttp2(true)
-                .enableQuic(true)
-                .build()
-
-            val interceptor: CronetInterceptor = CronetInterceptor.newBuilder(engine).build()
-            client.addInterceptor(interceptor)
-        }
-
-        val okhttpDataSource: OkHttpDataSource.Factory = OkHttpDataSource.Factory(client.build())
-
-        if (this@Service::playerCache.isInitialized) {
-            playerCache.release()
-        }
-        playerCache = SimpleCache(File(cacheDir, "media"), LeastRecentlyUsedCacheEvictor(256 * 1024 * 1024), StandaloneDatabaseProvider(this@Service))
-
-        val cacheDataSource: CacheDataSource.Factory = CacheDataSource.Factory()
-            .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
-            .setUpstreamDataSourceFactory(okhttpDataSource)
-            .setCache(playerCache)
-
-        val dualDataSource = DataSource.Factory {
-            val mediaMetadata: MediaMetadata
-            runBlocking(Dispatchers.Main) {
-                mediaMetadata = exoPlayer.mediaMetadata
-            }
-
-            okhttpDataSource.setUserAgent(mediaMetadata.extras?.getString("agent"))
-            if (mediaMetadata.extras?.getBoolean("live") != true) {
-                cacheDataSource.createDataSource()
-            } else {
-                okhttpDataSource.createDataSource()
-            }
-        }
-
-        val hlsMediaSource: HlsMediaSource.Factory = HlsMediaSource.Factory(dualDataSource)
-            .setAllowChunklessPreparation(false)
-
         exoPlayer = ExoPlayer.Builder(this)
             .setAudioAttributes(audioAttributes, true)
-            .setMediaSourceFactory(hlsMediaSource)
             .setRenderersFactory(renderersFactory)
             .setTrackSelector(trackSelector)
             .setSeekBackIncrementMs(10000)
@@ -179,9 +131,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
     }
 
     override fun onDestroy() {
-        playerBufferingTimer?.cancel()
         playerTimer?.cancel()
-        playerBufferingTimer = null
         playerTimer = null
         sponsorBlock = null
         if (this::playerHandler.isInitialized) {
@@ -261,35 +211,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         return super.onCustomCommand(session, controller, customCommand, args)
     }
 
-    override fun onPlaybackStateChanged(playbackState: Int) {
-        super.onPlaybackStateChanged(playbackState)
-        when (playbackState) {
-            Player.STATE_BUFFERING -> {
-                playerBufferingTimer?.cancel()
-                if (exoPlayer.currentPosition == 0L) {
-                    playerBufferingTimer = object: CountDownTimer(TimeUnit.SECONDS.toMillis(10), 1000) {
-                        override fun onTick(millisUntilFinished: Long) {
-                        }
-                        override fun onFinish() {
-                            val playerMediaItem: MediaItem = MediaItem.Builder()
-                                .setMimeType(MimeTypes.APPLICATION_M3U8)
-                                .setMediaId("root")
-                                .setMediaMetadata(exoPlayer.mediaMetadata)
-                                .setSubtitleConfigurations(subtitlesList)
-                                .setUri(exoPlayer.mediaMetadata.extras?.getString("safariurl"))
-                                .build()
-
-                            exoPlayer.setMediaItem(playerMediaItem)
-                            exoPlayer.playWhenReady = true
-                            exoPlayer.prepare()
-                        }
-                    }.start()
-                }
-            }
-            Player.STATE_ENDED, Player.STATE_IDLE, Player.STATE_READY -> playerBufferingTimer?.cancel()
-        }
-    }
-
     @SuppressLint("SwitchIntDef")
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
@@ -330,7 +251,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 playerExtraInfo.putString("type", info.type)
                 playerExtraInfo.putBoolean("live", info.live)
                 playerExtraInfo.putString("agent", info.agent)
-                playerExtraInfo.putString("safariurl", info.safariurl)
                 playerExtraInfo.putString("expiration", info.expiration)
                 playerExtraInfo.putInt("views", info.views)
                 playerExtraInfo.putInt("likes", info.likes)
@@ -347,15 +267,23 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     .setIsPlayable(true)
                     .build()
 
-                val playerMediaItem: MediaItem.Builder = MediaItem.Builder()
-                    .setMimeType(MimeTypes.APPLICATION_M3U8)
-                    .setMediaId("root")
+                val videoMediaItem: MediaItem.Builder = MediaItem.Builder()
+                    .setMediaId("video")
                     .setMediaMetadata(playerMediaMetadata)
 
-                if (info.iosurl != null) {
-                    playerMediaItem.setUri(info.iosurl.toUri())
-                } else {
-                    playerMediaItem.setUri(info.safariurl.toUri())
+                val audioMediaItem: MediaItem.Builder = MediaItem.Builder()
+                    .setMediaId("audio")
+                    .setMediaMetadata(playerMediaMetadata)
+
+                if (info.audiourl != null) {
+                    audioMediaItem.setUri(info.audiourl.toUri())
+                }
+
+                if (info.videourl != null) {
+                    videoMediaItem.setUri(info.videourl.toUri())
+                } else if (info.streamurl != null) {
+                    videoMediaItem.setMimeType(MimeTypes.APPLICATION_M3U8)
+                    videoMediaItem.setUri(info.streamurl.toUri())
                 }
 
                 if (info.subtitles != null) {
@@ -371,7 +299,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                         subtitlesList.add(playerCaptions)
                     }
 
-                    playerMediaItem.setSubtitleConfigurations(subtitlesList)
+                    videoMediaItem.setSubtitleConfigurations(subtitlesList)
 
                     val broadcastIntent = Intent("h.lillie.ytplayer.activity.subtitles")
                     broadcastIntent.setPackage(this@Service.packageName)
@@ -384,8 +312,55 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     sendBroadcast(broadcastIntent)
                 }
 
+                val httpLoggingInterceptor = HttpLoggingInterceptor()
+                    .setLevel(HttpLoggingInterceptor.Level.HEADERS)
+
+                val client: OkHttpClient.Builder = OkHttpClient.Builder()
+                    .addInterceptor(httpLoggingInterceptor)
+
+                if (CronetProviderInstaller.isInstalled()) {
+                    val engine: CronetEngine = CronetEngine.Builder(this@Service)
+                        .enableHttp2(true)
+                        .enableQuic(true)
+                        .build()
+
+                    val interceptor: CronetInterceptor = CronetInterceptor.newBuilder(engine).build()
+                    client.addInterceptor(interceptor)
+                }
+
+                val okhttpDataSource: OkHttpDataSource.Factory = OkHttpDataSource.Factory(client.build())
+                    .setUserAgent(info.agent)
+
+                if (this@Service::playerCache.isInitialized) {
+                    playerCache.release()
+                }
+
                 withContext(Dispatchers.Main) {
-                    exoPlayer.setMediaItem(playerMediaItem.build())
+                    if (info.videourl != null && info.audiourl != null) {
+                        playerCache = SimpleCache(File(cacheDir, "media"), LeastRecentlyUsedCacheEvictor(256 * 1024 * 1024), StandaloneDatabaseProvider(this@Service))
+
+                        val cacheDataSource: CacheDataSource.Factory = CacheDataSource.Factory()
+                            .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
+                            .setUpstreamDataSourceFactory(okhttpDataSource)
+                            .setCache(playerCache)
+
+                        val videoMediaSource = DefaultMediaSourceFactory(cacheDataSource)
+                            .createMediaSource(videoMediaItem.build())
+
+                        val audioMediaSource = DefaultMediaSourceFactory(cacheDataSource)
+                            .createMediaSource(audioMediaItem.build())
+
+                        val mergingMediaSource = MergingMediaSource(videoMediaSource, audioMediaSource)
+
+                        exoPlayer.setMediaSource(mergingMediaSource)
+                    } else {
+                        val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(okhttpDataSource)
+                            .setAllowChunklessPreparation(false)
+                            .createMediaSource(videoMediaItem.build())
+
+                        exoPlayer.setMediaSource(hlsMediaSource)
+                    }
+
                     exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
                     exoPlayer.playbackParameters = PlaybackParameters(1.0f)
                     exoPlayer.trackSelectionParameters = exoPlayer.trackSelectionParameters.buildUpon()
