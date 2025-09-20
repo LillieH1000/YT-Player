@@ -350,7 +350,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                         val audioMediaSource = DefaultMediaSourceFactory(cacheDataSource)
                             .createMediaSource(audioMediaItem.build())
 
-                        val mergingMediaSource = MergingMediaSource(videoMediaSource, audioMediaSource)
+                        val mergingMediaSource = MergingMediaSource(true, videoMediaSource, audioMediaSource)
 
                         exoPlayer.setMediaSource(mergingMediaSource)
                     } else {
