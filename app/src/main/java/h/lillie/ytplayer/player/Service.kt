@@ -264,23 +264,25 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         when (playbackState) {
             Player.STATE_BUFFERING -> {
                 playerBufferingTimer?.cancel()
-                playerBufferingTimer = object: CountDownTimer(TimeUnit.SECONDS.toMillis(10), 1000) {
-                    override fun onTick(millisUntilFinished: Long) {
-                    }
-                    override fun onFinish() {
-                        val playerMediaItem: MediaItem = MediaItem.Builder()
-                            .setMimeType(MimeTypes.APPLICATION_M3U8)
-                            .setMediaId("root")
-                            .setMediaMetadata(exoPlayer.mediaMetadata)
-                            .setSubtitleConfigurations(subtitlesList)
-                            .setUri(exoPlayer.mediaMetadata.extras?.getString("safariurl"))
-                            .build()
+                if (exoPlayer.currentPosition == 0L) {
+                    playerBufferingTimer = object: CountDownTimer(TimeUnit.SECONDS.toMillis(10), 1000) {
+                        override fun onTick(millisUntilFinished: Long) {
+                        }
+                        override fun onFinish() {
+                            val playerMediaItem: MediaItem = MediaItem.Builder()
+                                .setMimeType(MimeTypes.APPLICATION_M3U8)
+                                .setMediaId("root")
+                                .setMediaMetadata(exoPlayer.mediaMetadata)
+                                .setSubtitleConfigurations(subtitlesList)
+                                .setUri(exoPlayer.mediaMetadata.extras?.getString("safariurl"))
+                                .build()
 
-                        exoPlayer.setMediaItem(playerMediaItem)
-                        exoPlayer.playWhenReady = true
-                        exoPlayer.prepare()
-                    }
-                }.start()
+                            exoPlayer.setMediaItem(playerMediaItem)
+                            exoPlayer.playWhenReady = true
+                            exoPlayer.prepare()
+                        }
+                    }.start()
+                }
             }
             Player.STATE_ENDED, Player.STATE_IDLE, Player.STATE_READY -> playerBufferingTimer?.cancel()
         }
