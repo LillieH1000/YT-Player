@@ -327,7 +327,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var playbackSpeed = MutableStateFlow("1")
     private var playerTime = MutableStateFlow<String?>(null)
     private var showInfo = MutableStateFlow(false)
-    private var showOverlay = MutableStateFlow(false)
+    private var showOverlay = MutableStateFlow(true)
     private var showSettings = MutableStateFlow(false)
     private var showSubtitles = MutableStateFlow(false)
     private var showSleepTimer = MutableStateFlow(false)
@@ -534,7 +534,7 @@ class Player: ComponentActivity(), Player.Listener {
                         .size(50.dp)
                         .clip(CircleShape)
                         .noRippleClickable {
-                            if (playerController.value != null) {
+                            if (playerController.value != null && playerControllerState?.mediaItemCount == 1) {
                                 if (!playerController.value!!.isPlaying) {
                                     playerController.value?.play()
                                 } else {
@@ -573,40 +573,42 @@ class Player: ComponentActivity(), Player.Listener {
                 ) {
                     // Progress Slider
                     val sliderSource = remember { MutableInteractionSource() }
-                    Slider(
-                        modifier = Modifier
-                            .weight(1f)
-                            .align(Alignment.CenterVertically),
-                        interactionSource = sliderSource,
-                        steps = 0,
-                        thumb = {
-                            SliderDefaults.Thumb(
-                                interactionSource = sliderSource,
-                                modifier = Modifier.size(0.dp),
-                                thumbSize = DpSize.Zero
-                            )
-                        },
-                        track = { sliderState ->
-                            SliderDefaults.Track(
-                                colors = SliderDefaults.colors(
-                                    activeTickColor = Color.Transparent,
-                                    inactiveTickColor = Color.Transparent,
-                                    activeTrackColor = Color.LightGray,
-                                    inactiveTrackColor = Color.DarkGray
-                                ),
-                                modifier = Modifier.height(5.dp),
-                                sliderState = sliderState,
-                                thumbTrackGapSize = 0.dp
-                            )
-                        },
-                        value = playerPositionState,
-                        valueRange = 0f..playerDurationState,
-                        onValueChange = { newValue ->
-                            playerController.value?.seekTo(newValue.toLong())
-                        }
-                    )
+                    if (playerControllerState?.mediaItemCount == 1) {
+                        Slider(
+                            modifier = Modifier
+                                .weight(1f)
+                                .align(Alignment.CenterVertically),
+                            interactionSource = sliderSource,
+                            steps = 0,
+                            thumb = {
+                                SliderDefaults.Thumb(
+                                    interactionSource = sliderSource,
+                                    modifier = Modifier.size(0.dp),
+                                    thumbSize = DpSize.Zero
+                                )
+                            },
+                            track = { sliderState ->
+                                SliderDefaults.Track(
+                                    colors = SliderDefaults.colors(
+                                        activeTickColor = Color.Transparent,
+                                        inactiveTickColor = Color.Transparent,
+                                        activeTrackColor = Color.LightGray,
+                                        inactiveTrackColor = Color.DarkGray
+                                    ),
+                                    modifier = Modifier.height(5.dp),
+                                    sliderState = sliderState,
+                                    thumbTrackGapSize = 0.dp
+                                )
+                            },
+                            value = playerPositionState,
+                            valueRange = 0f..playerDurationState,
+                            onValueChange = { newValue ->
+                                playerController.value?.seekTo(newValue.toLong())
+                            }
+                        )
+                    }
                     // Fullscreen Button
-                    if (!autoRotateEnabledState && !chromeOSDevice && !questOSDevice) {
+                    if (!autoRotateEnabledState && !chromeOSDevice && !questOSDevice && playerControllerState?.mediaItemCount == 1) {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
@@ -639,7 +641,11 @@ class Player: ComponentActivity(), Player.Listener {
                         modifier = Modifier
                             .align(Alignment.BottomStart)
                             .padding(start = 15.dp, end = 15.dp, bottom = 45.dp),
-                        text = playerTimeState!!,
+                        text = if (playerControllerState?.mediaItemCount == 1) {
+                            playerTimeState!!
+                        } else {
+                            ""
+                        },
                         color = Color.White,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1
@@ -659,7 +665,11 @@ class Player: ComponentActivity(), Player.Listener {
                             .align(Alignment.CenterVertically)
                     ) {
                         Text(
-                            text = playerControllerState?.mediaMetadata?.title.toString(),
+                            text = if (playerControllerState?.mediaItemCount == 1) {
+                                playerControllerState?.mediaMetadata?.title.toString()
+                            } else {
+                                ""
+                            },
                             color = Color.White,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
@@ -674,61 +684,63 @@ class Player: ComponentActivity(), Player.Listener {
                         Row(
                             modifier = Modifier.wrapContentWidth()
                         ) {
-                            // Share Button
-                            Box(
-                                contentAlignment = Alignment.Center,
-                                modifier = Modifier
-                                    .width(50.dp)
-                                    .clip(CircleShape)
-                                    .noRippleClickable {
-                                        val type: String? = playerControllerState?.mediaMetadata?.extras?.getString("type")
-                                        val url: String = when (type) {
-                                            "livestream" -> "https://youtube.com/live/${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
-                                            "short" -> "https://youtube.com/shorts/${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
-                                            else -> "https://youtube.com/watch?v=${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
+                            if (playerControllerState?.mediaItemCount == 1) {
+                                // Share Button
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier
+                                        .width(50.dp)
+                                        .clip(CircleShape)
+                                        .noRippleClickable {
+                                            val type: String? = playerControllerState?.mediaMetadata?.extras?.getString("type")
+                                            val url: String = when (type) {
+                                                "livestream" -> "https://youtube.com/live/${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
+                                                "short" -> "https://youtube.com/shorts/${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
+                                                else -> "https://youtube.com/watch?v=${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
+                                            }
+                                            if (chromeOSDevice || questOSDevice) {
+                                                val clipManager: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                                                val clipData: ClipData = ClipData.newPlainText("", url)
+                                                clipManager.setPrimaryClip(clipData)
+                                                Toast.makeText(this@Player, "Copied to clipboard", Toast.LENGTH_SHORT).show()
+                                            } else {
+                                                val shareIntent = Intent()
+                                                shareIntent.action = Intent.ACTION_SEND
+                                                shareIntent.putExtra(Intent.EXTRA_TEXT, url)
+                                                shareIntent.type = "text/plain"
+                                                startActivity(Intent.createChooser(shareIntent, null))
+                                            }
                                         }
-                                        if (chromeOSDevice || questOSDevice) {
-                                            val clipManager: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                                            val clipData: ClipData = ClipData.newPlainText("", url)
-                                            clipManager.setPrimaryClip(clipData)
-                                            Toast.makeText(this@Player, "Copied to clipboard", Toast.LENGTH_SHORT).show()
-                                        } else {
-                                            val shareIntent = Intent()
-                                            shareIntent.action = Intent.ACTION_SEND
-                                            shareIntent.putExtra(Intent.EXTRA_TEXT, url)
-                                            shareIntent.type = "text/plain"
-                                            startActivity(Intent.createChooser(shareIntent, null))
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Share,
+                                        tint = Color.White,
+                                        contentDescription = ""
+                                    )
+                                }
+                                // Settings Button
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier
+                                        .width(50.dp)
+                                        .clip(CircleShape)
+                                        .noRippleClickable {
+                                            if (!showSettingsState && !showInfoState && !showSubtitlesState && !showSleepTimerState) {
+                                                showSettings.value = true
+                                            } else {
+                                                showSettings.value = false
+                                                showInfo.value = false
+                                                showSubtitles.value = false
+                                                showSleepTimer.value = false
+                                            }
                                         }
-                                    }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Outlined.Share,
-                                    tint = Color.White,
-                                    contentDescription = ""
-                                )
-                            }
-                            // Settings Button
-                            Box(
-                                contentAlignment = Alignment.Center,
-                                modifier = Modifier
-                                    .width(50.dp)
-                                    .clip(CircleShape)
-                                    .noRippleClickable {
-                                        if (!showSettingsState && !showInfoState && !showSubtitlesState && !showSleepTimerState) {
-                                            showSettings.value = true
-                                        } else {
-                                            showSettings.value = false
-                                            showInfo.value = false
-                                            showSubtitles.value = false
-                                            showSleepTimer.value = false
-                                        }
-                                    }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Outlined.Settings,
-                                    tint = Color.White,
-                                    contentDescription = ""
-                                )
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Settings,
+                                        tint = Color.White,
+                                        contentDescription = ""
+                                    )
+                                }
                             }
                         }
                     }
@@ -1365,7 +1377,7 @@ class Player: ComponentActivity(), Player.Listener {
     private fun createPlayer(videoID: String?) {
         playerController.value?.stop()
         playerController.value?.removeMediaItem(0)
-        showOverlay.value = false
+        showOverlay.value = true
         showInfo.value = false
         showSettings.value = false
         showSubtitles.value = false
