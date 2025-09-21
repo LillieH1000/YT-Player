@@ -42,9 +42,9 @@ def getInfo(videoID, searchQuery):
         else:
             info["videourl"] = None
             info["audiourl"] = None
-            info["streamurl"] = y["manifest_url"]
+            info["streamurl"] = y["url"]
             info["agent"] = y["http_headers"]["User-Agent"]
-            info["expiration"] = re.search("/expire/(\\d+)/", y["manifest_url"]).group(1)
+            info["expiration"] = re.search("/expire/(\\d+)/", y["url"]).group(1)
         subtitles = []
         for a in y["subtitles"]:
             c = {}
