@@ -640,7 +640,12 @@ class Player: ComponentActivity(), Player.Listener {
                     Text(
                         modifier = Modifier
                             .align(Alignment.BottomStart)
-                            .padding(start = 15.dp, end = 15.dp, bottom = 45.dp),
+                            .padding(start = 15.dp, end = 15.dp, bottom = 45.dp)
+                            .noRippleClickable {
+                                if (playerControllerState?.mediaMetadata?.extras?.getBoolean("live") == true) {
+                                    playerController.value?.seekToDefaultPosition()
+                                }
+                            },
                         text = if (playerControllerState?.mediaItemCount == 1) {
                             playerTimeState!!
                         } else {
