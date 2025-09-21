@@ -27,6 +27,7 @@ import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.datasource.okhttp.OkHttpDataSource
+import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlaybackException
 import androidx.media3.exoplayer.ExoPlayer
@@ -58,6 +59,7 @@ import org.json.JSONArray
 import java.io.File
 import java.text.DecimalFormat
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 @OptIn(UnstableApi::class)
 class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Callback, Player.Listener {
@@ -79,6 +81,16 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
             .setUsage(C.USAGE_MEDIA)
             .build()
 
+        val loadControl: DefaultLoadControl = DefaultLoadControl.Builder()
+            .setBufferDurationsMs(
+                DefaultLoadControl.DEFAULT_MIN_BUFFER_MS,
+                DefaultLoadControl.DEFAULT_MAX_BUFFER_MS,
+                TimeUnit.SECONDS.toMillis(20).toInt(),
+                DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS
+            )
+            .setPrioritizeTimeOverSizeThresholds(true)
+            .build()
+
         val renderersFactory: DefaultRenderersFactory = DefaultRenderersFactory(this)
             .forceEnableMediaCodecAsynchronousQueueing()
 
@@ -91,6 +103,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
 
         exoPlayer = ExoPlayer.Builder(this)
             .setAudioAttributes(audioAttributes, true)
+            .setLoadControl(loadControl)
             .setRenderersFactory(renderersFactory)
             .setTrackSelector(trackSelector)
             .setSeekBackIncrementMs(10000)
