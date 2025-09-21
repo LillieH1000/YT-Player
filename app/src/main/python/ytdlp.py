@@ -9,7 +9,7 @@ def getInfo(videoID, searchQuery):
                 "player_client": ["default","-ios"]
             }
         },
-        "format": "bestvideo+bestaudio/best[protocol=m3u8_native]",
+        "format": "bestvideo[height<=1080]+bestaudio/best[height<=1080][protocol=m3u8_native]",
         "check_formats": "selected",
         "noplaylist": True,
         "cachedir": False
