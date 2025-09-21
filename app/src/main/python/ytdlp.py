@@ -6,7 +6,6 @@ def getInfo(videoID, searchQuery):
     ytdlp_opts = {
         "extractor_args": {
             "youtube": {
-                "formats": ["dashy"],
                 "player_client": ["default","-ios"]
             }
         },
