@@ -4,6 +4,10 @@
 
 A simple YouTube video player for [Android](#android), [ChromeOS](#chromeos--meta-quest-33s) and [Meta Quest 3/3s](#chromeos--meta-quest-33s) with features such as no ads, background playback and more!
 
+# Notice
+
+This project has been archived/discontinued, YouTube has been making changes that have been a nightmare for me to work on this project, this project relied on hls for a long time which YouTube has officially blocked the main clients (ios, web_safari).
+
 </div><br>
 
 Features:
