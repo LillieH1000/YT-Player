@@ -55,8 +55,8 @@ android {
 
     kotlin {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_21)
             languageVersion = KotlinVersion.KOTLIN_2_3
+            jvmTarget = JvmTarget.JVM_21
         }
     }
 
