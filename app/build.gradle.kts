@@ -10,7 +10,9 @@ plugins {
 
 android {
     namespace = "h.lillie.ytplayer"
-    compileSdk = 37
+    compileSdk {
+        version = release(37)
+    }
 
     defaultConfig {
         applicationId = "h.lillie.ytplayer"
