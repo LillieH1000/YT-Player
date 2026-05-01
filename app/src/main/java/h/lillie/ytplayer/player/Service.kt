@@ -39,11 +39,9 @@ import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
-import com.google.android.gms.net.CronetProviderInstaller
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
-import com.google.net.cronet.okhttptransport.CronetInterceptor
 import h.lillie.ytplayer.requests.Requests
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -53,7 +51,6 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.chromium.net.CronetEngine
 import org.json.JSONArray
 import java.io.File
 import java.text.DecimalFormat
@@ -94,16 +91,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
 
         val client: OkHttpClient.Builder = OkHttpClient.Builder()
             .addInterceptor(httpLoggingInterceptor)
-
-        if (CronetProviderInstaller.isInstalled()) {
-            val engine: CronetEngine = CronetEngine.Builder(this)
-                .enableHttp2(true)
-                .enableQuic(true)
-                .build()
-
-            val interceptor: CronetInterceptor = CronetInterceptor.newBuilder(engine).build()
-            client.addInterceptor(interceptor)
-        }
 
         val okhttpDataSource: OkHttpDataSource.Factory = OkHttpDataSource.Factory(client.build())
 

@@ -99,12 +99,10 @@ dependencies {
     implementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.composables.core)
-    implementation(libs.cronet.okhttp)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.logging.interceptor)
     implementation(libs.okhttp)
     implementation(platform(libs.okhttp.bom))
-    implementation(libs.play.services.cronet)
 }

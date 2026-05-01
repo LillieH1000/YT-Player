@@ -6,12 +6,10 @@ composables = "1.49.9"
 compose = "2026.04.01"
 core = "1.18.0"
 coroutines = "1.10.2"
-cronetokhttp = "0.1.1"
 kotlin = "2.3.21"
 lifecycle = "2.10.0"
 media3 = "1.10.0"
 okhttp = "5.3.2"
-playcronet = "18.1.1"
 serialization = "1.11.0"
 
 [libraries]
@@ -38,14 +36,12 @@ androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 composables-core = { group = "com.composables", name = "core", version.ref = "composables" }
-cronet-okhttp = {  group = "com.google.net.cronet", name = "cronet-okhttp", version.ref = "cronetokhttp" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
 logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp" }
 okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "okhttp" }
-play-services-cronet = { group = "com.google.android.gms", name = "play-services-cronet", version.ref = "playcronet" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android" }
