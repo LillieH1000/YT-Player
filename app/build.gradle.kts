@@ -11,12 +11,12 @@ plugins {
 
 android {
     namespace = "h.lillie.ytplayer"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "h.lillie.ytplayer"
         minSdk = 25
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 126
         versionName = "3.2.1"
         ndk {
