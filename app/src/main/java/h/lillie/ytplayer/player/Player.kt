@@ -1087,7 +1087,7 @@ class Player: ComponentActivity(), Player.Listener {
                         )
                     }
                     // Dislikes
-                    if (playerControllerState?.mediaMetadata?.extras?.getInt("dislikes") != null) {
+                    if (playerControllerState?.mediaMetadata?.extras?.getLong("dislikes") != null) {
                         Row(
                             modifier = Modifier
                                 .height(30.dp)
@@ -1095,7 +1095,7 @@ class Player: ComponentActivity(), Player.Listener {
                         ) {
                             Text(
                                 modifier = Modifier.align(Alignment.CenterVertically),
-                                text = "Dislikes: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getInt("dislikes"))}",
+                                text = "Dislikes: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getLong("dislikes"))}",
                                 color = Color.White,
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1

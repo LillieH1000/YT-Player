@@ -310,9 +310,9 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         override fun onReceive(context: Context?, intent: Intent?) = coroutineScope {
             if (intent?.action == "h.lillie.ytplayer.service.info") {
                 val request = Requests()
-                val dislikes = request.returnYouTubeDislike(this@Service, info.id)
-                sponsorBlock = request.sponsorBlock(this@Service, info.id)
                 val info = request.extractor(this@Service, intent.extras!!.getString("videoID"), intent.extras!!.getString("searchQuery"))
+                val dislikes = request.returnYouTubeDislike(info.id)
+                sponsorBlock = request.sponsorBlock(info.id)
                 playerTimer?.cancel()
                 playerTimer = null
 
@@ -324,7 +324,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 playerExtraInfo.putLong("views", info.views)
                 playerExtraInfo.putLong("likes", info.likes)
                 if (dislikes != null) {
-                    playerExtraInfo.putInt("dislikes", dislikes)
+                    playerExtraInfo.putLong("dislikes", dislikes)
                 }
 
                 val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
