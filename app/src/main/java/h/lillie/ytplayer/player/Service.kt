@@ -56,6 +56,7 @@ import okhttp3.OkHttpClient
 import org.json.JSONArray
 import java.io.File
 import java.text.DecimalFormat
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 @OptIn(UnstableApi::class)
@@ -85,6 +86,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         val trackSelector: DefaultTrackSelector = DefaultTrackSelector(this).apply {
             setParameters(buildUponParameters()
                 .setForceHighestSupportedBitrate(true)
+                .setPreferredAudioLanguages("${Locale.getDefault().toLanguageTag()},${Locale.getDefault().language}")
             )
         }
 

@@ -1153,7 +1153,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     Text(
                                         text = when (index) {
                                             0 -> "Off"
-                                            else -> subtitles.getJSONObject(index).optString("name")
+                                            else -> subtitles.getJSONObject(index - 1).optString("name")
                                         },
                                         color = Color.White,
                                         overflow = TextOverflow.Ellipsis,
@@ -1203,7 +1203,7 @@ class Player: ComponentActivity(), Player.Listener {
                                                     else -> {
                                                         playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
                                                             .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-                                                            .setPreferredTextLanguage(subtitles.getJSONObject(index).optString("id"))
+                                                            .setPreferredTextLanguage(subtitles.getJSONObject(index - 1).optString("id"))
                                                             .build()
                                                     }
                                                 }
