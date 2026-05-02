@@ -15,27 +15,26 @@ import org.schabi.newpipe.extractor.stream.StreamInfo
 import java.io.File
 
 class Requests {
-    suspend fun ytdlp(context: Context, videoID: String?, searchQuery: String?): Info? = withContext(Dispatchers.IO) {
+    suspend fun extractor(context: Context, videoID: String?, searchQuery: String?): Info = withContext(Dispatchers.IO) {
         NewPipe.init(Downloader())
         val service = NewPipe.getService(ServiceList.YouTube.serviceId)
         val info = StreamInfo.getInfo(service, "https://www.youtube.com/watch?v=${videoID}")
 
-
-        var video = ""
+        var videoUrl = ""
         info.videoOnlyStreams.forEach { stream ->
             Log.d("TTTTTTTT", "${stream.height} / ${stream.width} / ${stream.codec}")
             if (video == "" && stream.codec == "vp9") {
                 Log.d("TTTTTTTT", stream.url!!)
-                video = stream.url!!
+                videoUrl = stream.url!!
             }
         }
 
-        var audio = ""
+        var audioUrl = ""
         info.audioStreams.forEach { stream ->
             Log.d("TTTTTTTT", "${stream.quality} / ${stream.bitrate} / ${stream.codec}")
-            if (audio == "" && stream.codec == "opus") {
+            if (audioUrl == "" && stream.codec == "opus") {
                 Log.d("TTTTTTTT", stream.url!!)
-                audio = stream.url!!
+                audioUrl = stream.url!!
             }
         }
 
@@ -46,12 +45,12 @@ class Requests {
               <Period>
                 <AdaptationSet mimeType="video/webm" segmentAlignment="true" startWithSAP="1">
                   <Representation id="video" bandwidth="3000000" width="3840" height="2160" codecs="vp9">
-                    <BaseURL>${video.replace("&", "&amp;")}</BaseURL>
+                    <BaseURL>${videoUrl.replace("&", "&amp;")}</BaseURL>
                   </Representation>
                 </AdaptationSet>
                 <AdaptationSet mimeType="audio/webm" segmentAlignment="true" startWithSAP="1">
                   <Representation id="audio" bandwidth="128000" audioSamplingRate="48000" codecs="opus">
-                    <BaseURL>${audio.replace("&", "&amp;")}</BaseURL>
+                    <BaseURL>${audioUrl.replace("&", "&amp;")}</BaseURL>
                   </Representation>
                 </AdaptationSet>
               </Period>
