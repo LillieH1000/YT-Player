@@ -8,10 +8,12 @@ import okhttp3.Request
 import okhttp3.Response
 import org.json.JSONArray
 import org.json.JSONObject
+import org.schabi.newpipe.extractor.Image
 import org.schabi.newpipe.extractor.NewPipe
 import org.schabi.newpipe.extractor.ServiceList
 import org.schabi.newpipe.extractor.stream.AudioStream
 import org.schabi.newpipe.extractor.stream.StreamInfo
+import org.schabi.newpipe.extractor.stream.StreamType
 import org.schabi.newpipe.extractor.stream.VideoStream
 import java.io.File
 import kotlin.time.Duration.Companion.seconds
@@ -55,8 +57,11 @@ class Requests {
             info.id,
             info.name,
             info.uploaderName,
-            "https://cdn.discordapp.com/attachments/338469594471596042/1499227651179548722/RDT_20260429_2154563781918997808338585.jpg?ex=69f6ab0e&is=69f5598e&hm=44a4ac9afd12d5666b779e660c8bec7b3eccba67885fb29566d850cc99d4d621&animated=true",
-            false,
+            info.thumbnails.maxWith(
+                compareBy<Image> { it.height }
+                    .thenBy { it.width }
+            ).url,
+            info.streamType == StreamType.LIVE_STREAM || info.streamType == StreamType.AUDIO_LIVE_STREAM,
             info.viewCount,
             info.likeCount,
             "video",
