@@ -1,26 +1,15 @@
-# macOS
-.DS_Store
+# Android Studio
+local.properties
+.idea/
+.kotlin/
 
 # Gradle
+gradle/gradle-daemon-jvm.properties
 .gradle/
 build/
 
-# IntelliJ
-*.iml
-.idea/
-
-# Android Studio
-local.properties
-captures/
-.externalNativeBuild/
-.cxx/
+# macOS
+.DS_Store
 
 # Visual Studio Code
 .vscode/
-
-# Logs
-*.log
-
-# Builds
-app/release/
-app/build/
