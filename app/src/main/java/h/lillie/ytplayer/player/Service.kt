@@ -320,7 +320,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 playerExtraInfo.putString("id", info.id)
                 playerExtraInfo.putString("type", info.type)
                 playerExtraInfo.putBoolean("live", info.live)
-                // playerExtraInfo.putString("safariurl", info.safariurl)
                 playerExtraInfo.putString("expiration", info.expiration)
                 playerExtraInfo.putLong("views", info.views)
                 playerExtraInfo.putLong("likes", info.likes)
