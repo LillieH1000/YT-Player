@@ -12,7 +12,6 @@
         android:icon="@mipmap/icon_default"
         android:label="YT Player"
         android:largeHeap="true"
-        android:name=".application.Application"
         android:supportsRtl="false"
         android:theme="@android:style/Theme.Material.NoActionBar"
         tools:ignore="DataExtractionRules"

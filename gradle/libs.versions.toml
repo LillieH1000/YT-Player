@@ -1,7 +1,6 @@
 [versions]
 activity = "1.13.0"
 android = "9.2.0"
-chaquopy = "17.0.0"
 composables = "1.49.9"
 compose = "2026.04.01"
 core = "1.18.0"
@@ -48,6 +47,5 @@ okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref 
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android" }
-chaquopy-python = { id = "com.chaquo.python", version.ref = "chaquopy" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
