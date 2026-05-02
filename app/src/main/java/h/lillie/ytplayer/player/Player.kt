@@ -1066,7 +1066,7 @@ class Player: ComponentActivity(), Player.Listener {
                     ) {
                         Text(
                             modifier = Modifier.align(Alignment.CenterVertically),
-                            text = "Views: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getInt("views"))}",
+                            text = "Views: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getLong("views"))}",
                             color = Color.White,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
@@ -1080,7 +1080,7 @@ class Player: ComponentActivity(), Player.Listener {
                     ) {
                         Text(
                             modifier = Modifier.align(Alignment.CenterVertically),
-                            text = "Likes: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getInt("likes"))}",
+                            text = "Likes: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getLong("likes"))}",
                             color = Color.White,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
