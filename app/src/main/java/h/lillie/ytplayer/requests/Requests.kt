@@ -36,14 +36,14 @@ class Requests {
             <?xml version="1.0" encoding="UTF-8"?>
             <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" profiles="urn:mpeg:dash:profile:isoff-on-demand:2011" type="static" mediaPresentationDuration="PT3M9.299S" minBufferTime="PT2.0S">
               <Period>
-                <AdaptationSet mimeType="video/webm" segmentAlignment="true" startWithSAP="1">
-                  <Representation id="video" bandwidth="3000000" width="3840" height="2160" codecs="vp9">
-                    <BaseURL>${videoUrl.replace("&", "&amp;")}</BaseURL>
+                <AdaptationSet mimeType="${videoStream.format?.mimeType}" segmentAlignment="true" startWithSAP="1">
+                  <Representation id="video" bandwidth="3000000" width="3840" height="2160" codecs="${videoStream.codec}">
+                    <BaseURL>${videoStream.url!!.replace("&", "&amp;")}</BaseURL>
                   </Representation>
                 </AdaptationSet>
-                <AdaptationSet mimeType="audio/webm" segmentAlignment="true" startWithSAP="1">
-                  <Representation id="audio" bandwidth="128000" audioSamplingRate="48000" codecs="opus">
-                    <BaseURL>${audioUrl.replace("&", "&amp;")}</BaseURL>
+                <AdaptationSet mimeType="${audioStream.format?.mimeType}" segmentAlignment="true" startWithSAP="1">
+                  <Representation id="audio" bandwidth="128000" audioSamplingRate="48000" codecs="${audioStream.codec}">
+                    <BaseURL>${audioStream.url!!.replace("&", "&amp;")}</BaseURL>
                   </Representation>
                 </AdaptationSet>
               </Period>
