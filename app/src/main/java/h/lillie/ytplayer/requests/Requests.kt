@@ -14,6 +14,7 @@ import org.schabi.newpipe.extractor.stream.AudioStream
 import org.schabi.newpipe.extractor.stream.StreamInfo
 import org.schabi.newpipe.extractor.stream.VideoStream
 import java.io.File
+import kotlin.time.Duration.Companion.seconds
 
 class Requests {
     suspend fun extractor(context: Context, videoID: String?, searchQuery: String?): Info = withContext(Dispatchers.IO) {
@@ -34,7 +35,7 @@ class Requests {
         val manifest = File(context.filesDir, "manifest.mpd")
         manifest.writeText("""
             <?xml version="1.0" encoding="UTF-8"?>
-            <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" profiles="urn:mpeg:dash:profile:isoff-on-demand:2011" type="static" mediaPresentationDuration="PT3M9.299S" minBufferTime="PT2.0S">
+            <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" profiles="urn:mpeg:dash:profile:isoff-on-demand:2011" type="static" mediaPresentationDuration="${info.duration.seconds.toIsoString()}" minBufferTime="PT2.0S">
               <Period>
                 <AdaptationSet mimeType="${videoStream.format?.mimeType}" segmentAlignment="true" startWithSAP="1">
                   <Representation id="video" bandwidth="3000000" width="3840" height="2160" codecs="${videoStream.codec}">
