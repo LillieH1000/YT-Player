@@ -126,7 +126,6 @@ class Player: ComponentActivity(), Player.Listener {
     private var playerHandler: Handler = Handler(Looper.getMainLooper())
     private var playerSubtitles: JSONArray? = null
     private var chromeOSDevice: Boolean = false
-    private var questOSDevice: Boolean = false
     private var isFirstLaunch: Boolean = false
 
     @SuppressLint("SwitchIntDef", "UnspecifiedRegisterReceiverFlag")
@@ -136,10 +135,7 @@ class Player: ComponentActivity(), Player.Listener {
         if (packageManager.hasSystemFeature("org.chromium.arc.device_management")) {
             chromeOSDevice = true
         }
-        if (Build.MODEL == "Quest") {
-            questOSDevice = true
-        }
-        if (!chromeOSDevice && !questOSDevice) {
+        if (!chromeOSDevice) {
             WindowInsetsControllerCompat(window, window.decorView).systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
         enableEdgeToEdge()
@@ -150,13 +146,13 @@ class Player: ComponentActivity(), Player.Listener {
         onBackPressedDispatcher.addCallback(this) {
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
-                    if (!chromeOSDevice && !questOSDevice) {
+                    if (!chromeOSDevice) {
                         deviceRotation.value = 0
                         WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                     }
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    if (!chromeOSDevice && !questOSDevice) {
+                    if (!chromeOSDevice) {
                         deviceRotation.value = 1
                         WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                     }
@@ -206,13 +202,13 @@ class Player: ComponentActivity(), Player.Listener {
         super.onConfigurationChanged(newConfig)
         when (newConfig.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
-                if (!chromeOSDevice && !questOSDevice) {
+                if (!chromeOSDevice) {
                     deviceRotation.value = 0
                     WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                 }
             }
             Configuration.ORIENTATION_LANDSCAPE -> {
-                if (!chromeOSDevice && !questOSDevice) {
+                if (!chromeOSDevice) {
                     deviceRotation.value = 1
                     WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                 }
@@ -280,7 +276,7 @@ class Player: ComponentActivity(), Player.Listener {
         if (hasFocus) {
             if (!isFirstLaunch) {
                 isFirstLaunch = true
-                if (chromeOSDevice || questOSDevice) {
+                if (chromeOSDevice) {
                     val clipManager: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                     val clipData: ClipData? = clipManager.primaryClip
                     if (clipData != null && clipData.itemCount > 0) {
@@ -294,13 +290,13 @@ class Player: ComponentActivity(), Player.Listener {
             }
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
-                    if (!chromeOSDevice && !questOSDevice) {
+                    if (!chromeOSDevice) {
                         deviceRotation.value = 0
                         WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                     }
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    if (!chromeOSDevice && !questOSDevice) {
+                    if (!chromeOSDevice) {
                         deviceRotation.value = 1
                         WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                     }
@@ -608,7 +604,7 @@ class Player: ComponentActivity(), Player.Listener {
                         )
                     }
                     // Fullscreen Button
-                    if (!autoRotateEnabledState && !chromeOSDevice && !questOSDevice && playerControllerState?.mediaItemCount == 1) {
+                    if (!autoRotateEnabledState && !chromeOSDevice && playerControllerState?.mediaItemCount == 1) {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
@@ -698,7 +694,7 @@ class Player: ComponentActivity(), Player.Listener {
                                                 "short" -> "https://youtube.com/shorts/${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
                                                 else -> "https://youtube.com/watch?v=${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
                                             }
-                                            if (chromeOSDevice || questOSDevice) {
+                                            if (chromeOSDevice) {
                                                 val clipManager: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                                                 val clipData: ClipData = ClipData.newPlainText("", url)
                                                 clipManager.setPrimaryClip(clipData)
