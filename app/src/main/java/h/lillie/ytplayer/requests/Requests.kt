@@ -1,7 +1,6 @@
 package h.lillie.ytplayer.requests
 
 import android.content.Context
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -11,7 +10,9 @@ import org.json.JSONArray
 import org.json.JSONObject
 import org.schabi.newpipe.extractor.NewPipe
 import org.schabi.newpipe.extractor.ServiceList
+import org.schabi.newpipe.extractor.stream.AudioStream
 import org.schabi.newpipe.extractor.stream.StreamInfo
+import org.schabi.newpipe.extractor.stream.VideoStream
 import java.io.File
 
 class Requests {
@@ -20,23 +21,15 @@ class Requests {
         val service = NewPipe.getService(ServiceList.YouTube.serviceId)
         val info = StreamInfo.getInfo(service, "https://www.youtube.com/watch?v=${videoID}")
 
-        var videoUrl = ""
-        info.videoOnlyStreams.forEach { stream ->
-            Log.d("TTTTTTTT", "${stream.height} / ${stream.width} / ${stream.codec}")
-            if (videoUrl == "" && stream.codec == "vp9") {
-                Log.d("TTTTTTTT", stream.url!!)
-                videoUrl = stream.url!!
-            }
-        }
+        val videoStream: VideoStream = info.videoOnlyStreams.maxWith(
+            compareBy<VideoStream> { it.height }
+                .thenBy { it.codec.contains("vp9") }
+        )
 
-        var audioUrl = ""
-        info.audioStreams.forEach { stream ->
-            Log.d("TTTTTTTT", "${stream.quality} / ${stream.bitrate} / ${stream.codec}")
-            if (audioUrl == "" && stream.codec == "opus") {
-                Log.d("TTTTTTTT", stream.url!!)
-                audioUrl = stream.url!!
-            }
-        }
+        val audioStream: AudioStream = info.audioStreams.maxWith(
+            compareBy<AudioStream> { it.bitrate }
+                .thenBy { it.codec.contains("opus") }
+        )
 
         val manifest = File(context.filesDir, "manifest.mpd")
         manifest.writeText("""
