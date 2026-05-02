@@ -14,7 +14,6 @@ data class Info(
     val type: String,
     val manifestPath: String?,
     val hlsUrl: String?,
-    val agent: String,
     val expiration: String,
     val subtitles: ArrayList<Subtitles>?
 ) {

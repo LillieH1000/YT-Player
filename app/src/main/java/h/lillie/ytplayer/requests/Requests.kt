@@ -69,7 +69,6 @@ class Requests {
             "video",
             manifest.absolutePath,
             null,
-            "t",
             "1000000000",
             null
         )

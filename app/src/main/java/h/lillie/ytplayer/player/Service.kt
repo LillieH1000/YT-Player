@@ -113,7 +113,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 mediaMetadata = exoPlayer.mediaMetadata
             }
 
-            // okhttpDataSource.setUserAgent(mediaMetadata.extras?.getString("agent"))
             if (mediaMetadata.extras?.getBoolean("live") != true) {
                 cacheDataSource.createDataSource()
             } else {
@@ -321,7 +320,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 playerExtraInfo.putString("id", info.id)
                 playerExtraInfo.putString("type", info.type)
                 playerExtraInfo.putBoolean("live", info.live)
-                playerExtraInfo.putString("agent", info.agent)
                 // playerExtraInfo.putString("safariurl", info.safariurl)
                 playerExtraInfo.putString("expiration", info.expiration)
                 playerExtraInfo.putLong("views", info.views)
