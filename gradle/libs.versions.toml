@@ -9,6 +9,7 @@ coroutines = "1.10.2"
 kotlin = "2.3.21"
 lifecycle = "2.10.0"
 media3 = "1.10.0"
+newpipe = "1512cf3222b0c5d87a249e6ac231b98090c42623"
 okhttp = "5.3.2"
 serialization = "1.11.0"
 
@@ -40,6 +41,7 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
 logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor" }
+newpipeextractor = { group = "com.github.TeamNewPipe", name = "NewPipeExtractor", version.ref = "newpipe" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp" }
 okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "okhttp" }
 
