@@ -14,6 +14,8 @@ import android.os.Looper
 import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.core.net.toUri
+import androidx.media3.cast.RemoteCastPlayer
+import androidx.media3.cast.SessionAvailabilityListener
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
@@ -60,7 +62,7 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 @OptIn(UnstableApi::class)
-class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Callback, Player.Listener {
+class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Callback, Player.Listener, SessionAvailabilityListener {
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var playerCache: SimpleCache
     private lateinit var playerHandler: Handler
@@ -134,6 +136,12 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
 
         exoPlayer.addListener(this)
 
+        val castPlayer: RemoteCastPlayer = RemoteCastPlayer.Builder(this)
+            .build()
+
+        castPlayer.addListener(this)
+        castPlayer.setSessionAvailabilityListener(this)
+
         val backButton: CommandButton = CommandButton.Builder(CommandButton.ICON_SKIP_BACK_10)
             .setDisplayName("Seek Back")
             .setSessionCommand(backCommand)
@@ -163,6 +171,12 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession? {
         return playerSession
+    }
+
+    override fun onCastSessionAvailable() {
+    }
+
+    override fun onCastSessionUnavailable() {
     }
 
     override fun onDestroy() {
