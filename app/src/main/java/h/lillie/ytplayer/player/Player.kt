@@ -49,7 +49,6 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
@@ -101,10 +100,6 @@ import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
-import com.composables.core.ScrollArea
-import com.composables.core.Thumb
-import com.composables.core.VerticalScrollbar
-import com.composables.core.rememberScrollAreaState
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import kotlinx.coroutines.CoroutineScope
@@ -1130,110 +1125,94 @@ class Player: ComponentActivity(), Player.Listener {
                 Box(
                     modifier = Modifier.weight(1f)
                 )
-                val lazyState = rememberLazyListState()
-                val scrollState = rememberScrollAreaState(lazyState)
-                ScrollArea(state = scrollState) {
-                    LazyColumn(
-                        state = lazyState,
-                        modifier = Modifier
-                            .wrapContentHeight()
-                            .heightIn(0.dp, 150.dp)
-                            .width(150.dp)
-                            .background(Color.DarkGray)
-                            .clickable(
-                                enabled = true,
-                                interactionSource = null,
-                                indication = null,
-                                onClick = {})
-                    ) {
-                        val subtitles: JSONArray? = playerSubtitles
-                        if (subtitles != null) {
-                            items(subtitles.length() + 1) { index ->
-                                Row(
+                LazyColumn(
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .heightIn(0.dp, 150.dp)
+                        .width(150.dp)
+                        .background(Color.DarkGray)
+                        .clickable(
+                            enabled = true,
+                            interactionSource = null,
+                            indication = null,
+                            onClick = {})
+                ) {
+                    val subtitles: JSONArray? = playerSubtitles
+                    if (subtitles != null) {
+                        items(subtitles.length() + 1) { index ->
+                            Row(
+                                modifier = Modifier
+                                    .height(30.dp)
+                                    .padding(start = 10.dp)
+                            ) {
+                                Column(
                                     modifier = Modifier
-                                        .height(30.dp)
-                                        .padding(start = 10.dp)
+                                        .align(Alignment.CenterVertically)
+                                        .weight(1f)
                                 ) {
-                                    Column(
-                                        modifier = Modifier
-                                            .align(Alignment.CenterVertically)
-                                            .weight(1f)
-                                    ) {
-                                        Text(
-                                            text = when (index) {
-                                                0 -> "Off"
-                                                else -> subtitles.getJSONObject(index).optString("name")
-                                            },
-                                            color = Color.White,
-                                            overflow = TextOverflow.Ellipsis,
-                                            maxLines = 1
-                                        )
-                                    }
-                                    Column(
-                                        modifier = Modifier
-                                            .align(Alignment.CenterVertically)
-                                            .scale(0.6f)
-                                            .width(30.dp)
-                                    ) {
-                                        Checkbox(
-                                            colors = CheckboxColors(
-                                                checkedCheckmarkColor = Color.White,
-                                                uncheckedCheckmarkColor = Color.Transparent,
-                                                checkedBoxColor = Color.Transparent,
-                                                uncheckedBoxColor = Color.Transparent,
-                                                disabledCheckedBoxColor = CheckboxDefaults.colors().disabledCheckedBoxColor,
-                                                disabledUncheckedBoxColor = CheckboxDefaults.colors().disabledUncheckedBoxColor,
-                                                disabledIndeterminateBoxColor = CheckboxDefaults.colors().disabledIndeterminateBoxColor,
-                                                checkedBorderColor = Color.White,
-                                                uncheckedBorderColor = Color.White,
-                                                disabledBorderColor = CheckboxDefaults.colors().disabledBorderColor,
-                                                disabledUncheckedBorderColor = CheckboxDefaults.colors().disabledUncheckedBorderColor,
-                                                disabledIndeterminateBorderColor = CheckboxDefaults.colors().disabledIndeterminateBorderColor
-                                            ),
-                                            checked = subtitlesCheckedState[index],
-                                            onCheckedChange = { checked ->
-                                                Collections.replaceAll(
-                                                    subtitlesChecked.value,
-                                                    true,
-                                                    false
-                                                )
-                                                subtitlesChecked.update { list ->
-                                                    list.toMutableList().apply {
-                                                        set(index, true)
-                                                    }.toList()
-                                                }
-                                                if (checked) {
-                                                    when (index) {
-                                                        0 -> {
-                                                            playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
-                                                                .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
-                                                                .build()
-                                                        }
-                                                        else -> {
-                                                            playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
-                                                                .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-                                                                .setPreferredTextLanguage(subtitles.getJSONObject(index).optString("id"))
-                                                                .build()
-                                                        }
+                                    Text(
+                                        text = when (index) {
+                                            0 -> "Off"
+                                            else -> subtitles.getJSONObject(index).optString("name")
+                                        },
+                                        color = Color.White,
+                                        overflow = TextOverflow.Ellipsis,
+                                        maxLines = 1
+                                    )
+                                }
+                                Column(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .scale(0.6f)
+                                        .width(30.dp)
+                                ) {
+                                    Checkbox(
+                                        colors = CheckboxColors(
+                                            checkedCheckmarkColor = Color.White,
+                                            uncheckedCheckmarkColor = Color.Transparent,
+                                            checkedBoxColor = Color.Transparent,
+                                            uncheckedBoxColor = Color.Transparent,
+                                            disabledCheckedBoxColor = CheckboxDefaults.colors().disabledCheckedBoxColor,
+                                            disabledUncheckedBoxColor = CheckboxDefaults.colors().disabledUncheckedBoxColor,
+                                            disabledIndeterminateBoxColor = CheckboxDefaults.colors().disabledIndeterminateBoxColor,
+                                            checkedBorderColor = Color.White,
+                                            uncheckedBorderColor = Color.White,
+                                            disabledBorderColor = CheckboxDefaults.colors().disabledBorderColor,
+                                            disabledUncheckedBorderColor = CheckboxDefaults.colors().disabledUncheckedBorderColor,
+                                            disabledIndeterminateBorderColor = CheckboxDefaults.colors().disabledIndeterminateBorderColor
+                                        ),
+                                        checked = subtitlesCheckedState[index],
+                                        onCheckedChange = { checked ->
+                                            Collections.replaceAll(
+                                                subtitlesChecked.value,
+                                                true,
+                                                false
+                                            )
+                                            subtitlesChecked.update { list ->
+                                                list.toMutableList().apply {
+                                                    set(index, true)
+                                                }.toList()
+                                            }
+                                            if (checked) {
+                                                when (index) {
+                                                    0 -> {
+                                                        playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
+                                                            .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                                                            .build()
+                                                    }
+                                                    else -> {
+                                                        playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
+                                                            .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
+                                                            .setPreferredTextLanguage(subtitles.getJSONObject(index).optString("id"))
+                                                            .build()
                                                     }
                                                 }
                                             }
-                                        )
-                                    }
+                                        }
+                                    )
                                 }
                             }
                         }
-                    }
-                    VerticalScrollbar(
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .wrapContentHeight()
-                            .heightIn(0.dp, 150.dp)
-                            .width(4.dp)
-                    ) {
-                        Thumb(
-                            modifier = Modifier.background(Color.LightGray)
-                        )
                     }
                 }
             }
@@ -1267,103 +1246,87 @@ class Player: ComponentActivity(), Player.Listener {
                 Box(
                     modifier = Modifier.weight(1f)
                 )
-                val lazyState = rememberLazyListState()
-                val scrollState = rememberScrollAreaState(lazyState)
-                ScrollArea(state = scrollState) {
-                    LazyColumn(
-                        state = lazyState,
-                        modifier = Modifier
-                            .wrapContentHeight()
-                            .heightIn(0.dp, 150.dp)
-                            .width(150.dp)
-                            .background(Color.DarkGray)
-                            .clickable(
-                                enabled = true,
-                                interactionSource = null,
-                                indication = null,
-                                onClick = {})
-                    ) {
-                        items(5) { index ->
-                            Row(
+                LazyColumn(
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .heightIn(0.dp, 150.dp)
+                        .width(150.dp)
+                        .background(Color.DarkGray)
+                        .clickable(
+                            enabled = true,
+                            interactionSource = null,
+                            indication = null,
+                            onClick = {})
+                ) {
+                    items(5) { index ->
+                        Row(
+                            modifier = Modifier
+                                .height(30.dp)
+                                .padding(start = 10.dp)
+                        ) {
+                            Column(
                                 modifier = Modifier
-                                    .height(30.dp)
-                                    .padding(start = 10.dp)
+                                    .align(Alignment.CenterVertically)
+                                    .weight(1f)
                             ) {
-                                Column(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .weight(1f)
-                                ) {
-                                    Text(
-                                        text = when (index) {
-                                            1 -> "15 Minutes"
-                                            2 -> "30 Minutes"
-                                            3 -> "45 Minutes"
-                                            4 -> "1 Hour"
-                                            else -> "Off"
-                                        },
-                                        color = Color.White,
-                                        overflow = TextOverflow.Ellipsis,
-                                        maxLines = 1
-                                    )
-                                }
-                                Column(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .scale(0.6f)
-                                        .width(30.dp)
-                                ) {
-                                    Checkbox(
-                                        colors = CheckboxColors(
-                                            checkedCheckmarkColor = Color.White,
-                                            uncheckedCheckmarkColor = Color.Transparent,
-                                            checkedBoxColor = Color.Transparent,
-                                            uncheckedBoxColor = Color.Transparent,
-                                            disabledCheckedBoxColor = CheckboxDefaults.colors().disabledCheckedBoxColor,
-                                            disabledUncheckedBoxColor = CheckboxDefaults.colors().disabledUncheckedBoxColor,
-                                            disabledIndeterminateBoxColor = CheckboxDefaults.colors().disabledIndeterminateBoxColor,
-                                            checkedBorderColor = Color.White,
-                                            uncheckedBorderColor = Color.White,
-                                            disabledBorderColor = CheckboxDefaults.colors().disabledBorderColor,
-                                            disabledUncheckedBorderColor = CheckboxDefaults.colors().disabledUncheckedBorderColor,
-                                            disabledIndeterminateBorderColor = CheckboxDefaults.colors().disabledIndeterminateBorderColor
-                                        ),
-                                        checked = sleepTimerCheckedState[index],
-                                        onCheckedChange = { checked ->
-                                            Collections.replaceAll(sleepTimerChecked.value, true, false)
-                                            sleepTimerChecked.update { list ->
-                                                list.toMutableList().apply {
-                                                    set(index, true)
-                                                }.toList()
-                                            }
-                                            if (checked) {
-                                                val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
-                                                broadcastIntent.setPackage(this@Player.packageName)
-                                                when (index) {
-                                                    1 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(15))
-                                                    2 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(30))
-                                                    3 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(45))
-                                                    4 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(60))
-                                                    else -> broadcastIntent.putExtra("time", 0L)
-                                                }
-                                                sendBroadcast(broadcastIntent)
-                                            }
+                                Text(
+                                    text = when (index) {
+                                        1 -> "15 Minutes"
+                                        2 -> "30 Minutes"
+                                        3 -> "45 Minutes"
+                                        4 -> "1 Hour"
+                                        else -> "Off"
+                                    },
+                                    color = Color.White,
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1
+                                )
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .scale(0.6f)
+                                    .width(30.dp)
+                            ) {
+                                Checkbox(
+                                    colors = CheckboxColors(
+                                        checkedCheckmarkColor = Color.White,
+                                        uncheckedCheckmarkColor = Color.Transparent,
+                                        checkedBoxColor = Color.Transparent,
+                                        uncheckedBoxColor = Color.Transparent,
+                                        disabledCheckedBoxColor = CheckboxDefaults.colors().disabledCheckedBoxColor,
+                                        disabledUncheckedBoxColor = CheckboxDefaults.colors().disabledUncheckedBoxColor,
+                                        disabledIndeterminateBoxColor = CheckboxDefaults.colors().disabledIndeterminateBoxColor,
+                                        checkedBorderColor = Color.White,
+                                        uncheckedBorderColor = Color.White,
+                                        disabledBorderColor = CheckboxDefaults.colors().disabledBorderColor,
+                                        disabledUncheckedBorderColor = CheckboxDefaults.colors().disabledUncheckedBorderColor,
+                                        disabledIndeterminateBorderColor = CheckboxDefaults.colors().disabledIndeterminateBorderColor
+                                    ),
+                                    checked = sleepTimerCheckedState[index],
+                                    onCheckedChange = { checked ->
+                                        Collections.replaceAll(sleepTimerChecked.value, true, false)
+                                        sleepTimerChecked.update { list ->
+                                            list.toMutableList().apply {
+                                                set(index, true)
+                                            }.toList()
                                         }
-                                    )
-                                }
+                                        if (checked) {
+                                            val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
+                                            broadcastIntent.setPackage(this@Player.packageName)
+                                            when (index) {
+                                                1 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(15))
+                                                2 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(30))
+                                                3 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(45))
+                                                4 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(60))
+                                                else -> broadcastIntent.putExtra("time", 0L)
+                                            }
+                                            sendBroadcast(broadcastIntent)
+                                        }
+                                    }
+                                )
                             }
                         }
-                    }
-                    VerticalScrollbar(
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .wrapContentHeight()
-                            .heightIn(0.dp, 150.dp)
-                            .width(4.dp)
-                    ) {
-                        Thumb(
-                            modifier = Modifier.background(Color.LightGray)
-                        )
                     }
                 }
             }
