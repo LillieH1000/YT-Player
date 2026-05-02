@@ -23,7 +23,7 @@ class Requests {
         var videoUrl = ""
         info.videoOnlyStreams.forEach { stream ->
             Log.d("TTTTTTTT", "${stream.height} / ${stream.width} / ${stream.codec}")
-            if (video == "" && stream.codec == "vp9") {
+            if (videoUrl == "" && stream.codec == "vp9") {
                 Log.d("TTTTTTTT", stream.url!!)
                 videoUrl = stream.url!!
             }
@@ -73,31 +73,31 @@ class Requests {
         )
     }
 
-    suspend fun returnYouTubeDislike(context: Context, videoID: String): Int? = withContext(Dispatchers.IO) {
-        val client: OkHttpClient.Builder = OkHttpClient.Builder()
+    suspend fun returnYouTubeDislike(videoID: String): Long? = withContext(Dispatchers.IO) {
+        val client: OkHttpClient = OkHttpClient.Builder().build()
 
         val request: Request = Request.Builder()
             .method("GET", null)
             .url("https://returnyoutubedislikeapi.com/votes?videoId=$videoID")
             .build()
 
-        val response: Response = client.build().newCall(request).execute()
+        val response: Response = client.newCall(request).execute()
         if (!response.isSuccessful) {
             return@withContext null
         }
 
-        return@withContext JSONObject(response.body.string()).getInt("dislikes")
+        return@withContext JSONObject(response.body.string()).getLong("dislikes")
     }
 
-    suspend fun sponsorBlock(context: Context, videoID: String): JSONArray? = withContext(Dispatchers.IO) {
-        val client: OkHttpClient.Builder = OkHttpClient.Builder()
+    suspend fun sponsorBlock(videoID: String): JSONArray? = withContext(Dispatchers.IO) {
+        val client: OkHttpClient = OkHttpClient.Builder().build()
 
         val request: Request = Request.Builder()
             .method("GET", null)
             .url("https://sponsor.ajay.app/api/skipSegments?videoID=$videoID&category=sponsor")
             .build()
 
-        val response: Response = client.build().newCall(request).execute()
+        val response: Response = client.newCall(request).execute()
         if (!response.isSuccessful) {
             return@withContext null
         }
