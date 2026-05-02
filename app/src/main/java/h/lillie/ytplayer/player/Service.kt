@@ -53,7 +53,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONArray
 import java.io.File
 import java.text.DecimalFormat
@@ -89,13 +88,8 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
             )
         }
 
-        val httpLoggingInterceptor = HttpLoggingInterceptor()
-            .setLevel(HttpLoggingInterceptor.Level.HEADERS)
-
-        val client: OkHttpClient.Builder = OkHttpClient.Builder()
-            .addInterceptor(httpLoggingInterceptor)
-
-        val okhttpDataSource: OkHttpDataSource.Factory = OkHttpDataSource.Factory(client.build())
+        val okhttpClient: OkHttpClient = OkHttpClient.Builder().build()
+        val okhttpDataSource: OkHttpDataSource.Factory = OkHttpDataSource.Factory(okhttpClient)
 
         if (this@Service::playerCache.isInitialized) {
             playerCache.release()

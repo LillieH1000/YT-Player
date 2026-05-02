@@ -90,8 +90,6 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.logging.interceptor)
     implementation(libs.newpipeextractor)
     implementation(libs.okhttp)
-    implementation(platform(libs.okhttp.bom))
 }
