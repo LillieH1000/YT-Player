@@ -54,15 +54,15 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
     }
 
-    kotlin {
-        compilerOptions {
-            languageVersion = KotlinVersion.KOTLIN_2_3
-            jvmTarget = JvmTarget.JVM_21
-        }
-    }
-
     buildFeatures {
         compose = true
+    }
+}
+
+kotlin {
+    compilerOptions {
+        languageVersion = KotlinVersion.KOTLIN_2_3
+        jvmTarget = JvmTarget.JVM_21
     }
 }
 
