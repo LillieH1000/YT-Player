@@ -14,8 +14,7 @@
         android:largeHeap="true"
         android:supportsRtl="false"
         android:theme="@android:style/Theme.Material.NoActionBar"
-        tools:ignore="DataExtractionRules"
-        tools:targetApi="26">
+        tools:ignore="DataExtractionRules">
         <meta-data android:name="com.google.android.gms.car.application" android:resource="@xml/auto" />
         <service
             android:name=".player.Service"
