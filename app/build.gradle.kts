@@ -43,9 +43,6 @@ android {
         create("chromeos") {
             dimension = "os"
         }
-        create("questos") {
-            dimension = "os"
-        }
     }
 
     compileOptions {
