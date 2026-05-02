@@ -62,9 +62,9 @@ class Requests {
                     .thenBy { it.width }
             ).url,
             info.streamType == StreamType.LIVE_STREAM || info.streamType == StreamType.AUDIO_LIVE_STREAM,
+            info.isShortFormContent,
             info.viewCount,
             info.likeCount,
-            "video",
             manifest.absolutePath,
             null,
             "1000000000",
