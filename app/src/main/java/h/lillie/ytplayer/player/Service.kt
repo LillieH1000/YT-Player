@@ -123,7 +123,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
 
         exoPlayer = ExoPlayer.Builder(this)
             .setAudioAttributes(audioAttributes, true)
-            .setMediaSourceFactory(hlsMediaSource)
+            // .setMediaSourceFactory(hlsMediaSource)
             .setRenderersFactory(renderersFactory)
             .setTrackSelector(trackSelector)
             .setSeekBackIncrementMs(10000)
@@ -333,7 +333,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     .build()
 
                 val playerMediaItem: MediaItem.Builder = MediaItem.Builder()
-                    .setMimeType(MimeTypes.APPLICATION_M3U8)
+                    // .setMimeType(MimeTypes.APPLICATION_M3U8)
                     .setMediaId("root")
                     .setMediaMetadata(playerMediaMetadata)
 
