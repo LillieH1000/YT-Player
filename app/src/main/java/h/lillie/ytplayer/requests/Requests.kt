@@ -62,7 +62,7 @@ class Requests {
                     .thenBy { it.width }
             ).url,
             info.streamType == StreamType.LIVE_STREAM || info.streamType == StreamType.AUDIO_LIVE_STREAM,
-            info.isShortFormContent,
+            videoStream.height > videoStream.width,
             info.viewCount,
             info.likeCount,
             manifest.absolutePath,
