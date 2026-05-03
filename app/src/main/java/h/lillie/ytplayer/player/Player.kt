@@ -100,6 +100,7 @@ import androidx.media3.cast.MediaRouteButton
 import androidx.media3.common.C
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
@@ -335,7 +336,6 @@ class Player: ComponentActivity(), Player.Listener {
     private var sleepTimerChecked = MutableStateFlow(listOf(false, false, false, false, false))
 
     @Composable
-    @OptIn(ExperimentalMaterial3Api::class)
     private fun CreatePlayerUI() {
         // States
 
@@ -574,6 +574,7 @@ class Player: ComponentActivity(), Player.Listener {
                     // Progress Slider
                     val sliderSource = remember { MutableInteractionSource() }
                     if (playerControllerState?.mediaItemCount == 1) {
+                        @OptIn(ExperimentalMaterial3Api::class)
                         Slider(
                             modifier = Modifier
                                 .weight(1f)
@@ -692,6 +693,7 @@ class Player: ComponentActivity(), Player.Listener {
                                         .width(50.dp)
                                         .clip(CircleShape)
                                 ) {
+                                    @UnstableApi
                                     MediaRouteButton()
                                 }
                                 // Share Button
