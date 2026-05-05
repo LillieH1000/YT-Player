@@ -30,7 +30,8 @@ class Requests {
         )
 
         val audioStream: AudioStream = info.audioStreams.maxWith(
-            compareBy<AudioStream> { it.bitrate }
+            compareBy<AudioStream> { it.audioTrackType?.name == "ORIGINAL" }
+                .thenBy { it.bitrate }
                 .thenBy { it.codec.contains("opus") }
         )
 
