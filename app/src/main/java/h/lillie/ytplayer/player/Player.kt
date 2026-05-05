@@ -1,6 +1,5 @@
 package h.lillie.ytplayer.player
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.PictureInPictureParams
 import android.content.BroadcastReceiver
@@ -93,14 +92,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.app.ActivityCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.media3.cast.MediaRouteButton
 import androidx.media3.common.C
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
@@ -137,12 +133,6 @@ class Player: ComponentActivity(), Player.Listener {
         if (!chromeOSDevice) {
             WindowInsetsControllerCompat(window, window.decorView).systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
-        ActivityCompat.requestPermissions(
-            this@Player,
-            arrayOf(Manifest.permission.ACCESS_LOCAL_NETWORK),
-            1001
-        )
-
         enableEdgeToEdge()
         setContent {
             CreatePlayerUI()
@@ -686,16 +676,6 @@ class Player: ComponentActivity(), Player.Listener {
                             modifier = Modifier.wrapContentWidth()
                         ) {
                             if (playerControllerState?.mediaItemCount == 1) {
-                                // Cast Button
-                                Box(
-                                    contentAlignment = Alignment.Center,
-                                    modifier = Modifier
-                                        .width(50.dp)
-                                        .clip(CircleShape)
-                                ) {
-                                    @UnstableApi
-                                    MediaRouteButton()
-                                }
                                 // Share Button
                                 Box(
                                     contentAlignment = Alignment.Center,
