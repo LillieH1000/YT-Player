@@ -7,7 +7,6 @@ coroutines = "1.10.2"
 kotlin = "2.3.21"
 lifecycle = "2.10.0"
 media3 = "1.10.0"
-mediarouter = "1.8.1"
 newpipe = "1512cf3222b0c5d87a249e6ac231b98090c42623"
 okhttp = "5.3.2"
 serialization = "1.11.0"
@@ -22,7 +21,6 @@ androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecyc
 androidx-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
 androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
-androidx-media3-cast = { group = "androidx.media3", name = "media3-cast", version.ref = "media3" }
 androidx-media3-common-ktx = { group = "androidx.media3", name = "media3-common-ktx", version.ref = "media3" }
 androidx-media3-database = { group = "androidx.media3", name = "media3-database", version.ref = "media3" }
 androidx-media3-datasource = { group = "androidx.media3", name = "media3-datasource", version.ref = "media3" }
@@ -32,7 +30,6 @@ androidx-media3-exoplayer-dash = { group = "androidx.media3", name = "media3-exo
 androidx-media3-exoplayer-hls = { group = "androidx.media3", name = "media3-exoplayer-hls", version.ref = "media3" }
 androidx-media3-session = { group = "androidx.media3", name = "media3-session", version.ref = "media3" }
 androidx-media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "media3" }
-androidx-mediarouter = { group = "androidx.mediarouter", name = "mediarouter", version.ref = "mediarouter" }
 androidx-runtime = { group = "androidx.compose.runtime", name = "runtime" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
