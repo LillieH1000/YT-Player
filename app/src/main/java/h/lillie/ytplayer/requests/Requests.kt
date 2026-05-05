@@ -43,11 +43,17 @@ class Requests {
                 <AdaptationSet mimeType="${videoStream.format?.mimeType}" segmentAlignment="true" startWithSAP="1">
                   <Representation id="video" bandwidth="3000000" width="3840" height="2160" codecs="${videoStream.codec}">
                     <BaseURL>${videoStream.url!!.replace("&", "&amp;")}</BaseURL>
+                    <SegmentBase indexRange="${videoStream.indexStart}-${videoStream.indexEnd}">
+                      <Initialization range="${videoStream.initStart}-${videoStream.initEnd}" />
+                    </SegmentBase>
                   </Representation>
                 </AdaptationSet>
                 <AdaptationSet mimeType="${audioStream.format?.mimeType}" segmentAlignment="true" startWithSAP="1">
                   <Representation id="audio" bandwidth="128000" audioSamplingRate="48000" codecs="${audioStream.codec}">
                     <BaseURL>${audioStream.url!!.replace("&", "&amp;")}</BaseURL>
+                    <SegmentBase indexRange="${audioStream.indexStart}-${audioStream.indexEnd}">
+                      <Initialization range="${audioStream.initStart}-${audioStream.initEnd}" />
+                    </SegmentBase>
                   </Representation>
                 </AdaptationSet>
               </Period>
