@@ -327,7 +327,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     .setMediaId("root")
                     .setMediaMetadata(playerMediaMetadata)
 
-                if (info.hlsUrl != null) {
+                if (info.live && info.hlsUrl != null) {
                     playerMediaItem.setMimeType(MimeTypes.APPLICATION_M3U8)
                     playerMediaItem.setUri(info.hlsUrl.toUri())
                 } else {
@@ -370,7 +370,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     .createMediaSource(playerMediaItem.build())
 
                 withContext(Dispatchers.Main) {
-                    if (info.hlsUrl != null) {
+                    if (info.live && info.hlsUrl != null) {
                         exoPlayer.setMediaSource(hlsMediaSource)
                     } else {
                         exoPlayer.setMediaSource(dashMediaSource)
