@@ -1,6 +1,7 @@
 package h.lillie.ytplayer.requests
 
 import android.content.Context
+import androidx.core.net.toUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -88,7 +89,7 @@ class Requests {
             info.likeCount,
             manifest.absolutePath,
             info.hlsUrl.ifEmpty { null },
-            "1000000000",
+            videoStream.url!!.toUri().getQueryParameter("expire")!!,
             subtitles.ifEmpty { null }
         )
     }
