@@ -14,6 +14,7 @@ import org.schabi.newpipe.extractor.NewPipe
 import org.schabi.newpipe.extractor.ServiceList
 import org.schabi.newpipe.extractor.stream.AudioStream
 import org.schabi.newpipe.extractor.stream.StreamInfo
+import org.schabi.newpipe.extractor.stream.StreamInfoItem
 import org.schabi.newpipe.extractor.stream.StreamType
 import org.schabi.newpipe.extractor.stream.VideoStream
 import java.io.File
@@ -23,7 +24,16 @@ class Requests {
     suspend fun extractor(context: Context, videoID: String?, searchQuery: String?): Info = withContext(Dispatchers.IO) {
         NewPipe.init(Downloader())
         val service = NewPipe.getService(ServiceList.YouTube.serviceId)
-        val info = StreamInfo.getInfo(service, "https://www.youtube.com/watch?v=${videoID}")
+
+        val target: String = if (searchQuery != null) {
+            val search = service.getSearchExtractor(searchQuery)
+            search.fetchPage()
+            search.initialPage.items.filterIsInstance<StreamInfoItem>().first().url
+        } else {
+            "https://www.youtube.com/watch?v=${videoID}"
+        }
+
+        val info = StreamInfo.getInfo(service, target)
 
         val videoStream: VideoStream = info.videoOnlyStreams.maxWith(
             compareBy<VideoStream> { it.height <= 1080 }
