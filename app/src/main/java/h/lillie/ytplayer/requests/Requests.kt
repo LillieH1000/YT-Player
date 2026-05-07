@@ -41,7 +41,7 @@ class Requests {
             <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" profiles="urn:mpeg:dash:profile:isoff-on-demand:2011" type="static" mediaPresentationDuration="${info.duration.seconds.toIsoString()}" minBufferTime="PT2.0S">
               <Period>
                 <AdaptationSet mimeType="${videoStream.format?.mimeType}" segmentAlignment="true" startWithSAP="1">
-                  <Representation id="video" bandwidth="3000000" width="3840" height="2160" codecs="${videoStream.codec}">
+                  <Representation id="video" bandwidth="3000000" width="${videoStream.width}" height="${videoStream.height}" codecs="${videoStream.codec}">
                     <BaseURL>${videoStream.url!!.replace("&", "&amp;")}</BaseURL>
                     <SegmentBase indexRange="${videoStream.indexStart}-${videoStream.indexEnd}">
                       <Initialization range="${videoStream.initStart}-${videoStream.initEnd}" />
