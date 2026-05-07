@@ -53,6 +53,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.FitScreen
 import androidx.compose.material.icons.filled.Fullscreen
 import androidx.compose.material.icons.filled.FullscreenExit
 import androidx.compose.material.icons.filled.Pause
@@ -97,8 +98,10 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.C
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
+import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
@@ -315,6 +318,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var loopChecked = MutableStateFlow(false)
     private var playerDuration = MutableStateFlow(0f)
     private var playerPosition = MutableStateFlow(0f)
+    private var playerSize = MutableStateFlow(false)
     private var playbackSpeed = MutableStateFlow("1")
     private var playerTime = MutableStateFlow<String?>(null)
     private var showInfo = MutableStateFlow(false)
@@ -336,6 +340,7 @@ class Player: ComponentActivity(), Player.Listener {
         val playerControllerState by playerController.collectAsState()
         val playerDurationState by playerDuration.collectAsState()
         val playerPositionState by playerPosition.collectAsState()
+        val playerSizeState by playerSize.collectAsState()
         val playbackSpeedState by playbackSpeed.collectAsState()
         val playerTimeState by playerTime.collectAsState()
         val showInfoState by showInfo.collectAsState()
@@ -348,6 +353,7 @@ class Player: ComponentActivity(), Player.Listener {
 
         // Player View
 
+        @UnstableApi
         AndroidView(
             modifier = Modifier
                 .background(Color.Black)
@@ -364,6 +370,11 @@ class Player: ComponentActivity(), Player.Listener {
             },
             update = { playerView ->
                 playerView.player = playerControllerState
+                playerView.resizeMode = if (playerSizeState && deviceRotationState == 1) {
+                    AspectRatioFrameLayout.RESIZE_MODE_FILL
+                } else {
+                    AspectRatioFrameLayout.RESIZE_MODE_FIT
+                }
             }
         )
 
@@ -596,6 +607,25 @@ class Player: ComponentActivity(), Player.Listener {
                                 playerController.value?.seekTo(newValue.toLong())
                             }
                         )
+                    }
+                    // Fill Button
+                    if (!chromeOSDevice && playerControllerState?.mediaItemCount == 1) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .width(50.dp)
+                                .align(Alignment.CenterVertically)
+                                .clip(CircleShape)
+                                .noRippleClickable {
+                                    playerSize.value = !playerSizeState
+                                }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.FitScreen,
+                                tint = Color.White,
+                                contentDescription = ""
+                            )
+                        }
                     }
                     // Fullscreen Button
                     if (!autoRotateEnabledState && !chromeOSDevice && playerControllerState?.mediaItemCount == 1) {
