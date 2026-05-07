@@ -57,7 +57,6 @@ import okhttp3.OkHttpClient
 import org.json.JSONArray
 import java.io.File
 import java.text.DecimalFormat
-import java.util.concurrent.TimeUnit
 
 @OptIn(UnstableApi::class)
 class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Callback, Player.Listener {
@@ -68,7 +67,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
     private val backCommand = SessionCommand("back", Bundle.EMPTY)
     private val forwardCommand = SessionCommand("forward", Bundle.EMPTY)
     private val subtitlesList = mutableListOf<MediaItem.SubtitleConfiguration>()
-    private var playerBufferingTimer: CountDownTimer? = null
     private var playerSession: MediaLibrarySession? = null
     private var playerTimer: CountDownTimer? = null
     private var sponsorBlock: JSONArray? = null
@@ -158,9 +156,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
     }
 
     override fun onDestroy() {
-        playerBufferingTimer?.cancel()
         playerTimer?.cancel()
-        playerBufferingTimer = null
         playerTimer = null
         sponsorBlock = null
         if (this::playerHandler.isInitialized) {
@@ -238,35 +234,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
             playerSession?.player?.seekForward()
         }
         return super.onCustomCommand(session, controller, customCommand, args)
-    }
-
-    override fun onPlaybackStateChanged(playbackState: Int) {
-        super.onPlaybackStateChanged(playbackState)
-        when (playbackState) {
-            Player.STATE_BUFFERING -> {
-                playerBufferingTimer?.cancel()
-                if (exoPlayer.currentPosition == 0L) {
-                    playerBufferingTimer = object: CountDownTimer(TimeUnit.SECONDS.toMillis(10), 1000) {
-                        override fun onTick(millisUntilFinished: Long) {
-                        }
-                        override fun onFinish() {
-                            val playerMediaItem: MediaItem = MediaItem.Builder()
-                                .setMimeType(MimeTypes.APPLICATION_M3U8)
-                                .setMediaId("root")
-                                .setMediaMetadata(exoPlayer.mediaMetadata)
-                                .setSubtitleConfigurations(subtitlesList)
-                                .setUri(exoPlayer.mediaMetadata.extras?.getString("safariurl"))
-                                .build()
-
-                            exoPlayer.setMediaItem(playerMediaItem)
-                            exoPlayer.playWhenReady = true
-                            exoPlayer.prepare()
-                        }
-                    }.start()
-                }
-            }
-            Player.STATE_ENDED, Player.STATE_IDLE, Player.STATE_READY -> playerBufferingTimer?.cancel()
-        }
     }
 
     @SuppressLint("SwitchIntDef")
