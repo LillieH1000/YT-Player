@@ -609,7 +609,7 @@ class Player: ComponentActivity(), Player.Listener {
                         )
                     }
                     // Fill Button
-                    if (!chromeOSDevice && playerControllerState?.mediaItemCount == 1) {
+                    if (!chromeOSDevice && deviceRotationState == 1 && playerControllerState?.mediaItemCount == 1) {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
