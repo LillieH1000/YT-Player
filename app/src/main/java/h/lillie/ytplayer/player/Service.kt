@@ -62,6 +62,7 @@ import java.util.concurrent.TimeUnit
 class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Callback, Player.Listener {
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var playerCache: SimpleCache
+    private lateinit var playerDataSource: DataSource.Factory
     private lateinit var playerHandler: Handler
     private val backCommand = SessionCommand("back", Bundle.EMPTY)
     private val forwardCommand = SessionCommand("forward", Bundle.EMPTY)
@@ -101,7 +102,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
             .setUpstreamDataSourceFactory(okhttpDataSource)
             .setCache(playerCache)
 
-        val dualDataSource = DataSource.Factory {
+        playerDataSource = DataSource.Factory {
             val mediaMetadata: MediaMetadata
             runBlocking(Dispatchers.Main) {
                 mediaMetadata = exoPlayer.mediaMetadata
@@ -114,16 +115,8 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
             }
         }
 
-        val defaultDataSource = DefaultDataSource.Factory(this@Service, dualDataSource)
-        val dashMediaSource = DashMediaSource.Factory(defaultDataSource)
-
-        val hlsMediaSource: HlsMediaSource.Factory = HlsMediaSource.Factory(dualDataSource)
-            .setAllowChunklessPreparation(false)
-
         exoPlayer = ExoPlayer.Builder(this)
             .setAudioAttributes(audioAttributes, true)
-            .setMediaSourceFactory(dashMediaSource)
-            // .setMediaSourceFactory(hlsMediaSource)
             .setRenderersFactory(renderersFactory)
             .setTrackSelector(trackSelector)
             .setSeekBackIncrementMs(10000)
@@ -331,18 +324,16 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     .build()
 
                 val playerMediaItem: MediaItem.Builder = MediaItem.Builder()
-                    .setMimeType(MimeTypes.APPLICATION_MPD)
-                    // .setMimeType(MimeTypes.APPLICATION_M3U8)
                     .setMediaId("root")
                     .setMediaMetadata(playerMediaMetadata)
 
-                /* if (info.iosurl != null) {
-                    playerMediaItem.setUri(info.iosurl.toUri())
+                if (info.hlsUrl != null) {
+                    playerMediaItem.setMimeType(MimeTypes.APPLICATION_M3U8)
+                    playerMediaItem.setUri(info.hlsUrl.toUri())
                 } else {
-                    playerMediaItem.setUri(Uri.fromFile(File(info.safariurl)))
-                } */
-
-                playerMediaItem.setUri(Uri.fromFile(File(info.manifestPath)))
+                    playerMediaItem.setMimeType(MimeTypes.APPLICATION_MPD)
+                    playerMediaItem.setUri(Uri.fromFile(File(info.manifestPath)))
+                }
 
                 if (info.subtitles != null) {
                     val subtitles = JSONArray(Json.encodeToString(info.subtitles))
@@ -370,8 +361,20 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     sendBroadcast(broadcastIntent)
                 }
 
+                val defaultDataSource: DefaultDataSource.Factory = DefaultDataSource.Factory(this@Service, playerDataSource)
+                val dashMediaSource: DashMediaSource = DashMediaSource.Factory(defaultDataSource)
+                    .createMediaSource(playerMediaItem.build())
+
+                val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(playerDataSource)
+                    .setAllowChunklessPreparation(false)
+                    .createMediaSource(playerMediaItem.build())
+
                 withContext(Dispatchers.Main) {
-                    exoPlayer.setMediaItem(playerMediaItem.build())
+                    if (info.hlsUrl != null) {
+                        exoPlayer.setMediaSource(hlsMediaSource)
+                    } else {
+                        exoPlayer.setMediaSource(dashMediaSource)
+                    }
                     exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
                     exoPlayer.playbackParameters = PlaybackParameters(1.0f)
                     exoPlayer.trackSelectionParameters = exoPlayer.trackSelectionParameters.buildUpon()
