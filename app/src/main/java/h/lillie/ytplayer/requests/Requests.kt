@@ -73,7 +73,7 @@ class Requests {
             info.viewCount,
             info.likeCount,
             manifest.absolutePath,
-            null,
+            info.hlsUrl.ifEmpty { null },
             "1000000000",
             null
         )
