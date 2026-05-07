@@ -25,7 +25,7 @@ class Requests {
         val info = StreamInfo.getInfo(service, "https://www.youtube.com/watch?v=${videoID}")
 
         val videoStream: VideoStream = info.videoOnlyStreams.maxWith(
-            compareBy<VideoStream> { it.height }
+            compareBy<VideoStream> { it.height <= 1080 }
                 .thenBy { it.codec.contains("vp9") }
         )
 
