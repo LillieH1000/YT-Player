@@ -342,9 +342,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     playerMediaItem.setUri(Uri.fromFile(File(info.safariurl)))
                 } */
 
-                if (info.manifestPath != null) {
-                    playerMediaItem.setUri(Uri.fromFile(File(info.manifestPath)))
-                }
+                playerMediaItem.setUri(Uri.fromFile(File(info.manifestPath)))
 
                 if (info.subtitles != null) {
                     val subtitles = JSONArray(Json.encodeToString(info.subtitles))

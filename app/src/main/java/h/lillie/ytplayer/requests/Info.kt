@@ -12,7 +12,7 @@ data class Info(
     val short: Boolean,
     val views: Long,
     val likes: Long,
-    val manifestPath: String?,
+    val manifestPath: String,
     val hlsUrl: String?,
     val expiration: String,
     val subtitles: ArrayList<Subtitles>?
