@@ -359,7 +359,6 @@ class Player: ComponentActivity(), Player.Listener {
                 .focusProperties { canFocus = false },
             factory = { context ->
                 PlayerView(context).apply {
-                    this.player = playerControllerState
                     this.useController = false
                 }
             },
