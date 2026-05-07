@@ -19,8 +19,9 @@ data class Info(
 ) {
     @Serializable
     data class Subtitles(
-        val id: String,
         val name: String,
+        val tag: String,
+        val type: String,
         val url: String
     )
 }

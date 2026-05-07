@@ -1205,7 +1205,7 @@ class Player: ComponentActivity(), Player.Listener {
                                                     else -> {
                                                         playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
                                                             .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-                                                            .setPreferredTextLanguage(subtitles.getJSONObject(index - 1).optString("id"))
+                                                            .setPreferredTextLanguage(subtitles.getJSONObject(index - 1).optString("tag"))
                                                             .build()
                                                     }
                                                 }

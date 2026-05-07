@@ -33,8 +33,9 @@ import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlaybackException
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.dash.DashMediaSource
 import androidx.media3.exoplayer.hls.HlsMediaSource
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.session.CommandButton
 import androidx.media3.session.LibraryResult
@@ -341,8 +342,8 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     for (i in 0 until subtitles.length()) {
                         val playerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(subtitles.getJSONObject(i).optString("url").toUri())
                             .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
-                            .setMimeType(MimeTypes.TEXT_VTT)
-                            .setLanguage(subtitles.getJSONObject(i).optString("id"))
+                            .setMimeType(subtitles.getJSONObject(i).optString("type"))
+                            .setLanguage(subtitles.getJSONObject(i).optString("tag"))
                             .build()
 
                         subtitlesList.add(playerCaptions)
@@ -362,7 +363,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 }
 
                 val defaultDataSource: DefaultDataSource.Factory = DefaultDataSource.Factory(this@Service, playerDataSource)
-                val dashMediaSource: DashMediaSource = DashMediaSource.Factory(defaultDataSource)
+                val dashMediaSource: MediaSource = DefaultMediaSourceFactory(defaultDataSource)
                     .createMediaSource(playerMediaItem.build())
 
                 val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(playerDataSource)
