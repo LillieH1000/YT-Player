@@ -33,6 +33,7 @@ import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlaybackException
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.dash.DashMediaSource
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.source.MediaSource
@@ -316,7 +317,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                         subtitlesList.add(playerCaptions)
                     }
 
-                    playerMediaItem.setSubtitleConfigurations(subtitlesList)
+                    // playerMediaItem.setSubtitleConfigurations(subtitlesList)
 
                     val broadcastIntent = Intent("h.lillie.ytplayer.activity.subtitles")
                     broadcastIntent.setPackage(this@Service.packageName)
@@ -330,7 +331,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 }
 
                 val defaultDataSource: DefaultDataSource.Factory = DefaultDataSource.Factory(this@Service, playerDataSource)
-                val dashMediaSource: MediaSource = DefaultMediaSourceFactory(defaultDataSource)
+                val dashMediaSource: DashMediaSource = DashMediaSource.Factory(defaultDataSource)
                     .createMediaSource(playerMediaItem.build())
 
                 val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(playerDataSource)
