@@ -35,8 +35,6 @@ import androidx.media3.exoplayer.ExoPlaybackException
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.dash.DashMediaSource
 import androidx.media3.exoplayer.hls.HlsMediaSource
-import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
-import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.session.CommandButton
 import androidx.media3.session.LibraryResult
@@ -53,7 +51,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import org.json.JSONArray
 import java.io.File
@@ -67,7 +64,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
     private lateinit var playerHandler: Handler
     private val backCommand = SessionCommand("back", Bundle.EMPTY)
     private val forwardCommand = SessionCommand("forward", Bundle.EMPTY)
-    private val subtitlesList = mutableListOf<MediaItem.SubtitleConfiguration>()
     private var playerSession: MediaLibrarySession? = null
     private var playerTimer: CountDownTimer? = null
     private var sponsorBlock: JSONArray? = null
@@ -305,28 +301,14 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 }
 
                 if (info.subtitles != null) {
-                    val subtitles = JSONArray(Json.encodeToString(info.subtitles))
-
-                    for (i in 0 until subtitles.length()) {
-                        val playerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(subtitles.getJSONObject(i).optString("url").toUri())
-                            .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
-                            .setMimeType(subtitles.getJSONObject(i).optString("type"))
-                            .setLanguage(subtitles.getJSONObject(i).optString("tag"))
-                            .build()
-
-                        subtitlesList.add(playerCaptions)
-                    }
-
-                    // playerMediaItem.setSubtitleConfigurations(subtitlesList)
-
                     val broadcastIntent = Intent("h.lillie.ytplayer.activity.subtitles")
                     broadcastIntent.setPackage(this@Service.packageName)
-                    broadcastIntent.putExtra("subtitles", subtitles.toString())
+                    broadcastIntent.putParcelableArrayListExtra("subtitles", info.subtitles)
                     sendBroadcast(broadcastIntent)
                 } else {
                     val broadcastIntent = Intent("h.lillie.ytplayer.activity.subtitles")
                     broadcastIntent.setPackage(this@Service.packageName)
-                    broadcastIntent.putExtra("subtitles", null as String?)
+                    broadcastIntent.putParcelableArrayListExtra("subtitles", null)
                     sendBroadcast(broadcastIntent)
                 }
 

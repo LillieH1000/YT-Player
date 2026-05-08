@@ -105,6 +105,7 @@ import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
+import h.lillie.ytplayer.requests.Info
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -112,7 +113,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.json.JSONArray
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Collections
@@ -122,7 +122,7 @@ class Player: ComponentActivity(), Player.Listener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
     private var playerController = MutableStateFlow<MediaController?>(null)
     private var playerHandler: Handler = Handler(Looper.getMainLooper())
-    private var playerSubtitles: JSONArray? = null
+    private var playerSubtitles: ArrayList<Info.Subtitles>? = null
     private var chromeOSDevice: Boolean = false
     private var isFirstLaunch: Boolean = false
 
@@ -1168,80 +1168,77 @@ class Player: ComponentActivity(), Player.Listener {
                             indication = null,
                             onClick = {})
                 ) {
-                    val subtitles: JSONArray? = playerSubtitles
-                    if (subtitles != null) {
-                        items(subtitles.length() + 1) { index ->
-                            Row(
+                    items(playerSubtitles!!.size + 1) { index ->
+                        Row(
+                            modifier = Modifier
+                                .height(30.dp)
+                                .padding(start = 10.dp)
+                        ) {
+                            Column(
                                 modifier = Modifier
-                                    .height(30.dp)
-                                    .padding(start = 10.dp)
+                                    .align(Alignment.CenterVertically)
+                                    .weight(1f)
                             ) {
-                                Column(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .weight(1f)
-                                ) {
-                                    Text(
-                                        text = when (index) {
-                                            0 -> "Off"
-                                            else -> subtitles.getJSONObject(index - 1).optString("name")
-                                        },
-                                        color = Color.White,
-                                        overflow = TextOverflow.Ellipsis,
-                                        maxLines = 1
-                                    )
-                                }
-                                Column(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .scale(0.6f)
-                                        .width(30.dp)
-                                ) {
-                                    Checkbox(
-                                        colors = CheckboxColors(
-                                            checkedCheckmarkColor = Color.White,
-                                            uncheckedCheckmarkColor = Color.Transparent,
-                                            checkedBoxColor = Color.Transparent,
-                                            uncheckedBoxColor = Color.Transparent,
-                                            disabledCheckedBoxColor = CheckboxDefaults.colors().disabledCheckedBoxColor,
-                                            disabledUncheckedBoxColor = CheckboxDefaults.colors().disabledUncheckedBoxColor,
-                                            disabledIndeterminateBoxColor = CheckboxDefaults.colors().disabledIndeterminateBoxColor,
-                                            checkedBorderColor = Color.White,
-                                            uncheckedBorderColor = Color.White,
-                                            disabledBorderColor = CheckboxDefaults.colors().disabledBorderColor,
-                                            disabledUncheckedBorderColor = CheckboxDefaults.colors().disabledUncheckedBorderColor,
-                                            disabledIndeterminateBorderColor = CheckboxDefaults.colors().disabledIndeterminateBorderColor
-                                        ),
-                                        checked = subtitlesCheckedState[index],
-                                        onCheckedChange = { checked ->
-                                            Collections.replaceAll(
-                                                subtitlesChecked.value,
-                                                true,
-                                                false
-                                            )
-                                            subtitlesChecked.update { list ->
-                                                list.toMutableList().apply {
-                                                    set(index, true)
-                                                }.toList()
-                                            }
-                                            if (checked) {
-                                                when (index) {
-                                                    0 -> {
-                                                        playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
-                                                            .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
-                                                            .build()
-                                                    }
-                                                    else -> {
-                                                        playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
-                                                            .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-                                                            .setPreferredTextLanguage(subtitles.getJSONObject(index - 1).optString("tag"))
-                                                            .build()
-                                                    }
+                                Text(
+                                    text = when (index) {
+                                        0 -> "Off"
+                                        else -> playerSubtitles!![index - 1].name
+                                    },
+                                    color = Color.White,
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1
+                                )
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .scale(0.6f)
+                                    .width(30.dp)
+                            ) {
+                                Checkbox(
+                                    colors = CheckboxColors(
+                                        checkedCheckmarkColor = Color.White,
+                                        uncheckedCheckmarkColor = Color.Transparent,
+                                        checkedBoxColor = Color.Transparent,
+                                        uncheckedBoxColor = Color.Transparent,
+                                        disabledCheckedBoxColor = CheckboxDefaults.colors().disabledCheckedBoxColor,
+                                        disabledUncheckedBoxColor = CheckboxDefaults.colors().disabledUncheckedBoxColor,
+                                        disabledIndeterminateBoxColor = CheckboxDefaults.colors().disabledIndeterminateBoxColor,
+                                        checkedBorderColor = Color.White,
+                                        uncheckedBorderColor = Color.White,
+                                        disabledBorderColor = CheckboxDefaults.colors().disabledBorderColor,
+                                        disabledUncheckedBorderColor = CheckboxDefaults.colors().disabledUncheckedBorderColor,
+                                        disabledIndeterminateBorderColor = CheckboxDefaults.colors().disabledIndeterminateBorderColor
+                                    ),
+                                    checked = subtitlesCheckedState[index],
+                                    onCheckedChange = { checked ->
+                                        Collections.replaceAll(
+                                            subtitlesChecked.value,
+                                            true,
+                                            false
+                                        )
+                                        subtitlesChecked.update { list ->
+                                            list.toMutableList().apply {
+                                                set(index, true)
+                                            }.toList()
+                                        }
+                                        if (checked) {
+                                            when (index) {
+                                                0 -> {
+                                                    playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
+                                                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                                                        .build()
+                                                }
+                                                else -> {
+                                                    playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
+                                                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
+                                                        .setPreferredTextLanguage(playerSubtitles!![index - 1].tag)
+                                                        .build()
                                                 }
                                             }
                                         }
-                                    )
-                                }
+                                    }
+                                )
                             }
                         }
                     }
@@ -1477,20 +1474,16 @@ class Player: ComponentActivity(), Player.Listener {
                     }
                 }
 
-                val subtitles = intent.extras!!.getString("subtitles")
-                if (subtitles == null) {
-                    playerSubtitles = null
-                    return@coroutineScope
-                }
+                playerSubtitles = intent.extras!!.getParcelableArrayList("subtitles")
+                if (playerSubtitles == null) return@coroutineScope
 
-                val subtitlesArray = JSONArray(subtitles)
-                playerSubtitles = subtitlesArray
                 subtitlesChecked.update { list ->
                     list.toMutableList().apply {
                         add(true)
                     }.toList()
                 }
-                for (i in 0 until subtitlesArray.length()) {
+
+                playerSubtitles!!.forEach { _ ->
                     subtitlesChecked.update { list ->
                         list.toMutableList().apply {
                             add(false)
