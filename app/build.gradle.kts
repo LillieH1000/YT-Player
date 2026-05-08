@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlin.serialization)
 }
 
@@ -17,7 +18,7 @@ android {
         applicationId = "h.lillie.ytplayer"
         minSdk = 30
         targetSdk = 37
-        versionCode = 132
+        versionCode = 133
         versionName = "4.0.0"
     }
 
