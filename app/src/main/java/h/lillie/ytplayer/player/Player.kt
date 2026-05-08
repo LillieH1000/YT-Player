@@ -371,7 +371,7 @@ class Player: ComponentActivity(), Player.Listener {
             update = { playerView ->
                 playerView.player = playerControllerState
                 playerView.resizeMode = if (playerSizeState && deviceRotationState == 1) {
-                    AspectRatioFrameLayout.RESIZE_MODE_FILL
+                    AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                 } else {
                     AspectRatioFrameLayout.RESIZE_MODE_FIT
                 }
