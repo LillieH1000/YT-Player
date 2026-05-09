@@ -376,6 +376,9 @@ class Player: ComponentActivity(), Player.Listener {
                     } else {
                         AspectRatioFrameLayout.RESIZE_MODE_FIT
                     }
+                    this.subtitleView.apply {
+                        this?.setApplyEmbeddedStyles(false)
+                    }
                 }
             }
         )
