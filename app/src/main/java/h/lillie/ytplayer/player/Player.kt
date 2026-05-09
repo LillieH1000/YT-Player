@@ -98,11 +98,14 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.C
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
+import androidx.media3.common.text.Cue
+import androidx.media3.common.text.CueGroup
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
+import androidx.media3.ui.SubtitleView
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import h.lillie.ytplayer.requests.Info
@@ -312,6 +315,17 @@ class Player: ComponentActivity(), Player.Listener {
         }
     }
 
+    override fun onCues(cueGroup: CueGroup) {
+        super.onCues(cueGroup)
+        @UnstableApi
+        subtitlesView.value?.setCues(cueGroup.cues.map { cue ->
+            cue.buildUpon()
+                .setLine(Cue.DIMEN_UNSET, Cue.TYPE_UNSET)
+                .setPosition(Cue.DIMEN_UNSET)
+                .build()
+        })
+    }
+
     private var autoRotateEnabled = MutableStateFlow(true)
     private var deviceRotation = MutableStateFlow(0)
     private var isPlaying = MutableStateFlow(0)
@@ -327,6 +341,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var showSubtitles = MutableStateFlow(false)
     private var showSleepTimer = MutableStateFlow(false)
     private var subtitlesChecked = MutableStateFlow<List<Boolean>>(listOf())
+    private var subtitlesView = MutableStateFlow<SubtitleView?>(null)
     private var sleepTimerChecked = MutableStateFlow(listOf(false, false, false, false, false))
 
     @Composable
@@ -366,8 +381,14 @@ class Player: ComponentActivity(), Player.Listener {
             factory = { context ->
                 PlayerView(context).apply {
                     this.useController = false
+                    subtitlesView.value = SubtitleView(context).apply {
+                        this.setApplyEmbeddedStyles(false)
+                        this.setFractionalTextSize(0.05f)
+                    }
                     this.subtitleView?.apply {
                         this.setApplyEmbeddedStyles(false)
+                        this.setFractionalTextSize(0f)
+                        this.addView(subtitlesView.value)
                     }
                 }
             },
@@ -375,8 +396,10 @@ class Player: ComponentActivity(), Player.Listener {
                 playerView.apply {
                     this.player = playerControllerState
                     this.resizeMode = if (playerSizeState && deviceRotationState == 1) {
+                        subtitlesView.value?.setBottomPaddingFraction(0.13f)
                         AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                     } else {
+                        subtitlesView.value?.setBottomPaddingFraction(0.05f)
                         AspectRatioFrameLayout.RESIZE_MODE_FIT
                     }
                 }
