@@ -366,6 +366,9 @@ class Player: ComponentActivity(), Player.Listener {
             factory = { context ->
                 PlayerView(context).apply {
                     this.useController = false
+                    this.subtitleView?.apply {
+                        this.setApplyEmbeddedStyles(false)
+                    }
                 }
             },
             update = { playerView ->
@@ -375,9 +378,6 @@ class Player: ComponentActivity(), Player.Listener {
                         AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                     } else {
                         AspectRatioFrameLayout.RESIZE_MODE_FIT
-                    }
-                    this.subtitleView.apply {
-                        this?.setApplyEmbeddedStyles(false)
                     }
                 }
             }
