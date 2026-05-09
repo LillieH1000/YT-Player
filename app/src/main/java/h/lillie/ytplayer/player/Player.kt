@@ -369,11 +369,13 @@ class Player: ComponentActivity(), Player.Listener {
                 }
             },
             update = { playerView ->
-                playerView.player = playerControllerState
-                playerView.resizeMode = if (playerSizeState && deviceRotationState == 1) {
-                    AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-                } else {
-                    AspectRatioFrameLayout.RESIZE_MODE_FIT
+                playerView.apply {
+                    this.player = playerControllerState
+                    this.resizeMode = if (playerSizeState && deviceRotationState == 1) {
+                        AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                    } else {
+                        AspectRatioFrameLayout.RESIZE_MODE_FIT
+                    }
                 }
             }
         )
