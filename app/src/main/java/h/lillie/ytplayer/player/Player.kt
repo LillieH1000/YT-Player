@@ -126,7 +126,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var playerController = MutableStateFlow<MediaController?>(null)
     private var playerHandler: Handler = Handler(Looper.getMainLooper())
     private var playerSubtitles: ArrayList<Info.Subtitles>? = null
-    private var playerSubtitlesView: SubtitleView? = null
+    @UnstableApi private var playerSubtitlesView: SubtitleView? = null
     private var chromeOSDevice: Boolean = false
     private var isFirstLaunch: Boolean = false
 
