@@ -18,7 +18,9 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import android.view.KeyEvent
+import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
@@ -127,6 +129,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var playerHandler: Handler = Handler(Looper.getMainLooper())
     private var playerSubtitles: ArrayList<Info.Subtitles>? = null
     @UnstableApi private var playerSubtitlesView: SubtitleView? = null
+    private var playerSubtitlesViewParent: ViewGroup? = null
     private var chromeOSDevice: Boolean = false
     private var isFirstLaunch: Boolean = false
 
@@ -383,12 +386,11 @@ class Player: ComponentActivity(), Player.Listener {
                     this.useController = false
                     playerSubtitlesView = SubtitleView(context).apply {
                         this.setApplyEmbeddedStyles(false)
-                        this.setFractionalTextSize(0.05f)
                     }
                     this.subtitleView?.apply {
+                        playerSubtitlesViewParent = this
                         this.setApplyEmbeddedStyles(false)
                         this.setFractionalTextSize(0f)
-                        this.addView(playerSubtitlesView)
                     }
                 }
             },
@@ -396,12 +398,35 @@ class Player: ComponentActivity(), Player.Listener {
                 playerView.apply {
                     this.player = playerControllerState
                     this.resizeMode = if (playerSizeState && deviceRotationState == 1) {
-                        playerSubtitlesView?.setBottomPaddingFraction(0.13f)
                         AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                     } else {
-                        playerSubtitlesView?.setBottomPaddingFraction(0.05f)
                         AspectRatioFrameLayout.RESIZE_MODE_FIT
                     }
+                }
+            }
+        )
+
+        // Subtitles Landscape View
+
+        @UnstableApi
+        AndroidView(
+            modifier = Modifier
+                .navigationBarsPadding()
+                .statusBarsPadding()
+                .systemBarsPadding()
+                .fillMaxSize()
+                .focusTarget()
+                .focusProperties { canFocus = false },
+            factory = { context ->
+                FrameLayout(context)
+            },
+            update = { view ->
+                if (deviceRotationState == 1) {
+                    playerSubtitlesViewParent?.removeView(playerSubtitlesView)
+                    view.addView(playerSubtitlesView)
+                } else {
+                    view.removeView(playerSubtitlesView)
+                    playerSubtitlesViewParent?.addView(playerSubtitlesView)
                 }
             }
         )
