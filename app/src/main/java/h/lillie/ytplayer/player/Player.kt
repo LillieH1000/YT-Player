@@ -126,6 +126,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var playerController = MutableStateFlow<MediaController?>(null)
     private var playerHandler: Handler = Handler(Looper.getMainLooper())
     private var playerSubtitles: ArrayList<Info.Subtitles>? = null
+    private var playerSubtitlesView: SubtitleView? = null
     private var chromeOSDevice: Boolean = false
     private var isFirstLaunch: Boolean = false
 
@@ -318,7 +319,7 @@ class Player: ComponentActivity(), Player.Listener {
     override fun onCues(cueGroup: CueGroup) {
         super.onCues(cueGroup)
         @UnstableApi
-        subtitlesView.value?.setCues(cueGroup.cues.map { cue ->
+        playerSubtitlesView?.setCues(cueGroup.cues.map { cue ->
             cue.buildUpon()
                 .setLine(Cue.DIMEN_UNSET, Cue.TYPE_UNSET)
                 .setPosition(Cue.DIMEN_UNSET)
@@ -341,7 +342,6 @@ class Player: ComponentActivity(), Player.Listener {
     private var showSubtitles = MutableStateFlow(false)
     private var showSleepTimer = MutableStateFlow(false)
     private var subtitlesChecked = MutableStateFlow<List<Boolean>>(listOf())
-    private var subtitlesView = MutableStateFlow<SubtitleView?>(null)
     private var sleepTimerChecked = MutableStateFlow(listOf(false, false, false, false, false))
 
     @Composable
@@ -381,14 +381,14 @@ class Player: ComponentActivity(), Player.Listener {
             factory = { context ->
                 PlayerView(context).apply {
                     this.useController = false
-                    subtitlesView.value = SubtitleView(context).apply {
+                    playerSubtitlesView = SubtitleView(context).apply {
                         this.setApplyEmbeddedStyles(false)
                         this.setFractionalTextSize(0.05f)
                     }
                     this.subtitleView?.apply {
                         this.setApplyEmbeddedStyles(false)
                         this.setFractionalTextSize(0f)
-                        this.addView(subtitlesView.value)
+                        this.addView(playerSubtitlesView)
                     }
                 }
             },
@@ -396,10 +396,10 @@ class Player: ComponentActivity(), Player.Listener {
                 playerView.apply {
                     this.player = playerControllerState
                     this.resizeMode = if (playerSizeState && deviceRotationState == 1) {
-                        subtitlesView.value?.setBottomPaddingFraction(0.13f)
+                        playerSubtitlesView?.setBottomPaddingFraction(0.13f)
                         AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                     } else {
-                        subtitlesView.value?.setBottomPaddingFraction(0.05f)
+                        playerSubtitlesView?.setBottomPaddingFraction(0.05f)
                         AspectRatioFrameLayout.RESIZE_MODE_FIT
                     }
                 }
