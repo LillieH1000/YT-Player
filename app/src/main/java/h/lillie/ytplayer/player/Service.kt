@@ -138,10 +138,11 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         val intentFilter = IntentFilter()
         intentFilter.addAction("h.lillie.ytplayer.service.info")
         intentFilter.addAction("h.lillie.ytplayer.service.timer")
-        if (Build.VERSION.SDK_INT <= 32) {
-            registerReceiver(playerBroadcastReceiver, intentFilter)
-        } else {
+        if (Build.VERSION.SDK_INT >= 33) {
             registerReceiver(playerBroadcastReceiver, intentFilter, RECEIVER_NOT_EXPORTED)
+        } else {
+            @SuppressLint("UnspecifiedRegisterReceiverFlag")
+            registerReceiver(playerBroadcastReceiver, intentFilter)
         }
 
         playerHandler = Handler(Looper.getMainLooper())

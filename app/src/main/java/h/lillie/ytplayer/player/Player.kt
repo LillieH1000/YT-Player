@@ -167,10 +167,11 @@ class Player: ComponentActivity(), Player.Listener {
 
         val intentFilter = IntentFilter()
         intentFilter.addAction("h.lillie.ytplayer.activity.subtitles")
-        if (Build.VERSION.SDK_INT <= 32) {
-            registerReceiver(playerBroadcastReceiver, intentFilter)
-        } else {
+        if (Build.VERSION.SDK_INT >= 33) {
             registerReceiver(playerBroadcastReceiver, intentFilter, RECEIVER_NOT_EXPORTED)
+        } else {
+            @SuppressLint("UnspecifiedRegisterReceiverFlag")
+            registerReceiver(playerBroadcastReceiver, intentFilter)
         }
 
         when {
