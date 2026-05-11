@@ -1528,7 +1528,12 @@ class Player: ComponentActivity(), Player.Listener {
                     }
                 }
 
-                playerSubtitles = intent.extras!!.getParcelableArrayList("subtitles")
+                playerSubtitles = if (Build.VERSION.SDK_INT >= 33) {
+                    intent.extras!!.getParcelableArrayList("subtitles", Info.Subtitles::class.java)
+                } else {
+                    @Suppress("Deprecation")
+                    intent.extras!!.getParcelableArrayList("subtitles")
+                }
                 if (playerSubtitles == null) return@coroutineScope
 
                 subtitlesChecked.update { list ->
