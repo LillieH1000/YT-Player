@@ -68,7 +68,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
     private var playerTimer: CountDownTimer? = null
     private var sponsorBlock: JSONArray? = null
 
-    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onCreate() {
         super.onCreate()
 
@@ -234,9 +233,9 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         return super.onCustomCommand(session, controller, customCommand, args)
     }
 
-    @SuppressLint("SwitchIntDef")
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
+        @SuppressLint("SwitchIntDef")
         when ((error as ExoPlaybackException).type) {
             ExoPlaybackException.TYPE_SOURCE -> {
                 if (exoPlayer.mediaMetadata.extras?.getBoolean("live") == true && exoPlayer.mediaMetadata.extras?.getString("expiration")!!.toLong() < System.currentTimeMillis()) {

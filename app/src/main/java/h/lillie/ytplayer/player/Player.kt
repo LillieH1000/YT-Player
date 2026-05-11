@@ -133,7 +133,6 @@ class Player: ComponentActivity(), Player.Listener {
     private var chromeOSDevice: Boolean = false
     private var isFirstLaunch: Boolean = false
 
-    @SuppressLint("SwitchIntDef", "UnspecifiedRegisterReceiverFlag")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -149,6 +148,7 @@ class Player: ComponentActivity(), Player.Listener {
         }
 
         onBackPressedDispatcher.addCallback(this) {
+            @SuppressLint("SwitchIntDef")
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
                     if (!chromeOSDevice) {
@@ -203,9 +203,9 @@ class Player: ComponentActivity(), Player.Listener {
         }
     }
 
-    @SuppressLint("SwitchIntDef")
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
+        @SuppressLint("SwitchIntDef")
         when (newConfig.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
                 if (!chromeOSDevice) {
@@ -276,7 +276,6 @@ class Player: ComponentActivity(), Player.Listener {
         return super.onKeyDown(keyCode, event)
     }
 
-    @SuppressLint("SwitchIntDef")
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) {
@@ -294,6 +293,7 @@ class Player: ComponentActivity(), Player.Listener {
                     }
                 }
             }
+            @SuppressLint("SwitchIntDef")
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
                     if (!chromeOSDevice) {
