@@ -6,7 +6,7 @@ import org.schabi.newpipe.extractor.downloader.Downloader
 import org.schabi.newpipe.extractor.downloader.Request
 import org.schabi.newpipe.extractor.downloader.Response
 
-class Downloader: Downloader() {
+class OkHttpDownloader: Downloader() {
     override fun execute(request: Request): Response? {
         val client: OkHttpClient = OkHttpClient.Builder().build()
 
