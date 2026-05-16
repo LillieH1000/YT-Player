@@ -1,6 +1,8 @@
 package h.lillie.ytplayer.requests
 
 import android.content.Context
+import android.os.Build
+import android.os.ext.SdkExtensions
 import androidx.core.net.toUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -22,7 +24,12 @@ import kotlin.time.Duration.Companion.seconds
 
 class Requests {
     suspend fun extractor(context: Context, videoID: String?, searchQuery: String?): Info = withContext(Dispatchers.IO) {
-        NewPipe.init(Downloader())
+        if (Build.VERSION.SDK_INT >= 34 || SdkExtensions.getExtensionVersion(Build.VERSION_CODES.S) >= 7) {
+            NewPipe.init(HttpEngineDownloader(context))
+        } else {
+            NewPipe.init(OkHttpDownloader())
+        }
+        
         val service = NewPipe.getService(ServiceList.YouTube.serviceId)
 
         val target: String = if (searchQuery != null) {
