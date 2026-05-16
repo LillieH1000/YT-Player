@@ -18,7 +18,7 @@ android {
         applicationId = "h.lillie.ytplayer"
         minSdk = 30
         targetSdk = 37
-        versionCode = 136
+        versionCode = 137
         versionName = "4.1.1"
     }
 
@@ -74,6 +74,7 @@ dependencies {
     implementation(libs.androidx.media3.common.ktx)
     implementation(libs.androidx.media3.database)
     implementation(libs.androidx.media3.datasource)
+    implementation(libs.androidx.media3.datasource.cronet)
     implementation(libs.androidx.media3.datasource.okhttp)
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.exoplayer.dash)
