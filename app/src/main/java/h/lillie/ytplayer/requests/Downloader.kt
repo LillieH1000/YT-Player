@@ -11,13 +11,19 @@ class Downloader: Downloader() {
         val client: OkHttpClient = OkHttpClient.Builder().build()
 
         val requestBuilder: okhttp3.Request.Builder = okhttp3.Request.Builder()
-            .method(request.httpMethod(), request.dataToSend()?.toRequestBody())
             .url(request.url())
 
         request.headers().forEach { (key, values) ->
             values.forEach { value ->
                 requestBuilder.addHeader(key, value)
             }
+        }
+
+        val data: ByteArray? = request.dataToSend()
+        if (data != null) {
+            requestBuilder.method(request.httpMethod(), data.toRequestBody())
+        } else {
+            requestBuilder.method(request.httpMethod(), null)
         }
 
         val response: okhttp3.Response = client.newCall(requestBuilder.build()).execute()
