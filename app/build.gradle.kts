@@ -18,8 +18,8 @@ android {
         applicationId = "h.lillie.ytplayer"
         minSdk = 30
         targetSdk = 37
-        versionCode = 135
-        versionName = "4.1.0"
+        versionCode = 136
+        versionName = "4.1.1"
     }
 
     buildTypes {
