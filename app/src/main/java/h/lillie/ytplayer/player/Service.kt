@@ -6,11 +6,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
+import android.net.http.HttpEngine
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
+import android.os.ext.SdkExtensions
 import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.core.net.toUri
@@ -26,6 +28,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.HttpEngineDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
@@ -48,6 +51,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import h.lillie.ytplayer.requests.Requests
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -84,8 +88,17 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
             )
         }
 
-        val okhttpClient: OkHttpClient = OkHttpClient.Builder().build()
-        val okhttpDataSource: OkHttpDataSource.Factory = OkHttpDataSource.Factory(okhttpClient)
+        val networkDataSource: DataSource.Factory = if (SdkExtensions.getExtensionVersion(Build.VERSION_CODES.S) >= 7) {
+            val httpEngine: HttpEngine = HttpEngine.Builder(this)
+                .setEnableHttp2(true)
+                .setEnableQuic(true)
+                .build()
+
+            HttpEngineDataSource.Factory(httpEngine, Dispatchers.IO.asExecutor())
+        } else {
+            val okhttpClient: OkHttpClient = OkHttpClient.Builder().build()
+            OkHttpDataSource.Factory(okhttpClient)
+        }
 
         if (this@Service::playerCache.isInitialized) {
             playerCache.release()
@@ -94,7 +107,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
 
         val cacheDataSource: CacheDataSource.Factory = CacheDataSource.Factory()
             .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
-            .setUpstreamDataSourceFactory(okhttpDataSource)
+            .setUpstreamDataSourceFactory(networkDataSource)
             .setCache(playerCache)
 
         playerDataSource = DataSource.Factory {
@@ -106,7 +119,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
             if (mediaMetadata.extras?.getBoolean("live") != true) {
                 cacheDataSource.createDataSource()
             } else {
-                okhttpDataSource.createDataSource()
+                networkDataSource.createDataSource()
             }
         }
 
