@@ -24,7 +24,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class Requests {
     suspend fun extractor(context: Context, videoID: String?, searchQuery: String?): Info = withContext(Dispatchers.IO) {
-        if (Build.VERSION.SDK_INT >= 34 || SdkExtensions.getExtensionVersion(Build.VERSION_CODES.S) >= 7) {
+        if (SdkExtensions.getExtensionVersion(Build.VERSION_CODES.S) >= 7) {
             NewPipe.init(HttpEngineDownloader(context))
         } else {
             NewPipe.init(OkHttpDownloader())
