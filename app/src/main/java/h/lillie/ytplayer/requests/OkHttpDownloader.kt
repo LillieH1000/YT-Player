@@ -28,15 +28,22 @@ class OkHttpDownloader: Downloader() {
 
         val response: okhttp3.Response = client.newCall(requestBuilder.build()).execute()
         if (!response.isSuccessful) {
+            response.close()
             return null
         }
 
+        val responseCode: Int = response.code
+        val responseMessage: String = response.message
+        val headers = response.headers.toMultimap()
+        val body: String = response.body.string()
+        val url: String = response.request.url.toString()
+        response.close()
         return Response(
-            response.code,
-            response.message,
-            response.headers.toMultimap(),
-            response.body.string(),
-            response.request.url.toString()
+            responseCode,
+            responseMessage,
+            headers,
+            body,
+            url
         )
     }
 }
