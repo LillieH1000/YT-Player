@@ -34,13 +34,23 @@ class HttpEngineDownloader(val context: Context): Downloader() {
             }
         }
 
-        if (connection.responseCode != 200) return null
+        val responseCode: Int = connection.responseCode
+        if (responseCode != 200) {
+            connection.disconnect()
+            return null
+        }
+
+        val responseMessage: String = connection.responseMessage
+        val headers = connection.headerFields
+        val body: String = connection.getInputStream().bufferedReader().use { it.readText() }
+        val url: String = connection.url.toString()
+        connection.disconnect()
         return Response(
-            connection.responseCode,
-            connection.responseMessage,
-            connection.headerFields,
-            connection.getInputStream().bufferedReader().use { it.readText() },
-            connection.url.toString()
+            responseCode,
+            responseMessage,
+            headers,
+            body,
+            url
         )
     }
 }
