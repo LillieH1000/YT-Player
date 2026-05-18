@@ -139,10 +139,13 @@ class Requests {
 
         val response: Response = client.newCall(request).execute()
         if (!response.isSuccessful) {
+            response.close()
             return@withContext null
         }
 
-        return@withContext JSONObject(response.body.string()).getLong("dislikes")
+        val body: String = response.body.string()
+        response.close()
+        return@withContext JSONObject(body).getLong("dislikes")
     }
 
     suspend fun sponsorBlock(videoID: String): JSONArray? = withContext(Dispatchers.IO) {
@@ -155,9 +158,12 @@ class Requests {
 
         val response: Response = client.newCall(request).execute()
         if (!response.isSuccessful) {
+            response.close()
             return@withContext null
         }
 
-        return@withContext JSONArray(response.body.string())
+        val body: String = response.body.string()
+        response.close()
+        return@withContext JSONArray(body)
     }
 }
