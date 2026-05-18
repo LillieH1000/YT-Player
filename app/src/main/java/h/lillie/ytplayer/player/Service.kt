@@ -276,8 +276,8 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
             if (intent?.action == "h.lillie.ytplayer.service.info") {
                 val request = Requests()
                 val info = request.extractor(this@Service, intent.extras!!.getString("videoID"), intent.extras!!.getString("searchQuery"))
-                val dislikes = request.returnYouTubeDislike(info.id)
-                sponsorBlock = request.sponsorBlock(info.id)
+                val dislikes = request.returnYouTubeDislike(this@Service, info.id)
+                sponsorBlock = request.sponsorBlock(this@Service, info.id)
                 playerTimer?.cancel()
                 playerTimer = null
 

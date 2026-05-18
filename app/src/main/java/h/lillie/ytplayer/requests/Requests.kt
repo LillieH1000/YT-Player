@@ -1,6 +1,8 @@
 package h.lillie.ytplayer.requests
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.net.http.HttpEngine
 import android.os.Build
 import android.os.ext.SdkExtensions
 import androidx.core.net.toUri
@@ -20,6 +22,8 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem
 import org.schabi.newpipe.extractor.stream.StreamType
 import org.schabi.newpipe.extractor.stream.VideoStream
 import java.io.File
+import java.net.HttpURLConnection
+import java.net.URL
 import kotlin.time.Duration.Companion.seconds
 
 class Requests {
@@ -129,31 +133,55 @@ class Requests {
         )
     }
 
-    suspend fun returnYouTubeDislike(videoID: String): Long? = withContext(Dispatchers.IO) {
-        val client: OkHttpClient = OkHttpClient.Builder().build()
-
-        val request: Request = Request.Builder()
-            .method("GET", null)
-            .url("https://returnyoutubedislikeapi.com/votes?videoId=$videoID")
-            .build()
-
-        val response: Response = client.newCall(request).execute()
-        if (!response.isSuccessful) {
-            response.close()
-            return@withContext null
+    suspend fun returnYouTubeDislike(context: Context, videoID: String): Long? = withContext(Dispatchers.IO) {
+        val body: String? = if (SdkExtensions.getExtensionVersion(Build.VERSION_CODES.S) >= 7) {
+            httpEngineRequest(context, "https://returnyoutubedislikeapi.com/votes?videoId=$videoID")
+        } else {
+            okHttpRequest("https://returnyoutubedislikeapi.com/votes?videoId=$videoID")
         }
 
-        val body: String = response.body.string()
-        response.close()
+        if (body == null) return@withContext null
         return@withContext JSONObject(body).getLong("dislikes")
     }
 
-    suspend fun sponsorBlock(videoID: String): JSONArray? = withContext(Dispatchers.IO) {
+    suspend fun sponsorBlock(context: Context, videoID: String): JSONArray? = withContext(Dispatchers.IO) {
+        val body: String? = if (SdkExtensions.getExtensionVersion(Build.VERSION_CODES.S) >= 7) {
+            httpEngineRequest(context, "https://sponsor.ajay.app/api/skipSegments?videoID=$videoID&category=sponsor")
+        } else {
+            okHttpRequest("https://sponsor.ajay.app/api/skipSegments?videoID=$videoID&category=sponsor")
+        }
+
+        if (body == null) return@withContext null
+        return@withContext JSONArray(body)
+    }
+
+    @SuppressLint("NewApi")
+    private suspend fun httpEngineRequest(context: Context, url: String): String? = withContext(Dispatchers.IO) {
+        val httpEngine: HttpEngine = HttpEngine.Builder(context)
+            .setEnableHttp2(true)
+            .setEnableQuic(true)
+            .build()
+
+        val connection: HttpURLConnection = httpEngine.openConnection(URL(url)) as HttpURLConnection
+        connection.requestMethod = "GET"
+
+        val responseCode: Int = connection.responseCode
+        if (responseCode != 200) {
+            connection.disconnect()
+            return@withContext null
+        }
+
+        val body: String = connection.getInputStream().bufferedReader().use { it.readText() }
+        connection.disconnect()
+        return@withContext body
+    }
+
+    private suspend fun okHttpRequest(url: String): String? = withContext(Dispatchers.IO) {
         val client: OkHttpClient = OkHttpClient.Builder().build()
 
         val request: Request = Request.Builder()
             .method("GET", null)
-            .url("https://sponsor.ajay.app/api/skipSegments?videoID=$videoID&category=sponsor")
+            .url(url)
             .build()
 
         val response: Response = client.newCall(request).execute()
@@ -164,6 +192,6 @@ class Requests {
 
         val body: String = response.body.string()
         response.close()
-        return@withContext JSONArray(body)
+        return@withContext body
     }
 }
