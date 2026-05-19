@@ -18,7 +18,7 @@ android {
         applicationId = "h.lillie.ytplayer"
         minSdk = 30
         targetSdk = 37
-        versionCode = 138
+        versionCode = 139
         versionName = "4.1.1"
     }
 
