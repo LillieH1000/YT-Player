@@ -11,7 +11,7 @@ import java.net.URL
 
 class HttpEngineDownloader(val context: Context): Downloader() {
     @SuppressLint("NewApi")
-    override fun execute(request: Request): Response? {
+    override fun execute(request: Request): Response {
         val httpEngine: HttpEngine = HttpEngine.Builder(context)
             .setEnableHttp2(true)
             .setEnableQuic(true)
@@ -35,11 +35,6 @@ class HttpEngineDownloader(val context: Context): Downloader() {
         }
 
         val responseCode: Int = connection.responseCode
-        if (responseCode != 200) {
-            connection.disconnect()
-            return null
-        }
-
         val responseMessage: String = connection.responseMessage
         val headers = connection.headerFields
         val body: String = connection.getInputStream().bufferedReader().use { it.readText() }

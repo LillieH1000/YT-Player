@@ -7,7 +7,7 @@ import org.schabi.newpipe.extractor.downloader.Request
 import org.schabi.newpipe.extractor.downloader.Response
 
 class OkHttpDownloader: Downloader() {
-    override fun execute(request: Request): Response? {
+    override fun execute(request: Request): Response {
         val client: OkHttpClient = OkHttpClient.Builder().build()
 
         val requestBuilder: okhttp3.Request.Builder = okhttp3.Request.Builder()
@@ -27,11 +27,6 @@ class OkHttpDownloader: Downloader() {
         }
 
         val response: okhttp3.Response = client.newCall(requestBuilder.build()).execute()
-        if (!response.isSuccessful) {
-            response.close()
-            return null
-        }
-
         val responseCode: Int = response.code
         val responseMessage: String = response.message
         val headers = response.headers.toMultimap()
