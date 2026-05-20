@@ -174,7 +174,7 @@ class Player: ComponentActivity(), Player.Listener {
                     val youtubeRegex = Regex("^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/|live/)|(?:(?:watch)?\\?vi?=|&vi?=))([^#&?]*).*")
                     val info = intent.getStringExtra(Intent.EXTRA_TEXT)!!
                     if (youtubeRegex.containsMatchIn(info)) {
-                        createPlayer(youtubeRegex.findAll(info).map { it.groupValues[1] }.joinToString())
+                        createPlayer(youtubeRegex.findAll(info).joinToString { it.groupValues[1] })
                     }
                 }
             }
@@ -189,7 +189,7 @@ class Player: ComponentActivity(), Player.Listener {
                     val youtubeRegex = Regex("^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/|live/)|(?:(?:watch)?\\?vi?=|&vi?=))([^#&?]*).*")
                     val info = intent.getStringExtra(Intent.EXTRA_TEXT)!!
                     if (youtubeRegex.containsMatchIn(info)) {
-                        createPlayer(youtubeRegex.findAll(info).map { it.groupValues[1] }.joinToString())
+                        createPlayer(youtubeRegex.findAll(info).joinToString { it.groupValues[1] })
                     }
                 }
             }
@@ -281,7 +281,7 @@ class Player: ComponentActivity(), Player.Listener {
                         val youtubeRegex = Regex("^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/|live/)|(?:(?:watch)?\\?vi?=|&vi?=))([^#&?]*).*")
                         val info = clipData.getItemAt(0).text.toString()
                         if (youtubeRegex.containsMatchIn(info)) {
-                            createPlayer(youtubeRegex.findAll(info).map { it.groupValues[1] }.joinToString())
+                            createPlayer(youtubeRegex.findAll(info).joinToString { it.groupValues[1] })
                         }
                     }
                 }
