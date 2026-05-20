@@ -28,6 +28,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -76,7 +77,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -108,8 +108,6 @@ import com.google.common.util.concurrent.MoreExecutors
 import h.lillie.ytplayer.requests.Info
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -438,109 +436,72 @@ class Player: ComponentActivity(), Player.Listener {
                 .focusTarget()
                 .focusProperties { canFocus = false }
         ) {
-            var leftClick: Long = 0
-            val leftJob = remember { MutableStateFlow<Job?>(null) }
-            val leftScope = rememberCoroutineScope()
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(1f)
-                    .noRippleClickable {
-                        val time = System.currentTimeMillis()
-                        leftJob.value?.cancel()
-                        if (time - leftClick < 300L) {
+                    .noRippleClickable(
+                        onDoubleClick = {
                             playerController.value?.seekBack()
-                            leftClick = 0
-                            leftJob.value = null
-                        } else {
-                            leftJob.value = leftScope.launch {
-                                leftClick = time
-                                delay(300)
-                                if (playerControllerState?.mediaItemCount == 1) {
-                                    if (!showOverlayState) {
-                                        showOverlay.value = true
-                                    } else {
-                                        showOverlay.value = false
-                                    }
-                                    showInfo.value = false
-                                    showSettings.value = false
-                                    showSubtitles.value = false
-                                    showSleepTimer.value = false
+                        },
+                        onClick = {
+                            if (playerControllerState?.mediaItemCount == 1) {
+                                if (!showOverlayState) {
+                                    showOverlay.value = true
+                                } else {
+                                    showOverlay.value = false
                                 }
-                                leftClick = 0
-                                leftJob.value = null
+                                showInfo.value = false
+                                showSettings.value = false
+                                showSubtitles.value = false
+                                showSleepTimer.value = false
                             }
                         }
-                    }
+                    )
             )
-            var middleClick: Long = 0
-            val middleJob = remember { MutableStateFlow<Job?>(null) }
-            val middleScope = rememberCoroutineScope()
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(1f)
-                    .noRippleClickable {
-                        val time = System.currentTimeMillis()
-                        middleJob.value?.cancel()
-                        if (time - middleClick < 300L) {
-                            middleClick = 0
-                            middleJob.value = null
-                        } else {
-                            middleJob.value = middleScope.launch {
-                                middleClick = time
-                                delay(300)
-                                if (playerControllerState?.mediaItemCount == 1) {
-                                    if (!showOverlayState) {
-                                        showOverlay.value = true
-                                    } else {
-                                        showOverlay.value = false
-                                    }
-                                    showInfo.value = false
-                                    showSettings.value = false
-                                    showSubtitles.value = false
-                                    showSleepTimer.value = false
+                    .noRippleClickable(
+                        onDoubleClick = {},
+                        onClick = {
+                            if (playerControllerState?.mediaItemCount == 1) {
+                                if (!showOverlayState) {
+                                    showOverlay.value = true
+                                } else {
+                                    showOverlay.value = false
                                 }
-                                middleClick = 0
-                                middleJob.value = null
+                                showInfo.value = false
+                                showSettings.value = false
+                                showSubtitles.value = false
+                                showSleepTimer.value = false
                             }
                         }
-                    }
+                    )
             )
-            var rightClick: Long = 0
-            val rightJob = remember { MutableStateFlow<Job?>(null) }
-            val rightScope = rememberCoroutineScope()
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(1f)
-                    .noRippleClickable {
-                        val time = System.currentTimeMillis()
-                        rightJob.value?.cancel()
-                        if (time - rightClick < 300L) {
+                    .noRippleClickable(
+                        onDoubleClick = {
                             playerController.value?.seekForward()
-                            rightClick = 0
-                            rightJob.value = null
-                        } else {
-                            rightJob.value = rightScope.launch {
-                                rightClick = time
-                                delay(300)
-                                if (playerControllerState?.mediaItemCount == 1) {
-                                    if (!showOverlayState) {
-                                        showOverlay.value = true
-                                    } else {
-                                        showOverlay.value = false
-                                    }
-                                    showInfo.value = false
-                                    showSettings.value = false
-                                    showSubtitles.value = false
-                                    showSleepTimer.value = false
+                        },
+                        onClick = {
+                            if (playerControllerState?.mediaItemCount == 1) {
+                                if (!showOverlayState) {
+                                    showOverlay.value = true
+                                } else {
+                                    showOverlay.value = false
                                 }
-                                rightClick = 0
-                                rightJob.value = null
+                                showInfo.value = false
+                                showSettings.value = false
+                                showSubtitles.value = false
+                                showSleepTimer.value = false
                             }
                         }
-                    }
+                    )
             )
         }
 
@@ -1489,13 +1450,13 @@ class Player: ComponentActivity(), Player.Listener {
     }
 
     @Composable
-    private fun Modifier.noRippleClickable(onClick: () -> Unit): Modifier = composed {
-        clickable(
+    private fun Modifier.noRippleClickable(onDoubleClick: (() -> Unit)? = null, onClick: () -> Unit): Modifier = composed {
+        combinedClickable(
             interactionSource = remember { MutableInteractionSource() },
-            indication = null
-        ) {
-            onClick()
-        }
+            indication = null,
+            onDoubleClick = onDoubleClick,
+            onClick = onClick
+        )
     }
 
     private val playerBroadcastReceiver = object: BroadcastReceiver() {
