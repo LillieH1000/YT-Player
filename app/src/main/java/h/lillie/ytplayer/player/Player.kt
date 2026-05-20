@@ -26,10 +26,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.IndicationNodeFactory
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -88,9 +86,6 @@ import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.drawscope.ContentDrawScope
-import androidx.compose.ui.node.DelegatableNode
-import androidx.compose.ui.node.DrawModifierNode
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -1497,21 +1492,7 @@ class Player: ComponentActivity(), Player.Listener {
     private fun Modifier.noRippleClickable(onClick: () -> Unit): Modifier = composed {
         clickable(
             interactionSource = remember { MutableInteractionSource() },
-            indication = object: IndicationNodeFactory {
-                override fun create(interactionSource: InteractionSource): DelegatableNode {
-                    return object: Modifier.Node(), DrawModifierNode {
-                        override fun ContentDrawScope.draw() {
-                            drawContent()
-                        }
-                    }
-                }
-                override fun equals(other: Any?): Boolean {
-                    return other === this
-                }
-                override fun hashCode(): Int {
-                    return -1
-                }
-            }
+            indication = null
         ) {
             onClick()
         }
