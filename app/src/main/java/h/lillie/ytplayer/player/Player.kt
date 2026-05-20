@@ -306,11 +306,7 @@ class Player: ComponentActivity(), Player.Listener {
 
     override fun onRepeatModeChanged(repeatMode: Int) {
         super.onRepeatModeChanged(repeatMode)
-        if (repeatMode == Player.REPEAT_MODE_OFF) {
-            loopChecked.value = false
-        } else {
-            loopChecked.value = true
-        }
+        loopChecked.value = repeatMode != Player.REPEAT_MODE_OFF
     }
 
     override fun onCues(cueGroup: CueGroup) {
@@ -446,11 +442,7 @@ class Player: ComponentActivity(), Player.Listener {
                         },
                         onClick = {
                             if (playerControllerState?.mediaItemCount == 1) {
-                                if (!showOverlayState) {
-                                    showOverlay.value = true
-                                } else {
-                                    showOverlay.value = false
-                                }
+                                showOverlay.value = !showOverlayState
                                 showInfo.value = false
                                 showSettings.value = false
                                 showSubtitles.value = false
@@ -467,11 +459,7 @@ class Player: ComponentActivity(), Player.Listener {
                         onDoubleClick = {},
                         onClick = {
                             if (playerControllerState?.mediaItemCount == 1) {
-                                if (!showOverlayState) {
-                                    showOverlay.value = true
-                                } else {
-                                    showOverlay.value = false
-                                }
+                                showOverlay.value = !showOverlayState
                                 showInfo.value = false
                                 showSettings.value = false
                                 showSubtitles.value = false
@@ -490,11 +478,7 @@ class Player: ComponentActivity(), Player.Listener {
                         },
                         onClick = {
                             if (playerControllerState?.mediaItemCount == 1) {
-                                if (!showOverlayState) {
-                                    showOverlay.value = true
-                                } else {
-                                    showOverlay.value = false
-                                }
+                                showOverlay.value = !showOverlayState
                                 showInfo.value = false
                                 showSettings.value = false
                                 showSubtitles.value = false
