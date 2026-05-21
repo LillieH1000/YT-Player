@@ -6,6 +6,7 @@ import android.net.http.HttpEngine
 import org.schabi.newpipe.extractor.downloader.Downloader
 import org.schabi.newpipe.extractor.downloader.Request
 import org.schabi.newpipe.extractor.downloader.Response
+import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -37,7 +38,12 @@ class HttpEngineDownloader(context: Context): Downloader() {
         val responseCode: Int = connection.responseCode
         val responseMessage: String = connection.responseMessage
         val headers = connection.headerFields
-        val body: String = connection.getInputStream().bufferedReader().use { it.readText() }
+        val stream: InputStream = if (responseCode >= 400) {
+            connection.errorStream
+        } else {
+            connection.getInputStream()
+        }
+        val body: String = stream.bufferedReader().use { it.readText() }
         val url: String = connection.url.toString()
         connection.disconnect()
         return Response(
