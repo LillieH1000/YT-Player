@@ -44,7 +44,14 @@ class Requests {
             "https://www.youtube.com/watch?v=${videoID}"
         }
 
-        val info = StreamInfo.getInfo(service, target)
+        val info: StreamInfo = run {
+            repeat(5) {
+                val info = StreamInfo.getInfo(service, target)
+
+                if (info.videoOnlyStreams.isNotEmpty() && info.audioStreams.isNotEmpty()) return@run info
+            }
+            null
+        } ?: return@withContext null
 
         val videoStream: VideoStream = info.videoOnlyStreams.maxWith(
             compareBy<VideoStream> { it.height <= 1080 }
