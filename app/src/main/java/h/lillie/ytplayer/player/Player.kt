@@ -1459,8 +1459,7 @@ class Player: ComponentActivity(), Player.Listener {
                 } else {
                     @Suppress("Deprecation")
                     intent.extras!!.getParcelableArrayList("subtitles")
-                }
-                if (playerSubtitles == null) return@coroutineScope
+                } ?: return@coroutineScope
 
                 subtitlesChecked.update { list ->
                     list.toMutableList().apply {

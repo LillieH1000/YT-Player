@@ -313,17 +313,10 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     playerMediaItem.setUri(Uri.fromFile(File(info.manifestPath)))
                 }
 
-                if (info.subtitles != null) {
-                    val broadcastIntent = Intent("h.lillie.ytplayer.activity.subtitles")
-                    broadcastIntent.setPackage(this@Service.packageName)
-                    broadcastIntent.putParcelableArrayListExtra("subtitles", info.subtitles)
-                    sendBroadcast(broadcastIntent)
-                } else {
-                    val broadcastIntent = Intent("h.lillie.ytplayer.activity.subtitles")
-                    broadcastIntent.setPackage(this@Service.packageName)
-                    broadcastIntent.putParcelableArrayListExtra("subtitles", null)
-                    sendBroadcast(broadcastIntent)
-                }
+                val broadcastIntent = Intent("h.lillie.ytplayer.activity.subtitles")
+                broadcastIntent.setPackage(this@Service.packageName)
+                broadcastIntent.putParcelableArrayListExtra("subtitles", info.subtitles)
+                sendBroadcast(broadcastIntent)
 
                 val defaultDataSource: DefaultDataSource.Factory = DefaultDataSource.Factory(this@Service, playerDataSource)
                 val dashMediaSource: DashMediaSource = DashMediaSource.Factory(defaultDataSource)

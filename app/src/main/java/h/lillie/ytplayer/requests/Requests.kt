@@ -141,24 +141,22 @@ class Requests {
     }
 
     suspend fun returnYouTubeDislike(context: Context, videoID: String): Long? = withContext(Dispatchers.IO) {
-        val body: String? = if (SdkExtensions.getExtensionVersion(Build.VERSION_CODES.S) >= 7) {
+        val body: String = if (SdkExtensions.getExtensionVersion(Build.VERSION_CODES.S) >= 7) {
             httpEngineRequest(context, "https://returnyoutubedislikeapi.com/votes?videoId=$videoID")
         } else {
             okHttpRequest("https://returnyoutubedislikeapi.com/votes?videoId=$videoID")
-        }
+        } ?: return@withContext null
 
-        if (body == null) return@withContext null
         return@withContext JSONObject(body).getLong("dislikes")
     }
 
     suspend fun sponsorBlock(context: Context, videoID: String): JSONArray? = withContext(Dispatchers.IO) {
-        val body: String? = if (SdkExtensions.getExtensionVersion(Build.VERSION_CODES.S) >= 7) {
+        val body: String = if (SdkExtensions.getExtensionVersion(Build.VERSION_CODES.S) >= 7) {
             httpEngineRequest(context, "https://sponsor.ajay.app/api/skipSegments?videoID=$videoID&category=sponsor")
         } else {
             okHttpRequest("https://sponsor.ajay.app/api/skipSegments?videoID=$videoID&category=sponsor")
-        }
+        } ?: return@withContext null
 
-        if (body == null) return@withContext null
         return@withContext JSONArray(body)
     }
 
