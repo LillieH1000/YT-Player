@@ -9,14 +9,14 @@ import org.schabi.newpipe.extractor.downloader.Response
 import java.net.HttpURLConnection
 import java.net.URL
 
-class HttpEngineDownloader(val context: Context): Downloader() {
-    @SuppressLint("NewApi")
-    override fun execute(request: Request): Response {
-        val httpEngine: HttpEngine = HttpEngine.Builder(context)
-            .setEnableHttp2(true)
-            .setEnableQuic(true)
-            .build()
+@SuppressLint("NewApi")
+class HttpEngineDownloader(context: Context): Downloader() {
+    private val httpEngine: HttpEngine = HttpEngine.Builder(context)
+        .setEnableHttp2(true)
+        .setEnableQuic(true)
+        .build()
 
+    override fun execute(request: Request): Response {
         val connection: HttpURLConnection = httpEngine.openConnection(URL(request.url())) as HttpURLConnection
         connection.requestMethod = request.httpMethod()
 
