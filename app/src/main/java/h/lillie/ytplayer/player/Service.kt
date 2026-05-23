@@ -65,9 +65,9 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var playerCache: SimpleCache
     private lateinit var playerDataSource: DataSource.Factory
-    private lateinit var playerHandler: Handler
     private val backCommand = SessionCommand("back", Bundle.EMPTY)
     private val forwardCommand = SessionCommand("forward", Bundle.EMPTY)
+    private var playerHandler: Handler = Handler(Looper.getMainLooper())
     private var playerSession: MediaLibrarySession? = null
     private var playerTimer: CountDownTimer? = null
     private var sponsorBlock: JSONArray? = null
@@ -156,8 +156,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
             @SuppressLint("UnspecifiedRegisterReceiverFlag")
             registerReceiver(playerBroadcastReceiver, intentFilter)
         }
-
-        playerHandler = Handler(Looper.getMainLooper())
         playerHandler.post(playerTask)
     }
 
