@@ -167,9 +167,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         playerTimer?.cancel()
         playerTimer = null
         sponsorBlock = null
-        if (this::playerHandler.isInitialized) {
-            playerHandler.removeCallbacksAndMessages(null)
-        }
+        playerHandler.removeCallbacksAndMessages(null)
         unregisterReceiver(playerBroadcastReceiver)
         if (this::playerCache.isInitialized) {
             playerCache.release()
