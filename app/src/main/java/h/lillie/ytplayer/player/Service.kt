@@ -44,8 +44,6 @@ import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionCommand
-import androidx.media3.session.SessionResult
-import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import h.lillie.ytplayer.requests.Requests
@@ -65,8 +63,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var playerCache: SimpleCache
     private lateinit var playerDataSource: DataSource.Factory
-    private val backCommand = SessionCommand("back", Bundle.EMPTY)
-    private val forwardCommand = SessionCommand("forward", Bundle.EMPTY)
     private var playerHandler: Handler = Handler(Looper.getMainLooper())
     private var playerSession: MediaLibrarySession? = null
     private var playerTimer: CountDownTimer? = null
@@ -132,20 +128,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
             .build()
 
         exoPlayer.addListener(this)
-
-        val backButton: CommandButton = CommandButton.Builder(CommandButton.ICON_SKIP_BACK_10)
-            .setDisplayName("Seek Back")
-            .setSessionCommand(backCommand)
-            .build()
-
-        val forwardButton: CommandButton = CommandButton.Builder(CommandButton.ICON_SKIP_FORWARD_10)
-            .setDisplayName("Seek Forward")
-            .setSessionCommand(forwardCommand)
-            .build()
-
-        playerSession = MediaLibrarySession.Builder(this, exoPlayer, this)
-            .setCustomLayout(ImmutableList.of(backButton, forwardButton))
-            .build()
+        playerSession = MediaLibrarySession.Builder(this, exoPlayer, this).build()
 
         val intentFilter = IntentFilter()
         intentFilter.addAction("h.lillie.ytplayer.service.info")
@@ -193,8 +176,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
             .setAvailableSessionCommands(
                 MediaSession.ConnectionResult.DEFAULT_SESSION_COMMANDS.buildUpon()
                 .add(SessionCommand.COMMAND_CODE_LIBRARY_GET_LIBRARY_ROOT)
-                .add(backCommand)
-                .add(forwardCommand)
                 .build()
             ).build()
 
@@ -230,16 +211,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
             sendBroadcast(broadcastIntent)
         }
         return super.onSetMediaItems(mediaSession, controller, mediaItems, startIndex, startPositionMs)
-    }
-
-    override fun onCustomCommand(session: MediaSession, controller: MediaSession.ControllerInfo, customCommand: SessionCommand, args: Bundle): ListenableFuture<SessionResult> {
-        if (customCommand.customAction == "back") {
-            playerSession?.player?.seekBack()
-        }
-        if (customCommand.customAction == "forward") {
-            playerSession?.player?.seekForward()
-        }
-        return super.onCustomCommand(session, controller, customCommand, args)
     }
 
     override fun onPlayerError(error: PlaybackException) {
@@ -304,9 +275,20 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 if (info.live && info.hlsUrl != null) {
                     playerMediaItem.setMimeType(MimeTypes.APPLICATION_M3U8)
                     playerMediaItem.setUri(info.hlsUrl.toUri())
+                    playerSession?.setMediaButtonPreferences(emptyList())
                 } else {
                     playerMediaItem.setMimeType(MimeTypes.APPLICATION_MPD)
                     playerMediaItem.setUri(Uri.fromFile(File(info.manifestPath)))
+                    playerSession?.setMediaButtonPreferences(listOf(
+                        CommandButton.Builder(CommandButton.ICON_SKIP_BACK_10)
+                            .setDisplayName("Seek Back")
+                            .setPlayerCommand(Player.COMMAND_SEEK_BACK)
+                            .build(),
+                        CommandButton.Builder(CommandButton.ICON_SKIP_FORWARD_10)
+                            .setDisplayName("Seek Forward")
+                            .setPlayerCommand(Player.COMMAND_SEEK_FORWARD)
+                            .build()
+                    ))
                 }
 
                 val broadcastIntent = Intent("h.lillie.ytplayer.activity.subtitles")
