@@ -46,9 +46,10 @@ class Requests {
 
         val info: StreamInfo = run {
             repeat(5) {
-                val info = StreamInfo.getInfo(service, target)
-
-                if (info.videoOnlyStreams.isNotEmpty() && info.audioStreams.isNotEmpty()) return@run info
+                runCatching {
+                    val info = StreamInfo.getInfo(service, target)
+                    if (!info.videoOnlyStreams.isNullOrEmpty() && !info.audioStreams.isNullOrEmpty()) return@run info
+                }
             }
             null
         } ?: return@withContext null
