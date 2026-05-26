@@ -16,6 +16,7 @@ import org.json.JSONObject
 import org.schabi.newpipe.extractor.Image
 import org.schabi.newpipe.extractor.NewPipe
 import org.schabi.newpipe.extractor.ServiceList
+import org.schabi.newpipe.extractor.StreamingService
 import org.schabi.newpipe.extractor.stream.AudioStream
 import org.schabi.newpipe.extractor.stream.StreamInfo
 import org.schabi.newpipe.extractor.stream.StreamInfoItem
@@ -34,7 +35,7 @@ class Requests {
             NewPipe.init(OkHttpDownloader())
         }
         
-        val service = NewPipe.getService(ServiceList.YouTube.serviceId)
+        val service: StreamingService = NewPipe.getService(ServiceList.YouTube.serviceId)
 
         val target: String = if (searchQuery != null) {
             val search = service.getSearchExtractor(searchQuery)
