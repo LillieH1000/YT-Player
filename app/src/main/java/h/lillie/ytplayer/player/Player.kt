@@ -129,7 +129,7 @@ class Player: ComponentActivity(), Player.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        if (packageManager.hasSystemFeature("org.chromium.arc.device_management")) {
+        if (packageManager.hasSystemFeature("org.chromium.arc.device_management") || Build.BOARD == "windows") {
             chromeOSDevice = true
         }
         if (!chromeOSDevice) {
