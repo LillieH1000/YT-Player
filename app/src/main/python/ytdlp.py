@@ -30,24 +30,64 @@ def getInfo(runtime, videoID, searchQuery):
             z = json.loads(json.dumps(ytdlp.sanitize_info(x)))
             y = z["entries"][0]
 
-        info["id"] = y["id"]
-        info["title"] = y["title"]
-        info["author"] = y["uploader"]
-        info["artwork"] = y["thumbnail"]
-        info["live"] = y["is_live"]
-        info["views"] = y["view_count"]
-        info["likes"] = y["like_count"]
-        info["type"] = y["media_type"]
+        a = ytdlp.urlopen(f"https://www.youtube.com/watch?v={y["id"]}").read().decode("utf-8")
+        b = re.search(r"ytInitialPlayerResponse\s*=\s*({.+?});", a)
+        if b:
+            c = json.loads(b.group(1))
+            d = c["streamingData"]["adaptiveFormats"]
+            e = {str(f["itag"]): f for f in d}
+            for f in y["requested_formats"]:
+                itag = f["format_id"]
+                f["indexRange"] = e[itag]["indexRange"]
+                f["initRange"] = e[itag]["initRange"]
+
+        g = {}
+        g["id"] = y["id"]
+        g["title"] = y["title"]
+        g["author"] = y["uploader"]
+        g["artwork"] = y["thumbnail"]
+        g["live"] = y["is_live"]
+        g["views"] = y["view_count"]
+        g["likes"] = y["like_count"]
+        g["type"] = y["media_type"]
+        g["expiration"] = "100000000000000"
+        info["videoDuration"] = y["duration"]
         if ("requested_formats" in y):
-            info["iosurl"] = y["requested_formats"][0]["manifest_url"]
-            info["safariurl"] = y["requested_formats"][1]["manifest_url"]
-            info["agent"] = y["requested_formats"][0]["http_headers"]["User-Agent"]
-            info["expiration"] = re.search("/expire/(\\d+)/", y["requested_formats"][0]["manifest_url"]).group(1)
+            info["videoUrl"] = y["requested_formats"][0]["url"]
+            info["videoIndexStart"] = y["requested_formats"][0]["indexRange"]["start"]
+            info["videoIndexEnd"] = y["requested_formats"][0]["indexRange"]["end"]
+            info["videoInitStart"] = y["requested_formats"][0]["initRange"]["start"]
+            info["videoInitEnd"] = y["requested_formats"][0]["initRange"]["end"]
+            info["videoCodec"] = y["requested_formats"][0]["vcodec"]
+            info["videoExt"] = y["requested_formats"][0]["ext"]
+            info["videoHeight"] = y["requested_formats"][0]["height"]
+            info["videoWidth"] = y["requested_formats"][0]["width"]
+            info["audioUrl"] = y["requested_formats"][1]["url"]
+            info["audioIndexStart"] = y["requested_formats"][1]["indexRange"]["start"]
+            info["audioIndexEnd"] = y["requested_formats"][1]["indexRange"]["end"]
+            info["audioInitStart"] = y["requested_formats"][1]["initRange"]["start"]
+            info["audioInitEnd"] = y["requested_formats"][1]["initRange"]["end"]
+            info["audioCodec"] = y["requested_formats"][1]["acodec"]
+            info["audioExt"] = y["requested_formats"][1]["ext"]
+            g["hlsUrl"] = None
         else:
-            info["iosurl"] = None
-            info["safariurl"] = y["manifest_url"]
-            info["agent"] = y["http_headers"]["User-Agent"]
-            info["expiration"] = re.search("/expire/(\\d+)/", y["manifest_url"]).group(1)
+            info["videoUrl"] = None
+            info["videoIndexStart"] = None
+            info["videoIndexEnd"] = None
+            info["videoInitStart"] = None
+            info["videoInitEnd"] = None
+            info["videoCodec"] = None
+            info["videoExt"] = None
+            info["videoHeight"] = None
+            info["videoWidth"] = None
+            info["audioUrl"] = None
+            info["audioIndexStart"] = None
+            info["audioIndexEnd"] = None
+            info["audioInitStart"] = None
+            info["audioInitEnd"] = None
+            info["audioCodec"] = None
+            info["audioExt"] = None
+            g["hlsUrl"] = y["url"]
         subtitles = []
         for a in y["subtitles"]:
             c = {}
@@ -58,9 +98,10 @@ def getInfo(runtime, videoID, searchQuery):
                     c["url"] = b["url"]
             if (len(c) != 0):
                 subtitles.append(c)
-        if (len(subtitles) == 0):
-            info["subtitles"] = None
-        else:
-            info["subtitles"] = subtitles
+        # if (len(subtitles) == 0):
+        g["subtitles"] = None
+        # else:
+        # g["subtitles"] = subtitles
+        info["info"] = g
         
     return json.dumps(info)
