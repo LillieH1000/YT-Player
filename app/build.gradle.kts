@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.chaquopy.python)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlin.serialization)
@@ -67,6 +68,15 @@ kotlin {
     compilerOptions {
         languageVersion = KotlinVersion.KOTLIN_2_3
         jvmTarget = JvmTarget.JVM_25
+    }
+}
+
+chaquopy {
+    defaultConfig {
+        version = "3.14"
+        pip {
+            install("yt-dlp")
+        }
     }
 }
 
