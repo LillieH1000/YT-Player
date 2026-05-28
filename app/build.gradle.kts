@@ -52,6 +52,12 @@ android {
         targetCompatibility = JavaVersion.VERSION_25
     }
 
+    packaging {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
+
     buildFeatures {
         compose = true
     }
