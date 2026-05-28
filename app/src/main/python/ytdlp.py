@@ -2,20 +2,22 @@ import json
 import re
 import yt_dlp
 
-def getInfo(videoID, searchQuery):
+def getInfo(runtime, videoID, searchQuery):
     ytdlp_opts = {
-        "extractor_args": {
-            "youtube": {
-                "formats": ["duplicate","missing_pot"],
-                "player_client": ["ios","web_safari"]
+        "cachedir": False,
+        "format": "bestvideo+bestaudio",
+        "js_runtimes": {
+            "deno": {
+                "path": None
+            },
+            "quickjs": {
+                "path": runtime
             }
         },
-        "format": "bestvideo[protocol=m3u8_native]+best[protocol=m3u8_native]/best[protocol=m3u8_native]",
-        "allow_multiple_audio_streams": True,
-        "allow_multiple_video_streams": True,
-        "check_formats": "selected",
         "noplaylist": True,
-        "cachedir": False
+        "remote_components": [
+            "ejs:github"
+        ]
     }
 
     info = {}
