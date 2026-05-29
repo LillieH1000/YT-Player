@@ -42,7 +42,7 @@ def getInfo(runtime, videoID, searchQuery):
             d = c["streamingData"]["adaptiveFormats"]
             e = {str(f["itag"]): f for f in d}
             for f in y["requested_formats"]:
-                itag = f["format_id"]
+                itag = str(f["format_id"]).split("-")[0]
                 f["indexRange"] = e[itag]["indexRange"]
                 f["initRange"] = e[itag]["initRange"]
 
