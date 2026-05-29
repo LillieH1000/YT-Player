@@ -5,7 +5,12 @@ import yt_dlp
 def getInfo(runtime, videoID, searchQuery):
     ytdlp_opts = {
         "cachedir": False,
-        "format": "bestvideo+bestaudio",
+        "check_formats": "selected",
+        "format": "bestvideo[height<=1080]+bestaudio",
+        "format_sort": [
+            "vcodec:vp9",
+            "acodec:opus"
+        ],
         "js_runtimes": {
             "deno": {
                 "path": None
