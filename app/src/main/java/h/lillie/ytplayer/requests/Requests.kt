@@ -29,10 +29,10 @@ class Requests {
 
         if (info.info.hlsUrl != null) return@withContext Info.Return(info.info, "")
 
-        val base: String = buildString {
-            append("""
-                <?xml version="1.0" encoding="UTF-8"?>
-                <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" profiles="urn:mpeg:dash:profile:isoff-on-demand:2011" type="static" mediaPresentationDuration="${info.videoDuration!!.seconds.toIsoString()}" minBufferTime="PT2.0S">
+        val manifest = File(context.filesDir, "manifest.mpd")
+        manifest.writeText("""
+            <?xml version="1.0" encoding="UTF-8"?>
+            <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" profiles="urn:mpeg:dash:profile:isoff-on-demand:2011" type="static" mediaPresentationDuration="${info.videoDuration!!.seconds.toIsoString()}" minBufferTime="PT2.0S">
                 <Period>
                     <AdaptationSet mimeType="video/${info.videoExt}" segmentAlignment="true" startWithSAP="1">
                         <Representation id="video" bandwidth="3000000" width="${info.videoWidth}" height="${info.videoHeight}" codecs="${info.videoCodec}">
@@ -50,18 +50,9 @@ class Requests {
                             </SegmentBase>
                         </Representation>
                     </AdaptationSet>
-            """.trimIndent())
-
-            append("\n")
-
-            append("""
-                    </Period>
-                </MPD>
-            """.trimIndent())
-        }
-
-        val manifest = File(context.filesDir, "manifest.mpd")
-        manifest.writeText(base)
+                </Period>
+            </MPD>
+        """.trimIndent())
 
         return@withContext Info.Return(
             info.info,
