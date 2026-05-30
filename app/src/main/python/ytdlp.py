@@ -42,16 +42,15 @@ def getInfo(runtime, videoID, searchQuery):
                 f["indexRange"] = e[itag]["indexRange"]
                 f["initRange"] = e[itag]["initRange"]
 
-        g = {}
-        g["id"] = y["id"]
-        g["title"] = y["title"]
-        g["author"] = y["uploader"]
-        g["artwork"] = y["thumbnail"]
-        g["live"] = y["is_live"]
-        g["views"] = y["view_count"]
-        g["likes"] = y["like_count"]
-        g["type"] = y["media_type"]
-        g["expiration"] = "100000000000000"
+        info["id"] = y["id"]
+        info["title"] = y["title"]
+        info["author"] = y["uploader"]
+        info["artwork"] = y["thumbnail"]
+        info["live"] = y["is_live"]
+        info["views"] = y["view_count"]
+        info["likes"] = y["like_count"]
+        info["type"] = y["media_type"]
+        info["expiration"] = "100000000000000"
         info["videoDuration"] = y["duration"]
         if ("requested_formats" in y):
             info["videoUrl"] = y["requested_formats"][0]["url"]
@@ -70,7 +69,7 @@ def getInfo(runtime, videoID, searchQuery):
             info["audioInitEnd"] = y["requested_formats"][1]["initRange"]["end"]
             info["audioCodec"] = y["requested_formats"][1]["acodec"]
             info["audioExt"] = y["requested_formats"][1]["ext"]
-            g["hlsUrl"] = None
+            info["hlsUrl"] = None
         else:
             info["videoUrl"] = None
             info["videoIndexStart"] = None
@@ -88,7 +87,7 @@ def getInfo(runtime, videoID, searchQuery):
             info["audioInitEnd"] = None
             info["audioCodec"] = None
             info["audioExt"] = None
-            g["hlsUrl"] = y["url"]
+            info["hlsUrl"] = y["url"]
         subtitles = []
         for a in y["subtitles"]:
             c = {}
@@ -100,9 +99,8 @@ def getInfo(runtime, videoID, searchQuery):
             if (len(c) != 0):
                 subtitles.append(c)
         # if (len(subtitles) == 0):
-        g["subtitles"] = None
+        info["subtitles"] = None
         # else:
-        # g["subtitles"] = subtitles
-        info["info"] = g
+        # info["subtitles"] = subtitles
         
     return json.dumps(info)
