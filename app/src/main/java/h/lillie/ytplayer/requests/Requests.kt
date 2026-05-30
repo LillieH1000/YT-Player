@@ -6,6 +6,8 @@ import android.net.http.HttpEngine
 import android.os.Build
 import android.os.ext.SdkExtensions
 import com.chaquo.python.Python
+import h.lillie.ytplayer.data.Return
+import h.lillie.ytplayer.data.YTdlp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
@@ -20,14 +22,14 @@ import java.net.URL
 import kotlin.time.Duration.Companion.seconds
 
 class Requests {
-    suspend fun extractor(context: Context, videoID: String?, searchQuery: String?): Info.Return? = withContext(Dispatchers.IO) {
+    suspend fun extractor(context: Context, videoID: String?, searchQuery: String?): Return? = withContext(Dispatchers.IO) {
         val py: Python = Python.getInstance()
 
-        val info: Info.YTdlp = runCatching {
-            Json.decodeFromString<Info.YTdlp>(py.getModule("ytdlp").callAttr("getInfo", "${context.applicationInfo.nativeLibraryDir}/libqjs.so", videoID, searchQuery).toString())
+        val info: YTdlp = runCatching {
+            Json.decodeFromString<YTdlp>(py.getModule("ytdlp").callAttr("getInfo", "${context.applicationInfo.nativeLibraryDir}/libqjs.so", videoID, searchQuery).toString())
         }.getOrNull() ?: return@withContext null
 
-        if (info.info.hlsUrl != null) return@withContext null
+        if (info.hlsUrl != null) return@withContext null
 
         val manifest = File(context.filesDir, "manifest.mpd")
         manifest.writeText("""
@@ -54,8 +56,18 @@ class Requests {
             </MPD>
         """.trimIndent())
 
-        return@withContext Info.Return(
-            info.info,
+        return@withContext Return(
+            info.id,
+            info.title,
+            info.author,
+            info.artwork,
+            info.live,
+            info.views,
+            info.likes,
+            info.type,
+            info.hlsUrl,
+            info.expiration,
+            info.subtitles,
             manifest.absolutePath
         )
     }
