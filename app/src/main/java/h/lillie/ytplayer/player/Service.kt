@@ -250,8 +250,8 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
 
                 val playerExtraInfo = Bundle()
                 playerExtraInfo.putString("id", info.id)
+                playerExtraInfo.putString("type", info.type)
                 playerExtraInfo.putBoolean("live", info.live)
-                playerExtraInfo.putBoolean("short", info.short)
                 playerExtraInfo.putString("expiration", info.expiration)
                 playerExtraInfo.putLong("views", info.views)
                 playerExtraInfo.putLong("likes", info.likes)
