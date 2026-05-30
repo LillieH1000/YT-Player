@@ -105,7 +105,7 @@ import androidx.media3.ui.PlayerView
 import androidx.media3.ui.SubtitleView
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
-import h.lillie.ytplayer.requests.Info
+import h.lillie.ytplayer.data.Subtitles
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -120,7 +120,7 @@ class Player: ComponentActivity(), Player.Listener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
     private var playerController = MutableStateFlow<MediaController?>(null)
     private var playerHandler: Handler = Handler(Looper.getMainLooper())
-    private var playerSubtitles: ArrayList<Info.Subtitles>? = null
+    private var playerSubtitles: ArrayList<Subtitles>? = null
     @UnstableApi private var playerSubtitlesView: SubtitleView? = null
     private var playerSubtitlesViewParent: ViewGroup? = null
     private var chromeOSDevice: Boolean = false
@@ -1455,7 +1455,7 @@ class Player: ComponentActivity(), Player.Listener {
                 }
 
                 playerSubtitles = if (Build.VERSION.SDK_INT >= 33) {
-                    intent.extras!!.getParcelableArrayList("subtitles", Info.Subtitles::class.java)
+                    intent.extras!!.getParcelableArrayList("subtitles", Subtitles::class.java)
                 } else {
                     @Suppress("Deprecation")
                     intent.extras!!.getParcelableArrayList("subtitles")
