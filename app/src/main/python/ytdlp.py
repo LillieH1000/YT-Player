@@ -6,11 +6,7 @@ def getInfo(runtime, videoID, searchQuery):
     ytdlp_opts = {
         "cachedir": False,
         "check_formats": "selected",
-        "format": "bestvideo[height<=1080]+bestaudio",
-        "format_sort": [
-            "vcodec:vp9",
-            "acodec:opus"
-        ],
+        "format": "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]",
         "js_runtimes": {
             "deno": {
                 "path": None
