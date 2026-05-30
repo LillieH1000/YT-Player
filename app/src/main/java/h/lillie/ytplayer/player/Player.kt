@@ -706,14 +706,12 @@ class Player: ComponentActivity(), Player.Listener {
                                         .width(50.dp)
                                         .clip(CircleShape)
                                         .noRippleClickable {
-                                            val url = if (playerControllerState?.mediaMetadata?.extras?.getBoolean("live") == true) {
-                                                "https://youtube.com/live/${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
-                                            } else if (playerControllerState?.mediaMetadata?.extras?.getBoolean("short") == true) {
-                                                "https://youtube.com/shorts/${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
-                                            } else {
-                                                "https://youtube.com/watch?v=${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
+                                            val type: String? = playerControllerState?.mediaMetadata?.extras?.getString("type")
+                                            val url: String = when (type) {
+                                                "livestream" -> "https://youtube.com/live/${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
+                                                "short" -> "https://youtube.com/shorts/${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
+                                                else -> "https://youtube.com/watch?v=${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
                                             }
-
                                             if (chromeOSDevice) {
                                                 val clipManager: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                                                 val clipData: ClipData = ClipData.newPlainText("", url)
