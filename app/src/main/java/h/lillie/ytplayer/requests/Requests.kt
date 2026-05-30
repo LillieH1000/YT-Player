@@ -32,18 +32,18 @@ class Requests {
         val manifest = File(context.filesDir, "manifest.mpd")
         manifest.writeText("""
             <?xml version="1.0" encoding="UTF-8"?>
-            <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" profiles="urn:mpeg:dash:profile:isoff-on-demand:2011" type="static" mediaPresentationDuration="${info.videoDuration!!.seconds.toIsoString()}" minBufferTime="PT2.0S">
-                <Period>
-                    <AdaptationSet mimeType="video/${info.videoExt}" segmentAlignment="true" startWithSAP="1">
-                        <Representation id="video" bandwidth="3000000" width="${info.videoWidth}" height="${info.videoHeight}" codecs="${info.videoCodec}">
+            <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" profiles="urn:mpeg:dash:profile:isoff-on-demand:2011" type="static" mediaPresentationDuration="${info.videoDuration!!.seconds.toIsoString()}" minBufferTime="PT2S">
+                <Period id="0" start="PT0S">
+                    <AdaptationSet id="0" contentType="video" mimeType="video/${info.videoExt}" segmentAlignment="true" startWithSAP="1">
+                        <Representation id="0" bandwidth="3000000" width="${info.videoWidth}" height="${info.videoHeight}" codecs="${info.videoCodec}">
                             <BaseURL>${info.videoUrl!!.replace("&", "&amp;")}</BaseURL>
                             <SegmentBase indexRange="${info.videoIndexStart}-${info.videoIndexEnd}">
                                 <Initialization range="${info.videoInitStart}-${info.videoInitEnd}" />
                             </SegmentBase>
                         </Representation>
                     </AdaptationSet>
-                    <AdaptationSet mimeType="audio/${info.audioExt}" segmentAlignment="true" startWithSAP="1">
-                        <Representation id="audio" bandwidth="128000" audioSamplingRate="48000" codecs="${info.audioCodec}">
+                    <AdaptationSet id="1" contentType="audio" mimeType="audio/${info.audioExt}" segmentAlignment="true" startWithSAP="1">
+                        <Representation id="1" bandwidth="128000" audioSamplingRate="48000" codecs="${info.audioCodec}">
                             <BaseURL>${info.audioUrl!!.replace("&", "&amp;")}</BaseURL>
                             <SegmentBase indexRange="${info.audioIndexStart}-${info.audioIndexEnd}">
                                 <Initialization range="${info.audioInitStart}-${info.audioInitEnd}" />
