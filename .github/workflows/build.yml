@@ -2,9 +2,9 @@ name: Gradle Build
 
 on:
   push:
-    branches: [ "v4" ]
+    branches: [ "ytdlp" ]
   pull_request:
-    branches: [ "v4" ]
+    branches: [ "ytdlp" ]
     
 jobs:
   build:

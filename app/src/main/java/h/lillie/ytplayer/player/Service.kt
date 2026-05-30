@@ -243,26 +243,25 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
             if (intent?.action == "h.lillie.ytplayer.service.info") {
                 val request = Requests()
                 val info = request.extractor(this@Service, intent.extras!!.getString("videoID"), intent.extras!!.getString("searchQuery")) ?: return@coroutineScope
-                val dislikes = request.returnYouTubeDislike(this@Service, info.id)
-                sponsorBlock = request.sponsorBlock(this@Service, info.id)
+                val dislikes = request.returnYouTubeDislike(this@Service, info.info.id)
+                sponsorBlock = request.sponsorBlock(this@Service, info.info.id)
                 playerTimer?.cancel()
                 playerTimer = null
 
                 val playerExtraInfo = Bundle()
-                playerExtraInfo.putString("id", info.id)
-                playerExtraInfo.putBoolean("live", info.live)
-                playerExtraInfo.putBoolean("short", info.short)
-                playerExtraInfo.putString("expiration", info.expiration)
-                playerExtraInfo.putLong("views", info.views)
-                playerExtraInfo.putLong("likes", info.likes)
+                playerExtraInfo.putString("id", info.info.id)
+                playerExtraInfo.putBoolean("live", info.info.live)
+                playerExtraInfo.putString("expiration", info.info.expiration)
+                playerExtraInfo.putLong("views", info.info.views)
+                playerExtraInfo.putLong("likes", info.info.likes)
                 if (dislikes != null) {
                     playerExtraInfo.putLong("dislikes", dislikes)
                 }
 
                 val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
-                    .setTitle(info.title)
-                    .setArtist(info.author)
-                    .setArtworkUri(info.artwork.toUri())
+                    .setTitle(info.info.title)
+                    .setArtist(info.info.author)
+                    .setArtworkUri(info.info.artwork.toUri())
                     .setExtras(playerExtraInfo)
                     .setIsBrowsable(false)
                     .setIsPlayable(true)
@@ -272,9 +271,9 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     .setMediaId("root")
                     .setMediaMetadata(playerMediaMetadata)
 
-                if (info.live && info.hlsUrl != null) {
+                if (info.info.live && info.info.hlsUrl != null) {
                     playerMediaItem.setMimeType(MimeTypes.APPLICATION_M3U8)
-                    playerMediaItem.setUri(info.hlsUrl.toUri())
+                    playerMediaItem.setUri(info.info.hlsUrl.toUri())
                     playerSession?.setMediaButtonPreferences(emptyList())
                 } else {
                     playerMediaItem.setMimeType(MimeTypes.APPLICATION_MPD)
@@ -293,7 +292,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
 
                 val broadcastIntent = Intent("h.lillie.ytplayer.activity.subtitles")
                 broadcastIntent.setPackage(this@Service.packageName)
-                broadcastIntent.putParcelableArrayListExtra("subtitles", info.subtitles)
+                broadcastIntent.putParcelableArrayListExtra("subtitles", info.info.subtitles)
                 sendBroadcast(broadcastIntent)
 
                 val defaultDataSource: DefaultDataSource.Factory = DefaultDataSource.Factory(this@Service, playerDataSource)
@@ -305,7 +304,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     .createMediaSource(playerMediaItem.build())
 
                 withContext(Dispatchers.Main) {
-                    if (info.live && info.hlsUrl != null) {
+                    if (info.info.live && info.info.hlsUrl != null) {
                         exoPlayer.setMediaSource(hlsMediaSource)
                     } else {
                         exoPlayer.setMediaSource(dashMediaSource)
