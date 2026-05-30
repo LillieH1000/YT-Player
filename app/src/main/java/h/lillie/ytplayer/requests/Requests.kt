@@ -27,7 +27,7 @@ class Requests {
             Json.decodeFromString<Info.YTdlp>(py.getModule("ytdlp").callAttr("getInfo", "${context.applicationInfo.nativeLibraryDir}/libqjs.so", videoID, searchQuery).toString())
         }.getOrNull() ?: return@withContext null
 
-        if (info.info.hlsUrl != null) return@withContext Info.Return(info.info, "")
+        if (info.info.hlsUrl != null) return@withContext null
 
         val manifest = File(context.filesDir, "manifest.mpd")
         manifest.writeText("""
