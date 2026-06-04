@@ -44,30 +44,51 @@ class Requests {
             null
         )
 
+        val base: String = buildString {
+            append("""
+                <?xml version="1.0" encoding="UTF-8"?>
+                <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" profiles="urn:mpeg:dash:profile:isoff-on-demand:2011" type="static" mediaPresentationDuration="${info.duration!!.seconds.toIsoString()}" minBufferTime="PT2S">
+                    <Period id="0" start="PT0S">
+                        <AdaptationSet id="0" contentType="video" mimeType="video/${info.video!!.ext}" segmentAlignment="true" startWithSAP="1">
+                            <Representation id="0" bandwidth="3000000" width="${info.video.width}" height="${info.video.height}" codecs="${info.video.codec}">
+                                <BaseURL>${info.video.url.replace("&", "&amp;")}</BaseURL>
+                                <SegmentBase indexRange="${info.video.indexRange.start}-${info.video.indexRange.end}">
+                                    <Initialization range="${info.video.initRange.start}-${info.video.initRange.end}" />
+                                </SegmentBase>
+                            </Representation>
+                        </AdaptationSet>
+                        <AdaptationSet id="1" contentType="audio" mimeType="audio/${info.audio!!.ext}" segmentAlignment="true" startWithSAP="1">
+                            <Representation id="1" bandwidth="128000" audioSamplingRate="48000" codecs="${info.audio.codec}">
+                                <BaseURL>${info.audio.url.replace("&", "&amp;")}</BaseURL>
+                                <SegmentBase indexRange="${info.audio.indexRange.start}-${info.audio.indexRange.end}">
+                                    <Initialization range="${info.audio.initRange.start}-${info.audio.initRange.end}" />
+                                </SegmentBase>
+                            </Representation>
+                        </AdaptationSet>
+            """.trimIndent())
+
+            append("\n")
+
+            info.subtitles?.forEach { subtitle ->
+                append("""
+                    <AdaptationSet contentType="text" mimeType="text/vtt" lang="${subtitle.id}">
+                        <Role schemeIdUri="urn:mpeg:dash:role:2011" value="subtitle" />
+                        <Representation id="caption_${subtitle.id}" bandwidth="256">
+                            <BaseURL>${subtitle.url.replace("&", "&amp;")}</BaseURL>
+                        </Representation>
+                    </AdaptationSet>
+                """.trimIndent().prependIndent("\t\t"))
+                append("\n")
+            }
+
+            append("""
+                    </Period>
+                </MPD>
+            """.trimIndent())
+        }
+
         val manifest = File(context.filesDir, "manifest.mpd")
-        manifest.writeText("""
-            <?xml version="1.0" encoding="UTF-8"?>
-            <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" profiles="urn:mpeg:dash:profile:isoff-on-demand:2011" type="static" mediaPresentationDuration="${info.duration!!.seconds.toIsoString()}" minBufferTime="PT2S">
-                <Period id="0" start="PT0S">
-                    <AdaptationSet id="0" contentType="video" mimeType="video/${info.video!!.ext}" segmentAlignment="true" startWithSAP="1">
-                        <Representation id="0" bandwidth="3000000" width="${info.video.width}" height="${info.video.height}" codecs="${info.video.codec}">
-                            <BaseURL>${info.video.url.replace("&", "&amp;")}</BaseURL>
-                            <SegmentBase indexRange="${info.video.indexRange.start}-${info.video.indexRange.end}">
-                                <Initialization range="${info.video.initRange.start}-${info.video.initRange.end}" />
-                            </SegmentBase>
-                        </Representation>
-                    </AdaptationSet>
-                    <AdaptationSet id="1" contentType="audio" mimeType="audio/${info.audio!!.ext}" segmentAlignment="true" startWithSAP="1">
-                        <Representation id="1" bandwidth="128000" audioSamplingRate="48000" codecs="${info.audio.codec}">
-                            <BaseURL>${info.audio.url.replace("&", "&amp;")}</BaseURL>
-                            <SegmentBase indexRange="${info.audio.indexRange.start}-${info.audio.indexRange.end}">
-                                <Initialization range="${info.audio.initRange.start}-${info.audio.initRange.end}" />
-                            </SegmentBase>
-                        </Representation>
-                    </AdaptationSet>
-                </Period>
-            </MPD>
-        """.trimIndent())
+        manifest.writeText(base)
 
         return@withContext Return(
             info.id,
