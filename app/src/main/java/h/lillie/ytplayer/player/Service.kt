@@ -278,7 +278,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     playerSession?.setMediaButtonPreferences(emptyList())
                 } else {
                     playerMediaItem.setMimeType(MimeTypes.APPLICATION_MPD)
-                    playerMediaItem.setUri(Uri.fromFile(File(info.manifestPath)))
+                    playerMediaItem.setUri(Uri.fromFile(File(info.manifestPath!!)))
                     playerSession?.setMediaButtonPreferences(listOf(
                         CommandButton.Builder(CommandButton.ICON_SKIP_BACK_10)
                             .setDisplayName("Seek Back")
