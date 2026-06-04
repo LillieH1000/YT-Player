@@ -15,7 +15,7 @@ data class YTdlp(
     val expiration: String,
     val duration: Long?,
     val hlsUrl: String?,
-    val video: List<Video>?,
-    val audio: List<Audio>?,
+    val video: Video?,
+    val audio: Audio?,
     val subtitles: ArrayList<Subtitles>?
 )
