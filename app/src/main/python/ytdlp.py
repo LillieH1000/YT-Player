@@ -6,7 +6,16 @@ def getInfo(runtime, videoID, searchQuery):
     ytdlp_opts = {
         "cachedir": False,
         "check_formats": "selected",
-        "format": "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]",
+        "extractor_args": {
+            "youtube": {
+                "player_client": [
+                    "default",
+                    "-ios",
+                    "web_safari"
+                ]
+            }
+        },
+        "format": "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080][protocol=m3u8_native]",
         "js_runtimes": {
             "deno": {
                 "path": None
@@ -37,10 +46,11 @@ def getInfo(runtime, videoID, searchQuery):
             c = json.loads(b.group(1))
             d = c["streamingData"]["adaptiveFormats"]
             e = {str(f["itag"]): f for f in d}
-            for f in y["requested_formats"]:
-                itag = str(f["format_id"]).split("-")[0]
-                f["indexRange"] = e[itag]["indexRange"]
-                f["initRange"] = e[itag]["initRange"]
+            if ("requested_formats" in y):
+                for f in y["requested_formats"]:
+                    itag = str(f["format_id"]).split("-")[0]
+                    f["indexRange"] = e[itag]["indexRange"]
+                    f["initRange"] = e[itag]["initRange"]
 
         info["id"] = y["id"]
         info["title"] = y["title"]
@@ -50,44 +60,41 @@ def getInfo(runtime, videoID, searchQuery):
         info["views"] = y["view_count"]
         info["likes"] = y["like_count"]
         info["type"] = y["media_type"]
-        info["expiration"] = "100000000000000"
-        info["videoDuration"] = y["duration"]
+        info["expiration"] = re.search("(?:/expire/|[?]expire=)(\\d+)", y["requested_formats"][0]["url"] if "requested_formats" in y else y["url"]).group(1)
+        info["duration"] = y.get("duration", None)
+        info["hlsUrl"] = y["url"] if not ("requested_formats" in y) else None
+
+        video = {}
+        audio = {}
         if ("requested_formats" in y):
-            info["videoUrl"] = y["requested_formats"][0]["url"]
-            info["videoIndexStart"] = y["requested_formats"][0]["indexRange"]["start"]
-            info["videoIndexEnd"] = y["requested_formats"][0]["indexRange"]["end"]
-            info["videoInitStart"] = y["requested_formats"][0]["initRange"]["start"]
-            info["videoInitEnd"] = y["requested_formats"][0]["initRange"]["end"]
-            info["videoCodec"] = y["requested_formats"][0]["vcodec"]
-            info["videoExt"] = y["requested_formats"][0]["ext"]
-            info["videoHeight"] = y["requested_formats"][0]["height"]
-            info["videoWidth"] = y["requested_formats"][0]["width"]
-            info["audioUrl"] = y["requested_formats"][1]["url"]
-            info["audioIndexStart"] = y["requested_formats"][1]["indexRange"]["start"]
-            info["audioIndexEnd"] = y["requested_formats"][1]["indexRange"]["end"]
-            info["audioInitStart"] = y["requested_formats"][1]["initRange"]["start"]
-            info["audioInitEnd"] = y["requested_formats"][1]["initRange"]["end"]
-            info["audioCodec"] = y["requested_formats"][1]["acodec"]
-            info["audioExt"] = y["requested_formats"][1]["ext"]
-            info["hlsUrl"] = None
-        else:
-            info["videoUrl"] = None
-            info["videoIndexStart"] = None
-            info["videoIndexEnd"] = None
-            info["videoInitStart"] = None
-            info["videoInitEnd"] = None
-            info["videoCodec"] = None
-            info["videoExt"] = None
-            info["videoHeight"] = None
-            info["videoWidth"] = None
-            info["audioUrl"] = None
-            info["audioIndexStart"] = None
-            info["audioIndexEnd"] = None
-            info["audioInitStart"] = None
-            info["audioInitEnd"] = None
-            info["audioCodec"] = None
-            info["audioExt"] = None
-            info["hlsUrl"] = y["url"]
+            video["url"] = y["requested_formats"][0]["url"]
+            video["indexRange"] = {
+                "start": y["requested_formats"][0]["indexRange"]["start"],
+                "end": y["requested_formats"][0]["indexRange"]["end"]
+            }
+            video["initRange"] = {
+                "start": y["requested_formats"][0]["initRange"]["start"],
+                "end": y["requested_formats"][0]["initRange"]["end"]
+            }
+            video["codec"] = y["requested_formats"][0]["vcodec"]
+            video["ext"] = y["requested_formats"][0]["ext"]
+            video["height"] = y["requested_formats"][0]["height"]
+            video["width"] = y["requested_formats"][0]["width"]
+
+            audio["url"] = y["requested_formats"][1]["url"]
+            audio["indexRange"] = {
+                "start": y["requested_formats"][1]["indexRange"]["start"],
+                "end": y["requested_formats"][1]["indexRange"]["end"]
+            }
+            audio["initRange"] = {
+                "start": y["requested_formats"][1]["initRange"]["start"],
+                "end": y["requested_formats"][1]["initRange"]["end"]
+            }
+            audio["codec"] = y["requested_formats"][1]["acodec"]
+            audio["ext"] = y["requested_formats"][1]["ext"]
+        info["video"] = video if (len(video) >= 1) else None
+        info["audio"] = audio if (len(audio) >= 1) else None
+
         subtitles = []
         for a in y["subtitles"]:
             c = {}
@@ -98,9 +105,6 @@ def getInfo(runtime, videoID, searchQuery):
                     c["url"] = b["url"]
             if (len(c) != 0):
                 subtitles.append(c)
-        # if (len(subtitles) == 0):
-        info["subtitles"] = None
-        # else:
-        # info["subtitles"] = subtitles
+        info["subtitles"] = subtitles if (len(subtitles) >= 1) else None
         
     return json.dumps(info)
