@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Parcelize
 data class Subtitles(
+    val id: String,
     val name: String,
-    val tag: String
+    val url: String
 ): Parcelable
