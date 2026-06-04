@@ -15,5 +15,5 @@ data class Return(
     val hlsUrl: String?,
     val expiration: String,
     val subtitles: ArrayList<Subtitles>?,
-    val manifestPath: String
+    val manifestPath: String?
 )
