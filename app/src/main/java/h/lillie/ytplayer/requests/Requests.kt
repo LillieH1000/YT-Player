@@ -47,21 +47,21 @@ class Requests {
         val manifest = File(context.filesDir, "manifest.mpd")
         manifest.writeText("""
             <?xml version="1.0" encoding="UTF-8"?>
-            <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" profiles="urn:mpeg:dash:profile:isoff-on-demand:2011" type="static" mediaPresentationDuration="${info.videoDuration!!.seconds.toIsoString()}" minBufferTime="PT2S">
+            <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" profiles="urn:mpeg:dash:profile:isoff-on-demand:2011" type="static" mediaPresentationDuration="${info.duration!!.seconds.toIsoString()}" minBufferTime="PT2S">
                 <Period id="0" start="PT0S">
-                    <AdaptationSet id="0" contentType="video" mimeType="video/${info.videoExt}" segmentAlignment="true" startWithSAP="1">
-                        <Representation id="0" bandwidth="3000000" width="${info.videoWidth}" height="${info.videoHeight}" codecs="${info.videoCodec}">
-                            <BaseURL>${info.videoUrl!!.replace("&", "&amp;")}</BaseURL>
-                            <SegmentBase indexRange="${info.videoIndexStart}-${info.videoIndexEnd}">
-                                <Initialization range="${info.videoInitStart}-${info.videoInitEnd}" />
+                    <AdaptationSet id="0" contentType="video" mimeType="video/${info.video!!.ext}" segmentAlignment="true" startWithSAP="1">
+                        <Representation id="0" bandwidth="3000000" width="${info.video.width}" height="${info.video.height}" codecs="${info.video.codec}">
+                            <BaseURL>${info.video.url.replace("&", "&amp;")}</BaseURL>
+                            <SegmentBase indexRange="${info.video.indexRange.start}-${info.video.indexRange.end}">
+                                <Initialization range="${info.video.initRange.start}-${info.video.initRange.end}" />
                             </SegmentBase>
                         </Representation>
                     </AdaptationSet>
-                    <AdaptationSet id="1" contentType="audio" mimeType="audio/${info.audioExt}" segmentAlignment="true" startWithSAP="1">
-                        <Representation id="1" bandwidth="128000" audioSamplingRate="48000" codecs="${info.audioCodec}">
-                            <BaseURL>${info.audioUrl!!.replace("&", "&amp;")}</BaseURL>
-                            <SegmentBase indexRange="${info.audioIndexStart}-${info.audioIndexEnd}">
-                                <Initialization range="${info.audioInitStart}-${info.audioInitEnd}" />
+                    <AdaptationSet id="1" contentType="audio" mimeType="audio/${info.audio!!.ext}" segmentAlignment="true" startWithSAP="1">
+                        <Representation id="1" bandwidth="128000" audioSamplingRate="48000" codecs="${info.audio.codec}">
+                            <BaseURL>${info.audio.url.replace("&", "&amp;")}</BaseURL>
+                            <SegmentBase indexRange="${info.audio.indexRange.start}-${info.audio.indexRange.end}">
+                                <Initialization range="${info.audio.initRange.start}-${info.audio.initRange.end}" />
                             </SegmentBase>
                         </Representation>
                     </AdaptationSet>
