@@ -5,11 +5,9 @@ chaquopy = "17.0.0"
 compose = "2026.05.01"
 core = "1.18.0"
 coroutines = "1.11.0"
-desugar = "2.1.5"
 kotlin = "2.3.21"
 lifecycle = "2.10.0"
 media3 = "1.10.1"
-newpipe = "v0.26.2"
 okhttp = "5.3.2"
 serialization = "1.11.0"
 
@@ -38,11 +36,9 @@ androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-desugar_jdk_libs_nio = { group = "com.android.tools", name = "desugar_jdk_libs_nio", version.ref = "desugar" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
-newpipeextractor = { group = "com.github.TeamNewPipe", name = "NewPipeExtractor", version.ref = "newpipe" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 
 [plugins]

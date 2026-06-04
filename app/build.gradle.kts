@@ -19,7 +19,7 @@ android {
         applicationId = "h.lillie.ytplayer"
         minSdk = 30
         targetSdk = 37
-        versionCode = 150
+        versionCode = 151
         versionName = "4.3.0"
         ndk {
             abiFilters += listOf("arm64-v8a", "x86_64")
@@ -48,7 +48,6 @@ android {
     }
 
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_25
         targetCompatibility = JavaVersion.VERSION_25
     }
@@ -105,10 +104,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.ui.tooling.preview)
-    coreLibraryDesugaring(libs.desugar.jdk.libs.nio)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.newpipeextractor)
     implementation(libs.okhttp)
 }
