@@ -19,7 +19,7 @@ android {
         applicationId = "h.lillie.ytplayer"
         minSdk = 30
         targetSdk = 37
-        versionCode = 151
+        versionCode = 152
         versionName = "4.3.0"
         ndk {
             abiFilters += listOf("arm64-v8a", "x86_64")
@@ -65,7 +65,7 @@ android {
 
 kotlin {
     compilerOptions {
-        languageVersion = KotlinVersion.KOTLIN_2_3
+        languageVersion = KotlinVersion.KOTLIN_2_4
         jvmTarget = JvmTarget.JVM_25
     }
 }
