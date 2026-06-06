@@ -124,6 +124,7 @@ class Player: ComponentActivity(), Player.Listener {
     @UnstableApi private var playerSubtitlesView: SubtitleView? = null
     private var playerSubtitlesViewParent: ViewGroup? = null
     private var chromeOSDevice: Boolean = false
+    private var wearOSDevice: Boolean = false
     private var isFirstLaunch: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -132,7 +133,10 @@ class Player: ComponentActivity(), Player.Listener {
         if (packageManager.hasSystemFeature("org.chromium.arc.device_management")) {
             chromeOSDevice = true
         }
-        if (!chromeOSDevice) {
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_WATCH)) {
+            wearOSDevice = true
+        }
+        if (!chromeOSDevice && !wearOSDevice) {
             WindowInsetsControllerCompat(window, window.decorView).systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
         enableEdgeToEdge()
@@ -144,13 +148,13 @@ class Player: ComponentActivity(), Player.Listener {
             @SuppressLint("SwitchIntDef")
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
-                    if (!chromeOSDevice) {
+                    if (!chromeOSDevice && !wearOSDevice) {
                         deviceRotation.value = 0
                         WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                     }
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    if (!chromeOSDevice) {
+                    if (!chromeOSDevice && !wearOSDevice) {
                         deviceRotation.value = 1
                         WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                     }
@@ -201,13 +205,13 @@ class Player: ComponentActivity(), Player.Listener {
         @SuppressLint("SwitchIntDef")
         when (newConfig.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
-                if (!chromeOSDevice) {
+                if (!chromeOSDevice && !wearOSDevice) {
                     deviceRotation.value = 0
                     WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                 }
             }
             Configuration.ORIENTATION_LANDSCAPE -> {
-                if (!chromeOSDevice) {
+                if (!chromeOSDevice && !wearOSDevice) {
                     deviceRotation.value = 1
                     WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                 }
@@ -289,13 +293,13 @@ class Player: ComponentActivity(), Player.Listener {
             @SuppressLint("SwitchIntDef")
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
-                    if (!chromeOSDevice) {
+                    if (!chromeOSDevice && !wearOSDevice) {
                         deviceRotation.value = 0
                         WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                     }
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    if (!chromeOSDevice) {
+                    if (!chromeOSDevice && !wearOSDevice) {
                         deviceRotation.value = 1
                         WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                     }
@@ -603,7 +607,7 @@ class Player: ComponentActivity(), Player.Listener {
                         )
                     }
                     // Fill Button
-                    if (!chromeOSDevice && deviceRotationState == 1 && playerControllerState?.mediaItemCount == 1) {
+                    if (!chromeOSDevice && !wearOSDevice && deviceRotationState == 1 && playerControllerState?.mediaItemCount == 1) {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
@@ -622,7 +626,7 @@ class Player: ComponentActivity(), Player.Listener {
                         }
                     }
                     // Fullscreen Button
-                    if (!autoRotateEnabledState && !chromeOSDevice && playerControllerState?.mediaItemCount == 1) {
+                    if (!autoRotateEnabledState && !chromeOSDevice && !wearOSDevice && playerControllerState?.mediaItemCount == 1) {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
