@@ -40,7 +40,7 @@ def getInfo(runtime, videoID, searchQuery):
             z = json.loads(json.dumps(ytdlp.sanitize_info(x)))
             y = z["entries"][0]
 
-        a = ytdlp.urlopen(f"https://www.youtube.com/watch?v={y["id"]}").read().decode("utf-8")
+        a = ytdlp.urlopen(f"https://www.youtube.com/watch?v={y['id']}").read().decode("utf-8")
         b = re.search(r"ytInitialPlayerResponse\s*=\s*({.+?});", a)
         if b:
             c = json.loads(b.group(1))
