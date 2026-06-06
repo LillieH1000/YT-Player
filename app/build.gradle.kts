@@ -45,6 +45,9 @@ android {
         create("chromeos") {
             dimension = "os"
         }
+        create("wearos") {
+            dimension = "os"
+        }
     }
 
     compileOptions {
@@ -58,6 +61,7 @@ android {
         }
     }
 
+    useLibrary("wear-sdk")
     buildFeatures {
         compose = true
     }
