@@ -289,6 +289,9 @@ class Player: ComponentActivity(), Player.Listener {
                         }
                     }
                 }
+                if (wearOSDevice) {
+                    createPlayer("hrmS9NhYCro")
+                }
             }
             @SuppressLint("SwitchIntDef")
             when (resources.configuration.orientation) {
