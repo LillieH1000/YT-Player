@@ -76,7 +76,7 @@ kotlin {
 
 chaquopy {
     defaultConfig {
-        version = "3.14"
+        version = "3.11"
         pip {
             install("yt-dlp")
         }
