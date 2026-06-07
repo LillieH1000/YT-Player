@@ -16,6 +16,7 @@ def getInfo(runtime, videoID, searchQuery):
             }
         },
         "format": "best[protocol=m3u8_native]",
+        "ignore_no_formats_error": True,
         "js_runtimes": {
             "deno": {
                 "path": None
