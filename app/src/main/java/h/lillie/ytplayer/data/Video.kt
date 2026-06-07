@@ -4,13 +4,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Video(
-    val url: String,
+    val codec: String,
+    val height: Long,
+    val width: Long,
     val indexRange: IndexRange,
     val initRange: InitRange,
-    val codec: String,
-    val ext: String,
-    val height: Long,
-    val width: Long
+    val url: String
 ) {
     @Serializable
     data class IndexRange(

@@ -4,11 +4,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Audio(
-    val url: String,
+    val codec: String,
     val indexRange: IndexRange,
     val initRange: InitRange,
-    val codec: String,
-    val ext: String
+    val url: String
 ) {
     @Serializable
     data class IndexRange(
