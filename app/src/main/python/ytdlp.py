@@ -15,7 +15,7 @@ def getInfo(runtime, videoID, searchQuery):
                 ]
             }
         },
-        "format": "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080][protocol=m3u8_native]",
+        "format": "best[height<=1080][protocol=m3u8_native]",
         "js_runtimes": {
             "deno": {
                 "path": None
@@ -64,35 +64,30 @@ def getInfo(runtime, videoID, searchQuery):
         info["duration"] = y.get("duration", None)
         info["hlsUrl"] = y["url"] if not ("requested_formats" in y) else None
 
-        video = {}
-        audio = {}
-        if ("requested_formats" in y):
-            video["url"] = y["requested_formats"][0]["url"]
-            video["indexRange"] = {
-                "start": y["requested_formats"][0]["indexRange"]["start"],
-                "end": y["requested_formats"][0]["indexRange"]["end"]
-            }
-            video["initRange"] = {
-                "start": y["requested_formats"][0]["initRange"]["start"],
-                "end": y["requested_formats"][0]["initRange"]["end"]
-            }
-            video["codec"] = y["requested_formats"][0]["vcodec"]
-            video["ext"] = y["requested_formats"][0]["ext"]
-            video["height"] = y["requested_formats"][0]["height"]
-            video["width"] = y["requested_formats"][0]["width"]
-
-            audio["url"] = y["requested_formats"][1]["url"]
-            audio["indexRange"] = {
-                "start": y["requested_formats"][1]["indexRange"]["start"],
-                "end": y["requested_formats"][1]["indexRange"]["end"]
-            }
-            audio["initRange"] = {
-                "start": y["requested_formats"][1]["initRange"]["start"],
-                "end": y["requested_formats"][1]["initRange"]["end"]
-            }
-            audio["codec"] = y["requested_formats"][1]["acodec"]
-            audio["ext"] = y["requested_formats"][1]["ext"]
+        video = []
+        for g in y["formats"]:
+            h = {}
+            if (g["protocol"] == "https" and g["indexRange"] != None and g["ext"] == "mp4"):
+                h["codec"] = g["vcodec"]
+                h["height"] = g["height"]
+                h["width"] = g["width"]
+                h["indexRange"] = g["indexRange"]
+                h["initRange"] = g["initRange"]
+                h["url"] = g["url"]
+            if (len(h) != 0):
+                video.append(h)
         info["video"] = video if (len(video) >= 1) else None
+
+        audio = []
+        for g in y["formats"]:
+            h = {}
+            if (g["protocol"] == "https" and g["indexRange"] != None and g["ext"] == "m4a"):
+                h["codec"] = g["acodec"]
+                h["indexRange"] = g["indexRange"]
+                h["initRange"] = g["initRange"]
+                h["url"] = g["url"]
+            if (len(h) != 0):
+                audio.append(h)
         info["audio"] = audio if (len(audio) >= 1) else None
 
         subtitles = []
