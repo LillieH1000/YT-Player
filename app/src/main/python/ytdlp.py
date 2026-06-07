@@ -61,7 +61,8 @@ def getInfo(runtime, videoID, searchQuery):
         info["views"] = y["view_count"]
         info["likes"] = y["like_count"]
         info["type"] = y["media_type"]
-        info["expiration"] = re.search("(?:/expire/|[?]expire=)(\\d+)", y["requested_formats"][0]["url"] if "requested_formats" in y else y["url"]).group(1)
+        # info["expiration"] = re.search("(?:/expire/|[?]expire=)(\\d+)", y["requested_formats"][0]["url"] if "requested_formats" in y else y["url"]).group(1)
+        info["expiration"] = "10000000000"
         info["duration"] = y.get("duration", None)
         info["hlsUrl"] = y["url"] if not ("requested_formats" in y) else None
 
