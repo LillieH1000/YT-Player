@@ -48,26 +48,41 @@ class Requests {
             append("""
                 <?xml version="1.0" encoding="UTF-8"?>
                 <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" profiles="urn:mpeg:dash:profile:isoff-on-demand:2011" type="static" mediaPresentationDuration="${info.duration!!.seconds.toIsoString()}" minBufferTime="PT2S">
-                    <Period id="0" start="PT0S">
-                        <AdaptationSet id="0" contentType="video" mimeType="video/${info.video!!.ext}" segmentAlignment="true" startWithSAP="1">
-                            <Representation id="0" bandwidth="3000000" width="${info.video.width}" height="${info.video.height}" codecs="${info.video.codec}">
-                                <BaseURL>${info.video.url.replace("&", "&amp;")}</BaseURL>
-                                <SegmentBase indexRange="${info.video.indexRange.start}-${info.video.indexRange.end}">
-                                    <Initialization range="${info.video.initRange.start}-${info.video.initRange.end}" />
-                                </SegmentBase>
-                            </Representation>
-                        </AdaptationSet>
-                        <AdaptationSet id="1" contentType="audio" mimeType="audio/${info.audio!!.ext}" segmentAlignment="true" startWithSAP="1">
-                            <Representation id="1" bandwidth="128000" audioSamplingRate="48000" codecs="${info.audio.codec}">
-                                <BaseURL>${info.audio.url.replace("&", "&amp;")}</BaseURL>
-                                <SegmentBase indexRange="${info.audio.indexRange.start}-${info.audio.indexRange.end}">
-                                    <Initialization range="${info.audio.initRange.start}-${info.audio.initRange.end}" />
-                                </SegmentBase>
-                            </Representation>
-                        </AdaptationSet>
+                    <Period start="PT0S">
             """.trimIndent())
 
             append("\n")
+            var count: Long = 0
+
+            info.video?.forEach { video ->
+                append("""
+                    <AdaptationSet id="$count" contentType="video" mimeType="video/mp4" segmentAlignment="true" startWithSAP="1">
+                        <Representation id="$count" bandwidth="3000000" width="${video.width}" height="${video.height}" codecs="${video.codec}">
+                            <BaseURL>${video.url.replace("&", "&amp;")}</BaseURL>
+                            <SegmentBase indexRange="${video.indexRange.start}-${video.indexRange.end}">
+                                <Initialization range="${video.initRange.start}-${video.initRange.end}" />
+                            </SegmentBase>
+                        </Representation>
+                    </AdaptationSet>
+                """.trimIndent().prependIndent("\t\t"))
+                append("\n")
+                count++
+            }
+
+            info.audio?.forEach { audio ->
+                append("""
+                    <AdaptationSet id="$count" contentType="audio" mimeType="audio/m4a" segmentAlignment="true" startWithSAP="1">
+                        <Representation id="$count" bandwidth="128000" audioSamplingRate="48000" codecs="${audio.codec}">
+                            <BaseURL>${audio.url.replace("&", "&amp;")}</BaseURL>
+                            <SegmentBase indexRange="${audio.indexRange.start}-${audio.indexRange.end}">
+                                <Initialization range="${audio.initRange.start}-${audio.initRange.end}" />
+                            </SegmentBase>
+                        </Representation>
+                    </AdaptationSet>
+                """.trimIndent().prependIndent("\t\t"))
+                append("\n")
+                count++
+            }
 
             info.subtitles?.forEach { subtitle ->
                 append("""
