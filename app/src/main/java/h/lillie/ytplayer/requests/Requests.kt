@@ -39,7 +39,7 @@ class Requests {
             info.likes,
             info.type,
             info.hlsUrl,
-            info.expiration,
+            info.expiration ?: "100000000",
             info.subtitles,
             null
         )
@@ -115,7 +115,7 @@ class Requests {
             info.likes,
             info.type,
             info.hlsUrl,
-            info.expiration,
+            info.expiration ?: "100000000",
             info.subtitles,
             manifest.absolutePath
         )
