@@ -25,10 +25,7 @@ def getInfo(runtime, videoID, searchQuery):
                 "path": runtime
             }
         },
-        "noplaylist": True,
-        "remote_components": [
-            "ejs:github"
-        ]
+        "noplaylist": True
     }
 
     info = {}
