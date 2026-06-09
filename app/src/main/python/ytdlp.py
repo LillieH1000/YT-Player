@@ -64,7 +64,7 @@ def getInfo(runtime, videoID, searchQuery):
         # info["expiration"] = re.search("(?:/expire/|[?]expire=)(\\d+)", y["requested_formats"][0]["url"] if "requested_formats" in y else y["url"]).group(1)
         info["expiration"] = "10000000000"
         info["duration"] = y.get("duration", None)
-        info["hlsUrl"] = y.get("url", None)
+        info["hlsUrl"] = y.get("manifest_url", None)
 
         video = []
         for g in y["formats"]:
