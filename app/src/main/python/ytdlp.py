@@ -59,9 +59,7 @@ def getInfo(runtime, videoID, searchQuery):
         info["likes"] = y["like_count"]
         info["type"] = y["media_type"]
         info["duration"] = y.get("duration", None)
-        info["hlsUrl"] = y.get("manifest_url", None)
-        info["expiration"] = re.search("(?:/expire/|[?]expire=)(\\d+)", y["manifest_url"]).group(1) if "manifest_url" in y else None
-
+        
         video = []
         for g in y["formats"]:
             h = {}
@@ -87,6 +85,12 @@ def getInfo(runtime, videoID, searchQuery):
             if (len(h) != 0):
                 audio.append(h)
         info["audio"] = audio if (len(audio) >= 1) else None
+
+        hls = {}
+        if ("manifest_url" in y):
+            hls["expiration"] = re.search("(?:/expire/|[?]expire=)(\\d+)", y["manifest_url"]).group(1)
+            hls["url"] = y["manifest_url"]
+        info["hls"] = hls if (len(hls) >= 1) else None
 
         subtitles = []
         for a in y["subtitles"]:
