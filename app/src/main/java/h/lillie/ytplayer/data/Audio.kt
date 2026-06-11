@@ -7,7 +7,6 @@ data class Audio(
     val codec: String,
     val indexRange: IndexRange,
     val initRange: InitRange,
-    val availableAt: Long,
     val url: String
 ) {
     @Serializable

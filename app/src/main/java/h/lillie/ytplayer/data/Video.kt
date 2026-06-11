@@ -9,7 +9,6 @@ data class Video(
     val width: Long,
     val indexRange: IndexRange,
     val initRange: InitRange,
-    val availableAt: Long,
     val url: String
 ) {
     @Serializable
