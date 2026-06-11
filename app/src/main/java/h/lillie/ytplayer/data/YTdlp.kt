@@ -13,9 +13,8 @@ data class YTdlp(
     val likes: Long,
     val type: String,
     val duration: Long?,
-    val hlsUrl: String?,
-    val expiration: String?,
     val video: ArrayList<Video>?,
     val audio: ArrayList<Audio>?,
+    val hls: Hls?,
     val subtitles: ArrayList<Subtitles>?
 )
