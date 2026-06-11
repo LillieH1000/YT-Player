@@ -218,7 +218,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         @SuppressLint("SwitchIntDef")
         when ((error as ExoPlaybackException).type) {
             ExoPlaybackException.TYPE_SOURCE -> {
-                if (exoPlayer.mediaMetadata.extras?.getBoolean("live") == true && exoPlayer.mediaMetadata.extras?.getString("expiration")!!.toLong() < System.currentTimeMillis()) {
+                if (exoPlayer.mediaMetadata.extras?.getBoolean("live") == true && exoPlayer.mediaMetadata.extras?.getString("expiration") != null && exoPlayer.mediaMetadata.extras?.getString("expiration")!!.toLong() < System.currentTimeMillis()) {
                     val broadcastIntent = Intent("h.lillie.ytplayer.service.info")
                     broadcastIntent.setPackage(this.packageName)
                     broadcastIntent.putExtra("videoID", exoPlayer.mediaMetadata.extras?.getString("id"))
