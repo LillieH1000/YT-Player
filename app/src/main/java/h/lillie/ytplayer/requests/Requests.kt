@@ -29,7 +29,7 @@ class Requests {
             Json.decodeFromString<YTdlp>(py.getModule("ytdlp").callAttr("getInfo", "${context.applicationInfo.nativeLibraryDir}/libqjs.so", videoID, searchQuery).toString())
         }.getOrNull() ?: return@withContext null
 
-        if (info.live && info.hlsUrl != null) return@withContext Return(
+        if (info.live && info.hls != null) return@withContext Return(
             info.id,
             info.title,
             info.author,
@@ -38,8 +38,8 @@ class Requests {
             info.views,
             info.likes,
             info.type,
-            info.hlsUrl,
-            info.expiration ?: "100000000",
+            info.hls.url,
+            info.hls.expiration,
             info.subtitles,
             null
         )
@@ -114,8 +114,8 @@ class Requests {
             info.views,
             info.likes,
             info.type,
-            info.hlsUrl,
-            info.expiration ?: "100000000",
+            null,
+            null,
             info.subtitles,
             manifest.absolutePath
         )
