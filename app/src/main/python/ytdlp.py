@@ -88,7 +88,7 @@ def getInfo(runtime, videoID, searchQuery):
 
         hls = {}
         if ("manifest_url" in y):
-            hls["expiration"] = re.search("(?:/expire/|[?]expire=)(\\d+)", y["manifest_url"]).group(1)
+            hls["expiration"] = int(re.search("(?:/expire/|[?]expire=)(\\d+)", y["manifest_url"]).group(1))
             hls["url"] = y["manifest_url"]
         info["hls"] = hls if (len(hls) >= 1) else None
 
