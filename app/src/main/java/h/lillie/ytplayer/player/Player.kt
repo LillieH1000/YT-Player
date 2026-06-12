@@ -59,6 +59,7 @@ import androidx.compose.material.icons.filled.Fullscreen
 import androidx.compose.material.icons.filled.FullscreenExit
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material.icons.outlined.Settings
@@ -608,6 +609,24 @@ class Player: ComponentActivity(), Player.Listener {
                                 playerController.value?.seekTo(newValue.toLong())
                             }
                         )
+                    }
+                    if (!chromeOSDevice && !wearOSDevice && playerControllerState?.mediaItemCount == 1 && playerControllerState?.mediaMetadata?.extras?.getBoolean("live") == true) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .width(50.dp)
+                                .align(Alignment.CenterVertically)
+                                .clip(CircleShape)
+                                .noRippleClickable {
+                                    playerController.value?.seekToDefaultPosition()
+                                }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Refresh,
+                                tint = Color.White,
+                                contentDescription = ""
+                            )
+                        }
                     }
                     // Fill Button
                     if (!chromeOSDevice && !wearOSDevice && deviceRotationState == 1 && playerControllerState?.mediaItemCount == 1) {
