@@ -125,7 +125,6 @@ class Player: ComponentActivity(), Player.Listener {
     @UnstableApi private var playerSubtitlesView: SubtitleView? = null
     private var playerSubtitlesViewParent: ViewGroup? = null
     private var chromeOSDevice: Boolean = false
-    private var wearOSDevice: Boolean = false
     private var isFirstLaunch: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -134,10 +133,7 @@ class Player: ComponentActivity(), Player.Listener {
         if (packageManager.hasSystemFeature("org.chromium.arc.device_management")) {
             chromeOSDevice = true
         }
-        if (packageManager.hasSystemFeature(PackageManager.FEATURE_WATCH)) {
-            wearOSDevice = true
-        }
-        if (!chromeOSDevice && !wearOSDevice) {
+        if (!chromeOSDevice) {
             WindowInsetsControllerCompat(window, window.decorView).systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
         enableEdgeToEdge()
@@ -149,13 +145,13 @@ class Player: ComponentActivity(), Player.Listener {
             @SuppressLint("SwitchIntDef")
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
-                    if (!chromeOSDevice && !wearOSDevice) {
+                    if (!chromeOSDevice) {
                         deviceRotation.value = 0
                         WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                     }
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    if (!chromeOSDevice && !wearOSDevice) {
+                    if (!chromeOSDevice) {
                         deviceRotation.value = 1
                         WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                     }
@@ -206,13 +202,13 @@ class Player: ComponentActivity(), Player.Listener {
         @SuppressLint("SwitchIntDef")
         when (newConfig.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
-                if (!chromeOSDevice && !wearOSDevice) {
+                if (!chromeOSDevice) {
                     deviceRotation.value = 0
                     WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                 }
             }
             Configuration.ORIENTATION_LANDSCAPE -> {
-                if (!chromeOSDevice && !wearOSDevice) {
+                if (!chromeOSDevice) {
                     deviceRotation.value = 1
                     WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                 }
@@ -290,20 +286,17 @@ class Player: ComponentActivity(), Player.Listener {
                         }
                     }
                 }
-                if (wearOSDevice) {
-                    createPlayer("hrmS9NhYCro")
-                }
             }
             @SuppressLint("SwitchIntDef")
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
-                    if (!chromeOSDevice && !wearOSDevice) {
+                    if (!chromeOSDevice) {
                         deviceRotation.value = 0
                         WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                     }
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    if (!chromeOSDevice && !wearOSDevice) {
+                    if (!chromeOSDevice) {
                         deviceRotation.value = 1
                         WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                     }
@@ -610,7 +603,7 @@ class Player: ComponentActivity(), Player.Listener {
                             }
                         )
                     }
-                    if (!chromeOSDevice && !wearOSDevice && playerControllerState?.mediaItemCount == 1 && playerControllerState?.mediaMetadata?.extras?.getBoolean("live") == true) {
+                    if (!chromeOSDevice && playerControllerState?.mediaItemCount == 1 && playerControllerState?.mediaMetadata?.extras?.getBoolean("live") == true) {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
@@ -629,7 +622,7 @@ class Player: ComponentActivity(), Player.Listener {
                         }
                     }
                     // Fill Button
-                    if (!chromeOSDevice && !wearOSDevice && deviceRotationState == 1 && playerControllerState?.mediaItemCount == 1) {
+                    if (!chromeOSDevice && deviceRotationState == 1 && playerControllerState?.mediaItemCount == 1) {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
@@ -648,7 +641,7 @@ class Player: ComponentActivity(), Player.Listener {
                         }
                     }
                     // Fullscreen Button
-                    if (!autoRotateEnabledState && !chromeOSDevice && !wearOSDevice && playerControllerState?.mediaItemCount == 1) {
+                    if (!autoRotateEnabledState && !chromeOSDevice && playerControllerState?.mediaItemCount == 1) {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier

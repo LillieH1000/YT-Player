@@ -19,10 +19,10 @@ android {
         applicationId = "h.lillie.ytplayer"
         minSdk = 30
         targetSdk = 37
-        versionCode = 161
+        versionCode = 162
         versionName = "4.4.0-dev"
         ndk {
-            abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64", "x86")
+            abiFilters += listOf("arm64-v8a", "x86_64")
         }
     }
 
@@ -45,9 +45,6 @@ android {
         create("chromeos") {
             dimension = "os"
         }
-        create("wearos") {
-            dimension = "os"
-        }
     }
 
     compileOptions {
@@ -61,7 +58,6 @@ android {
         }
     }
 
-    useLibrary("wear-sdk")
     buildFeatures {
         compose = true
     }
@@ -76,7 +72,7 @@ kotlin {
 
 chaquopy {
     defaultConfig {
-        version = "3.11"
+        version = "3.14"
         pip {
             install("yt-dlp")
             install("yt-dlp-ejs")
