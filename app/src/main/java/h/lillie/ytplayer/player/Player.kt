@@ -604,6 +604,7 @@ class Player: ComponentActivity(), Player.Listener {
                         )
                     }
                     if (!chromeOSDevice && playerControllerState?.mediaItemCount == 1 && playerControllerState?.mediaMetadata?.extras?.getBoolean("live") == true) {
+                    // Reset To Live Button
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
