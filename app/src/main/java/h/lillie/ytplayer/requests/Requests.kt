@@ -114,7 +114,7 @@ class Requests {
             info.views,
             info.likes,
             info.type,
-            null,
+            info.hls?.url,
             null,
             info.subtitles,
             manifest.absolutePath
