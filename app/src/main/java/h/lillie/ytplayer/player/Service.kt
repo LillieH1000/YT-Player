@@ -219,13 +219,27 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         @SuppressLint("SwitchIntDef")
         when ((error as ExoPlaybackException).type) {
             ExoPlaybackException.TYPE_SOURCE -> {
-                if (exoPlayer.mediaMetadata.extras?.getBoolean("live") == false && exoPlayer.currentPosition == 0L) {
-                    val broadcastIntent = Intent("h.lillie.ytplayer.service.info")
-                    broadcastIntent.setPackage(this.packageName)
-                    broadcastIntent.putExtra("videoID", exoPlayer.mediaMetadata.extras?.getString("id"))
-                    broadcastIntent.putExtra("searchQuery", null as String?)
-                    broadcastIntent.putExtra("playAsHls", true)
-                    sendBroadcast(broadcastIntent)
+                if (exoPlayer.mediaMetadata.extras?.getBoolean("live") == false && exoPlayer.mediaMetadata.extras?.getString("hlsUrl") != null && exoPlayer.currentPosition == 0L) {
+                    val playerMediaItem: MediaItem = MediaItem.Builder()
+                        .setMediaId("root")
+                        .setMediaMetadata(exoPlayer.mediaMetadata)
+                        .setMimeType(MimeTypes.APPLICATION_M3U8)
+                        .setUri(exoPlayer.mediaMetadata.extras?.getString("hlsUrl")!!.toUri())
+                        .build()
+
+                    val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(playerDataSource)
+                        .setAllowChunklessPreparation(false)
+                        .createMediaSource(playerMediaItem)
+
+                    exoPlayer.setMediaSource(hlsMediaSource)
+                    exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
+                    exoPlayer.playbackParameters = PlaybackParameters(1.0f)
+                    exoPlayer.trackSelectionParameters = exoPlayer.trackSelectionParameters.buildUpon()
+                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                        .build()
+                    exoPlayer.playWhenReady = false
+                    exoPlayer.prepare()
+
                 }
                 if (exoPlayer.mediaMetadata.extras?.getBoolean("live") == true && exoPlayer.mediaMetadata.extras?.getLong("expiration")!! <= TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())) {
                     val broadcastIntent = Intent("h.lillie.ytplayer.service.info")
@@ -287,19 +301,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     playerMediaItem.setMimeType(MimeTypes.APPLICATION_M3U8)
                     playerMediaItem.setUri(info.hlsUrl.toUri())
                     playerSession?.setMediaButtonPreferences(emptyList())
-                } else if (!info.live && info.hlsUrl != null && intent.extras?.getBoolean("playAsHls") == true) {
-                    playerMediaItem.setMimeType(MimeTypes.APPLICATION_M3U8)
-                    playerMediaItem.setUri(info.hlsUrl.toUri())
-                    playerSession?.setMediaButtonPreferences(listOf(
-                        CommandButton.Builder(CommandButton.ICON_SKIP_BACK_10)
-                            .setDisplayName("Seek Back")
-                            .setPlayerCommand(Player.COMMAND_SEEK_BACK)
-                            .build(),
-                        CommandButton.Builder(CommandButton.ICON_SKIP_FORWARD_10)
-                            .setDisplayName("Seek Forward")
-                            .setPlayerCommand(Player.COMMAND_SEEK_FORWARD)
-                            .build()
-                    ))
                 } else {
                     playerMediaItem.setMimeType(MimeTypes.APPLICATION_MPD)
                     playerMediaItem.setUri(Uri.fromFile(File(info.manifestPath!!)))
@@ -329,7 +330,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     .createMediaSource(playerMediaItem.build())
 
                 withContext(Dispatchers.Main) {
-                    if ((info.live && info.hlsUrl != null) || (!info.live && info.hlsUrl != null && intent.extras?.getBoolean("playAsHls") == true)) {
+                    if (info.live && info.hlsUrl != null) {
                         exoPlayer.setMediaSource(hlsMediaSource)
                     } else {
                         exoPlayer.setMediaSource(dashMediaSource)
