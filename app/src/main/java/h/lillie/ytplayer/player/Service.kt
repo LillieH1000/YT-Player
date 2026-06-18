@@ -277,6 +277,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 playerExtraInfo.putBoolean("live", info.live)
                 playerExtraInfo.putLong("views", info.views)
                 playerExtraInfo.putLong("likes", info.likes)
+                playerExtraInfo.putString("hlsUrl", info.hlsUrl)
                 if (info.expiration != null) {
                     playerExtraInfo.putLong("expiration", info.expiration)
                 }
