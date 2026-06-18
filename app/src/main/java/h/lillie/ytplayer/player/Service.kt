@@ -202,6 +202,14 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         return Futures.immediateFuture(LibraryResult.ofItem(playerMediaItem, params))
     }
 
+    override fun onPlaybackStateChanged(playbackState: Int) {
+        super.onPlaybackStateChanged(playbackState)
+        @SuppressLint("SwitchIntDef")
+        when (playbackState) {
+            Player.STATE_READY -> exoPlayer.play()
+        }
+    }
+
     override fun onSetMediaItems(mediaSession: MediaSession, controller: MediaSession.ControllerInfo, mediaItems: MutableList<MediaItem>, startIndex: Int, startPositionMs: Long): ListenableFuture<MediaSession.MediaItemsWithStartPosition> {
         val searchQuery: String? = mediaItems[0].requestMetadata.searchQuery
         if (searchQuery != null) {
