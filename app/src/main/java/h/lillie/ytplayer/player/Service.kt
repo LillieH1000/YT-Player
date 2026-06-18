@@ -339,7 +339,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     exoPlayer.trackSelectionParameters = exoPlayer.trackSelectionParameters.buildUpon()
                         .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
                         .build()
-                    exoPlayer.playWhenReady = true
+                    exoPlayer.playWhenReady = false
                     exoPlayer.prepare()
 
                     return@withContext
