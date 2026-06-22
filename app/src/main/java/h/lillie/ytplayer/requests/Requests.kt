@@ -69,18 +69,6 @@ class Requests {
                 count++
             }
 
-            info.subtitles?.forEach { subtitle ->
-                append("""
-                    <AdaptationSet contentType="text" mimeType="text/vtt" lang="${subtitle.id}">
-                        <Role schemeIdUri="urn:mpeg:dash:role:2011" value="subtitle" />
-                        <Representation id="caption_${subtitle.id}" bandwidth="256">
-                            <BaseURL>${subtitle.url.replace("&", "&amp;")}</BaseURL>
-                        </Representation>
-                    </AdaptationSet>
-                """.trimIndent().prependIndent("\t\t"))
-                append("\n")
-            }
-
             append("""
                     </Period>
                 </MPD>
