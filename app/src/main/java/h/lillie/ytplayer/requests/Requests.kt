@@ -32,7 +32,7 @@ class Requests {
         val base: String = buildString {
             append("""
                 <?xml version="1.0" encoding="UTF-8"?>
-                <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" profiles="urn:mpeg:dash:profile:isoff-on-demand:2011" type="static" mediaPresentationDuration="${info.duration!!.seconds.toIsoString()}" minBufferTime="PT2S">
+                <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" profiles="urn:mpeg:dash:profile:isoff-on-demand:2011" type="static" mediaPresentationDuration="${(info.duration ?: 0).seconds.toIsoString()}" minBufferTime="PT2S">
                     <Period start="PT0S">
             """.trimIndent())
 
