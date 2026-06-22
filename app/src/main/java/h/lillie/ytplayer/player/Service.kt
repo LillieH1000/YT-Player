@@ -36,8 +36,9 @@ import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlaybackException
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.dash.DashMediaSource
 import androidx.media3.exoplayer.hls.HlsMediaSource
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.session.CommandButton
 import androidx.media3.session.LibraryResult
@@ -230,8 +231,9 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 if (exoPlayer.mediaMetadata.extras?.getBoolean("live") == false && exoPlayer.mediaMetadata.extras?.getString("hlsUrl") != null && exoPlayer.currentPosition == 0L) {
                     val playerMediaItem: MediaItem = MediaItem.Builder()
                         .setMediaId("root")
-                        .setMediaMetadata(exoPlayer.mediaMetadata)
+                        .setMediaMetadata(exoPlayer.currentMediaItem!!.mediaMetadata)
                         .setMimeType(MimeTypes.APPLICATION_M3U8)
+                        .setSubtitleConfigurations(exoPlayer.currentMediaItem!!.localConfiguration!!.subtitleConfigurations)
                         .setUri(exoPlayer.mediaMetadata.extras?.getString("hlsUrl")!!.toUri())
                         .build()
 
@@ -325,13 +327,25 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     ))
                 }
 
+                val subtitles = mutableListOf<MediaItem.SubtitleConfiguration>()
+                info.subtitles?.forEach { subtitle ->
+                    val playerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(subtitle.url.toUri())
+                        .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
+                        .setMimeType(MimeTypes.TEXT_VTT)
+                        .setLanguage(subtitle.id)
+                        .build()
+
+                    subtitles.add(playerCaptions)
+                }
+                if (subtitles.isNotEmpty()) playerMediaItem.setSubtitleConfigurations(subtitles)
+
                 val broadcastIntent = Intent("h.lillie.ytplayer.activity.subtitles")
                 broadcastIntent.setPackage(this@Service.packageName)
                 broadcastIntent.putParcelableArrayListExtra("subtitles", info.subtitles)
                 sendBroadcast(broadcastIntent)
 
                 val defaultDataSource: DefaultDataSource.Factory = DefaultDataSource.Factory(this@Service, playerDataSource)
-                val dashMediaSource: DashMediaSource = DashMediaSource.Factory(defaultDataSource)
+                val dashMediaSource: MediaSource = DefaultMediaSourceFactory(defaultDataSource)
                     .createMediaSource(playerMediaItem.build())
 
                 val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(playerDataSource)
