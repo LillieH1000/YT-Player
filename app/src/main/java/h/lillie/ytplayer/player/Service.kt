@@ -242,11 +242,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                         .createMediaSource(playerMediaItem)
 
                     exoPlayer.setMediaSource(hlsMediaSource)
-                    exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
-                    exoPlayer.playbackParameters = PlaybackParameters(1.0f)
-                    exoPlayer.trackSelectionParameters = exoPlayer.trackSelectionParameters.buildUpon()
-                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
-                        .build()
                     exoPlayer.playWhenReady = false
                     exoPlayer.prepare()
 
