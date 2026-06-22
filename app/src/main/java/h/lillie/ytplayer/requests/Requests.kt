@@ -29,21 +29,6 @@ class Requests {
             Json.decodeFromString<YTdlp>(py.getModule("ytdlp").callAttr("getInfo", "${context.applicationInfo.nativeLibraryDir}/libqjs.so", videoID, searchQuery).toString())
         }.getOrNull() ?: return@withContext null
 
-        if (info.live && info.hls != null) return@withContext Return(
-            info.id,
-            info.title,
-            info.author,
-            info.artwork,
-            true,
-            info.views,
-            info.likes,
-            info.type,
-            info.hls.url,
-            info.hls.expiration,
-            info.subtitles,
-            null
-        )
-
         val base: String = buildString {
             append("""
                 <?xml version="1.0" encoding="UTF-8"?>
