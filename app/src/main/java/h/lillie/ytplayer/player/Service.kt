@@ -51,6 +51,7 @@ import h.lillie.ytplayer.requests.Requests
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asExecutor
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -59,6 +60,7 @@ import org.json.JSONArray
 import java.io.File
 import java.text.DecimalFormat
 import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(UnstableApi::class)
 class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Callback, Player.Listener {
@@ -346,6 +348,10 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(playerDataSource)
                     .setAllowChunklessPreparation(false)
                     .createMediaSource(playerMediaItem.build())
+
+                while (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) < info.availability) {
+                    delay(1000L.milliseconds)
+                }
 
                 withContext(Dispatchers.Main) {
                     if (info.live && info.hlsUrl != null) {

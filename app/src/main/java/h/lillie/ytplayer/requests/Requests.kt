@@ -89,6 +89,7 @@ class Requests {
             info.type,
             info.hls?.url,
             info.hls?.expiration,
+            info.availability,
             info.subtitles,
             manifest.absolutePath
         )
