@@ -60,6 +60,8 @@ def getInfo(runtime, videoID, searchQuery):
         info["type"] = y["media_type"]
         info["duration"] = y.get("duration", None)
         
+        availability = 0
+        
         video = []
         for g in y["formats"]:
             h = {}
@@ -70,6 +72,8 @@ def getInfo(runtime, videoID, searchQuery):
                 h["indexRange"] = g["indexRange"]
                 h["initRange"] = g["initRange"]
                 h["url"] = g["url"]
+                if (g["available_at"] > availability):
+                    availability = g["available_at"]
             if (len(h) != 0):
                 video.append(h)
         info["video"] = video if (len(video) >= 1) else None
@@ -82,6 +86,8 @@ def getInfo(runtime, videoID, searchQuery):
                 h["indexRange"] = g["indexRange"]
                 h["initRange"] = g["initRange"]
                 h["url"] = g["url"]
+                if (g["available_at"] > availability):
+                    availability = g["available_at"]
             if (len(h) != 0):
                 audio.append(h)
         info["audio"] = audio if (len(audio) >= 1) else None
@@ -90,7 +96,11 @@ def getInfo(runtime, videoID, searchQuery):
         if ("manifest_url" in y):
             hls["expiration"] = int(re.search("(?:/expire/|[?]expire=)(\\d+)", y["manifest_url"]).group(1))
             hls["url"] = y["manifest_url"]
+            if ("available_at" in y and y["available_at"] > availability):
+                availability = y["available_at"]
         info["hls"] = hls if (len(hls) >= 1) else None
+
+        info["availability"] = availability
 
         subtitles = []
         for a in y["subtitles"]:
