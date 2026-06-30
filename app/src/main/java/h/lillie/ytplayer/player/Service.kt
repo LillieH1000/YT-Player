@@ -82,11 +82,11 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         val renderersFactory: DefaultRenderersFactory = DefaultRenderersFactory(this)
             .forceEnableMediaCodecAsynchronousQueueing()
 
-        val trackSelector: DefaultTrackSelector = DefaultTrackSelector(this).apply {
-            setParameters(buildUponParameters()
-                .setForceHighestSupportedBitrate(true)
-            )
-        }
+        val trackSelector = DefaultTrackSelector(this)
+        trackSelector.setParameters(trackSelector.buildUponParameters()
+            .setForceHighestSupportedBitrate(true)
+            .build()
+        )
 
         val networkDataSource: DataSource.Factory = if (SdkExtensions.getExtensionVersion(Build.VERSION_CODES.S) >= 7) {
             val httpEngine: HttpEngine = HttpEngine.Builder(this)
