@@ -7,8 +7,6 @@ import com.chaquo.python.android.AndroidPlatform
 class Application: Application() {
     override fun onCreate() {
         super.onCreate()
-        if (!Python.isStarted()) {
-            Python.start(AndroidPlatform(this))
-        }
+        if (!Python.isStarted()) Python.start(AndroidPlatform(this))
     }
 }

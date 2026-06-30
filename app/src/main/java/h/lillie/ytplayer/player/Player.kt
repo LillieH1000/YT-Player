@@ -130,12 +130,9 @@ class Player: ComponentActivity(), Player.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        if (packageManager.hasSystemFeature("org.chromium.arc.device_management")) {
-            chromeOSDevice = true
-        }
-        if (!chromeOSDevice) {
-            WindowInsetsControllerCompat(window, window.decorView).systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        }
+        if (packageManager.hasSystemFeature("org.chromium.arc.device_management")) chromeOSDevice = true
+        if (!chromeOSDevice) WindowInsetsControllerCompat(window, window.decorView).systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+
         enableEdgeToEdge()
         setContent {
             CreatePlayerUI()
@@ -174,9 +171,7 @@ class Player: ComponentActivity(), Player.Listener {
                     isFirstLaunch = true
                     val youtubeRegex = Regex("^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/|live/)|(?:(?:watch)?\\?vi?=|&vi?=))([^#&?]*).*")
                     val info = intent.getStringExtra(Intent.EXTRA_TEXT)!!
-                    if (youtubeRegex.containsMatchIn(info)) {
-                        createPlayer(youtubeRegex.findAll(info).joinToString { it.groupValues[1] })
-                    }
+                    if (youtubeRegex.containsMatchIn(info)) createPlayer(youtubeRegex.findAll(info).joinToString { it.groupValues[1] })
                 }
             }
         }
@@ -189,9 +184,7 @@ class Player: ComponentActivity(), Player.Listener {
                 if (intent.type == "text/plain") {
                     val youtubeRegex = Regex("^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/|live/)|(?:(?:watch)?\\?vi?=|&vi?=))([^#&?]*).*")
                     val info = intent.getStringExtra(Intent.EXTRA_TEXT)!!
-                    if (youtubeRegex.containsMatchIn(info)) {
-                        createPlayer(youtubeRegex.findAll(info).joinToString { it.groupValues[1] })
-                    }
+                    if (youtubeRegex.containsMatchIn(info)) createPlayer(youtubeRegex.findAll(info).joinToString { it.groupValues[1] })
                 }
             }
         }
@@ -228,16 +221,12 @@ class Player: ComponentActivity(), Player.Listener {
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        if (Build.VERSION.SDK_INT == 30 && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
-            enterPictureInPictureMode(PictureInPictureParams.Builder().build())
-        }
+        if (Build.VERSION.SDK_INT == 30 && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) enterPictureInPictureMode(PictureInPictureParams.Builder().build())
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (this::playerControllerFuture.isInitialized) {
-            MediaController.releaseFuture(playerControllerFuture)
-        }
+        if (this::playerControllerFuture.isInitialized) MediaController.releaseFuture(playerControllerFuture)
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         unregisterReceiver(playerBroadcastReceiver)
     }

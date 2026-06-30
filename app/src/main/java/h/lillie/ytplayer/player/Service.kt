@@ -100,9 +100,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
             OkHttpDataSource.Factory(okhttpClient)
         }
 
-        if (this@Service::playerCache.isInitialized) {
-            playerCache.release()
-        }
+        if (this@Service::playerCache.isInitialized) playerCache.release()
         playerCache = SimpleCache(File(cacheDir, "media"), LeastRecentlyUsedCacheEvictor(256 * 1024 * 1024), StandaloneDatabaseProvider(this@Service))
 
         val cacheDataSource: CacheDataSource.Factory = CacheDataSource.Factory()
@@ -156,12 +154,8 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         sponsorBlock = null
         playerHandler.removeCallbacksAndMessages(null)
         unregisterReceiver(playerBroadcastReceiver)
-        if (this::playerCache.isInitialized) {
-            playerCache.release()
-        }
-        if (this::exoPlayer.isInitialized) {
-            exoPlayer.release()
-        }
+        if (this::playerCache.isInitialized) playerCache.release()
+        if (this::exoPlayer.isInitialized) exoPlayer.release()
         playerSession?.release()
         playerSession = null
         super.onDestroy()
@@ -188,9 +182,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
 
     override fun onGetLibraryRoot(session: MediaLibrarySession, browser: MediaSession.ControllerInfo, params: LibraryParams?): ListenableFuture<LibraryResult<MediaItem>> {
         val currentMediaItem: MediaItem? = exoPlayer.currentMediaItem
-        if (currentMediaItem != null) {
-            return Futures.immediateFuture(LibraryResult.ofItem(currentMediaItem, params))
-        }
+        if (currentMediaItem != null) return Futures.immediateFuture(LibraryResult.ofItem(currentMediaItem, params))
 
         val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
             .setIsBrowsable(false)
@@ -285,12 +277,8 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 playerExtraInfo.putLong("views", info.views)
                 playerExtraInfo.putLong("likes", info.likes)
                 playerExtraInfo.putString("hlsUrl", info.hlsUrl)
-                if (info.expiration != null) {
-                    playerExtraInfo.putLong("expiration", info.expiration)
-                }
-                if (dislikes != null) {
-                    playerExtraInfo.putLong("dislikes", dislikes)
-                }
+                if (info.expiration != null) playerExtraInfo.putLong("expiration", info.expiration)
+                if (dislikes != null) playerExtraInfo.putLong("dislikes", dislikes)
 
                 val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
                     .setTitle(info.title)
