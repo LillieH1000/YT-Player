@@ -39,6 +39,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.source.MediaSource
+import androidx.media3.exoplayer.trackselection.AdaptiveTrackSelection
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.session.CommandButton
 import androidx.media3.session.LibraryResult
@@ -82,7 +83,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         val renderersFactory: DefaultRenderersFactory = DefaultRenderersFactory(this)
             .forceEnableMediaCodecAsynchronousQueueing()
 
-        val trackSelector = DefaultTrackSelector(this)
+        val trackSelector = DefaultTrackSelector(this, AdaptiveTrackSelection.Factory())
         trackSelector.setParameters(trackSelector.buildUponParameters()
             .setForceHighestSupportedBitrate(true)
             .build()
