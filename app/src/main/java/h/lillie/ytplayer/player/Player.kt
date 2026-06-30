@@ -321,7 +321,7 @@ class Player: ComponentActivity(), Player.Listener {
         })
     }
 
-    private var autoRotateEnabled = MutableStateFlow(true)
+    private var autoRotateEnabled = MutableStateFlow(false)
     private var deviceRotation = MutableStateFlow(0)
     private var isPlaying = MutableStateFlow(0)
     private var loopChecked = MutableStateFlow(false)
