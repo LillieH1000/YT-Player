@@ -206,6 +206,11 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         }
     }
 
+    override fun onRepeatModeChanged(repeatMode: Int) {
+        super.onRepeatModeChanged(repeatMode)
+        playerMediaButtons(repeatMode)
+    }
+
     override fun onSetMediaItems(mediaSession: MediaSession, controller: MediaSession.ControllerInfo, mediaItems: MutableList<MediaItem>, startIndex: Int, startPositionMs: Long): ListenableFuture<MediaSession.MediaItemsWithStartPosition> {
         val searchQuery: String? = mediaItems[0].requestMetadata.searchQuery
         if (searchQuery != null) {
@@ -261,6 +266,38 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         }
     }
 
+    private fun playerMediaButtons(repeatMode: Int) {
+        if (exoPlayer.mediaMetadata.extras?.getBoolean("live") == true) {
+            playerSession?.setMediaButtonPreferences(emptyList())
+            return
+        }
+
+        val mediaButtons: MutableList<CommandButton> = mutableListOf(
+            CommandButton.Builder(CommandButton.ICON_SKIP_BACK_10)
+                .setDisplayName("Seek Back")
+                .setPlayerCommand(Player.COMMAND_SEEK_BACK)
+                .build(),
+            CommandButton.Builder(CommandButton.ICON_SKIP_FORWARD_10)
+                .setDisplayName("Seek Forward")
+                .setPlayerCommand(Player.COMMAND_SEEK_FORWARD)
+                .build()
+        )
+
+        if (repeatMode == Player.REPEAT_MODE_OFF) {
+            mediaButtons.add(CommandButton.Builder(CommandButton.ICON_REPEAT_ALL)
+                .setDisplayName("Loop Off")
+                .setPlayerCommand(Player.COMMAND_SET_REPEAT_MODE, Player.REPEAT_MODE_ONE)
+                .build())
+        } else {
+            mediaButtons.add(CommandButton.Builder(CommandButton.ICON_REPEAT_ONE)
+                .setDisplayName("Loop On")
+                .setPlayerCommand(Player.COMMAND_SET_REPEAT_MODE, Player.REPEAT_MODE_OFF)
+                .build())
+        }
+
+        playerSession?.setMediaButtonPreferences(mediaButtons)
+    }
+
     private val playerBroadcastReceiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) = coroutineScope {
             if (intent?.action == "h.lillie.ytplayer.service.info") {
@@ -297,20 +334,9 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 if (info.live && info.hlsUrl != null) {
                     playerMediaItem.setMimeType(MimeTypes.APPLICATION_M3U8)
                     playerMediaItem.setUri(info.hlsUrl.toUri())
-                    playerSession?.setMediaButtonPreferences(emptyList())
                 } else {
                     playerMediaItem.setMimeType(MimeTypes.APPLICATION_MPD)
                     playerMediaItem.setUri(Uri.fromFile(File(info.manifestPath!!)))
-                    playerSession?.setMediaButtonPreferences(listOf(
-                        CommandButton.Builder(CommandButton.ICON_SKIP_BACK_10)
-                            .setDisplayName("Seek Back")
-                            .setPlayerCommand(Player.COMMAND_SEEK_BACK)
-                            .build(),
-                        CommandButton.Builder(CommandButton.ICON_SKIP_FORWARD_10)
-                            .setDisplayName("Seek Forward")
-                            .setPlayerCommand(Player.COMMAND_SEEK_FORWARD)
-                            .build()
-                    ))
                 }
 
                 val subtitles = mutableListOf<MediaItem.SubtitleConfiguration>()
@@ -348,6 +374,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     } else {
                         exoPlayer.setMediaSource(dashMediaSource)
                     }
+                    playerMediaButtons(exoPlayer.repeatMode)
                     exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
                     exoPlayer.playbackParameters = PlaybackParameters(1.0f)
                     exoPlayer.trackSelectionParameters = exoPlayer.trackSelectionParameters.buildUpon()
