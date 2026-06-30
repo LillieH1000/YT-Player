@@ -166,16 +166,16 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         val connectionResult: MediaSession.ConnectionResult = MediaSession.ConnectionResult.AcceptedResultBuilder(session)
             .setAvailablePlayerCommands(
                 MediaSession.ConnectionResult.DEFAULT_PLAYER_COMMANDS.buildUpon()
-                .remove(Player.COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
-                .remove(Player.COMMAND_SEEK_TO_PREVIOUS)
-                .remove(Player.COMMAND_SEEK_TO_NEXT_MEDIA_ITEM)
-                .remove(Player.COMMAND_SEEK_TO_NEXT)
-                .build()
+                    .remove(Player.COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
+                    .remove(Player.COMMAND_SEEK_TO_PREVIOUS)
+                    .remove(Player.COMMAND_SEEK_TO_NEXT_MEDIA_ITEM)
+                    .remove(Player.COMMAND_SEEK_TO_NEXT)
+                    .build()
             )
             .setAvailableSessionCommands(
                 MediaSession.ConnectionResult.DEFAULT_SESSION_COMMANDS.buildUpon()
-                .add(SessionCommand.COMMAND_CODE_LIBRARY_GET_LIBRARY_ROOT)
-                .build()
+                    .add(SessionCommand.COMMAND_CODE_LIBRARY_GET_LIBRARY_ROOT)
+                    .build()
             ).build()
 
         return connectionResult
