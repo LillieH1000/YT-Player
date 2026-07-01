@@ -43,7 +43,7 @@ def getInfo(runtime, videoID, searchQuery):
         if b:
             c = json.loads(b.group(1))
             d = c["streamingData"]["adaptiveFormats"]
-            e = {str(f["itag"]): f for f in d}
+            e = { str(f["itag"]): f for f in d }
             if ("formats" in y):
                 for f in y["formats"]:
                     itag = str(f["format_id"]).split("-")[0]
