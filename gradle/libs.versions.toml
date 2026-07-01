@@ -2,7 +2,7 @@
 activity = "1.13.0"
 android = "9.2.1"
 chaquopy = "17.0.0"
-compose = "2026.06.00"
+compose = "2026.06.01"
 core = "1.19.0"
 coroutines = "1.11.0"
 kotlin = "2.4.0"
@@ -16,7 +16,6 @@ androidx-activity-compose = { group = "androidx.activity", name = "activity-comp
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core" }
 androidx-foundation = { group = "androidx.compose.foundation", name = "foundation" }
-androidx-lifecycle-common = { group = "androidx.lifecycle", name = "lifecycle-common", version.ref = "lifecycle" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 androidx-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
 androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
