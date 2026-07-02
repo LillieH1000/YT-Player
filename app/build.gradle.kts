@@ -12,14 +12,16 @@ plugins {
 android {
     namespace = "h.lillie.ytplayer"
     compileSdk {
-        version = release(37)
+        version = release(37) {
+            minorApiLevel = 1
+        }
     }
 
     defaultConfig {
         applicationId = "h.lillie.ytplayer"
         minSdk = 30
         targetSdk = 37
-        versionCode = 169
+        versionCode = 172
         versionName = "4.4.3"
         ndk {
             abiFilters += listOf("arm64-v8a", "x86_64")
