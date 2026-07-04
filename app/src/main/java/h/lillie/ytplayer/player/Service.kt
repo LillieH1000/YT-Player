@@ -228,23 +228,26 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         @SuppressLint("SwitchIntDef")
         when ((error as ExoPlaybackException).type) {
             ExoPlaybackException.TYPE_SOURCE -> {
-                if (exoPlayer.mediaMetadata.extras?.getBoolean("live") == false && exoPlayer.mediaMetadata.extras?.getString("hlsUrl") != null && exoPlayer.currentPosition == 0L) {
-                    val playerMediaItem: MediaItem = MediaItem.Builder()
-                        .setMediaId("root")
-                        .setMediaMetadata(exoPlayer.currentMediaItem!!.mediaMetadata)
-                        .setMimeType(MimeTypes.APPLICATION_M3U8)
-                        .setSubtitleConfigurations(exoPlayer.currentMediaItem!!.localConfiguration!!.subtitleConfigurations)
-                        .setUri(exoPlayer.mediaMetadata.extras?.getString("hlsUrl")!!.toUri())
-                        .build()
+                if (exoPlayer.mediaMetadata.extras?.getBoolean("live") == false && exoPlayer.currentPosition == 0L) {
+                    if (exoPlayer.mediaMetadata.extras?.getString("hlsUrl") != null) {
+                        val playerMediaItem: MediaItem = MediaItem.Builder()
+                            .setMediaId("root")
+                            .setMediaMetadata(exoPlayer.currentMediaItem!!.mediaMetadata)
+                            .setMimeType(MimeTypes.APPLICATION_M3U8)
+                            .setSubtitleConfigurations(exoPlayer.currentMediaItem!!.localConfiguration!!.subtitleConfigurations)
+                            .setUri(exoPlayer.mediaMetadata.extras?.getString("hlsUrl")!!.toUri())
+                            .build()
 
-                    val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(playerDataSource)
-                        .setAllowChunklessPreparation(false)
-                        .createMediaSource(playerMediaItem)
+                        val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(playerDataSource)
+                            .setAllowChunklessPreparation(false)
+                            .createMediaSource(playerMediaItem)
 
-                    exoPlayer.setMediaSource(hlsMediaSource)
-                    exoPlayer.playWhenReady = false
-                    exoPlayer.prepare()
-
+                        exoPlayer.setMediaSource(hlsMediaSource)
+                        exoPlayer.playWhenReady = false
+                        exoPlayer.prepare()
+                    } else {
+                        Toast.makeText(this@Service, "Source playback error", Toast.LENGTH_SHORT).show()
+                    }
                 }
                 if (exoPlayer.mediaMetadata.extras?.getBoolean("live") == true && exoPlayer.mediaMetadata.extras?.getLong("expiration")!! <= TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())) {
                     val broadcastIntent = Intent("h.lillie.ytplayer.service.info")
