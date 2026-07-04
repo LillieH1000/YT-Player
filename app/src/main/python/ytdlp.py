@@ -65,7 +65,7 @@ def getInfo(runtime, videoID, searchQuery):
         video = []
         for g in y["formats"]:
             h = {}
-            if (g["protocol"] == "https" and g["indexRange"] != None and g["ext"] == "mp4"):
+            if (g["protocol"] == "https" and g["indexRange"] != None and g["container"] == "mp4_dash" and g["ext"] == "mp4"):
                 h["codec"] = g["vcodec"]
                 h["height"] = g["height"]
                 h["width"] = g["width"]
@@ -81,7 +81,7 @@ def getInfo(runtime, videoID, searchQuery):
         audio = []
         for g in y["formats"]:
             h = {}
-            if (g["protocol"] == "https" and g["indexRange"] != None and g["ext"] == "m4a"):
+            if (g["protocol"] == "https" and g["indexRange"] != None and g["container"] == "m4a_dash" and g["ext"] == "m4a"):
                 h["codec"] = g["acodec"]
                 h["indexRange"] = g["indexRange"]
                 h["initRange"] = g["initRange"]
