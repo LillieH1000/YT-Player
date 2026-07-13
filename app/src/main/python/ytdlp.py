@@ -11,6 +11,7 @@ def getInfo(runtime, videoID, searchQuery):
                 "player_client": [
                     "default",
                     "-ios",
+                    "visionos",
                     "web_safari"
                 ]
             }
