@@ -78,6 +78,7 @@ chaquopy {
         pip {
             install("yt-dlp")
             install("yt-dlp-ejs")
+            options("--pre")
         }
     }
 }
