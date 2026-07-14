@@ -79,10 +79,15 @@ def getInfo(runtime, videoID, searchQuery):
                 video.append(h)
         info["video"] = video if (len(video) >= 1) else None
 
+        original = False
+        for g in y["formats"]:
+            if "original" in g["format"]:
+                original = True
+
         audio = []
         for g in y["formats"]:
             h = {}
-            if (g["protocol"] == "https" and g["indexRange"] != None and g["container"] == "m4a_dash" and g["ext"] == "m4a"):
+            if (g["protocol"] == "https" and (not original or "original" in g["format"]) and g["indexRange"] != None and g["container"] == "m4a_dash" and g["ext"] == "m4a"):
                 h["codec"] = g["acodec"]
                 h["indexRange"] = g["indexRange"]
                 h["initRange"] = g["initRange"]
