@@ -10,9 +10,8 @@ def getInfo(runtime, videoID, searchQuery):
             "youtube": {
                 "player_client": [
                     "default",
-                    "-ios",
-                    "visionos",
-                    "web_safari"
+                    "tv_downgraded",
+                    "visionos"
                 ]
             }
         },
