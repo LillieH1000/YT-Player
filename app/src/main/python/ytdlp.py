@@ -61,9 +61,12 @@ def getInfo(runtime, videoID, searchQuery):
         info["duration"] = y.get("duration", None)
         
         availability = 0
+        original = False
         
         video = []
         for g in y["formats"]:
+            if "original" in g["format"]:
+                original = True
             h = {}
             if (g["protocol"] == "https" and g["indexRange"] != None and g["container"] == "mp4_dash" and g["ext"] == "mp4"):
                 h["codec"] = g["vcodec"]
@@ -77,11 +80,6 @@ def getInfo(runtime, videoID, searchQuery):
             if (len(h) != 0):
                 video.append(h)
         info["video"] = video if (len(video) >= 1) else None
-
-        original = False
-        for g in y["formats"]:
-            if "original" in g["format"]:
-                original = True
 
         audio = []
         for g in y["formats"]:
