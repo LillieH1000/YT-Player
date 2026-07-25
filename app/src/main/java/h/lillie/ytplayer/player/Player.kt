@@ -82,8 +82,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.focus.focusProperties
-import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.style.TextOverflow
@@ -358,9 +356,7 @@ class Player: ComponentActivity(), Player.Listener {
             modifier = Modifier
                 .background(Color.Black)
                 .systemBarsPadding()
-                .fillMaxSize()
-                .focusTarget()
-                .focusProperties { canFocus = false },
+                .fillMaxSize(),
             factory = { context ->
                 PlayerView(context).apply {
                     this.useController = false
@@ -392,9 +388,7 @@ class Player: ComponentActivity(), Player.Listener {
         AndroidView(
             modifier = Modifier
                 .systemBarsPadding()
-                .fillMaxSize()
-                .focusTarget()
-                .focusProperties { canFocus = false },
+                .fillMaxSize(),
             factory = { context ->
                 FrameLayout(context)
             },
@@ -415,8 +409,6 @@ class Player: ComponentActivity(), Player.Listener {
             modifier = Modifier
                 .systemBarsPadding()
                 .fillMaxSize()
-                .focusTarget()
-                .focusProperties { canFocus = false }
         ) {
             Box(
                 modifier = Modifier
@@ -488,8 +480,6 @@ class Player: ComponentActivity(), Player.Listener {
                         .systemBarsPadding()
                         .displayCutoutPadding()
                         .fillMaxSize()
-                        .focusTarget()
-                        .focusProperties { canFocus = false }
                 } else {
                     Modifier
                         .background(
@@ -498,8 +488,6 @@ class Player: ComponentActivity(), Player.Listener {
                         )
                         .systemBarsPadding()
                         .fillMaxSize()
-                        .focusTarget()
-                        .focusProperties { canFocus = false }
                 }
             ) {
                 // Play/Pause/Restart Button
@@ -791,15 +779,11 @@ class Player: ComponentActivity(), Player.Listener {
                         .displayCutoutPadding()
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
                         .wrapContentHeight()
-                        .focusTarget()
-                        .focusProperties { canFocus = false }
                 } else {
                     Modifier
                         .systemBarsPadding()
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
                         .wrapContentHeight()
-                        .focusTarget()
-                        .focusProperties { canFocus = false }
                 }
             ) {
                 Box(
@@ -1057,15 +1041,11 @@ class Player: ComponentActivity(), Player.Listener {
                         .displayCutoutPadding()
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
                         .wrapContentHeight()
-                        .focusTarget()
-                        .focusProperties { canFocus = false }
                 } else {
                     Modifier
                         .systemBarsPadding()
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
                         .wrapContentHeight()
-                        .focusTarget()
-                        .focusProperties { canFocus = false }
                 }
             ) {
                 Box(
@@ -1141,15 +1121,11 @@ class Player: ComponentActivity(), Player.Listener {
                         .displayCutoutPadding()
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
                         .wrapContentHeight()
-                        .focusTarget()
-                        .focusProperties { canFocus = false }
                 } else {
                     Modifier
                         .systemBarsPadding()
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
                         .wrapContentHeight()
-                        .focusTarget()
-                        .focusProperties { canFocus = false }
                 }
             ) {
                 Box(
@@ -1255,15 +1231,11 @@ class Player: ComponentActivity(), Player.Listener {
                         .displayCutoutPadding()
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
                         .wrapContentHeight()
-                        .focusTarget()
-                        .focusProperties { canFocus = false }
                 } else {
                     Modifier
                         .systemBarsPadding()
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
                         .wrapContentHeight()
-                        .focusTarget()
-                        .focusProperties { canFocus = false }
                 }
             ) {
                 Box(
@@ -1374,16 +1346,12 @@ class Player: ComponentActivity(), Player.Listener {
                             .padding(bottom = 20.dp)
                             .wrapContentHeight()
                             .fillMaxWidth()
-                            .focusTarget()
-                            .focusProperties { canFocus = false }
                     } else {
                         Modifier
                             .systemBarsPadding()
                             .padding(bottom = 20.dp)
                             .wrapContentHeight()
                             .fillMaxWidth()
-                            .focusTarget()
-                            .focusProperties { canFocus = false }
                     }
                 ) {
                 }
