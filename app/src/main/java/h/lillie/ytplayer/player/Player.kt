@@ -1091,82 +1091,51 @@ class Player: ComponentActivity(), Player.Listener {
             }
         }
 
-        // Subtitles View
+        // Subtitles Sheet
 
         if (showSubtitlesState) {
-            Row(
-                modifier = if (deviceRotationState == 1) {
-                    Modifier
-                        .systemBarsPadding()
-                        .displayCutoutPadding()
-                        .padding(start = 10.dp, end = 10.dp, top = 50.dp)
-                        .wrapContentHeight()
-                } else {
-                    Modifier
-                        .systemBarsPadding()
-                        .padding(start = 10.dp, end = 10.dp, top = 50.dp)
-                        .wrapContentHeight()
+            @OptIn(ExperimentalMaterial3Api::class)
+            ModalBottomSheet(
+                containerColor = Color.DarkGray,
+                modifier = Modifier.statusBarsPadding(),
+                dragHandle = {
+                    BottomSheetDefaults.DragHandle(color = Color.LightGray)
+                },
+                onDismissRequest = {
+                    showDebug.value = false
                 }
             ) {
                 Box(
-                    modifier = Modifier.weight(1f)
-                )
-                LazyColumn(
-                    modifier = Modifier
-                        .wrapContentHeight()
-                        .heightIn(0.dp, 150.dp)
-                        .width(150.dp)
-                        .background(Color.DarkGray)
-                        .clickable(
-                            enabled = true,
-                            interactionSource = null,
-                            indication = null,
-                            onClick = {})
+                    modifier = if (deviceRotationState == 1) {
+                        Modifier
+                            .systemBarsPadding()
+                            .displayCutoutPadding()
+                            .padding(bottom = 20.dp)
+                            .wrapContentHeight()
+                            .fillMaxWidth()
+                    } else {
+                        Modifier
+                            .systemBarsPadding()
+                            .padding(bottom = 20.dp)
+                            .wrapContentHeight()
+                            .fillMaxWidth()
+                    }
                 ) {
-                    items(playerSubtitles!!.size + 1) { index ->
-                        Row(
-                            modifier = Modifier
-                                .height(30.dp)
-                                .padding(start = 10.dp)
-                        ) {
-                            Column(
+                    LazyColumn(
+                        modifier = Modifier
+                            .wrapContentHeight()
+                            .fillMaxWidth()
+                            .clickable(
+                                enabled = true,
+                                interactionSource = null,
+                                indication = null,
+                                onClick = {})
+                    ) {
+                        items(playerSubtitles!!.size + 1) { index ->
+                            Row(
                                 modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .weight(1f)
-                            ) {
-                                Text(
-                                    text = when (index) {
-                                        0 -> "Off"
-                                        else -> playerSubtitles!![index - 1].name
-                                    },
-                                    color = Color.White,
-                                    overflow = TextOverflow.Ellipsis,
-                                    maxLines = 1
-                                )
-                            }
-                            Column(
-                                modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .scale(0.6f)
-                                    .width(30.dp)
-                            ) {
-                                Checkbox(
-                                    colors = CheckboxColors(
-                                        checkedCheckmarkColor = Color.White,
-                                        uncheckedCheckmarkColor = Color.Transparent,
-                                        checkedBoxColor = Color.Transparent,
-                                        uncheckedBoxColor = Color.Transparent,
-                                        disabledCheckedBoxColor = CheckboxDefaults.colors().disabledCheckedBoxColor,
-                                        disabledUncheckedBoxColor = CheckboxDefaults.colors().disabledUncheckedBoxColor,
-                                        disabledIndeterminateBoxColor = CheckboxDefaults.colors().disabledIndeterminateBoxColor,
-                                        checkedBorderColor = Color.White,
-                                        uncheckedBorderColor = Color.White,
-                                        disabledBorderColor = CheckboxDefaults.colors().disabledBorderColor,
-                                        disabledUncheckedBorderColor = CheckboxDefaults.colors().disabledUncheckedBorderColor,
-                                        disabledIndeterminateBorderColor = CheckboxDefaults.colors().disabledIndeterminateBorderColor
-                                    ),
-                                    checked = subtitlesCheckedState[index],
-                                    onCheckedChange = { checked ->
+                                    .height(50.dp)
+                                    .noRippleClickable {
                                         Collections.replaceAll(
                                             subtitlesChecked.value,
                                             true,
@@ -1177,22 +1146,67 @@ class Player: ComponentActivity(), Player.Listener {
                                                 set(index, true)
                                             }.toList()
                                         }
-                                        if (checked) {
-                                            when (index) {
-                                                0 -> {
-                                                    playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
-                                                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
-                                                        .build()
-                                                }
-                                                else -> {
-                                                    playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
-                                                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-                                                        .setPreferredTextLanguage(playerSubtitles!![index - 1].id)
-                                                        .build()
-                                                }
+                                        when (index) {
+                                            0 -> {
+                                                playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
+                                                    .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                                                    .build()
+                                            }
+                                            else -> {
+                                                playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
+                                                    .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
+                                                    .setPreferredTextLanguage(playerSubtitles!![index - 1].id)
+                                                    .build()
                                             }
                                         }
                                     }
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .padding(start = 10.dp)
+                                        .weight(1f)
+                                ) {
+                                    Text(
+                                        text = when (index) {
+                                            0 -> "Off"
+                                            else -> playerSubtitles!![index - 1].name
+                                        },
+                                        color = Color.White,
+                                        overflow = TextOverflow.Ellipsis,
+                                        maxLines = 1
+                                    )
+                                }
+                                Column(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .scale(0.9f)
+                                        .width(40.dp)
+                                ) {
+                                    Checkbox(
+                                        colors = CheckboxColors(
+                                            checkedCheckmarkColor = Color.White,
+                                            uncheckedCheckmarkColor = Color.Unspecified,
+                                            checkedBoxColor = Color.Unspecified,
+                                            uncheckedBoxColor = Color.Unspecified,
+                                            disabledCheckedBoxColor = Color.Unspecified,
+                                            disabledUncheckedBoxColor = Color.Unspecified,
+                                            disabledIndeterminateBoxColor = Color.Unspecified,
+                                            checkedBorderColor = Color.Unspecified,
+                                            uncheckedBorderColor = Color.Unspecified,
+                                            disabledBorderColor = Color.Unspecified,
+                                            disabledUncheckedBorderColor = Color.Unspecified,
+                                            disabledIndeterminateBorderColor = Color.Unspecified
+                                        ),
+                                        checked = subtitlesCheckedState[index],
+                                        onCheckedChange = null
+                                    )
+                                }
+                            }
+                            if (index < playerSubtitles!!.size) {
+                                HorizontalDivider(
+                                    color = Color.LightGray,
+                                    modifier = Modifier.padding(start = 10.dp, end = 10.dp)
                                 )
                             }
                         }
