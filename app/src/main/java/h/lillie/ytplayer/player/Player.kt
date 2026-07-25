@@ -1389,6 +1389,8 @@ class Player: ComponentActivity(), Player.Listener {
         if (showDebugState) {
             @OptIn(ExperimentalMaterial3Api::class)
             ModalBottomSheet(
+                containerColor = Color.DarkGray,
+                modifier = Modifier.statusBarsPadding(),
                 onDismissRequest = {
                     showDebug.value = false
                 }
