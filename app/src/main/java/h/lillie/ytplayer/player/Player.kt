@@ -62,6 +62,7 @@ import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material.icons.outlined.Subtitles
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
@@ -722,6 +723,24 @@ class Player: ComponentActivity(), Player.Listener {
                                         tint = Color.White,
                                         contentDescription = ""
                                     )
+                                }
+                                // Subtitles Button
+                                if (playerSubtitles != null && playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
+                                    Box(
+                                        contentAlignment = Alignment.Center,
+                                        modifier = Modifier
+                                            .width(50.dp)
+                                            .clip(CircleShape)
+                                            .noRippleClickable {
+                                                showSubtitles.value = true
+                                            }
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Outlined.Subtitles,
+                                            tint = Color.White,
+                                            contentDescription = ""
+                                        )
+                                    }
                                 }
                                 // Settings Button
                                 Box(
