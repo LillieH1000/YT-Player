@@ -226,8 +226,6 @@ class Player: ComponentActivity(), Player.Listener {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         if (isInPictureInPictureMode) {
             showOverlay.value = false
-            showInfo.value = false
-            showSettings.value = false
             showSubtitles.value = false
             showSleepTimer.value = false
         }
@@ -309,9 +307,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var playerPosition = MutableStateFlow(0f)
     private var playerSize = MutableStateFlow(false)
     private var playerTime = MutableStateFlow<String?>(null)
-    private var showInfo = MutableStateFlow(false)
     private var showOverlay = MutableStateFlow(true)
-    private var showSettings = MutableStateFlow(false)
     private var showSubtitles = MutableStateFlow(false)
     private var showSleepTimer = MutableStateFlow(false)
     private var subtitlesChecked = MutableStateFlow<List<Boolean>>(listOf())
@@ -408,8 +404,6 @@ class Player: ComponentActivity(), Player.Listener {
                         onClick = {
                             if (playerControllerState?.mediaItemCount == 1) {
                                 showOverlay.value = !showOverlayState
-                                showInfo.value = false
-                                showSettings.value = false
                                 showSubtitles.value = false
                                 showSleepTimer.value = false
                             }
@@ -425,8 +419,6 @@ class Player: ComponentActivity(), Player.Listener {
                         onClick = {
                             if (playerControllerState?.mediaItemCount == 1) {
                                 showOverlay.value = !showOverlayState
-                                showInfo.value = false
-                                showSettings.value = false
                                 showSubtitles.value = false
                                 showSleepTimer.value = false
                             }
@@ -444,8 +436,6 @@ class Player: ComponentActivity(), Player.Listener {
                         onClick = {
                             if (playerControllerState?.mediaItemCount == 1) {
                                 showOverlay.value = !showOverlayState
-                                showInfo.value = false
-                                showSettings.value = false
                                 showSubtitles.value = false
                                 showSleepTimer.value = false
                             }
@@ -973,8 +963,6 @@ class Player: ComponentActivity(), Player.Listener {
         playerController.value?.stop()
         playerController.value?.removeMediaItem(0)
         showOverlay.value = true
-        showInfo.value = false
-        showSettings.value = false
         showSubtitles.value = false
         showSleepTimer.value = false
         isPlaying.value = 0
