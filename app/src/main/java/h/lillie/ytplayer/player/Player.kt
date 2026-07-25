@@ -868,103 +868,109 @@ class Player: ComponentActivity(), Player.Listener {
         }
 
         // Sleep Timer View
+        // Sleep Timer Sheet
 
         if (showSleepTimerState) {
-            Row(
-                modifier = if (deviceRotationState == 1) {
-                    Modifier
-                        .systemBarsPadding()
-                        .displayCutoutPadding()
-                        .padding(start = 10.dp, end = 10.dp, top = 50.dp)
-                        .wrapContentHeight()
-                } else {
-                    Modifier
-                        .systemBarsPadding()
-                        .padding(start = 10.dp, end = 10.dp, top = 50.dp)
-                        .wrapContentHeight()
+            @OptIn(ExperimentalMaterial3Api::class)
+            ModalBottomSheet(
+                containerColor = Color.DarkGray,
+                modifier = Modifier.statusBarsPadding(),
+                dragHandle = {
+                    BottomSheetDefaults.DragHandle(color = Color.LightGray)
+                },
+                onDismissRequest = {
+                    showSubtitles.value = false
                 }
             ) {
                 Box(
-                    modifier = Modifier.weight(1f)
-                )
-                LazyColumn(
                     modifier = Modifier
+                        .systemBarsPadding()
+                        .padding(bottom = 20.dp)
                         .wrapContentHeight()
-                        .heightIn(0.dp, 150.dp)
-                        .width(150.dp)
-                        .background(Color.DarkGray)
-                        .clickable(
-                            enabled = true,
-                            interactionSource = null,
-                            indication = null,
-                            onClick = {})
+                        .fillMaxWidth()
                 ) {
-                    items(5) { index ->
-                        Row(
-                            modifier = Modifier
-                                .height(30.dp)
-                                .padding(start = 10.dp)
-                        ) {
-                            Column(
+                    LazyColumn(
+                        modifier = Modifier
+                            .wrapContentHeight()
+                            .fillMaxWidth()
+                            .clickable(
+                                enabled = true,
+                                interactionSource = null,
+                                indication = null,
+                                onClick = {})
+                    ) {
+                        items(5) { index ->
+                            Row(
                                 modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .weight(1f)
-                            ) {
-                                Text(
-                                    text = when (index) {
-                                        1 -> "15 Minutes"
-                                        2 -> "30 Minutes"
-                                        3 -> "45 Minutes"
-                                        4 -> "1 Hour"
-                                        else -> "Off"
-                                    },
-                                    color = Color.White,
-                                    overflow = TextOverflow.Ellipsis,
-                                    maxLines = 1
-                                )
-                            }
-                            Column(
-                                modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .scale(0.6f)
-                                    .width(30.dp)
-                            ) {
-                                Checkbox(
-                                    colors = CheckboxColors(
-                                        checkedCheckmarkColor = Color.White,
-                                        uncheckedCheckmarkColor = Color.Transparent,
-                                        checkedBoxColor = Color.Transparent,
-                                        uncheckedBoxColor = Color.Transparent,
-                                        disabledCheckedBoxColor = CheckboxDefaults.colors().disabledCheckedBoxColor,
-                                        disabledUncheckedBoxColor = CheckboxDefaults.colors().disabledUncheckedBoxColor,
-                                        disabledIndeterminateBoxColor = CheckboxDefaults.colors().disabledIndeterminateBoxColor,
-                                        checkedBorderColor = Color.White,
-                                        uncheckedBorderColor = Color.White,
-                                        disabledBorderColor = CheckboxDefaults.colors().disabledBorderColor,
-                                        disabledUncheckedBorderColor = CheckboxDefaults.colors().disabledUncheckedBorderColor,
-                                        disabledIndeterminateBorderColor = CheckboxDefaults.colors().disabledIndeterminateBorderColor
-                                    ),
-                                    checked = sleepTimerCheckedState[index],
-                                    onCheckedChange = { checked ->
+                                    .height(50.dp)
+                                    .noRippleClickable {
                                         Collections.replaceAll(sleepTimerChecked.value, true, false)
                                         sleepTimerChecked.update { list ->
                                             list.toMutableList().apply {
                                                 set(index, true)
                                             }.toList()
                                         }
-                                        if (checked) {
-                                            val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
-                                            broadcastIntent.setPackage(this@Player.packageName)
-                                            when (index) {
-                                                1 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(15))
-                                                2 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(30))
-                                                3 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(45))
-                                                4 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(60))
-                                                else -> broadcastIntent.putExtra("time", 0L)
-                                            }
-                                            sendBroadcast(broadcastIntent)
+                                        val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
+                                        broadcastIntent.setPackage(this@Player.packageName)
+                                        when (index) {
+                                            1 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(15))
+                                            2 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(30))
+                                            3 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(45))
+                                            4 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(60))
+                                            else -> broadcastIntent.putExtra("time", 0L)
                                         }
+                                        sendBroadcast(broadcastIntent)
                                     }
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .padding(start = 10.dp)
+                                        .weight(1f)
+                                ) {
+                                    Text(
+                                        text = when (index) {
+                                            1 -> "15 Minutes"
+                                            2 -> "30 Minutes"
+                                            3 -> "45 Minutes"
+                                            4 -> "1 Hour"
+                                            else -> "Off"
+                                        },
+                                        color = Color.White,
+                                        overflow = TextOverflow.Ellipsis,
+                                        maxLines = 1
+                                    )
+                                }
+                                Column(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .scale(0.9f)
+                                        .width(40.dp)
+                                ) {
+                                    Checkbox(
+                                        colors = CheckboxColors(
+                                            checkedCheckmarkColor = Color.White,
+                                            uncheckedCheckmarkColor = Color.Unspecified,
+                                            checkedBoxColor = Color.Unspecified,
+                                            uncheckedBoxColor = Color.Unspecified,
+                                            disabledCheckedBoxColor = Color.Unspecified,
+                                            disabledUncheckedBoxColor = Color.Unspecified,
+                                            disabledIndeterminateBoxColor = Color.Unspecified,
+                                            checkedBorderColor = Color.Unspecified,
+                                            uncheckedBorderColor = Color.Unspecified,
+                                            disabledBorderColor = Color.Unspecified,
+                                            disabledUncheckedBorderColor = Color.Unspecified,
+                                            disabledIndeterminateBorderColor = Color.Unspecified
+                                        ),
+                                        checked = sleepTimerCheckedState[index],
+                                        onCheckedChange = null
+                                    )
+                                }
+                            }
+                            if (index < 4) {
+                                HorizontalDivider(
+                                    color = Color.LightGray,
+                                    modifier = Modifier.padding(start = 10.dp, end = 10.dp)
                                 )
                             }
                         }
