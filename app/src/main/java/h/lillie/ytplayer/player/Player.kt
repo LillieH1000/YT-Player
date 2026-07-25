@@ -684,39 +684,6 @@ class Player: ComponentActivity(), Player.Listener {
                             modifier = Modifier.wrapContentWidth()
                         ) {
                             if (playerControllerState?.mediaItemCount == 1) {
-                                // Share Button
-                                Box(
-                                    contentAlignment = Alignment.Center,
-                                    modifier = Modifier
-                                        .width(50.dp)
-                                        .clip(CircleShape)
-                                        .noRippleClickable {
-                                            val type: String? = playerControllerState?.mediaMetadata?.extras?.getString("type")
-                                            val url: String = when (type) {
-                                                "livestream" -> "https://youtube.com/live/${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
-                                                "short" -> "https://youtube.com/shorts/${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
-                                                else -> "https://youtube.com/watch?v=${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
-                                            }
-                                            if (chromeOSDevice) {
-                                                val clipManager: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                                                val clipData: ClipData = ClipData.newPlainText("", url)
-                                                clipManager.setPrimaryClip(clipData)
-                                                Toast.makeText(this@Player, "Copied to clipboard", Toast.LENGTH_SHORT).show()
-                                            } else {
-                                                val shareIntent = Intent()
-                                                shareIntent.action = Intent.ACTION_SEND
-                                                shareIntent.putExtra(Intent.EXTRA_TEXT, url)
-                                                shareIntent.type = "text/plain"
-                                                startActivity(Intent.createChooser(shareIntent, null))
-                                            }
-                                        }
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Outlined.Share,
-                                        tint = Color.White,
-                                        contentDescription = ""
-                                    )
-                                }
                                 // Loop Button
                                 if (playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
                                     Box(
