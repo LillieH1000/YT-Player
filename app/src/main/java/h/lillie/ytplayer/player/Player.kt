@@ -106,7 +106,6 @@ import androidx.media3.ui.PlayerView
 import androidx.media3.ui.SubtitleView
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
-import h.lillie.ytplayer.BuildConfig
 import h.lillie.ytplayer.data.Subtitles
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -320,7 +319,6 @@ class Player: ComponentActivity(), Player.Listener {
     private var playerSize = MutableStateFlow(false)
     private var playbackSpeed = MutableStateFlow("1")
     private var playerTime = MutableStateFlow<String?>(null)
-    private var showDebug = MutableStateFlow(false)
     private var showInfo = MutableStateFlow(false)
     private var showOverlay = MutableStateFlow(true)
     private var showSettings = MutableStateFlow(false)
@@ -343,7 +341,6 @@ class Player: ComponentActivity(), Player.Listener {
         val playerSizeState by playerSize.collectAsState()
         val playbackSpeedState by playbackSpeed.collectAsState()
         val playerTimeState by playerTime.collectAsState()
-        val showDebugState by showDebug.collectAsState()
         val showInfoState by showInfo.collectAsState()
         val showOverlayState by showOverlay.collectAsState()
         val showSettingsState by showSettings.collectAsState()
@@ -765,24 +762,6 @@ class Player: ComponentActivity(), Player.Listener {
                                         contentDescription = ""
                                     )
                                 }
-                                // Debug Views
-                                if (BuildConfig.DEBUG) {
-                                    Box(
-                                        contentAlignment = Alignment.Center,
-                                        modifier = Modifier
-                                            .width(50.dp)
-                                            .clip(CircleShape)
-                                            .noRippleClickable {
-                                                showDebug.value = true
-                                            }
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Outlined.BugReport,
-                                            tint = Color.White,
-                                            contentDescription = ""
-                                        )
-                                    }
-                                }
                             }
                         }
                     }
@@ -1102,7 +1081,7 @@ class Player: ComponentActivity(), Player.Listener {
                     BottomSheetDefaults.DragHandle(color = Color.LightGray)
                 },
                 onDismissRequest = {
-                    showDebug.value = false
+                    showSubtitles.value = false
                 }
             ) {
                 Box(
@@ -1313,130 +1292,6 @@ class Player: ComponentActivity(), Player.Listener {
                                             sendBroadcast(broadcastIntent)
                                         }
                                     }
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Debug Views
-
-        if (showDebugState) {
-            @OptIn(ExperimentalMaterial3Api::class)
-            ModalBottomSheet(
-                containerColor = Color.DarkGray,
-                modifier = Modifier.statusBarsPadding(),
-                dragHandle = {
-                    BottomSheetDefaults.DragHandle(color = Color.LightGray)
-                },
-                onDismissRequest = {
-                    showDebug.value = false
-                }
-            ) {
-                Box(
-                    modifier = if (deviceRotationState == 1) {
-                        Modifier
-                            .systemBarsPadding()
-                            .displayCutoutPadding()
-                            .padding(bottom = 20.dp)
-                            .wrapContentHeight()
-                            .fillMaxWidth()
-                    } else {
-                        Modifier
-                            .systemBarsPadding()
-                            .padding(bottom = 20.dp)
-                            .wrapContentHeight()
-                            .fillMaxWidth()
-                    }
-                ) {
-                    LazyColumn(
-                        modifier = Modifier
-                            .wrapContentHeight()
-                            .fillMaxWidth()
-                            .clickable(
-                                enabled = true,
-                                interactionSource = null,
-                                indication = null,
-                                onClick = {})
-                    ) {
-                        items(playerSubtitles!!.size + 1) { index ->
-                            Row(
-                                modifier = Modifier
-                                    .height(50.dp)
-                                    .noRippleClickable {
-                                        Collections.replaceAll(
-                                            subtitlesChecked.value,
-                                            true,
-                                            false
-                                        )
-                                        subtitlesChecked.update { list ->
-                                            list.toMutableList().apply {
-                                                set(index, true)
-                                            }.toList()
-                                        }
-                                        when (index) {
-                                            0 -> {
-                                                playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
-                                                    .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
-                                                    .build()
-                                            }
-                                            else -> {
-                                                playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
-                                                    .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-                                                    .setPreferredTextLanguage(playerSubtitles!![index - 1].id)
-                                                    .build()
-                                            }
-                                        }
-                                    }
-                            ) {
-                                Column(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .padding(start = 10.dp)
-                                        .weight(1f)
-                                ) {
-                                    Text(
-                                        text = when (index) {
-                                            0 -> "Off"
-                                            else -> playerSubtitles!![index - 1].name
-                                        },
-                                        color = Color.White,
-                                        overflow = TextOverflow.Ellipsis,
-                                        maxLines = 1
-                                    )
-                                }
-                                Column(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .scale(0.9f)
-                                        .width(40.dp)
-                                ) {
-                                    Checkbox(
-                                        colors = CheckboxColors(
-                                            checkedCheckmarkColor = Color.White,
-                                            uncheckedCheckmarkColor = Color.Unspecified,
-                                            checkedBoxColor = Color.Unspecified,
-                                            uncheckedBoxColor = Color.Unspecified,
-                                            disabledCheckedBoxColor = Color.Unspecified,
-                                            disabledUncheckedBoxColor = Color.Unspecified,
-                                            disabledIndeterminateBoxColor = Color.Unspecified,
-                                            checkedBorderColor = Color.Unspecified,
-                                            uncheckedBorderColor = Color.Unspecified,
-                                            disabledBorderColor = Color.Unspecified,
-                                            disabledUncheckedBorderColor = Color.Unspecified,
-                                            disabledIndeterminateBorderColor = Color.Unspecified
-                                        ),
-                                        checked = subtitlesCheckedState[index],
-                                        onCheckedChange = null
-                                    )
-                                }
-                            }
-                            if (index < playerSubtitles!!.size) {
-                                HorizontalDivider(
-                                    color = Color.LightGray,
-                                    modifier = Modifier.padding(start = 10.dp, end = 10.dp)
                                 )
                             }
                         }
