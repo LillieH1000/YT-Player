@@ -867,7 +867,6 @@ class Player: ComponentActivity(), Player.Listener {
             }
         }
 
-        // Sleep Timer View
         // Sleep Timer Sheet
 
         if (showSleepTimerState) {
