@@ -38,7 +38,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -49,26 +48,20 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.FitScreen
 import androidx.compose.material.icons.filled.Fullscreen
 import androidx.compose.material.icons.filled.FullscreenExit
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material.icons.outlined.Bedtime
 import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material.icons.outlined.RepeatOne
-import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.outlined.Subtitles
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -95,7 +88,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.C
-import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.text.Cue
 import androidx.media3.common.text.CueGroup
@@ -113,8 +105,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.text.DecimalFormat
-import java.text.NumberFormat
 import java.util.Collections
 import java.util.concurrent.TimeUnit
 
