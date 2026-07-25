@@ -1395,11 +1395,28 @@ class Player: ComponentActivity(), Player.Listener {
                     showDebug.value = false
                 }
             ) {
-                Box() {
-                    Row() {
-                        Text(
-                            text = "test"
-                        )
+                Box(
+                    modifier = if (deviceRotationState == 1) {
+                        Modifier
+                            .navigationBarsPadding()
+                            .statusBarsPadding()
+                            .systemBarsPadding()
+                            .windowInsetsPadding(WindowInsets.displayCutout)
+                            .padding(bottom = 20.dp)
+                            .wrapContentHeight()
+                            .fillMaxWidth()
+                            .focusTarget()
+                            .focusProperties { canFocus = false }
+                    } else {
+                        Modifier
+                            .navigationBarsPadding()
+                            .statusBarsPadding()
+                            .systemBarsPadding()
+                            .padding(bottom = 20.dp)
+                            .wrapContentHeight()
+                            .fillMaxWidth()
+                            .focusTarget()
+                            .focusProperties { canFocus = false }
                     }
                 }
             }
