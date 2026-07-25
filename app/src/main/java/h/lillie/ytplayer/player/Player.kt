@@ -319,6 +319,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var playerSize = MutableStateFlow(false)
     private var playbackSpeed = MutableStateFlow("1")
     private var playerTime = MutableStateFlow<String?>(null)
+    private var showDebug = MutableStateFlow(false)
     private var showInfo = MutableStateFlow(false)
     private var showOverlay = MutableStateFlow(true)
     private var showSettings = MutableStateFlow(false)
@@ -341,6 +342,7 @@ class Player: ComponentActivity(), Player.Listener {
         val playerSizeState by playerSize.collectAsState()
         val playbackSpeedState by playbackSpeed.collectAsState()
         val playerTimeState by playerTime.collectAsState()
+        val showDebugState by showDebug.collectAsState()
         val showInfoState by showInfo.collectAsState()
         val showOverlayState by showOverlay.collectAsState()
         val showSettingsState by showSettings.collectAsState()
@@ -763,6 +765,24 @@ class Player: ComponentActivity(), Player.Listener {
                                         tint = Color.White,
                                         contentDescription = ""
                                     )
+                                }
+                                // Debug Views
+                                if (BuildConfig.DEBUG) {
+                                    Box(
+                                        contentAlignment = Alignment.Center,
+                                        modifier = Modifier
+                                            .width(50.dp)
+                                            .clip(CircleShape)
+                                            .noRippleClickable {
+                                                showDebug.value = true
+                                            }
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Outlined.BugReport,
+                                            tint = Color.White,
+                                            contentDescription = ""
+                                        )
+                                    }
                                 }
                             }
                         }
