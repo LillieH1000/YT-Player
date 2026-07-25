@@ -33,20 +33,17 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -489,7 +486,7 @@ class Player: ComponentActivity(), Player.Listener {
                             alpha = 0.4F
                         )
                         .systemBarsPadding()
-                        .windowInsetsPadding(WindowInsets.displayCutout)
+                        .displayCutoutPadding()
                         .fillMaxSize()
                         .focusTarget()
                         .focusProperties { canFocus = false }
@@ -791,7 +788,7 @@ class Player: ComponentActivity(), Player.Listener {
                 modifier = if (deviceRotationState == 1) {
                     Modifier
                         .systemBarsPadding()
-                        .windowInsetsPadding(WindowInsets.displayCutout)
+                        .displayCutoutPadding()
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
                         .wrapContentHeight()
                         .focusTarget()
@@ -1057,7 +1054,7 @@ class Player: ComponentActivity(), Player.Listener {
                 modifier = if (deviceRotationState == 1) {
                     Modifier
                         .systemBarsPadding()
-                        .windowInsetsPadding(WindowInsets.displayCutout)
+                        .displayCutoutPadding()
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
                         .wrapContentHeight()
                         .focusTarget()
@@ -1141,7 +1138,7 @@ class Player: ComponentActivity(), Player.Listener {
                 modifier = if (deviceRotationState == 1) {
                     Modifier
                         .systemBarsPadding()
-                        .windowInsetsPadding(WindowInsets.displayCutout)
+                        .displayCutoutPadding()
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
                         .wrapContentHeight()
                         .focusTarget()
@@ -1255,7 +1252,7 @@ class Player: ComponentActivity(), Player.Listener {
                 modifier = if (deviceRotationState == 1) {
                     Modifier
                         .systemBarsPadding()
-                        .windowInsetsPadding(WindowInsets.displayCutout)
+                        .displayCutoutPadding()
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
                         .wrapContentHeight()
                         .focusTarget()
@@ -1373,7 +1370,7 @@ class Player: ComponentActivity(), Player.Listener {
                     modifier = if (deviceRotationState == 1) {
                         Modifier
                             .systemBarsPadding()
-                            .windowInsetsPadding(WindowInsets.displayCutout)
+                            .displayCutoutPadding()
                             .padding(bottom = 20.dp)
                             .wrapContentHeight()
                             .fillMaxWidth()
