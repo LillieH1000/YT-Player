@@ -68,6 +68,7 @@ import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Slider
@@ -1358,6 +1359,96 @@ class Player: ComponentActivity(), Player.Listener {
                             .fillMaxWidth()
                     }
                 ) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .wrapContentHeight()
+                            .fillMaxWidth()
+                            .clickable(
+                                enabled = true,
+                                interactionSource = null,
+                                indication = null,
+                                onClick = {})
+                    ) {
+                        items(playerSubtitles!!.size + 1) { index ->
+                            Row(
+                                modifier = Modifier
+                                    .height(50.dp)
+                                    .noRippleClickable {
+                                        Collections.replaceAll(
+                                            subtitlesChecked.value,
+                                            true,
+                                            false
+                                        )
+                                        subtitlesChecked.update { list ->
+                                            list.toMutableList().apply {
+                                                set(index, true)
+                                            }.toList()
+                                        }
+                                        when (index) {
+                                            0 -> {
+                                                playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
+                                                    .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                                                    .build()
+                                            }
+                                            else -> {
+                                                playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
+                                                    .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
+                                                    .setPreferredTextLanguage(playerSubtitles!![index - 1].id)
+                                                    .build()
+                                            }
+                                        }
+                                    }
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .padding(start = 10.dp)
+                                        .weight(1f)
+                                ) {
+                                    Text(
+                                        text = when (index) {
+                                            0 -> "Off"
+                                            else -> playerSubtitles!![index - 1].name
+                                        },
+                                        color = Color.White,
+                                        overflow = TextOverflow.Ellipsis,
+                                        maxLines = 1
+                                    )
+                                }
+                                Column(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .scale(0.9f)
+                                        .width(40.dp)
+                                ) {
+                                    Checkbox(
+                                        colors = CheckboxColors(
+                                            checkedCheckmarkColor = Color.White,
+                                            uncheckedCheckmarkColor = Color.Unspecified,
+                                            checkedBoxColor = Color.Unspecified,
+                                            uncheckedBoxColor = Color.Unspecified,
+                                            disabledCheckedBoxColor = Color.Unspecified,
+                                            disabledUncheckedBoxColor = Color.Unspecified,
+                                            disabledIndeterminateBoxColor = Color.Unspecified,
+                                            checkedBorderColor = Color.Unspecified,
+                                            uncheckedBorderColor = Color.Unspecified,
+                                            disabledBorderColor = Color.Unspecified,
+                                            disabledUncheckedBorderColor = Color.Unspecified,
+                                            disabledIndeterminateBorderColor = Color.Unspecified
+                                        ),
+                                        checked = subtitlesCheckedState[index],
+                                        onCheckedChange = null
+                                    )
+                                }
+                            }
+                            if (index < playerSubtitles!!.size) {
+                                HorizontalDivider(
+                                    color = Color.LightGray,
+                                    modifier = Modifier.padding(start = 10.dp, end = 10.dp)
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
