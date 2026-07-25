@@ -360,8 +360,6 @@ class Player: ComponentActivity(), Player.Listener {
         AndroidView(
             modifier = Modifier
                 .background(Color.Black)
-                .navigationBarsPadding()
-                .statusBarsPadding()
                 .systemBarsPadding()
                 .fillMaxSize()
                 .focusTarget()
@@ -396,8 +394,6 @@ class Player: ComponentActivity(), Player.Listener {
         @UnstableApi
         AndroidView(
             modifier = Modifier
-                .navigationBarsPadding()
-                .statusBarsPadding()
                 .systemBarsPadding()
                 .fillMaxSize()
                 .focusTarget()
@@ -420,8 +416,6 @@ class Player: ComponentActivity(), Player.Listener {
 
         Row(
             modifier = Modifier
-                .navigationBarsPadding()
-                .statusBarsPadding()
                 .systemBarsPadding()
                 .fillMaxSize()
                 .focusTarget()
@@ -494,8 +488,6 @@ class Player: ComponentActivity(), Player.Listener {
                             brush = SolidColor(Color.Black),
                             alpha = 0.4F
                         )
-                        .navigationBarsPadding()
-                        .statusBarsPadding()
                         .systemBarsPadding()
                         .windowInsetsPadding(WindowInsets.displayCutout)
                         .fillMaxSize()
@@ -507,8 +499,6 @@ class Player: ComponentActivity(), Player.Listener {
                             brush = SolidColor(Color.Black),
                             alpha = 0.4F
                         )
-                        .navigationBarsPadding()
-                        .statusBarsPadding()
                         .systemBarsPadding()
                         .fillMaxSize()
                         .focusTarget()
@@ -800,8 +790,6 @@ class Player: ComponentActivity(), Player.Listener {
             Row(
                 modifier = if (deviceRotationState == 1) {
                     Modifier
-                        .navigationBarsPadding()
-                        .statusBarsPadding()
                         .systemBarsPadding()
                         .windowInsetsPadding(WindowInsets.displayCutout)
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
@@ -810,8 +798,6 @@ class Player: ComponentActivity(), Player.Listener {
                         .focusProperties { canFocus = false }
                 } else {
                     Modifier
-                        .navigationBarsPadding()
-                        .statusBarsPadding()
                         .systemBarsPadding()
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
                         .wrapContentHeight()
@@ -1070,8 +1056,6 @@ class Player: ComponentActivity(), Player.Listener {
             Row(
                 modifier = if (deviceRotationState == 1) {
                     Modifier
-                        .navigationBarsPadding()
-                        .statusBarsPadding()
                         .systemBarsPadding()
                         .windowInsetsPadding(WindowInsets.displayCutout)
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
@@ -1080,8 +1064,6 @@ class Player: ComponentActivity(), Player.Listener {
                         .focusProperties { canFocus = false }
                 } else {
                     Modifier
-                        .navigationBarsPadding()
-                        .statusBarsPadding()
                         .systemBarsPadding()
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
                         .wrapContentHeight()
@@ -1158,8 +1140,6 @@ class Player: ComponentActivity(), Player.Listener {
             Row(
                 modifier = if (deviceRotationState == 1) {
                     Modifier
-                        .navigationBarsPadding()
-                        .statusBarsPadding()
                         .systemBarsPadding()
                         .windowInsetsPadding(WindowInsets.displayCutout)
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
@@ -1168,8 +1148,6 @@ class Player: ComponentActivity(), Player.Listener {
                         .focusProperties { canFocus = false }
                 } else {
                     Modifier
-                        .navigationBarsPadding()
-                        .statusBarsPadding()
                         .systemBarsPadding()
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
                         .wrapContentHeight()
@@ -1276,8 +1254,6 @@ class Player: ComponentActivity(), Player.Listener {
             Row(
                 modifier = if (deviceRotationState == 1) {
                     Modifier
-                        .navigationBarsPadding()
-                        .statusBarsPadding()
                         .systemBarsPadding()
                         .windowInsetsPadding(WindowInsets.displayCutout)
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
@@ -1286,8 +1262,6 @@ class Player: ComponentActivity(), Player.Listener {
                         .focusProperties { canFocus = false }
                 } else {
                     Modifier
-                        .navigationBarsPadding()
-                        .statusBarsPadding()
                         .systemBarsPadding()
                         .padding(start = 10.dp, end = 10.dp, top = 50.dp)
                         .wrapContentHeight()
@@ -1398,8 +1372,6 @@ class Player: ComponentActivity(), Player.Listener {
                 Box(
                     modifier = if (deviceRotationState == 1) {
                         Modifier
-                            .navigationBarsPadding()
-                            .statusBarsPadding()
                             .systemBarsPadding()
                             .windowInsetsPadding(WindowInsets.displayCutout)
                             .padding(bottom = 20.dp)
@@ -1409,8 +1381,6 @@ class Player: ComponentActivity(), Player.Listener {
                             .focusProperties { canFocus = false }
                     } else {
                         Modifier
-                            .navigationBarsPadding()
-                            .statusBarsPadding()
                             .systemBarsPadding()
                             .padding(bottom = 20.dp)
                             .wrapContentHeight()
