@@ -1418,6 +1418,7 @@ class Player: ComponentActivity(), Player.Listener {
                             .focusTarget()
                             .focusProperties { canFocus = false }
                     }
+                ) {
                 }
             }
         }
