@@ -317,7 +317,6 @@ class Player: ComponentActivity(), Player.Listener {
     private var playerDuration = MutableStateFlow(0f)
     private var playerPosition = MutableStateFlow(0f)
     private var playerSize = MutableStateFlow(false)
-    private var playbackSpeed = MutableStateFlow("1")
     private var playerTime = MutableStateFlow<String?>(null)
     private var showInfo = MutableStateFlow(false)
     private var showOverlay = MutableStateFlow(true)
@@ -339,11 +338,8 @@ class Player: ComponentActivity(), Player.Listener {
         val playerDurationState by playerDuration.collectAsState()
         val playerPositionState by playerPosition.collectAsState()
         val playerSizeState by playerSize.collectAsState()
-        val playbackSpeedState by playbackSpeed.collectAsState()
         val playerTimeState by playerTime.collectAsState()
-        val showInfoState by showInfo.collectAsState()
         val showOverlayState by showOverlay.collectAsState()
-        val showSettingsState by showSettings.collectAsState()
         val showSubtitlesState by showSubtitles.collectAsState()
         val showSleepTimerState by showSleepTimer.collectAsState()
         val subtitlesCheckedState by subtitlesChecked.collectAsState()
@@ -867,195 +863,6 @@ class Player: ComponentActivity(), Player.Listener {
                             }
                         }
                     }
-                    // Sleep Timer
-                    Row(
-                        modifier = Modifier
-                            .height(40.dp)
-                            .padding(start = 10.dp)
-                            .clickable(
-                                enabled = true,
-                                interactionSource = null,
-                                indication = null,
-                                onClick = {
-                                    showSettings.value = false
-                                    showSleepTimer.value = true
-                                })
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .weight(1f)
-                        ) {
-                            Text(
-                                text = "Sleep Timer",
-                                color = Color.White,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1
-                            )
-                        }
-                        Column(
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .scale(0.6f)
-                                .width(30.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
-                                tint = Color.White,
-                                contentDescription = ""
-                            )
-                        }
-                    }
-                    // Playback Speed
-                    if (playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
-                        Row(
-                            modifier = Modifier
-                                .height(40.dp)
-                                .padding(start = 10.dp, end = 10.dp)
-                        ) {
-                            Text(
-                                modifier = Modifier.align(Alignment.CenterVertically),
-                                text = "Speed: ${playbackSpeedState}x",
-                                color = Color.White,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1
-                            )
-                        }
-                        Row(
-                            modifier = Modifier.height(30.dp)
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .align(Alignment.CenterVertically)
-                            ) {
-                                Box(
-                                    contentAlignment = Alignment.Center,
-                                    modifier = Modifier
-                                        .scale(0.6f)
-                                        .align(Alignment.CenterHorizontally)
-                                        .noRippleClickable {
-                                            val decimalFormat = DecimalFormat("#.#")
-                                            if (decimalFormat.format(playerController.value!!.playbackParameters.speed).toFloat() > 0.1f) {
-                                                playerController.value!!.playbackParameters = PlaybackParameters(decimalFormat.format(playerController.value!!.playbackParameters.speed).toFloat() - 0.1f)
-                                                playbackSpeed.value = decimalFormat.format(playerController.value!!.playbackParameters.speed)
-                                            }
-                                        }
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Remove,
-                                        tint = Color.White,
-                                        contentDescription = ""
-                                    )
-                                }
-                            }
-                            Column(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .align(Alignment.CenterVertically)
-                            ) {
-                                Box(
-                                    contentAlignment = Alignment.Center,
-                                    modifier = Modifier
-                                        .scale(0.6f)
-                                        .align(Alignment.CenterHorizontally)
-                                        .noRippleClickable {
-                                            val decimalFormat = DecimalFormat("#.#")
-                                            if (decimalFormat.format(playerController.value!!.playbackParameters.speed).toFloat() < 2.0f) {
-                                                playerController.value!!.playbackParameters = PlaybackParameters(decimalFormat.format(playerController.value!!.playbackParameters.speed).toFloat() + 0.1f)
-                                                playbackSpeed.value = decimalFormat.format(playerController.value!!.playbackParameters.speed)
-                                            }
-                                        }
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Add,
-                                        tint = Color.White,
-                                        contentDescription = ""
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Info View
-
-        if (showInfoState) {
-            Row(
-                modifier = if (deviceRotationState == 1) {
-                    Modifier
-                        .systemBarsPadding()
-                        .displayCutoutPadding()
-                        .padding(start = 10.dp, end = 10.dp, top = 50.dp)
-                        .wrapContentHeight()
-                } else {
-                    Modifier
-                        .systemBarsPadding()
-                        .padding(start = 10.dp, end = 10.dp, top = 50.dp)
-                        .wrapContentHeight()
-                }
-            ) {
-                Box(
-                    modifier = Modifier.weight(1f)
-                )
-                Column(
-                    modifier = Modifier
-                        .wrapContentHeight()
-                        .heightIn(0.dp, 150.dp)
-                        .width(150.dp)
-                        .background(Color.DarkGray)
-                        .clickable(
-                            enabled = true,
-                            interactionSource = null,
-                            indication = null,
-                            onClick = {})
-                ) {
-                    // Views
-                    Row(
-                        modifier = Modifier
-                            .height(30.dp)
-                            .padding(start = 10.dp)
-                    ) {
-                        Text(
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                            text = "Views: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getLong("views"))}",
-                            color = Color.White,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1
-                        )
-                    }
-                    // Likes
-                    Row(
-                        modifier = Modifier
-                            .height(30.dp)
-                            .padding(start = 10.dp)
-                    ) {
-                        Text(
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                            text = "Likes: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getLong("likes"))}",
-                            color = Color.White,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1
-                        )
-                    }
-                    // Dislikes
-                    if (playerControllerState?.mediaMetadata?.extras?.getLong("dislikes") != null) {
-                        Row(
-                            modifier = Modifier
-                                .height(30.dp)
-                                .padding(start = 10.dp)
-                        ) {
-                            Text(
-                                modifier = Modifier.align(Alignment.CenterVertically),
-                                text = "Dislikes: ${NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getLong("dislikes"))}",
-                                color = Color.White,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1
-                            )
-                        }
-                    }
                 }
             }
         }
@@ -1299,7 +1106,6 @@ class Player: ComponentActivity(), Player.Listener {
         playerControllerFuture.addListener({
             playerController.value = playerControllerFuture.get()
             playerController.value!!.addListener(this)
-            playbackSpeed.value = "1"
 
             Collections.replaceAll(sleepTimerChecked.value, true, false)
             sleepTimerChecked.update { list ->
