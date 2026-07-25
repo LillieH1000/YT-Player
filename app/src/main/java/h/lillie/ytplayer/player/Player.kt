@@ -62,6 +62,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Replay
+import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Checkbox
@@ -70,6 +71,7 @@ import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Switch
@@ -106,6 +108,7 @@ import androidx.media3.ui.PlayerView
 import androidx.media3.ui.SubtitleView
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
+import h.lillie.ytplayer.BuildConfig
 import h.lillie.ytplayer.data.Subtitles
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -1376,6 +1379,25 @@ class Player: ComponentActivity(), Player.Listener {
                                 )
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        // Debug Views
+
+        if (showDebugState) {
+            @OptIn(ExperimentalMaterial3Api::class)
+            ModalBottomSheet(
+                onDismissRequest = {
+                    showDebug.value = false
+                }
+            ) {
+                Box() {
+                    Row() {
+                        Text(
+                            text = "test"
+                        )
                     }
                 }
             }
