@@ -62,6 +62,7 @@ import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.CheckboxDefaults
@@ -1334,6 +1335,9 @@ class Player: ComponentActivity(), Player.Listener {
             ModalBottomSheet(
                 containerColor = Color.DarkGray,
                 modifier = Modifier.statusBarsPadding(),
+                dragHandle = {
+                    BottomSheetDefaults.DragHandle(color = Color.LightGray)
+                },
                 onDismissRequest = {
                     showDebug.value = false
                 }
