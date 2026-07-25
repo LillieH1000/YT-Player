@@ -1075,20 +1075,11 @@ class Player: ComponentActivity(), Player.Listener {
                 }
             ) {
                 Box(
-                    modifier = if (deviceRotationState == 1) {
-                        Modifier
-                            .systemBarsPadding()
-                            .displayCutoutPadding()
-                            .padding(bottom = 20.dp)
-                            .wrapContentHeight()
-                            .fillMaxWidth()
-                    } else {
-                        Modifier
-                            .systemBarsPadding()
-                            .padding(bottom = 20.dp)
-                            .wrapContentHeight()
-                            .fillMaxWidth()
-                    }
+                    modifier = Modifier
+                        .systemBarsPadding()
+                        .padding(bottom = 20.dp)
+                        .wrapContentHeight()
+                        .fillMaxWidth()
                 ) {
                     LazyColumn(
                         modifier = Modifier
