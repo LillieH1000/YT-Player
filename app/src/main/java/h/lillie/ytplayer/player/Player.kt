@@ -862,47 +862,6 @@ class Player: ComponentActivity(), Player.Listener {
                             }
                         }
                     }
-                    // Subtitles
-                    if (playerSubtitles != null && playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
-                        Row(
-                            modifier = Modifier
-                                .height(40.dp)
-                                .padding(start = 10.dp)
-                                .clickable(
-                                    enabled = true,
-                                    interactionSource = null,
-                                    indication = null,
-                                    onClick = {
-                                        showSettings.value = false
-                                        showSubtitles.value = true
-                                    })
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .weight(1f)
-                            ) {
-                                Text(
-                                    text = "Subtitles",
-                                    color = Color.White,
-                                    overflow = TextOverflow.Ellipsis,
-                                    maxLines = 1
-                                )
-                            }
-                            Column(
-                                modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .scale(0.6f)
-                                    .width(30.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
-                                    tint = Color.White,
-                                    contentDescription = ""
-                                )
-                            }
-                        }
-                    }
                     // Sleep Timer
                     Row(
                         modifier = Modifier
