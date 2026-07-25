@@ -59,7 +59,8 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Replay
-import androidx.compose.material.icons.outlined.BugReport
+import androidx.compose.material.icons.outlined.Repeat
+import androidx.compose.material.icons.outlined.RepeatOne
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.outlined.Subtitles
@@ -74,7 +75,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -721,6 +721,32 @@ class Player: ComponentActivity(), Player.Listener {
                                         contentDescription = ""
                                     )
                                 }
+                                // Loop Button
+                                if (playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
+                                    Box(
+                                        contentAlignment = Alignment.Center,
+                                        modifier = Modifier
+                                            .width(50.dp)
+                                            .clip(CircleShape)
+                                            .noRippleClickable {
+                                                if (playerController.value?.repeatMode == Player.REPEAT_MODE_OFF) {
+                                                    playerController.value?.repeatMode = Player.REPEAT_MODE_ONE
+                                                } else {
+                                                    playerController.value?.repeatMode = Player.REPEAT_MODE_OFF
+                                                }
+                                            }
+                                    ) {
+                                        Icon(
+                                            imageVector = if (!loopCheckedState) {
+                                                Icons.Outlined.Repeat
+                                            } else {
+                                                Icons.Outlined.RepeatOne
+                                            },
+                                            tint = Color.White,
+                                            contentDescription = ""
+                                        )
+                                    }
+                                }
                                 // Subtitles Button
                                 if (playerSubtitles != null && playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
                                     Box(
@@ -878,42 +904,6 @@ class Player: ComponentActivity(), Player.Listener {
                                 tint = Color.White,
                                 contentDescription = ""
                             )
-                        }
-                    }
-                    // Loop Video
-                    if (playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
-                        Row(
-                            modifier = Modifier
-                                .height(40.dp)
-                                .padding(start = 10.dp)
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .align(Alignment.CenterVertically)
-                            ) {
-                                Text(
-                                    text = "Loop Video",
-                                    color = Color.White,
-                                    overflow = TextOverflow.Ellipsis,
-                                    maxLines = 1
-                                )
-                            }
-                            Column(
-                                modifier = Modifier.align(Alignment.CenterVertically)
-                            ) {
-                                Switch(
-                                    modifier = Modifier.scale(0.8f),
-                                    checked = loopCheckedState,
-                                    onCheckedChange = {
-                                        if (playerController.value?.repeatMode == Player.REPEAT_MODE_OFF) {
-                                            playerController.value?.repeatMode = Player.REPEAT_MODE_ONE
-                                        } else {
-                                            playerController.value?.repeatMode = Player.REPEAT_MODE_OFF
-                                        }
-                                    }
-                                )
-                            }
                         }
                     }
                     // Playback Speed
