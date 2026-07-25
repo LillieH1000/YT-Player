@@ -67,6 +67,7 @@ android {
 }
 
 kotlin {
+    jvmToolchain(25)
     compilerOptions {
         languageVersion = KotlinVersion.KOTLIN_2_4
         jvmTarget = JvmTarget.JVM_25
