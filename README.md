@@ -12,7 +12,7 @@ Features:
 - Picture In Picture
 - Sleep Timer
 - Subtitles
-- Video Info (Views, likes, dislikes)
+- Playback Speed
 - Android Auto (Audio only, supports voice search)
 - [SponsorBlock](https://sponsor.ajay.app/) (Only auto skips sponsors)
 
@@ -37,4 +37,4 @@ Usage:
 <br>
 
 ## Open Source Libraries
-- [AndroidX](https://github.com/androidx/androidx), [Chaquopy](https://github.com/chaquo/chaquopy), [Kotlin](https://github.com/JetBrains/kotlin), [Kotlinx Coroutines](https://github.com/Kotlin/kotlinx.coroutines), [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization), [Media3](https://github.com/androidx/media), [OkHttp](https://github.com/square/okhttp), [Return YouTube Dislike](https://github.com/Anarios/return-youtube-dislike), [SponsorBlock](https://github.com/ajayyy/SponsorBlock), [yt-dlp](https://github.com/yt-dlp/yt-dlp)
+- [AndroidX](https://github.com/androidx/androidx), [Chaquopy](https://github.com/chaquo/chaquopy), [Kotlin](https://github.com/JetBrains/kotlin), [Kotlinx Coroutines](https://github.com/Kotlin/kotlinx.coroutines), [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization), [Media3](https://github.com/androidx/media), [OkHttp](https://github.com/square/okhttp), [SponsorBlock](https://github.com/ajayyy/SponsorBlock), [yt-dlp](https://github.com/yt-dlp/yt-dlp)
