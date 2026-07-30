@@ -1008,7 +1008,6 @@ class Player: ComponentActivity(), Player.Listener {
                         modifier = Modifier.padding(start = 10.dp, end = 10.dp)
                     ) {
                         val sliderSource = remember { MutableInteractionSource() }
-                        @OptIn(ExperimentalMaterial3Api::class)
                         Slider(
                             interactionSource = sliderSource,
                             steps = 18,
