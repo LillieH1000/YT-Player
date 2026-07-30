@@ -858,7 +858,7 @@ class Player: ComponentActivity(), Player.Listener {
                     BottomSheetDefaults.DragHandle(color = Color.LightGray)
                 },
                 onDismissRequest = {
-                    showSubtitles.value = false
+                    showSleepTimer.value = false
                 }
             ) {
                 Box(
