@@ -55,8 +55,6 @@ def getInfo(runtime, videoID, searchQuery):
         info["author"] = y["uploader"]
         info["artwork"] = y["thumbnail"]
         info["live"] = y["is_live"]
-        info["views"] = y["view_count"]
-        info["likes"] = y["like_count"]
         info["type"] = y["media_type"]
         info["duration"] = y.get("duration", None)
         

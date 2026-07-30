@@ -9,8 +9,6 @@ data class YTdlp(
     val author: String,
     val artwork: String,
     val live: Boolean,
-    val views: Long,
-    val likes: Long,
     val type: String,
     val duration: Long?,
     val video: ArrayList<Video>?,

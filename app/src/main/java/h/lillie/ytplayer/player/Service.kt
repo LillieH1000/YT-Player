@@ -306,7 +306,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
             if (intent?.action == "h.lillie.ytplayer.service.info") {
                 val request = Requests()
                 val info = request.extractor(this@Service, intent.extras!!.getString("videoID"), intent.extras!!.getString("searchQuery")) ?: return@coroutineScope
-                val dislikes = request.returnYouTubeDislike(this@Service, info.id)
                 sponsorBlock = request.sponsorBlock(this@Service, info.id)
                 playerTimer?.cancel()
                 playerTimer = null
@@ -315,11 +314,8 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 playerExtraInfo.putString("id", info.id)
                 playerExtraInfo.putString("type", info.type)
                 playerExtraInfo.putBoolean("live", info.live)
-                playerExtraInfo.putLong("views", info.views)
-                playerExtraInfo.putLong("likes", info.likes)
                 playerExtraInfo.putString("hlsUrl", info.hlsUrl)
                 if (info.expiration != null) playerExtraInfo.putLong("expiration", info.expiration)
-                if (dislikes != null) playerExtraInfo.putLong("dislikes", dislikes)
 
                 val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
                     .setTitle(info.title)
