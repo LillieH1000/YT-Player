@@ -312,7 +312,6 @@ class Player: ComponentActivity(), Player.Listener {
     private var playbackSpeed = MutableStateFlow(1f)
     private var playerTime = MutableStateFlow<String?>(null)
     private var showOverlay = MutableStateFlow(true)
-    private var showInfo = MutableStateFlow(false)
     private var showSubtitles = MutableStateFlow(false)
     private var showSleepTimer = MutableStateFlow(false)
     private var showPlaybackSpeed = MutableStateFlow(false)
@@ -334,7 +333,6 @@ class Player: ComponentActivity(), Player.Listener {
         val playbackSpeedState by playbackSpeed.collectAsState()
         val playerTimeState by playerTime.collectAsState()
         val showOverlayState by showOverlay.collectAsState()
-        val showInfoState by showInfo.collectAsState()
         val showSubtitlesState by showSubtitles.collectAsState()
         val showSleepTimerState by showSleepTimer.collectAsState()
         val showPlaybackSpeedState by showPlaybackSpeed.collectAsState()
@@ -1048,31 +1046,6 @@ class Player: ComponentActivity(), Player.Listener {
                             maxLines = 1
                         )
                     }
-                }
-            }
-        }
-
-        // Info Sheet
-
-        if (showInfoState) {
-            @OptIn(ExperimentalMaterial3Api::class)
-            ModalBottomSheet(
-                containerColor = Color.DarkGray,
-                modifier = Modifier.statusBarsPadding(),
-                dragHandle = {
-                    BottomSheetDefaults.DragHandle(color = Color.LightGray)
-                },
-                onDismissRequest = {
-                    showInfo.value = false
-                }
-            ) {
-                Box(
-                    modifier = Modifier
-                        .systemBarsPadding()
-                        .padding(bottom = 20.dp)
-                        .wrapContentHeight()
-                        .fillMaxWidth()
-                ) {
                 }
             }
         }
