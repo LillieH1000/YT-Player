@@ -58,6 +58,7 @@ import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material.icons.outlined.Bedtime
 import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material.icons.outlined.RepeatOne
+import androidx.compose.material.icons.outlined.Speed
 import androidx.compose.material.icons.outlined.Subtitles
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Checkbox
@@ -88,6 +89,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.C
+import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.text.Cue
 import androidx.media3.common.text.CueGroup
@@ -105,6 +107,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.text.DecimalFormat
 import java.util.Collections
 import java.util.concurrent.TimeUnit
 
@@ -306,10 +309,12 @@ class Player: ComponentActivity(), Player.Listener {
     private var playerDuration = MutableStateFlow(0f)
     private var playerPosition = MutableStateFlow(0f)
     private var playerSize = MutableStateFlow(false)
+    private var playbackSpeed = MutableStateFlow(1f)
     private var playerTime = MutableStateFlow<String?>(null)
     private var showOverlay = MutableStateFlow(true)
     private var showSubtitles = MutableStateFlow(false)
     private var showSleepTimer = MutableStateFlow(false)
+    private var showPlaybackSpeed = MutableStateFlow(false)
     private var subtitlesChecked = MutableStateFlow<List<Boolean>>(listOf())
     private var sleepTimerChecked = MutableStateFlow(listOf(false, false, false, false, false))
 
@@ -325,10 +330,12 @@ class Player: ComponentActivity(), Player.Listener {
         val playerDurationState by playerDuration.collectAsState()
         val playerPositionState by playerPosition.collectAsState()
         val playerSizeState by playerSize.collectAsState()
+        val playbackSpeedState by playbackSpeed.collectAsState()
         val playerTimeState by playerTime.collectAsState()
         val showOverlayState by showOverlay.collectAsState()
         val showSubtitlesState by showSubtitles.collectAsState()
         val showSleepTimerState by showSleepTimer.collectAsState()
+        val showPlaybackSpeedState by showPlaybackSpeed.collectAsState()
         val subtitlesCheckedState by subtitlesChecked.collectAsState()
         val sleepTimerCheckedState by sleepTimerChecked.collectAsState()
 
@@ -707,6 +714,24 @@ class Player: ComponentActivity(), Player.Listener {
                                         )
                                     }
                                 }
+                                // Speed Button
+                                if (playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
+                                    Box(
+                                        contentAlignment = Alignment.Center,
+                                        modifier = Modifier
+                                            .width(50.dp)
+                                            .clip(CircleShape)
+                                            .noRippleClickable {
+                                                showPlaybackSpeed.value = true
+                                            }
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Outlined.Speed,
+                                            tint = Color.White,
+                                            contentDescription = ""
+                                        )
+                                    }
+                                }
                                 // Subtitles Button
                                 if (playerSubtitles != null && playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
                                     Box(
@@ -957,6 +982,74 @@ class Player: ComponentActivity(), Player.Listener {
                 }
             }
         }
+
+        // Playback Speed Sheet
+
+        if (showPlaybackSpeedState) {
+            @OptIn(ExperimentalMaterial3Api::class)
+            ModalBottomSheet(
+                containerColor = Color.DarkGray,
+                modifier = Modifier.statusBarsPadding(),
+                dragHandle = {
+                    BottomSheetDefaults.DragHandle(color = Color.LightGray)
+                },
+                onDismissRequest = {
+                    showPlaybackSpeed.value = false
+                }
+            ) {
+                Box(
+                    modifier = Modifier
+                        .systemBarsPadding()
+                        .padding(bottom = 20.dp)
+                        .wrapContentHeight()
+                        .fillMaxWidth()
+                ) {
+                    Column(
+                        modifier = Modifier.padding(start = 10.dp, end = 10.dp)
+                    ) {
+                        val sliderSource = remember { MutableInteractionSource() }
+                        @OptIn(ExperimentalMaterial3Api::class)
+                        Slider(
+                            interactionSource = sliderSource,
+                            steps = 18,
+                            thumb = {
+                                SliderDefaults.Thumb(
+                                    interactionSource = sliderSource,
+                                    colors = SliderDefaults.colors(
+                                        thumbColor = Color.LightGray
+                                    ),
+                                )
+                            },
+                            track = { sliderState ->
+                                SliderDefaults.Track(
+                                    colors = SliderDefaults.colors(
+                                        activeTickColor = Color.DarkGray,
+                                        inactiveTickColor = Color.DarkGray,
+                                        activeTrackColor = Color.LightGray,
+                                        inactiveTrackColor = Color.LightGray
+                                    ),
+                                    sliderState = sliderState
+                                )
+                            },
+                            value = playbackSpeedState,
+                            valueRange = 0.1f..2f,
+                            onValueChange = { value ->
+                                val decimalFormat = DecimalFormat("#.#")
+                                playerController.value!!.playbackParameters = PlaybackParameters(decimalFormat.format(value).toFloat())
+                                playbackSpeed.value = decimalFormat.format(value).toFloat()
+                            }
+                        )
+                        Text(
+                            modifier = Modifier.padding(start = 5.dp, end = 5.dp),
+                            text = "Speed: $playbackSpeedState",
+                            color = Color.White,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
+                    }
+                }
+            }
+        }
     }
 
     private fun createPlayer(videoID: String?) {
@@ -974,6 +1067,7 @@ class Player: ComponentActivity(), Player.Listener {
         playerControllerFuture.addListener({
             playerController.value = playerControllerFuture.get()
             playerController.value!!.addListener(this)
+            playbackSpeed.value = 1f
 
             Collections.replaceAll(sleepTimerChecked.value, true, false)
             sleepTimerChecked.update { list ->
