@@ -229,6 +229,7 @@ class Player: ComponentActivity(), Player.Listener {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         if (isInPictureInPictureMode) {
             showOverlay.value = false
+            showPlaybackSpeed.value = false
             showSubtitles.value = false
             showSleepTimer.value = false
         }
@@ -411,6 +412,7 @@ class Player: ComponentActivity(), Player.Listener {
                         onClick = {
                             if (playerControllerState?.mediaItemCount == 1) {
                                 showOverlay.value = !showOverlayState
+                                showPlaybackSpeed.value = false
                                 showSubtitles.value = false
                                 showSleepTimer.value = false
                             }
@@ -426,6 +428,7 @@ class Player: ComponentActivity(), Player.Listener {
                         onClick = {
                             if (playerControllerState?.mediaItemCount == 1) {
                                 showOverlay.value = !showOverlayState
+                                showPlaybackSpeed.value = false
                                 showSubtitles.value = false
                                 showSleepTimer.value = false
                             }
@@ -443,6 +446,7 @@ class Player: ComponentActivity(), Player.Listener {
                         onClick = {
                             if (playerControllerState?.mediaItemCount == 1) {
                                 showOverlay.value = !showOverlayState
+                                showPlaybackSpeed.value = false
                                 showSubtitles.value = false
                                 showSleepTimer.value = false
                             }
@@ -1055,6 +1059,7 @@ class Player: ComponentActivity(), Player.Listener {
         playerController.value?.stop()
         playerController.value?.removeMediaItem(0)
         showOverlay.value = true
+        showPlaybackSpeed.value = false
         showSubtitles.value = false
         showSleepTimer.value = false
         isPlaying.value = 0
