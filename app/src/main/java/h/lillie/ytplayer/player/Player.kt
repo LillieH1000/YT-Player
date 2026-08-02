@@ -1098,27 +1098,27 @@ class Player: ComponentActivity(), Player.Listener {
     }
 
     private fun optTime(time: Long): String {
-        val hours: Int = TimeUnit.MILLISECONDS.toHours(time).toInt()
-        val minutes: Int = (TimeUnit.MILLISECONDS.toMinutes(time) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(time))).toInt()
-        val seconds: Int = (TimeUnit.MILLISECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(time))).toInt()
+        val hours: Long = TimeUnit.MILLISECONDS.toHours(time)
+        val minutes: Long = (TimeUnit.MILLISECONDS.toMinutes(time) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(time)))
+        val seconds: Long = (TimeUnit.MILLISECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(time)))
         var formatted = ""
-        if (hours != 0) {
+        if (hours != 0L) {
             formatted += "$hours:"
         }
         if (formatted != "") {
-            if (minutes >= 10) {
-                formatted += "$minutes:"
+            formatted += if (minutes >= 10) {
+                "$minutes:"
             } else {
-                formatted += "0$minutes:"
+                "0$minutes:"
             }
         }
         if (formatted == "") {
             formatted += "$minutes:"
         }
-        if (seconds >= 10) {
-            formatted += seconds
+        formatted += if (seconds >= 10) {
+            seconds
         } else {
-            formatted += "0$seconds"
+            "0$seconds"
         }
         return formatted
     }
