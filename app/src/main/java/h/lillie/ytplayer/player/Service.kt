@@ -288,12 +288,12 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
 
         if (repeatMode == Player.REPEAT_MODE_OFF) {
             mediaButtons.add(CommandButton.Builder(CommandButton.ICON_REPEAT_ALL)
-                .setDisplayName("Loop Off")
+                .setDisplayName("Loop")
                 .setPlayerCommand(Player.COMMAND_SET_REPEAT_MODE, Player.REPEAT_MODE_ONE)
                 .build())
         } else {
             mediaButtons.add(CommandButton.Builder(CommandButton.ICON_REPEAT_ONE)
-                .setDisplayName("Loop On")
+                .setDisplayName("Loop")
                 .setPlayerCommand(Player.COMMAND_SET_REPEAT_MODE, Player.REPEAT_MODE_OFF)
                 .build())
         }
