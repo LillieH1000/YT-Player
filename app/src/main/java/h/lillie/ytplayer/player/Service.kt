@@ -163,7 +163,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
     }
 
     override fun onConnect(session: MediaSession, controller: MediaSession.ControllerInfo): MediaSession.ConnectionResult {
-        val connectionResult: MediaSession.ConnectionResult = MediaSession.ConnectionResult.AcceptedResultBuilder(session)
+        val connectionResult: MediaSession.ConnectionResult = MediaSession.ConnectionResult.AcceptedResultBuilder(session, controller)
             .setAvailablePlayerCommands(
                 MediaSession.ConnectionResult.DEFAULT_PLAYER_COMMANDS.buildUpon()
                     .remove(Player.COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
