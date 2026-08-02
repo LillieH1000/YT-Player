@@ -304,11 +304,12 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
     private val playerBroadcastReceiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) = coroutineScope {
             if (intent?.action == "h.lillie.ytplayer.service.info") {
+                playerTimer?.cancel()
+                playerTimer = null
+
                 val request = Requests()
                 val info = request.extractor(this@Service, intent.extras!!.getString("videoID"), intent.extras!!.getString("searchQuery")) ?: return@coroutineScope
                 sponsorBlock = request.sponsorBlock(this@Service, info.id)
-                playerTimer?.cancel()
-                playerTimer = null
 
                 val playerExtraInfo = Bundle()
                 playerExtraInfo.putString("id", info.id)
