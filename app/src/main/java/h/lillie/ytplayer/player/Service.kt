@@ -69,6 +69,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
     private lateinit var playerCache: SimpleCache
     private lateinit var playerDataSource: DataSource.Factory
     private var playerHandler: Handler = Handler(Looper.getMainLooper())
+    private var playerReady: Boolean = false
     private var playerSession: MediaLibrarySession? = null
     private var playerTimer: CountDownTimer? = null
     private var sponsorBlock: JSONArray? = null
@@ -202,7 +203,10 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         super.onPlaybackStateChanged(playbackState)
         @SuppressLint("SwitchIntDef")
         when (playbackState) {
-            Player.STATE_READY -> exoPlayer.play()
+            Player.STATE_READY -> {
+                playerReady = true
+                exoPlayer.play()
+            }
         }
     }
 
@@ -304,6 +308,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
     private val playerBroadcastReceiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) = coroutineScope {
             if (intent?.action == "h.lillie.ytplayer.service.info") {
+                playerReady = false
                 playerTimer?.cancel()
                 playerTimer = null
 
@@ -413,7 +418,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
     private val playerTask = object: Runnable {
         override fun run() {
             val sponsorBlock: JSONArray? = sponsorBlock
-            if (sponsorBlock != null && this@Service::exoPlayer.isInitialized && exoPlayer.mediaMetadata.extras?.getBoolean("live") != true) {
+            if (sponsorBlock != null && playerReady && this@Service::exoPlayer.isInitialized && exoPlayer.mediaMetadata.extras?.getBoolean("live") != true) {
                 for (i in 0 until sponsorBlock.length()) {
                     val decimalFormat = DecimalFormat("#.###")
 
