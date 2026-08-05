@@ -15,6 +15,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import org.json.JSONArray
+import org.json.JSONObject
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
@@ -83,6 +84,8 @@ class Requests {
             info.author,
             info.artwork,
             info.live,
+            info.views,
+            info.likes,
             info.type,
             info.hls?.url,
             info.hls?.expiration,
@@ -90,6 +93,16 @@ class Requests {
             info.subtitles,
             manifest.absolutePath
         )
+    }
+
+    suspend fun returnYouTubeDislike(context: Context, videoID: String): Long? = withContext(Dispatchers.IO) {
+        val body: String = if (SdkExtensions.getExtensionVersion(Build.VERSION_CODES.S) >= 7) {
+            httpEngineRequest(context, "https://returnyoutubedislikeapi.com/votes?videoId=$videoID")
+        } else {
+            okHttpRequest("https://returnyoutubedislikeapi.com/votes?videoId=$videoID")
+        } ?: return@withContext null
+
+        return@withContext JSONObject(body).getLong("dislikes")
     }
 
     suspend fun sponsorBlock(context: Context, videoID: String): JSONArray? = withContext(Dispatchers.IO) {

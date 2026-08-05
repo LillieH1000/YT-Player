@@ -9,6 +9,8 @@ data class Return(
     val author: String,
     val artwork: String,
     val live: Boolean,
+    val views: Long,
+    val likes: Long,
     val type: String,
     val hlsUrl: String?,
     val expiration: Long?,
