@@ -6,6 +6,7 @@ def getInfo(runtime, videoID):
     ytdlp_opts = {
         "cachedir": False,
         "check_formats": "selected",
+        "extract_flat": True,
         "extractor_args": {
             "youtube": {
                 "player_client": [
@@ -25,13 +26,15 @@ def getInfo(runtime, videoID):
                 "path": runtime
             }
         },
-        "noplaylist": True
+        "noplaylist": True,
+        "playlist_items": "0"
     }
 
     info = {}
     with yt_dlp.YoutubeDL(ytdlp_opts) as ytdlp:
         x = ytdlp.extract_info(f"https://www.youtube.com/watch?v={videoID}", download=False)
         y = json.loads(json.dumps(ytdlp.sanitize_info(x)))
+        z = ytdlp.extract_info(y["uploader_url"], download=False)
 
         a = ytdlp.urlopen(f"https://www.youtube.com/watch?v={y['id']}").read().decode("utf-8")
         b = re.search(r"ytInitialPlayerResponse\s*=\s*({.+?});", a)
