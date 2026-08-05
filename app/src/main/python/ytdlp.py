@@ -48,7 +48,7 @@ def getInfo(runtime, videoID):
         info["id"] = y["id"]
         info["title"] = y["title"]
         info["author"] = y["uploader"] or y["uploader_id"]
-        info["artwork"] = y["thumbnail"]
+        info["thumbnail"] = y["thumbnail"]
         info["live"] = y["is_live"]
         info["views"] = y["view_count"]
         info["likes"] = y["like_count"]

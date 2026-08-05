@@ -317,7 +317,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
                     .setTitle(info.title)
                     .setArtist(info.author)
-                    .setArtworkUri(info.artwork.toUri())
+                    .setArtworkUri(info.thumbnail.toUri())
                     .setExtras(playerExtraInfo)
                     .setIsBrowsable(false)
                     .setIsPlayable(true)

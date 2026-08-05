@@ -7,7 +7,7 @@ data class YTdlp(
     val id: String,
     val title: String,
     val author: String,
-    val artwork: String,
+    val thumbnail: String,
     val live: Boolean,
     val views: Long,
     val likes: Long,
