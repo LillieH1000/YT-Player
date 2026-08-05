@@ -215,18 +215,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         playerMediaButtons(repeatMode)
     }
 
-    override fun onSetMediaItems(mediaSession: MediaSession, controller: MediaSession.ControllerInfo, mediaItems: MutableList<MediaItem>, startIndex: Int, startPositionMs: Long): ListenableFuture<MediaSession.MediaItemsWithStartPosition> {
-        val searchQuery: String? = mediaItems[0].requestMetadata.searchQuery
-        if (searchQuery != null) {
-            val broadcastIntent = Intent("h.lillie.ytplayer.service.info")
-            broadcastIntent.setPackage(this.packageName)
-            broadcastIntent.putExtra("videoID", null as String?)
-            broadcastIntent.putExtra("searchQuery", searchQuery)
-            sendBroadcast(broadcastIntent)
-        }
-        return super.onSetMediaItems(mediaSession, controller, mediaItems, startIndex, startPositionMs)
-    }
-
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
         @SuppressLint("SwitchIntDef")
@@ -257,7 +245,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     val broadcastIntent = Intent("h.lillie.ytplayer.service.info")
                     broadcastIntent.setPackage(this.packageName)
                     broadcastIntent.putExtra("videoID", exoPlayer.mediaMetadata.extras?.getString("id"))
-                    broadcastIntent.putExtra("searchQuery", null as String?)
                     sendBroadcast(broadcastIntent)
                 }
             }
@@ -313,7 +300,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 playerTimer = null
 
                 val request = Requests()
-                val info = request.extractor(this@Service, intent.extras!!.getString("videoID"), intent.extras!!.getString("searchQuery")) ?: return@coroutineScope
+                val info = request.extractor(this@Service, intent.extras!!.getString("videoID")!!) ?: return@coroutineScope
                 val dislikes = request.returnYouTubeDislike(this@Service, info.id)
                 sponsorBlock = request.sponsorBlock(this@Service, info.id)
 

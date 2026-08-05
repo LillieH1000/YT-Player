@@ -2,7 +2,7 @@ import json
 import re
 import yt_dlp
 
-def getInfo(runtime, videoID, searchQuery):
+def getInfo(runtime, videoID):
     ytdlp_opts = {
         "cachedir": False,
         "check_formats": "selected",
@@ -30,13 +30,8 @@ def getInfo(runtime, videoID, searchQuery):
 
     info = {}
     with yt_dlp.YoutubeDL(ytdlp_opts) as ytdlp:
-        if (searchQuery == None):
-            x = ytdlp.extract_info(f"https://www.youtube.com/watch?v={videoID}", download=False)
-            y = json.loads(json.dumps(ytdlp.sanitize_info(x)))
-        if (videoID == None):
-            x = ytdlp.extract_info(f"ytsearch:{searchQuery}", download=False)
-            z = json.loads(json.dumps(ytdlp.sanitize_info(x)))
-            y = z["entries"][0]
+        x = ytdlp.extract_info(f"https://www.youtube.com/watch?v={videoID}", download=False)
+        y = json.loads(json.dumps(ytdlp.sanitize_info(x)))
 
         a = ytdlp.urlopen(f"https://www.youtube.com/watch?v={y['id']}").read().decode("utf-8")
         b = re.search(r"ytInitialPlayerResponse\s*=\s*({.+?});", a)

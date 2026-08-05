@@ -22,11 +22,11 @@ import java.net.URL
 import kotlin.time.Duration.Companion.seconds
 
 class Requests {
-    suspend fun extractor(context: Context, videoID: String?, searchQuery: String?): Return? = withContext(Dispatchers.IO) {
+    suspend fun extractor(context: Context, videoID: String): Return? = withContext(Dispatchers.IO) {
         val py: Python = Python.getInstance()
 
         val info: YTdlp = runCatching {
-            Json.decodeFromString<YTdlp>(py.getModule("ytdlp").callAttr("getInfo", "${context.applicationInfo.nativeLibraryDir}/libqjs.so", videoID, searchQuery).toString())
+            Json.decodeFromString<YTdlp>(py.getModule("ytdlp").callAttr("getInfo", "${context.applicationInfo.nativeLibraryDir}/libqjs.so", videoID).toString())
         }.getOrNull() ?: return@withContext null
 
         val base: String = buildString {

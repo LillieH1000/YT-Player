@@ -1119,7 +1119,6 @@ class Player: ComponentActivity(), Player.Listener {
             val broadcastIntent = Intent("h.lillie.ytplayer.service.info")
             broadcastIntent.setPackage(this.packageName)
             broadcastIntent.putExtra("videoID", videoID)
-            broadcastIntent.putExtra("searchQuery", null as String?)
             sendBroadcast(broadcastIntent)
         }, MoreExecutors.directExecutor())
     }
