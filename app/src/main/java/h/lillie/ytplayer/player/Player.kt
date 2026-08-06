@@ -571,7 +571,7 @@ class Player: ComponentActivity(), Player.Listener {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
-                                .width(50.dp)
+                                .width(40.dp)
                                 .align(Alignment.CenterVertically)
                                 .clip(CircleShape)
                                 .noRippleClickable {
@@ -590,7 +590,7 @@ class Player: ComponentActivity(), Player.Listener {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
-                                .width(50.dp)
+                                .width(40.dp)
                                 .align(Alignment.CenterVertically)
                                 .clip(CircleShape)
                                 .noRippleClickable {
@@ -609,7 +609,7 @@ class Player: ComponentActivity(), Player.Listener {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
-                                .width(50.dp)
+                                .width(40.dp)
                                 .align(Alignment.CenterVertically)
                                 .clip(CircleShape)
                                 .noRippleClickable {
