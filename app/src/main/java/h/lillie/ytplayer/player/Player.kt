@@ -232,6 +232,7 @@ class Player: ComponentActivity(), Player.Listener {
             showPlaybackSpeed.value = false
             showSubtitles.value = false
             showSleepTimer.value = false
+            showInfo.value = false
         }
     }
 
@@ -417,6 +418,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 showPlaybackSpeed.value = false
                                 showSubtitles.value = false
                                 showSleepTimer.value = false
+                                showInfo.value = false
                             }
                         }
                     )
@@ -433,6 +435,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 showPlaybackSpeed.value = false
                                 showSubtitles.value = false
                                 showSleepTimer.value = false
+                                showInfo.value = false
                             }
                         }
                     )
@@ -451,6 +454,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 showPlaybackSpeed.value = false
                                 showSubtitles.value = false
                                 showSleepTimer.value = false
+                                showInfo.value = false
                             }
                         }
                     )
@@ -1082,6 +1086,7 @@ class Player: ComponentActivity(), Player.Listener {
         showPlaybackSpeed.value = false
         showSubtitles.value = false
         showSleepTimer.value = false
+        showInfo.value = false
         isPlaying.value = 0
 
         Toast.makeText(this, "Loading, please wait", Toast.LENGTH_SHORT).show()
