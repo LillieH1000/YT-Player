@@ -82,7 +82,7 @@ class Requests {
             info.id,
             info.title,
             info.author,
-            info.artwork,
+            info.thumbnail,
             info.live,
             info.views,
             info.likes,

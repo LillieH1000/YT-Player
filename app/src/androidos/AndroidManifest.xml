@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <application>
         <meta-data android:name="com.google.android.gms.car.application" android:resource="@xml/auto" />
         <activity
@@ -7,7 +9,8 @@
             android:exported="true"
             android:launchMode="singleInstance"
             android:supportsPictureInPicture="true"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode">
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            tools:ignore="MissingIntentFilterForMediaSearch">
             <property android:name="android.window.PROPERTY_COMPAT_ALLOW_RESTRICTED_RESIZABILITY" android:value="true" />
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
