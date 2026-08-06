@@ -1239,6 +1239,18 @@ class Player: ComponentActivity(), Player.Listener {
                             }
                         }
                     }
+                    HorizontalDivider(
+                        color = Color.LightGray,
+                        modifier = Modifier.padding(10.dp)
+                    )
+                    // Description
+                    Row {
+                        Text(
+                            modifier = Modifier.padding(start = 15.dp, end = 15.dp),
+                            text = playerControllerState?.mediaMetadata?.extras?.getString("description")!!,
+                            color = Color.White
+                        )
+                    }
                 }
             }
         }
