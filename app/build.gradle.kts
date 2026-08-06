@@ -60,6 +60,10 @@ android {
         }
     }
 
+    lint {
+        disable += "MissingIntentFilterForMediaSearch"
+    }
+
     buildFeatures {
         compose = true
     }
