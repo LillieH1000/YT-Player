@@ -8,6 +8,7 @@ data class Return(
     val title: String,
     val author: String,
     val thumbnail: String,
+    val description: String,
     val live: Boolean,
     val views: Long,
     val likes: Long,

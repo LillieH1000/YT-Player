@@ -83,6 +83,7 @@ class Requests {
             info.title,
             info.author,
             info.thumbnail,
+            info.description,
             info.live,
             info.views,
             info.likes,
