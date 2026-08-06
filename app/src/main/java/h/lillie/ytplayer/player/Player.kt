@@ -67,6 +67,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
@@ -772,7 +773,24 @@ class Player: ComponentActivity(), Player.Listener {
                 containerColor = Color.DarkGray,
                 modifier = Modifier.statusBarsPadding(),
                 dragHandle = {
-                    BottomSheetDefaults.DragHandle(color = Color.LightGray)
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .align(Alignment.CenterStart)
+                                .padding(start = 15.dp, end = 15.dp, top = 5.dp),
+                            text = "Subtitles",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.White,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
+                        BottomSheetDefaults.DragHandle(
+                            modifier = Modifier.align(Alignment.Center),
+                            color = Color.LightGray
+                        )
+                    }
                 },
                 onDismissRequest = {
                     showSubtitles.value = false
@@ -887,7 +905,24 @@ class Player: ComponentActivity(), Player.Listener {
                 containerColor = Color.DarkGray,
                 modifier = Modifier.statusBarsPadding(),
                 dragHandle = {
-                    BottomSheetDefaults.DragHandle(color = Color.LightGray)
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .align(Alignment.CenterStart)
+                                .padding(start = 15.dp, end = 15.dp, top = 5.dp),
+                            text = "Sleep Timer",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.White,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
+                        BottomSheetDefaults.DragHandle(
+                            modifier = Modifier.align(Alignment.Center),
+                            color = Color.LightGray
+                        )
+                    }
                 },
                 onDismissRequest = {
                     showSleepTimer.value = false
@@ -998,7 +1033,24 @@ class Player: ComponentActivity(), Player.Listener {
                 containerColor = Color.DarkGray,
                 modifier = Modifier.statusBarsPadding(),
                 dragHandle = {
-                    BottomSheetDefaults.DragHandle(color = Color.LightGray)
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .align(Alignment.CenterStart)
+                                .padding(start = 15.dp, end = 15.dp, top = 5.dp),
+                            text = "Playback Speed",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.White,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
+                        BottomSheetDefaults.DragHandle(
+                            modifier = Modifier.align(Alignment.Center),
+                            color = Color.LightGray
+                        )
+                    }
                 },
                 onDismissRequest = {
                     showPlaybackSpeed.value = false
@@ -1065,7 +1117,24 @@ class Player: ComponentActivity(), Player.Listener {
                 containerColor = Color.DarkGray,
                 modifier = Modifier.statusBarsPadding(),
                 dragHandle = {
-                    BottomSheetDefaults.DragHandle(color = Color.LightGray)
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .align(Alignment.CenterStart)
+                                .padding(start = 15.dp, end = 15.dp, top = 5.dp),
+                            text = "Info",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.White,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
+                        BottomSheetDefaults.DragHandle(
+                            modifier = Modifier.align(Alignment.Center),
+                            color = Color.LightGray
+                        )
+                    }
                 },
                 onDismissRequest = {
                     showInfo.value = false
