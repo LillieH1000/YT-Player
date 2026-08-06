@@ -1159,7 +1159,7 @@ class Player: ComponentActivity(), Player.Listener {
                     showInfo.value = false
                 }
             ) {
-                Box(
+                Column(
                     modifier = Modifier
                         .systemBarsPadding()
                         .padding(bottom = 20.dp)
