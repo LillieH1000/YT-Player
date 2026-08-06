@@ -13,7 +13,6 @@ Features:
 - Sleep Timer
 - Subtitles
 - Playback Speed
-- Android Auto (Audio only, supports voice search)
 - [SponsorBlock](https://sponsor.ajay.app/) (Only auto skips sponsors)
 
 <br>
