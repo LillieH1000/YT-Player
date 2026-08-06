@@ -652,109 +652,102 @@ class Player: ComponentActivity(), Player.Listener {
                         .fillMaxWidth()
                 ) {
                     // Title View
-                    Column(
+                    Text(
                         modifier = Modifier
                             .weight(1f)
-                            .align(Alignment.CenterVertically)
-                    ) {
-                        Text(
-                            text = if (playerControllerState?.mediaItemCount == 1) {
-                                playerControllerState?.mediaMetadata?.title.toString()
-                            } else {
-                                ""
-                            },
-                            color = Color.White,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1
-                        )
-                    }
+                            .align(Alignment.CenterVertically),
+                        text = if (playerControllerState?.mediaItemCount == 1) {
+                            playerControllerState?.mediaMetadata?.title.toString()
+                        } else {
+                            ""
+                        },
+                        color = Color.White,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
+                    )
                     // Menu Buttons
-                    Column(
+                    Row(
                         modifier = Modifier
                             .wrapContentWidth()
                             .align(Alignment.CenterVertically)
                     ) {
-                        Row(
-                            modifier = Modifier.wrapContentWidth()
-                        ) {
-                            if (playerControllerState?.mediaItemCount == 1) {
-                                // Sleep Timer Button
+                        if (playerControllerState?.mediaItemCount == 1) {
+                            // Sleep Timer Button
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .width(40.dp)
+                                    .clip(CircleShape)
+                                    .noRippleClickable {
+                                        showSleepTimer.value = true
+                                    }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Bedtime,
+                                    tint = Color.White,
+                                    contentDescription = ""
+                                )
+                            }
+                            // Loop Button
+                            if (playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
                                 Box(
                                     contentAlignment = Alignment.Center,
                                     modifier = Modifier
-                                        .width(50.dp)
+                                        .width(40.dp)
                                         .clip(CircleShape)
                                         .noRippleClickable {
-                                            showSleepTimer.value = true
+                                            if (playerController.value?.repeatMode == Player.REPEAT_MODE_OFF) {
+                                                playerController.value?.repeatMode = Player.REPEAT_MODE_ONE
+                                            } else {
+                                                playerController.value?.repeatMode = Player.REPEAT_MODE_OFF
+                                            }
                                         }
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Outlined.Bedtime,
+                                        imageVector = if (!loopCheckedState) {
+                                            Icons.Outlined.Repeat
+                                        } else {
+                                            Icons.Outlined.RepeatOne
+                                        },
                                         tint = Color.White,
                                         contentDescription = ""
                                     )
                                 }
-                                // Loop Button
-                                if (playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
-                                    Box(
-                                        contentAlignment = Alignment.Center,
-                                        modifier = Modifier
-                                            .width(50.dp)
-                                            .clip(CircleShape)
-                                            .noRippleClickable {
-                                                if (playerController.value?.repeatMode == Player.REPEAT_MODE_OFF) {
-                                                    playerController.value?.repeatMode = Player.REPEAT_MODE_ONE
-                                                } else {
-                                                    playerController.value?.repeatMode = Player.REPEAT_MODE_OFF
-                                                }
-                                            }
-                                    ) {
-                                        Icon(
-                                            imageVector = if (!loopCheckedState) {
-                                                Icons.Outlined.Repeat
-                                            } else {
-                                                Icons.Outlined.RepeatOne
-                                            },
-                                            tint = Color.White,
-                                            contentDescription = ""
-                                        )
-                                    }
+                            }
+                            // Speed Button
+                            if (playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier
+                                        .width(40.dp)
+                                        .clip(CircleShape)
+                                        .noRippleClickable {
+                                            showPlaybackSpeed.value = true
+                                        }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Speed,
+                                        tint = Color.White,
+                                        contentDescription = ""
+                                    )
                                 }
-                                // Speed Button
-                                if (playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
-                                    Box(
-                                        contentAlignment = Alignment.Center,
-                                        modifier = Modifier
-                                            .width(50.dp)
-                                            .clip(CircleShape)
-                                            .noRippleClickable {
-                                                showPlaybackSpeed.value = true
-                                            }
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Outlined.Speed,
-                                            tint = Color.White,
-                                            contentDescription = ""
-                                        )
-                                    }
-                                }
-                                // Subtitles Button
-                                if (playerSubtitles != null && playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
-                                    Box(
-                                        contentAlignment = Alignment.Center,
-                                        modifier = Modifier
-                                            .width(50.dp)
-                                            .clip(CircleShape)
-                                            .noRippleClickable {
-                                                showSubtitles.value = true
-                                            }
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Outlined.Subtitles,
-                                            tint = Color.White,
-                                            contentDescription = ""
-                                        )
-                                    }
+                            }
+                            // Subtitles Button
+                            if (playerSubtitles != null && playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier
+                                        .width(40.dp)
+                                        .clip(CircleShape)
+                                        .noRippleClickable {
+                                            showSubtitles.value = true
+                                        }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Subtitles,
+                                        tint = Color.White,
+                                        contentDescription = ""
+                                    )
                                 }
                             }
                         }
