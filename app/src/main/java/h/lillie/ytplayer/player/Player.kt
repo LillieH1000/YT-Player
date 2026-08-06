@@ -681,6 +681,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 contentAlignment = Alignment.Center,
                                 modifier = Modifier
                                     .width(40.dp)
+                                    .align(Alignment.CenterVertically)
                                     .clip(CircleShape)
                                     .noRippleClickable {
                                         showSleepTimer.value = true
@@ -698,6 +699,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     contentAlignment = Alignment.Center,
                                     modifier = Modifier
                                         .width(40.dp)
+                                        .align(Alignment.CenterVertically)
                                         .clip(CircleShape)
                                         .noRippleClickable {
                                             if (playerController.value?.repeatMode == Player.REPEAT_MODE_OFF) {
@@ -724,6 +726,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     contentAlignment = Alignment.Center,
                                     modifier = Modifier
                                         .width(40.dp)
+                                        .align(Alignment.CenterVertically)
                                         .clip(CircleShape)
                                         .noRippleClickable {
                                             showPlaybackSpeed.value = true
@@ -742,6 +745,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     contentAlignment = Alignment.Center,
                                     modifier = Modifier
                                         .width(40.dp)
+                                        .align(Alignment.CenterVertically)
                                         .clip(CircleShape)
                                         .noRippleClickable {
                                             showSubtitles.value = true
