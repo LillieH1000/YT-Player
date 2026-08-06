@@ -800,7 +800,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 .align(Alignment.CenterStart)
                                 .padding(start = 15.dp, end = 15.dp, top = 5.dp),
                             text = "Subtitles",
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.titleSmall,
                             color = Color.White,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
@@ -932,7 +932,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 .align(Alignment.CenterStart)
                                 .padding(start = 15.dp, end = 15.dp, top = 5.dp),
                             text = "Sleep Timer",
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.titleSmall,
                             color = Color.White,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
@@ -1060,7 +1060,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 .align(Alignment.CenterStart)
                                 .padding(start = 15.dp, end = 15.dp, top = 5.dp),
                             text = "Playback Speed",
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.titleSmall,
                             color = Color.White,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
@@ -1144,7 +1144,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 .align(Alignment.CenterStart)
                                 .padding(start = 15.dp, end = 15.dp, top = 5.dp),
                             text = "Info",
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.titleSmall,
                             color = Color.White,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
