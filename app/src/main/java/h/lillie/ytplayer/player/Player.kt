@@ -56,6 +56,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material.icons.outlined.Bedtime
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material.icons.outlined.RepeatOne
 import androidx.compose.material.icons.outlined.Speed
@@ -677,6 +678,23 @@ class Player: ComponentActivity(), Player.Listener {
                             .align(Alignment.CenterVertically)
                     ) {
                         if (playerControllerState?.mediaItemCount == 1) {
+                            // Info Button
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .width(40.dp)
+                                    .align(Alignment.CenterVertically)
+                                    .clip(CircleShape)
+                                    .noRippleClickable {
+                                        showInfo.value = true
+                                    }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Info,
+                                    tint = Color.White,
+                                    contentDescription = ""
+                                )
+                            }
                             // Sleep Timer Button
                             Box(
                                 contentAlignment = Alignment.Center,
