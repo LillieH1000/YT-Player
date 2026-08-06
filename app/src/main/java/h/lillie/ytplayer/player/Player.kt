@@ -110,6 +110,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
+import java.text.NumberFormat
 import java.util.Collections
 import java.util.concurrent.TimeUnit
 
@@ -1165,6 +1166,79 @@ class Player: ComponentActivity(), Player.Listener {
                         .wrapContentHeight()
                         .fillMaxWidth()
                 ) {
+                    Row {
+                        // Views
+                        Column(
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .padding(start = 15.dp, end = 15.dp, top = 5.dp),
+                                text = "Views",
+                                color = Color.White,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1
+                            )
+                            Text(
+                                modifier = Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .padding(start = 15.dp, end = 15.dp, top = 5.dp),
+                                text = NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getLong("views")),
+                                color = Color.White,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1
+                            )
+                        }
+                        // Likes
+                        Column(
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .padding(start = 15.dp, end = 15.dp, top = 5.dp),
+                                text = "Likes",
+                                color = Color.White,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1
+                            )
+                            Text(
+                                modifier = Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .padding(start = 15.dp, end = 15.dp, top = 5.dp),
+                                text = NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getLong("likes")),
+                                color = Color.White,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1
+                            )
+                        }
+                        // Dislikes
+                        if (playerControllerState?.mediaMetadata?.extras?.getLong("dislikes") != null) {
+                            Column(
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterHorizontally)
+                                        .padding(start = 15.dp, end = 15.dp, top = 5.dp),
+                                    text = "Dislikes",
+                                    color = Color.White,
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1
+                                )
+                                Text(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterHorizontally)
+                                        .padding(start = 15.dp, end = 15.dp, top = 5.dp),
+                                    text = NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getLong("dislikes")),
+                                    color = Color.White,
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
