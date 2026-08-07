@@ -7,6 +7,7 @@ data class Return(
     val id: String,
     val title: String,
     val author: String,
+    val artwork: String,
     val thumbnail: String,
     val description: String,
     val live: Boolean,
