@@ -1166,7 +1166,9 @@ class Player: ComponentActivity(), Player.Listener {
                         .wrapContentHeight()
                         .fillMaxWidth()
                 ) {
-                    Row {
+                    Row(
+                        modifier = Modifier.height(50.dp)
+                    ) {
                         // Views
                         Column(
                             modifier = Modifier.weight(1f)
