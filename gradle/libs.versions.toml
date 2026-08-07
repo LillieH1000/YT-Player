@@ -7,7 +7,7 @@ core = "1.19.0"
 coroutines = "1.11.0"
 kotlin = "2.4.10"
 lifecycle = "2.11.0"
-media3 = "1.11.0-rc01"
+media3 = "1.11.0"
 okhttp = "5.4.0"
 serialization = "1.11.0"
 
