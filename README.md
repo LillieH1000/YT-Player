@@ -13,6 +13,7 @@ Features:
 - Sleep Timer
 - Subtitles
 - Playback Speed
+- Video Info (Views, likes, dislikes, channel, description)
 - [SponsorBlock](https://sponsor.ajay.app/) (Only auto skips sponsors)
 
 <br>
