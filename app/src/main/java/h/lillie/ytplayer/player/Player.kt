@@ -1294,12 +1294,14 @@ class Player: ComponentActivity(), Player.Listener {
                         modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 20.dp)
                     )
                     // Description
-                    Row {
-                        Text(
-                            modifier = Modifier.padding(start = 15.dp, end = 15.dp),
-                            text = playerControllerState?.mediaMetadata?.extras?.getString("description")!!,
-                            color = Color.White
-                        )
+                    LazyColumn {
+                        item {
+                            Text(
+                                modifier = Modifier.padding(start = 15.dp, end = 15.dp),
+                                text = playerControllerState?.mediaMetadata?.extras?.getString("description")!!,
+                                color = Color.White
+                            )
+                        }
                     }
                 }
             }
