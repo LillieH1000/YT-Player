@@ -83,6 +83,7 @@ class Requests {
             info.title,
             info.author,
             info.artwork,
+            info.channel,
             info.thumbnail,
             info.description,
             info.live,

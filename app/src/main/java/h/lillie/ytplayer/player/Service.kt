@@ -313,6 +313,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 playerExtraInfo.putString("hlsUrl", info.hlsUrl)
                 playerExtraInfo.putString("description", info.description)
                 playerExtraInfo.putString("artwork", info.artwork)
+                playerExtraInfo.putString("channel", info.channel)
                 if (info.expiration != null) playerExtraInfo.putLong("expiration", info.expiration)
                 if (dislikes != null) playerExtraInfo.putLong("dislikes", dislikes)
 
