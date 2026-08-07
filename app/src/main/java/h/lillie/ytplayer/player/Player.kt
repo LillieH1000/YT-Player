@@ -27,6 +27,7 @@ import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -47,6 +48,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FitScreen
 import androidx.compose.material.icons.filled.Fullscreen
@@ -84,6 +86,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -101,6 +104,7 @@ import androidx.media3.session.SessionToken
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import androidx.media3.ui.SubtitleView
+import coil3.compose.AsyncImage
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import h.lillie.ytplayer.data.Subtitles
@@ -1244,6 +1248,50 @@ class Player: ComponentActivity(), Player.Listener {
                     HorizontalDivider(
                         color = Color.LightGray,
                         modifier = Modifier.padding(10.dp)
+                    )
+                    // Channel
+                    Row(
+                        modifier = Modifier.height(40.dp)
+                    ) {
+                        AsyncImage(
+                            modifier = Modifier
+                                .padding(start = 15.dp, end = 15.dp)
+                                .clip(CircleShape),
+                            model = playerControllerState?.mediaMetadata?.extras?.getString("artwork"),
+                            contentDescription = ""
+                        )
+                        Text(
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                            text = playerControllerState?.mediaMetadata?.artist.toString(),
+                            color = Color.White,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
+                        Box(modifier = Modifier.weight(1f))
+                        val uriHandler = LocalUriHandler.current
+                        Box(
+                            modifier = Modifier
+                                .height(30.dp)
+                                .width(70.dp)
+                                .align(Alignment.CenterVertically)
+                                .padding(end = 15.dp)
+                                .border(1.dp, Color.LightGray, RoundedCornerShape(16.dp))
+                                .noRippleClickable {
+                                    uriHandler.openUri(playerControllerState?.mediaMetadata?.extras?.getString("channel")!!)
+                                },
+                        ) {
+                            Text(
+                                modifier = Modifier.align(Alignment.Center),
+                                text = "View",
+                                color = Color.White,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1
+                            )
+                        }
+                    }
+                    HorizontalDivider(
+                        color = Color.LightGray,
+                        modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 20.dp)
                     )
                     // Description
                     Row {
