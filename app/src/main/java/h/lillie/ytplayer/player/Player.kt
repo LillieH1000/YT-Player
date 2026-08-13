@@ -1253,9 +1253,10 @@ class Player: ComponentActivity(), Player.Listener {
                     Row(
                         modifier = Modifier.height(40.dp)
                     ) {
+                        // Artwork
                         AsyncImage(
                             modifier = Modifier
-                                .padding(start = 15.dp, end = 15.dp)
+                                .padding(start = 15.dp, end = 10.dp)
                                 .clip(CircleShape),
                             model = playerControllerState?.mediaMetadata?.extras?.getString("artwork"),
                             contentDescription = ""
@@ -1268,13 +1269,14 @@ class Player: ComponentActivity(), Player.Listener {
                             maxLines = 1
                         )
                         Box(modifier = Modifier.weight(1f))
+                        // View Channel
                         val uriHandler = LocalUriHandler.current
                         Box(
                             modifier = Modifier
                                 .height(30.dp)
                                 .width(70.dp)
                                 .align(Alignment.CenterVertically)
-                                .padding(end = 15.dp)
+                                .padding(end = 10.dp)
                                 .border(1.dp, Color.LightGray, RoundedCornerShape(16.dp))
                                 .noRippleClickable {
                                     uriHandler.openUri(playerControllerState?.mediaMetadata?.extras?.getString("channel")!!)
@@ -1288,19 +1290,58 @@ class Player: ComponentActivity(), Player.Listener {
                                 maxLines = 1
                             )
                         }
+                        // Share Video
+                        Box(
+                            modifier = Modifier
+                                .height(30.dp)
+                                .width(70.dp)
+                                .align(Alignment.CenterVertically)
+                                .padding(end = 15.dp)
+                                .border(1.dp, Color.LightGray, RoundedCornerShape(16.dp))
+                                .noRippleClickable {
+                                    val type: String? = playerControllerState?.mediaMetadata?.extras?.getString("type")
+                                    val url: String = when (type) {
+                                        "livestream" -> "https://youtube.com/live/${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
+                                        "short" -> "https://youtube.com/shorts/${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
+                                        else -> "https://youtube.com/watch?v=${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
+                                    }
+                                    if (chromeOSDevice) {
+                                        val clipManager: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                                        val clipData: ClipData = ClipData.newPlainText("", url)
+                                        clipManager.setPrimaryClip(clipData)
+                                        Toast.makeText(this@Player, "Copied to clipboard", Toast.LENGTH_SHORT).show()
+                                    } else {
+                                        val shareIntent = Intent()
+                                        shareIntent.action = Intent.ACTION_SEND
+                                        shareIntent.putExtra(Intent.EXTRA_TEXT, url)
+                                        shareIntent.type = "text/plain"
+                                        startActivity(Intent.createChooser(shareIntent, null))
+                                    }
+                                },
+                        ) {
+                            Text(
+                                modifier = Modifier.align(Alignment.Center),
+                                text = "Share",
+                                color = Color.White,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1
+                            )
+                        }
                     }
                     // Description
-                    HorizontalDivider(
-                        color = Color.LightGray,
-                        modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 20.dp)
-                    )
-                    LazyColumn {
-                        item {
-                            Text(
-                                modifier = Modifier.padding(start = 15.dp, end = 15.dp),
-                                text = playerControllerState?.mediaMetadata?.extras?.getString("description")!!,
-                                color = Color.White
-                            )
+                    if (playerControllerState?.mediaMetadata?.extras?.getString("description") != null) {
+                        HorizontalDivider(
+                            color = Color.LightGray,
+                            modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 15.dp)
+                        )
+                        LazyColumn {
+                            item {
+                                Text(
+                                    modifier = Modifier.padding(start = 15.dp, end = 15.dp),
+                                    text = playerControllerState?.mediaMetadata?.extras?.getString("description")!!,
+                                    color = Color.White
+                                )
+                            }
                         }
                     }
                 }
