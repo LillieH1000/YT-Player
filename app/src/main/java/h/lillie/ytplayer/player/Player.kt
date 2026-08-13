@@ -1245,11 +1245,11 @@ class Player: ComponentActivity(), Player.Listener {
                             }
                         }
                     }
+                    // Channel
                     HorizontalDivider(
                         color = Color.LightGray,
                         modifier = Modifier.padding(10.dp)
                     )
-                    // Channel
                     Row(
                         modifier = Modifier.height(40.dp)
                     ) {
@@ -1289,11 +1289,11 @@ class Player: ComponentActivity(), Player.Listener {
                             )
                         }
                     }
+                    // Description
                     HorizontalDivider(
                         color = Color.LightGray,
                         modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 20.dp)
                     )
-                    // Description
                     LazyColumn {
                         item {
                             Text(
