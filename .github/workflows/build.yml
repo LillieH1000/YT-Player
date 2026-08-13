@@ -1,7 +1,6 @@
 name: Gradle Build
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - "v4"
