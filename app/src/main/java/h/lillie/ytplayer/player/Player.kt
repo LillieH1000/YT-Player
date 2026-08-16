@@ -524,7 +524,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 else -> Icons.Default.Replay
                             },
                             tint = Color.White,
-                            contentDescription = ""
+                            contentDescription = null
                         )
                     }
                 }
@@ -588,7 +588,7 @@ class Player: ComponentActivity(), Player.Listener {
                             Icon(
                                 imageVector = Icons.Default.Refresh,
                                 tint = Color.White,
-                                contentDescription = ""
+                                contentDescription = null
                             )
                         }
                     }
@@ -607,7 +607,7 @@ class Player: ComponentActivity(), Player.Listener {
                             Icon(
                                 imageVector = Icons.Default.FitScreen,
                                 tint = Color.White,
-                                contentDescription = ""
+                                contentDescription = null
                             )
                         }
                     }
@@ -634,7 +634,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     Icons.Default.Fullscreen
                                 },
                                 tint = Color.White,
-                                contentDescription = ""
+                                contentDescription = null
                             )
                         }
                     }
@@ -697,7 +697,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 Icon(
                                     imageVector = Icons.Outlined.Info,
                                     tint = Color.White,
-                                    contentDescription = ""
+                                    contentDescription = null
                                 )
                             }
                             // Sleep Timer Button
@@ -714,7 +714,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 Icon(
                                     imageVector = Icons.Outlined.Bedtime,
                                     tint = Color.White,
-                                    contentDescription = ""
+                                    contentDescription = null
                                 )
                             }
                             // Loop Button
@@ -740,7 +740,7 @@ class Player: ComponentActivity(), Player.Listener {
                                             Icons.Outlined.RepeatOne
                                         },
                                         tint = Color.White,
-                                        contentDescription = ""
+                                        contentDescription = null
                                     )
                                 }
                             }
@@ -759,7 +759,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     Icon(
                                         imageVector = Icons.Outlined.Speed,
                                         tint = Color.White,
-                                        contentDescription = ""
+                                        contentDescription = null
                                     )
                                 }
                             }
@@ -778,7 +778,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     Icon(
                                         imageVector = Icons.Outlined.Subtitles,
                                         tint = Color.White,
-                                        contentDescription = ""
+                                        contentDescription = null
                                     )
                                 }
                             }
@@ -1259,7 +1259,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 .padding(start = 15.dp, end = 10.dp)
                                 .clip(CircleShape),
                             model = playerControllerState?.mediaMetadata?.extras?.getString("artwork"),
-                            contentDescription = ""
+                            contentDescription = null
                         )
                         Text(
                             modifier = Modifier.align(Alignment.CenterVertically),
