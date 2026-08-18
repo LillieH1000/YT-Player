@@ -73,6 +73,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
     private var playerSession: MediaLibrarySession? = null
     private var playerTimer: CountDownTimer? = null
     private var sponsorBlock: JSONArray? = null
+    private var isFirstPlayback: Boolean = false
 
     override fun onCreate() {
         super.onCreate()
@@ -204,8 +205,11 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         @SuppressLint("SwitchIntDef")
         when (playbackState) {
             Player.STATE_READY -> {
-                playerReady = true
-                exoPlayer.play()
+                if (!isFirstPlayback) {
+                    isFirstPlayback = true
+                    playerReady = true
+                    exoPlayer.play()
+                }
             }
         }
     }
@@ -295,6 +299,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
     private val playerBroadcastReceiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) = coroutineScope {
             if (intent?.action == "h.lillie.ytplayer.service.info") {
+                isFirstPlayback = false
                 playerReady = false
                 playerTimer?.cancel()
                 playerTimer = null
