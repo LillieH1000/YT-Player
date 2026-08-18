@@ -207,6 +207,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
             Player.STATE_READY -> {
                 if (!isFirstPlayback) {
                     isFirstPlayback = true
+                    if (exoPlayer.mediaMetadata.extras?.getString("time") != null) exoPlayer.seekTo(TimeUnit.SECONDS.toMillis(exoPlayer.mediaMetadata.extras?.getString("time")!!.toLong()))
                     playerReady = true
                     exoPlayer.play()
                 }
@@ -319,6 +320,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 playerExtraInfo.putString("description", info.description)
                 playerExtraInfo.putString("artwork", info.artwork)
                 playerExtraInfo.putString("channel", info.channel)
+                if (intent.extras?.getString("seekTime") != null) playerExtraInfo.putString("time", intent.extras?.getString("seekTime"))
                 if (info.expiration != null) playerExtraInfo.putLong("expiration", info.expiration)
                 if (dislikes != null) playerExtraInfo.putLong("dislikes", dislikes)
 
