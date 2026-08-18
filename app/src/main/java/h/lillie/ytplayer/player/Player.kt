@@ -1349,7 +1349,7 @@ class Player: ComponentActivity(), Player.Listener {
         }
     }
 
-    private fun createPlayer(videoID: String?) {
+    private fun createPlayer(videoID: String) {
         playerController.value?.stop()
         playerController.value?.removeMediaItem(0)
         showOverlay.value = true
