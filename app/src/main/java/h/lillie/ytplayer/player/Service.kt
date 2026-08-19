@@ -69,7 +69,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
     private lateinit var playerCache: SimpleCache
     private lateinit var playerDataSource: DataSource.Factory
     private var playerHandler: Handler = Handler(Looper.getMainLooper())
-    private var playerReady: Boolean = false
     private var playerSession: MediaLibrarySession? = null
     private var playerTimer: CountDownTimer? = null
     private var sponsorBlock: JSONArray? = null
@@ -208,7 +207,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 if (!isFirstPlayback) {
                     isFirstPlayback = true
                     if (exoPlayer.mediaMetadata.extras?.getString("time") != null) exoPlayer.seekTo(TimeUnit.SECONDS.toMillis(exoPlayer.mediaMetadata.extras?.getString("time")!!.toLong()))
-                    playerReady = true
                     exoPlayer.play()
                 }
             }
@@ -301,7 +299,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         override fun onReceive(context: Context?, intent: Intent?) = coroutineScope {
             if (intent?.action == "h.lillie.ytplayer.service.info") {
                 isFirstPlayback = false
-                playerReady = false
                 playerTimer?.cancel()
                 playerTimer = null
 
