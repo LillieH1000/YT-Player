@@ -34,7 +34,7 @@ def getInfo(runtime, videoID):
     with yt_dlp.YoutubeDL(ytdlp_opts) as ytdlp:
         x = ytdlp.extract_info(f"https://www.youtube.com/watch?v={videoID}", download=False)
         y = json.loads(json.dumps(ytdlp.sanitize_info(x)))
-        z = ytdlp.extract_info(y["uploader_url"], download=False)
+        z = ytdlp.extract_info(y["channel_url"], download=False)
 
         a = ytdlp.urlopen(f"https://www.youtube.com/watch?v={y['id']}").read().decode("utf-8")
         b = re.search(r"ytInitialPlayerResponse\s*=\s*({.+?});", a)
@@ -50,9 +50,9 @@ def getInfo(runtime, videoID):
 
         info["id"] = y["id"]
         info["title"] = y["title"]
-        info["author"] = y["uploader"] or y["uploader_id"]
+        info["author"] = y["channel"] or y["channel_id"]
         info["artwork"] = z["thumbnails"][-1]["url"]
-        info["channel"] = y["uploader_url"]
+        info["channel"] = y["channel_url"]
         info["thumbnail"] = y["thumbnail"]
         info["description"] = y["description"] or None
         info["live"] = y["is_live"]
