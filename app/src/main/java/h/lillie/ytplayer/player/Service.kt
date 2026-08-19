@@ -207,7 +207,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 if (!isFirstPlayback) {
                     isFirstPlayback = true
                     if (exoPlayer.mediaMetadata.extras?.getString("time") != null) exoPlayer.seekTo(TimeUnit.SECONDS.toMillis(exoPlayer.mediaMetadata.extras?.getString("time")!!.toLong()))
-                    exoPlayer.play()
                 }
             }
         }
@@ -238,7 +237,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                             .createMediaSource(playerMediaItem)
 
                         exoPlayer.setMediaSource(hlsMediaSource)
-                        exoPlayer.playWhenReady = false
+                        exoPlayer.playWhenReady = true
                         exoPlayer.prepare()
                     } else {
                         Toast.makeText(this@Service, "Source playback error", Toast.LENGTH_SHORT).show()
@@ -383,7 +382,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     exoPlayer.trackSelectionParameters = exoPlayer.trackSelectionParameters.buildUpon()
                         .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
                         .build()
-                    exoPlayer.playWhenReady = false
+                    exoPlayer.playWhenReady = true
                     exoPlayer.prepare()
 
                     return@withContext
