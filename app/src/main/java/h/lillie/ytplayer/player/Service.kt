@@ -205,8 +205,8 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         when (playbackState) {
             Player.STATE_READY -> {
                 if (!isFirstPlayback) {
-                    isFirstPlayback = true
                     if (exoPlayer.mediaMetadata.extras?.getString("time") != null) exoPlayer.seekTo(TimeUnit.SECONDS.toMillis(exoPlayer.mediaMetadata.extras?.getString("time")!!.toLong()))
+                    isFirstPlayback = true
                 }
             }
         }
@@ -415,7 +415,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
     private val playerTask = object: Runnable {
         override fun run() {
             val sponsorBlock: JSONArray? = sponsorBlock
-            if (sponsorBlock != null && playerReady && this@Service::exoPlayer.isInitialized && exoPlayer.mediaMetadata.extras?.getBoolean("live") == false) {
+            if (sponsorBlock != null && isFirstPlayback && this@Service::exoPlayer.isInitialized && exoPlayer.mediaMetadata.extras?.getBoolean("live") == false && exoPlayer.currentPosition > 0.1) {
                 for (i in 0 until sponsorBlock.length()) {
                     val decimalFormat = DecimalFormat("#.###")
 
