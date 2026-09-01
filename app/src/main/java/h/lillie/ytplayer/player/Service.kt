@@ -233,12 +233,14 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     } else {
                         Toast.makeText(this@Service, "Source playback error", Toast.LENGTH_SHORT).show()
                     }
+                    return
                 }
                 if (exoPlayer.mediaMetadata.extras?.getBoolean("live") == true && exoPlayer.mediaMetadata.extras?.getLong("expiration")!! <= TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())) {
                     val broadcastIntent = Intent("h.lillie.ytplayer.service.info")
                     broadcastIntent.setPackage(this.packageName)
                     broadcastIntent.putExtra("videoID", exoPlayer.mediaMetadata.extras?.getString("id"))
                     sendBroadcast(broadcastIntent)
+                    return
                 }
             }
         }
