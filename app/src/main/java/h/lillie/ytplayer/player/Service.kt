@@ -39,8 +39,6 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.source.MediaSource
-import androidx.media3.exoplayer.trackselection.AdaptiveTrackSelection
-import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.session.CommandButton
 import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaLibraryService
@@ -84,12 +82,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         val renderersFactory: DefaultRenderersFactory = DefaultRenderersFactory(this)
             .forceEnableMediaCodecAsynchronousQueueing()
 
-        val trackSelector = DefaultTrackSelector(this, AdaptiveTrackSelection.Factory())
-        trackSelector.setParameters(trackSelector.buildUponParameters()
-            .setForceHighestSupportedBitrate(true)
-            .build()
-        )
-
         val networkDataSource: DataSource.Factory = if (SdkExtensions.getExtensionVersion(Build.VERSION_CODES.S) >= 7) {
             val httpEngine: HttpEngine = HttpEngine.Builder(this)
                 .setEnableHttp2(true)
@@ -126,7 +118,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         exoPlayer = ExoPlayer.Builder(this)
             .setAudioAttributes(audioAttributes, true)
             .setRenderersFactory(renderersFactory)
-            .setTrackSelector(trackSelector)
             .setSeekBackIncrementMs(10000)
             .setSeekForwardIncrementMs(10000)
             .build()
