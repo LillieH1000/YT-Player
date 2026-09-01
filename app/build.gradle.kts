@@ -13,7 +13,7 @@ android {
     namespace = "h.lillie.ytplayer"
     compileSdk {
         version = release(37) {
-            minorApiLevel = 1
+            minorApiLevel = 2
         }
     }
 
@@ -21,7 +21,7 @@ android {
         applicationId = "h.lillie.ytplayer"
         minSdk = 30
         targetSdk = 37
-        versionCode = 196
+        versionCode = 197
         versionName = "4.6.3"
         ndk {
             abiFilters += listOf("arm64-v8a", "x86_64")
