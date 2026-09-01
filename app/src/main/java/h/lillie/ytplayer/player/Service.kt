@@ -235,10 +235,11 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     }
                     return
                 }
-                if (exoPlayer.mediaMetadata.extras?.getBoolean("live") == true && exoPlayer.mediaMetadata.extras?.getLong("expiration")!! <= TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())) {
+                if (exoPlayer.mediaMetadata.extras?.getLong("expiration")!! <= TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())) {
                     val broadcastIntent = Intent("h.lillie.ytplayer.service.info")
                     broadcastIntent.setPackage(this.packageName)
                     broadcastIntent.putExtra("videoID", exoPlayer.mediaMetadata.extras?.getString("id"))
+                    if (exoPlayer.mediaMetadata.extras?.getBoolean("live") == false) broadcastIntent.putExtra("seekTime", exoPlayer.currentPosition)
                     sendBroadcast(broadcastIntent)
                     return
                 }
