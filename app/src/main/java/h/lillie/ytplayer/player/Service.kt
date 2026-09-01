@@ -116,7 +116,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 mediaMetadata = exoPlayer.mediaMetadata
             }
 
-            if (mediaMetadata.extras?.getBoolean("live") != true) {
+            if (mediaMetadata.extras?.getBoolean("live") == false) {
                 cacheDataSource.createDataSource()
             } else {
                 networkDataSource.createDataSource()
