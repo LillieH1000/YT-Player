@@ -15,6 +15,7 @@ import android.os.Looper
 import android.os.ext.SdkExtensions
 import android.widget.Toast
 import androidx.annotation.OptIn
+import androidx.concurrent.futures.CallbackToFutureAdapter
 import androidx.core.net.toUri
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
@@ -44,8 +45,11 @@ import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionCommand
+import androidx.media3.session.SessionError
+import androidx.media3.session.SessionResult
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
+import h.lillie.ytplayer.data.Return
 import h.lillie.ytplayer.requests.Requests
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -126,7 +130,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         playerSession = MediaLibrarySession.Builder(this, exoPlayer, this).build()
 
         val intentFilter = IntentFilter()
-        intentFilter.addAction("h.lillie.ytplayer.service.info")
         intentFilter.addAction("h.lillie.ytplayer.service.timer")
         if (Build.VERSION.SDK_INT >= 33) {
             registerReceiver(playerBroadcastReceiver, intentFilter, RECEIVER_NOT_EXPORTED)
@@ -167,6 +170,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
             .setAvailableSessionCommands(
                 MediaSession.ConnectionResult.DEFAULT_SESSION_COMMANDS.buildUpon()
                     .add(SessionCommand.COMMAND_CODE_LIBRARY_GET_LIBRARY_ROOT)
+                    .add(SessionCommand("h.lillie.ytplayer.service.session", Bundle.EMPTY))
                     .build()
             ).build()
 
@@ -206,6 +210,114 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
     override fun onRepeatModeChanged(repeatMode: Int) {
         super.onRepeatModeChanged(repeatMode)
         playerMediaButtons(repeatMode)
+    }
+
+    override fun onCustomCommand(session: MediaSession, controller: MediaSession.ControllerInfo, customCommand: SessionCommand, args: Bundle): ListenableFuture<SessionResult> {
+        if (customCommand.customAction == "h.lillie.ytplayer.service.session") {
+            return CallbackToFutureAdapter.getFuture { future ->
+                CoroutineScope(Dispatchers.IO).launch {
+                    isFirstPlayback = false
+                    playerTimer?.cancel()
+                    playerTimer = null
+
+                    val request = Requests()
+                    val info: Return? = request.extractor(this@Service, args.getString("videoID")!!)
+                    if (info == null) {
+                        future.set(SessionResult(SessionError.ERROR_UNKNOWN))
+                        return@launch
+                    }
+                    val dislikes = request.returnYouTubeDislike(this@Service, info.id)
+                    sponsorBlock = request.sponsorBlock(this@Service, info.id)
+
+                    val playerExtraInfo = Bundle()
+                    playerExtraInfo.putString("id", info.id)
+                    playerExtraInfo.putString("type", info.type)
+                    playerExtraInfo.putBoolean("live", info.live)
+                    playerExtraInfo.putLong("views", info.views)
+                    playerExtraInfo.putLong("likes", info.likes)
+                    playerExtraInfo.putString("hlsUrl", info.hlsUrl)
+                    playerExtraInfo.putString("description", info.description)
+                    playerExtraInfo.putString("artwork", info.artwork)
+                    playerExtraInfo.putString("channel", info.channel)
+                    playerExtraInfo.putLong("time", args.getLong("seekTime"))
+                    if (info.expiration != null) playerExtraInfo.putLong("expiration", info.expiration)
+                    if (dislikes != null) playerExtraInfo.putLong("dislikes", dislikes)
+
+                    val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
+                        .setTitle(info.title)
+                        .setArtist(info.author)
+                        .setArtworkUri(info.thumbnail.toUri())
+                        .setExtras(playerExtraInfo)
+                        .setIsBrowsable(false)
+                        .setIsPlayable(true)
+                        .build()
+
+                    val playerMediaItem: MediaItem.Builder = MediaItem.Builder()
+                        .setMediaId("root")
+                        .setMediaMetadata(playerMediaMetadata)
+
+                    if (info.live && info.hlsUrl != null) {
+                        playerMediaItem.setMimeType(MimeTypes.APPLICATION_M3U8)
+                        playerMediaItem.setUri(info.hlsUrl.toUri())
+                    } else {
+                        playerMediaItem.setMimeType(MimeTypes.APPLICATION_MPD)
+                        playerMediaItem.setUri(Uri.fromFile(File(info.manifestPath!!)))
+                    }
+
+                    val subtitles = mutableListOf<MediaItem.SubtitleConfiguration>()
+                    info.subtitles?.forEach { subtitle ->
+                        val playerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(subtitle.url.toUri())
+                            .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
+                            .setMimeType(MimeTypes.TEXT_VTT)
+                            .setLanguage(subtitle.id)
+                            .build()
+
+                        subtitles.add(playerCaptions)
+                    }
+                    if (subtitles.isNotEmpty()) playerMediaItem.setSubtitleConfigurations(subtitles)
+
+                    val broadcastIntent = Intent("h.lillie.ytplayer.activity.subtitles")
+                    broadcastIntent.setPackage(this@Service.packageName)
+                    broadcastIntent.putParcelableArrayListExtra("subtitles", info.subtitles)
+                    sendBroadcast(broadcastIntent)
+
+                    val defaultDataSource: DefaultDataSource.Factory = DefaultDataSource.Factory(this@Service, playerDataSource)
+                    val dashMediaSource: MediaSource = DefaultMediaSourceFactory(defaultDataSource)
+                        .createMediaSource(playerMediaItem.build())
+
+                    val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(playerDataSource)
+                        .setAllowChunklessPreparation(false)
+                        .createMediaSource(playerMediaItem.build())
+
+                    while (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) < info.availability) {
+                        delay(1000L.milliseconds)
+                    }
+
+                    withContext(Dispatchers.Main) {
+                        if (info.live && info.hlsUrl != null) {
+                            exoPlayer.setMediaSource(hlsMediaSource)
+                        } else {
+                            exoPlayer.setMediaSource(dashMediaSource)
+                        }
+                        playerMediaButtons(exoPlayer.repeatMode)
+                        exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
+                        exoPlayer.playbackParameters = PlaybackParameters(1.0f)
+                        exoPlayer.trackSelectionParameters = exoPlayer.trackSelectionParameters.buildUpon()
+                            .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                            .build()
+                        exoPlayer.playWhenReady = true
+                        exoPlayer.prepare()
+
+                        return@withContext
+                    }
+
+                    future.set(SessionResult(SessionResult.RESULT_SUCCESS))
+
+                    return@launch
+                }
+            }
+        }
+        return super.onCustomCommand(session, controller, customCommand, args)
     }
 
     override fun onPlayerError(error: PlaybackException) {
@@ -294,101 +406,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
 
     private val playerBroadcastReceiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) = coroutineScope {
-            if (intent?.action == "h.lillie.ytplayer.service.info") {
-                isFirstPlayback = false
-                playerTimer?.cancel()
-                playerTimer = null
-
-                val request = Requests()
-                val info = request.extractor(this@Service, intent.extras!!.getString("videoID")!!) ?: return@coroutineScope
-                val dislikes = request.returnYouTubeDislike(this@Service, info.id)
-                sponsorBlock = request.sponsorBlock(this@Service, info.id)
-
-                val playerExtraInfo = Bundle()
-                playerExtraInfo.putString("id", info.id)
-                playerExtraInfo.putString("type", info.type)
-                playerExtraInfo.putBoolean("live", info.live)
-                playerExtraInfo.putLong("views", info.views)
-                playerExtraInfo.putLong("likes", info.likes)
-                playerExtraInfo.putString("hlsUrl", info.hlsUrl)
-                playerExtraInfo.putString("description", info.description)
-                playerExtraInfo.putString("artwork", info.artwork)
-                playerExtraInfo.putString("channel", info.channel)
-                playerExtraInfo.putLong("time", intent.extras?.getLong("seekTime")!!)
-                if (info.expiration != null) playerExtraInfo.putLong("expiration", info.expiration)
-                if (dislikes != null) playerExtraInfo.putLong("dislikes", dislikes)
-
-                val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
-                    .setTitle(info.title)
-                    .setArtist(info.author)
-                    .setArtworkUri(info.thumbnail.toUri())
-                    .setExtras(playerExtraInfo)
-                    .setIsBrowsable(false)
-                    .setIsPlayable(true)
-                    .build()
-
-                val playerMediaItem: MediaItem.Builder = MediaItem.Builder()
-                    .setMediaId("root")
-                    .setMediaMetadata(playerMediaMetadata)
-
-                if (info.live && info.hlsUrl != null) {
-                    playerMediaItem.setMimeType(MimeTypes.APPLICATION_M3U8)
-                    playerMediaItem.setUri(info.hlsUrl.toUri())
-                } else {
-                    playerMediaItem.setMimeType(MimeTypes.APPLICATION_MPD)
-                    playerMediaItem.setUri(Uri.fromFile(File(info.manifestPath!!)))
-                }
-
-                val subtitles = mutableListOf<MediaItem.SubtitleConfiguration>()
-                info.subtitles?.forEach { subtitle ->
-                    val playerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(subtitle.url.toUri())
-                        .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
-                        .setMimeType(MimeTypes.TEXT_VTT)
-                        .setLanguage(subtitle.id)
-                        .build()
-
-                    subtitles.add(playerCaptions)
-                }
-                if (subtitles.isNotEmpty()) playerMediaItem.setSubtitleConfigurations(subtitles)
-
-                val broadcastIntent = Intent("h.lillie.ytplayer.activity.subtitles")
-                broadcastIntent.setPackage(this@Service.packageName)
-                broadcastIntent.putParcelableArrayListExtra("subtitles", info.subtitles)
-                sendBroadcast(broadcastIntent)
-
-                val defaultDataSource: DefaultDataSource.Factory = DefaultDataSource.Factory(this@Service, playerDataSource)
-                val dashMediaSource: MediaSource = DefaultMediaSourceFactory(defaultDataSource)
-                    .createMediaSource(playerMediaItem.build())
-
-                val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(playerDataSource)
-                    .setAllowChunklessPreparation(false)
-                    .createMediaSource(playerMediaItem.build())
-
-                while (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) < info.availability) {
-                    delay(1000L.milliseconds)
-                }
-
-                withContext(Dispatchers.Main) {
-                    if (info.live && info.hlsUrl != null) {
-                        exoPlayer.setMediaSource(hlsMediaSource)
-                    } else {
-                        exoPlayer.setMediaSource(dashMediaSource)
-                    }
-                    playerMediaButtons(exoPlayer.repeatMode)
-                    exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
-                    exoPlayer.playbackParameters = PlaybackParameters(1.0f)
-                    exoPlayer.trackSelectionParameters = exoPlayer.trackSelectionParameters.buildUpon()
-                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
-                        .build()
-                    exoPlayer.playWhenReady = true
-                    exoPlayer.prepare()
-
-                    return@withContext
-                }
-
-                return@coroutineScope
-            }
-
             if (intent?.action == "h.lillie.ytplayer.service.timer") {
                 val time: Long = intent.extras!!.getLong("time")
                 playerTimer?.cancel()

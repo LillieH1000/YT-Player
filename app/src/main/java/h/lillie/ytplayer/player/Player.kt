@@ -118,6 +118,7 @@ import java.text.NumberFormat
 import java.util.Collections
 import java.util.concurrent.TimeUnit
 import androidx.core.net.toUri
+import androidx.media3.session.SessionCommand
 
 class Player: ComponentActivity(), Player.Listener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
@@ -1383,11 +1384,11 @@ class Player: ComponentActivity(), Player.Listener {
                 )
             }
 
-            val broadcastIntent = Intent("h.lillie.ytplayer.service.info")
-            broadcastIntent.setPackage(this.packageName)
-            broadcastIntent.putExtra("videoID", videoID)
-            broadcastIntent.putExtra("seekTime", TimeUnit.SECONDS.toMillis((seekTime ?: "0").toLong()))
-            sendBroadcast(broadcastIntent)
+            val bundle = Bundle()
+            bundle.putString("videoID", videoID)
+            bundle.putLong("seekTime", TimeUnit.SECONDS.toMillis((seekTime ?: "0").toLong()))
+            val command = SessionCommand("h.lillie.ytplayer.service.session", Bundle.EMPTY)
+            playerController.value!!.sendCustomCommand(command, bundle)
         }, MoreExecutors.directExecutor())
     }
 
