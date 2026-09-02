@@ -196,7 +196,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         when (playbackState) {
             Player.STATE_READY -> {
                 if (!isFirstPlayback) {
-                    if (exoPlayer.mediaMetadata.extras?.getLong("time") != null) exoPlayer.seekTo(exoPlayer.mediaMetadata.extras?.getLong("time")!!)
+                    if (exoPlayer.mediaMetadata.extras?.getBoolean("live") == false && exoPlayer.mediaMetadata.extras?.getLong("time")!! > 0L) exoPlayer.seekTo(exoPlayer.mediaMetadata.extras?.getLong("time")!!)
                     isFirstPlayback = true
                 }
             }
@@ -239,7 +239,11 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     val broadcastIntent = Intent("h.lillie.ytplayer.service.info")
                     broadcastIntent.setPackage(this.packageName)
                     broadcastIntent.putExtra("videoID", exoPlayer.mediaMetadata.extras?.getString("id"))
-                    if (exoPlayer.mediaMetadata.extras?.getBoolean("live") == false) broadcastIntent.putExtra("seekTime", exoPlayer.currentPosition)
+                    if (exoPlayer.mediaMetadata.extras?.getBoolean("live") == false) {
+                        broadcastIntent.putExtra("seekTime", exoPlayer.currentPosition)
+                    } else {
+                        broadcastIntent.putExtra("seekTime", 0L)
+                    }
                     sendBroadcast(broadcastIntent)
                     return
                 }
@@ -310,7 +314,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 playerExtraInfo.putString("description", info.description)
                 playerExtraInfo.putString("artwork", info.artwork)
                 playerExtraInfo.putString("channel", info.channel)
-                if (intent.extras?.getLong("seekTime") != null) playerExtraInfo.putLong("time", intent.extras?.getLong("seekTime")!!)
+                playerExtraInfo.putLong("time", intent.extras?.getLong("seekTime")!!)
                 if (info.expiration != null) playerExtraInfo.putLong("expiration", info.expiration)
                 if (dislikes != null) playerExtraInfo.putLong("dislikes", dislikes)
 

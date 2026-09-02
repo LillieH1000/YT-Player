@@ -1386,7 +1386,7 @@ class Player: ComponentActivity(), Player.Listener {
             val broadcastIntent = Intent("h.lillie.ytplayer.service.info")
             broadcastIntent.setPackage(this.packageName)
             broadcastIntent.putExtra("videoID", videoID)
-            if (seekTime != null) broadcastIntent.putExtra("seekTime", TimeUnit.SECONDS.toMillis(seekTime.toLong()))
+            broadcastIntent.putExtra("seekTime", TimeUnit.SECONDS.toMillis((seekTime ?: "0").toLong()))
             sendBroadcast(broadcastIntent)
         }, MoreExecutors.directExecutor())
     }
