@@ -413,7 +413,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
     private val playerTask = object: Runnable {
         override fun run() {
             val sponsorBlock: JSONArray? = sponsorBlock
-            if (sponsorBlock != null && isFirstPlayback && this@Service::exoPlayer.isInitialized && exoPlayer.mediaMetadata.extras?.getBoolean("live") == false && exoPlayer.currentPosition > 0.1) {
+            if (sponsorBlock != null && isFirstPlayback && this@Service::exoPlayer.isInitialized && exoPlayer.mediaMetadata.extras?.getBoolean("live") == false && exoPlayer.currentPosition > 0) {
                 for (i in 0 until sponsorBlock.length()) {
                     val decimalFormat = DecimalFormat("#.###")
 
