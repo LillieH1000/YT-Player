@@ -282,15 +282,14 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     return
                 }
                 if (exoPlayer.mediaMetadata.extras?.getLong("expiration")!! <= TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())) {
-                    val broadcastIntent = Intent("h.lillie.ytplayer.service.info")
-                    broadcastIntent.setPackage(this.packageName)
-                    broadcastIntent.putExtra("videoID", exoPlayer.mediaMetadata.extras?.getString("id"))
-                    if (exoPlayer.mediaMetadata.extras?.getBoolean("live") == false) {
-                        broadcastIntent.putExtra("seekTime", exoPlayer.currentPosition)
+                    val seekTime: Long = if (exoPlayer.mediaMetadata.extras?.getBoolean("live") == false) {
+                        exoPlayer.currentPosition
                     } else {
-                        broadcastIntent.putExtra("seekTime", 0L)
+                        0L
                     }
-                    sendBroadcast(broadcastIntent)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        playerFetch(exoPlayer.mediaMetadata.extras?.getString("id")!!, seekTime)
+                    }
                     return
                 }
             }
