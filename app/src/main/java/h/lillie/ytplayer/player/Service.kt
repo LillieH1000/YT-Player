@@ -1,10 +1,7 @@
 package h.lillie.ytplayer.player
 
 import android.annotation.SuppressLint
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.net.Uri
 import android.net.http.HttpEngine
 import android.os.Build
@@ -128,15 +125,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
 
         exoPlayer.addListener(this)
         playerSession = MediaLibrarySession.Builder(this, exoPlayer, this).build()
-
-        val intentFilter = IntentFilter()
-        intentFilter.addAction("h.lillie.ytplayer.service.timer")
-        if (Build.VERSION.SDK_INT >= 33) {
-            registerReceiver(playerBroadcastReceiver, intentFilter, RECEIVER_NOT_EXPORTED)
-        } else {
-            @SuppressLint("UnspecifiedRegisterReceiverFlag")
-            registerReceiver(playerBroadcastReceiver, intentFilter)
-        }
         playerHandler.post(playerTask)
     }
 
@@ -149,7 +137,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         playerTimer = null
         sponsorBlock = null
         playerHandler.removeCallbacksAndMessages(null)
-        unregisterReceiver(playerBroadcastReceiver)
         if (this::playerCache.isInitialized) playerCache.release()
         if (this::exoPlayer.isInitialized) exoPlayer.release()
         playerSession?.release()
@@ -296,15 +283,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         }
     }
 
-    private fun BroadcastReceiver.coroutineScope(onReceive: suspend () -> Unit) {
-        val pendingResult: BroadcastReceiver.PendingResult = goAsync()
-        CoroutineScope(Dispatchers.IO).launch {
-            onReceive()
-        }.invokeOnCompletion {
-            pendingResult.finish()
-        }
-    }
-
     private suspend fun playerFetch(videoID: String, seekTime: Long): Boolean = withContext(Dispatchers.IO) {
         isFirstPlayback = false
         playerTimer?.cancel()
@@ -430,29 +408,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         }
 
         playerSession?.setMediaButtonPreferences(mediaButtons)
-    }
-
-    private val playerBroadcastReceiver = object: BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) = coroutineScope {
-            if (intent?.action == "h.lillie.ytplayer.service.timer") {
-                val time: Long = intent.extras!!.getLong("time")
-                playerTimer?.cancel()
-                playerTimer = null
-                if (time != 0L) {
-                    withContext(Dispatchers.Main) {
-                        playerTimer = object: CountDownTimer(time, 1000) {
-                            override fun onTick(millisUntilFinished: Long) {
-                            }
-                            override fun onFinish() {
-                                exoPlayer.pause()
-                            }
-                        }.start()
-                        return@withContext
-                    }
-                }
-                return@coroutineScope
-            }
-        }
     }
 
     private val playerTask = object: Runnable {
