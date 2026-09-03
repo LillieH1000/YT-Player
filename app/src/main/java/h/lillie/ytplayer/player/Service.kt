@@ -1,7 +1,6 @@
 package h.lillie.ytplayer.player
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.net.Uri
 import android.net.http.HttpEngine
 import android.os.Build
@@ -304,6 +303,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         playerExtraInfo.putString("artwork", info.artwork)
         playerExtraInfo.putString("channel", info.channel)
         playerExtraInfo.putLong("time", seekTime)
+        playerExtraInfo.putParcelableArrayList("subtitles", info.subtitles)
         if (info.expiration != null) playerExtraInfo.putLong("expiration", info.expiration)
         if (dislikes != null) playerExtraInfo.putLong("dislikes", dislikes)
 
@@ -339,11 +339,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
             subtitles.add(playerCaptions)
         }
         if (subtitles.isNotEmpty()) playerMediaItem.setSubtitleConfigurations(subtitles)
-
-        val broadcastIntent = Intent("h.lillie.ytplayer.activity.subtitles")
-        broadcastIntent.setPackage(this@Service.packageName)
-        broadcastIntent.putParcelableArrayListExtra("subtitles", info.subtitles)
-        sendBroadcast(broadcastIntent)
 
         val defaultDataSource: DefaultDataSource.Factory = DefaultDataSource.Factory(this@Service, playerDataSource)
         val dashMediaSource: MediaSource = DefaultMediaSourceFactory(defaultDataSource)

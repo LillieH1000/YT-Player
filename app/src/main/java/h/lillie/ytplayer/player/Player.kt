@@ -2,13 +2,10 @@ package h.lillie.ytplayer.player
 
 import android.annotation.SuppressLint
 import android.app.PictureInPictureParams
-import android.content.BroadcastReceiver
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -108,17 +105,15 @@ import androidx.media3.ui.SubtitleView
 import coil3.compose.AsyncImage
 import com.google.common.util.concurrent.ListenableFuture
 import h.lillie.ytplayer.data.Subtitles
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Collections
 import java.util.concurrent.TimeUnit
 import androidx.core.net.toUri
 import androidx.media3.session.SessionCommand
+import androidx.media3.session.SessionResult
 
 class Player: ComponentActivity(), Player.Listener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
@@ -157,15 +152,6 @@ class Player: ComponentActivity(), Player.Listener {
                     }
                 }
             }
-        }
-
-        val intentFilter = IntentFilter()
-        intentFilter.addAction("h.lillie.ytplayer.activity.subtitles")
-        if (Build.VERSION.SDK_INT >= 33) {
-            registerReceiver(playerBroadcastReceiver, intentFilter, RECEIVER_NOT_EXPORTED)
-        } else {
-            @SuppressLint("UnspecifiedRegisterReceiverFlag")
-            registerReceiver(playerBroadcastReceiver, intentFilter)
         }
 
         when {
@@ -231,7 +217,6 @@ class Player: ComponentActivity(), Player.Listener {
         super.onDestroy()
         if (this::playerControllerFuture.isInitialized) MediaController.releaseFuture(playerControllerFuture)
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        unregisterReceiver(playerBroadcastReceiver)
     }
 
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
@@ -1389,7 +1374,42 @@ class Player: ComponentActivity(), Player.Listener {
             bundle.putString("videoID", videoID)
             bundle.putLong("seekTime", TimeUnit.SECONDS.toMillis((seekTime ?: "0").toLong()))
             val command = SessionCommand("h.lillie.ytplayer.service.session", Bundle.EMPTY)
-            playerController.value!!.sendCustomCommand(command, bundle)
+
+            val future = playerController.value!!.sendCustomCommand(command, bundle)
+            future.addListener({
+                val result = future.get()
+                if (result.resultCode == SessionResult.RESULT_SUCCESS) {
+                    if (subtitlesChecked.value.isNotEmpty()) {
+                        subtitlesChecked.update { list ->
+                            list.toMutableList().apply {
+                                clear()
+                            }.toList()
+                        }
+                    }
+
+                    playerSubtitles = if (Build.VERSION.SDK_INT >= 33) {
+                        playerController.value?.mediaMetadata?.extras?.getParcelableArrayList("subtitles", Subtitles::class.java)
+                    } else {
+                        @Suppress("Deprecation")
+                        playerController.value?.mediaMetadata?.extras?.getParcelableArrayList("subtitles")
+                    }
+
+                    if (playerSubtitles != null) {
+                        subtitlesChecked.update { list ->
+                            list.toMutableList().apply {
+                                add(true)
+                            }.toList()
+                        }
+                        playerSubtitles!!.forEach { _ ->
+                            subtitlesChecked.update { list ->
+                                list.toMutableList().apply {
+                                    add(false)
+                                }.toList()
+                            }
+                        }
+                    }
+                }
+            }, ContextCompat.getMainExecutor(this))
         }, ContextCompat.getMainExecutor(this))
     }
 
@@ -1419,15 +1439,6 @@ class Player: ComponentActivity(), Player.Listener {
         return formatted
     }
 
-    private fun BroadcastReceiver.coroutineScope(onReceive: suspend () -> Unit) {
-        val pendingResult: BroadcastReceiver.PendingResult = goAsync()
-        CoroutineScope(Dispatchers.IO).launch {
-            onReceive()
-        }.invokeOnCompletion {
-            pendingResult.finish()
-        }
-    }
-
     @Composable
     private fun Modifier.noRippleClickable(onDoubleClick: (() -> Unit)? = null, onClick: () -> Unit): Modifier = composed {
         combinedClickable(
@@ -1436,42 +1447,6 @@ class Player: ComponentActivity(), Player.Listener {
             onDoubleClick = onDoubleClick,
             onClick = onClick
         )
-    }
-
-    private val playerBroadcastReceiver = object: BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) = coroutineScope {
-            if (intent?.action == "h.lillie.ytplayer.activity.subtitles") {
-                if (subtitlesChecked.value.isNotEmpty()) {
-                    subtitlesChecked.update { list ->
-                        list.toMutableList().apply {
-                            clear()
-                        }.toList()
-                    }
-                }
-
-                playerSubtitles = if (Build.VERSION.SDK_INT >= 33) {
-                    intent.extras!!.getParcelableArrayList("subtitles", Subtitles::class.java)
-                } else {
-                    @Suppress("Deprecation")
-                    intent.extras!!.getParcelableArrayList("subtitles")
-                } ?: return@coroutineScope
-
-                subtitlesChecked.update { list ->
-                    list.toMutableList().apply {
-                        add(true)
-                    }.toList()
-                }
-
-                playerSubtitles!!.forEach { _ ->
-                    subtitlesChecked.update { list ->
-                        list.toMutableList().apply {
-                            add(false)
-                        }.toList()
-                    }
-                }
-                return@coroutineScope
-            }
-        }
     }
 
     private val playerTask = object: Runnable {
