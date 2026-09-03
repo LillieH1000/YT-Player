@@ -217,101 +217,11 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         if (customCommand.customAction == "h.lillie.ytplayer.service.session") {
             return CallbackToFutureAdapter.getFuture { future ->
                 CoroutineScope(Dispatchers.IO).launch {
-                    isFirstPlayback = false
-                    playerTimer?.cancel()
-                    playerTimer = null
-
-                    val request = Requests()
-                    val info: Return? = request.extractor(this@Service, args.getString("videoID")!!)
-                    if (info == null) {
+                    val fetched: Boolean = playerFetch(args.getString("videoID")!!, args.getLong("seekTime"))
+                    if (!fetched) {
                         future.set(SessionResult(SessionError.ERROR_UNKNOWN))
                         return@launch
                     }
-                    val dislikes = request.returnYouTubeDislike(this@Service, info.id)
-                    sponsorBlock = request.sponsorBlock(this@Service, info.id)
-
-                    val playerExtraInfo = Bundle()
-                    playerExtraInfo.putString("id", info.id)
-                    playerExtraInfo.putString("type", info.type)
-                    playerExtraInfo.putBoolean("live", info.live)
-                    playerExtraInfo.putLong("views", info.views)
-                    playerExtraInfo.putLong("likes", info.likes)
-                    playerExtraInfo.putString("hlsUrl", info.hlsUrl)
-                    playerExtraInfo.putString("description", info.description)
-                    playerExtraInfo.putString("artwork", info.artwork)
-                    playerExtraInfo.putString("channel", info.channel)
-                    playerExtraInfo.putLong("time", args.getLong("seekTime"))
-                    if (info.expiration != null) playerExtraInfo.putLong("expiration", info.expiration)
-                    if (dislikes != null) playerExtraInfo.putLong("dislikes", dislikes)
-
-                    val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
-                        .setTitle(info.title)
-                        .setArtist(info.author)
-                        .setArtworkUri(info.thumbnail.toUri())
-                        .setExtras(playerExtraInfo)
-                        .setIsBrowsable(false)
-                        .setIsPlayable(true)
-                        .build()
-
-                    val playerMediaItem: MediaItem.Builder = MediaItem.Builder()
-                        .setMediaId("root")
-                        .setMediaMetadata(playerMediaMetadata)
-
-                    if (info.live && info.hlsUrl != null) {
-                        playerMediaItem.setMimeType(MimeTypes.APPLICATION_M3U8)
-                        playerMediaItem.setUri(info.hlsUrl.toUri())
-                    } else {
-                        playerMediaItem.setMimeType(MimeTypes.APPLICATION_MPD)
-                        playerMediaItem.setUri(Uri.fromFile(File(info.manifestPath!!)))
-                    }
-
-                    val subtitles = mutableListOf<MediaItem.SubtitleConfiguration>()
-                    info.subtitles?.forEach { subtitle ->
-                        val playerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(subtitle.url.toUri())
-                            .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
-                            .setMimeType(MimeTypes.TEXT_VTT)
-                            .setLanguage(subtitle.id)
-                            .build()
-
-                        subtitles.add(playerCaptions)
-                    }
-                    if (subtitles.isNotEmpty()) playerMediaItem.setSubtitleConfigurations(subtitles)
-
-                    val broadcastIntent = Intent("h.lillie.ytplayer.activity.subtitles")
-                    broadcastIntent.setPackage(this@Service.packageName)
-                    broadcastIntent.putParcelableArrayListExtra("subtitles", info.subtitles)
-                    sendBroadcast(broadcastIntent)
-
-                    val defaultDataSource: DefaultDataSource.Factory = DefaultDataSource.Factory(this@Service, playerDataSource)
-                    val dashMediaSource: MediaSource = DefaultMediaSourceFactory(defaultDataSource)
-                        .createMediaSource(playerMediaItem.build())
-
-                    val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(playerDataSource)
-                        .setAllowChunklessPreparation(false)
-                        .createMediaSource(playerMediaItem.build())
-
-                    while (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) < info.availability) {
-                        delay(1000L.milliseconds)
-                    }
-
-                    withContext(Dispatchers.Main) {
-                        if (info.live && info.hlsUrl != null) {
-                            exoPlayer.setMediaSource(hlsMediaSource)
-                        } else {
-                            exoPlayer.setMediaSource(dashMediaSource)
-                        }
-                        playerMediaButtons(exoPlayer.repeatMode)
-                        exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
-                        exoPlayer.playbackParameters = PlaybackParameters(1.0f)
-                        exoPlayer.trackSelectionParameters = exoPlayer.trackSelectionParameters.buildUpon()
-                            .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
-                            .build()
-                        exoPlayer.playWhenReady = true
-                        exoPlayer.prepare()
-
-                        return@withContext
-                    }
-
                     future.set(SessionResult(SessionResult.RESULT_SUCCESS))
                     return@launch
                 }
@@ -394,6 +304,101 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         }.invokeOnCompletion {
             pendingResult.finish()
         }
+    }
+
+    private suspend fun playerFetch(videoID: String, seekTime: Long): Boolean = withContext(Dispatchers.IO) {
+        isFirstPlayback = false
+        playerTimer?.cancel()
+        playerTimer = null
+
+        val request = Requests()
+        val info: Return = request.extractor(this@Service, videoID) ?: return@withContext false
+        val dislikes = request.returnYouTubeDislike(this@Service, info.id)
+        sponsorBlock = request.sponsorBlock(this@Service, info.id)
+
+        val playerExtraInfo = Bundle()
+        playerExtraInfo.putString("id", info.id)
+        playerExtraInfo.putString("type", info.type)
+        playerExtraInfo.putBoolean("live", info.live)
+        playerExtraInfo.putLong("views", info.views)
+        playerExtraInfo.putLong("likes", info.likes)
+        playerExtraInfo.putString("hlsUrl", info.hlsUrl)
+        playerExtraInfo.putString("description", info.description)
+        playerExtraInfo.putString("artwork", info.artwork)
+        playerExtraInfo.putString("channel", info.channel)
+        playerExtraInfo.putLong("time", seekTime)
+        if (info.expiration != null) playerExtraInfo.putLong("expiration", info.expiration)
+        if (dislikes != null) playerExtraInfo.putLong("dislikes", dislikes)
+
+        val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
+            .setTitle(info.title)
+            .setArtist(info.author)
+            .setArtworkUri(info.thumbnail.toUri())
+            .setExtras(playerExtraInfo)
+            .setIsBrowsable(false)
+            .setIsPlayable(true)
+            .build()
+
+        val playerMediaItem: MediaItem.Builder = MediaItem.Builder()
+            .setMediaId("root")
+            .setMediaMetadata(playerMediaMetadata)
+
+        if (info.live && info.hlsUrl != null) {
+            playerMediaItem.setMimeType(MimeTypes.APPLICATION_M3U8)
+            playerMediaItem.setUri(info.hlsUrl.toUri())
+        } else {
+            playerMediaItem.setMimeType(MimeTypes.APPLICATION_MPD)
+            playerMediaItem.setUri(Uri.fromFile(File(info.manifestPath!!)))
+        }
+
+        val subtitles = mutableListOf<MediaItem.SubtitleConfiguration>()
+        info.subtitles?.forEach { subtitle ->
+            val playerCaptions: MediaItem.SubtitleConfiguration = MediaItem.SubtitleConfiguration.Builder(subtitle.url.toUri())
+                .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
+                .setMimeType(MimeTypes.TEXT_VTT)
+                .setLanguage(subtitle.id)
+                .build()
+
+            subtitles.add(playerCaptions)
+        }
+        if (subtitles.isNotEmpty()) playerMediaItem.setSubtitleConfigurations(subtitles)
+
+        val broadcastIntent = Intent("h.lillie.ytplayer.activity.subtitles")
+        broadcastIntent.setPackage(this@Service.packageName)
+        broadcastIntent.putParcelableArrayListExtra("subtitles", info.subtitles)
+        sendBroadcast(broadcastIntent)
+
+        val defaultDataSource: DefaultDataSource.Factory = DefaultDataSource.Factory(this@Service, playerDataSource)
+        val dashMediaSource: MediaSource = DefaultMediaSourceFactory(defaultDataSource)
+            .createMediaSource(playerMediaItem.build())
+
+        val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(playerDataSource)
+            .setAllowChunklessPreparation(false)
+            .createMediaSource(playerMediaItem.build())
+
+        while (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) < info.availability) {
+            delay(1000L.milliseconds)
+        }
+
+        withContext(Dispatchers.Main) {
+            if (info.live && info.hlsUrl != null) {
+                exoPlayer.setMediaSource(hlsMediaSource)
+            } else {
+                exoPlayer.setMediaSource(dashMediaSource)
+            }
+            playerMediaButtons(exoPlayer.repeatMode)
+            exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
+            exoPlayer.playbackParameters = PlaybackParameters(1.0f)
+            exoPlayer.trackSelectionParameters = exoPlayer.trackSelectionParameters.buildUpon()
+                .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
+                .build()
+            exoPlayer.playWhenReady = true
+            exoPlayer.prepare()
+
+            return@withContext
+        }
+
+        return@withContext true
     }
 
     private fun playerMediaButtons(repeatMode: Int) {
