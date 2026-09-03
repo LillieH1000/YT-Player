@@ -171,6 +171,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                 MediaSession.ConnectionResult.DEFAULT_SESSION_COMMANDS.buildUpon()
                     .add(SessionCommand.COMMAND_CODE_LIBRARY_GET_LIBRARY_ROOT)
                     .add(SessionCommand("h.lillie.ytplayer.service.session", Bundle.EMPTY))
+                    .add(SessionCommand("h.lillie.ytplayer.service.timer", Bundle.EMPTY))
                     .build()
             ).build()
 
@@ -312,7 +313,30 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     }
 
                     future.set(SessionResult(SessionResult.RESULT_SUCCESS))
+                    return@launch
+                }
+            }
+        }
+        if (customCommand.customAction == "h.lillie.ytplayer.service.timer") {
+            return CallbackToFutureAdapter.getFuture { future ->
+                CoroutineScope(Dispatchers.IO).launch {
+                    val time: Long = args.getLong("time")
+                    playerTimer?.cancel()
+                    playerTimer = null
+                    if (time != 0L) {
+                        withContext(Dispatchers.Main) {
+                            playerTimer = object: CountDownTimer(time, 1000) {
+                                override fun onTick(millisUntilFinished: Long) {
+                                }
+                                override fun onFinish() {
+                                    exoPlayer.pause()
+                                }
+                            }.start()
+                            return@withContext
+                        }
+                    }
 
+                    future.set(SessionResult(SessionResult.RESULT_SUCCESS))
                     return@launch
                 }
             }

@@ -979,16 +979,17 @@ class Player: ComponentActivity(), Player.Listener {
                                                 set(index, true)
                                             }.toList()
                                         }
-                                        val broadcastIntent = Intent("h.lillie.ytplayer.service.timer")
-                                        broadcastIntent.setPackage(this@Player.packageName)
+
+                                        val bundle = Bundle()
                                         when (index) {
-                                            1 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(15))
-                                            2 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(30))
-                                            3 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(45))
-                                            4 -> broadcastIntent.putExtra("time", TimeUnit.MINUTES.toMillis(60))
-                                            else -> broadcastIntent.putExtra("time", 0L)
+                                            1 -> bundle.putLong("time", TimeUnit.MINUTES.toMillis(15))
+                                            2 -> bundle.putLong("time", TimeUnit.MINUTES.toMillis(30))
+                                            3 -> bundle.putLong("time", TimeUnit.MINUTES.toMillis(45))
+                                            4 -> bundle.putLong("time", TimeUnit.MINUTES.toMillis(60))
+                                            else -> bundle.putLong("time", 0L)
                                         }
-                                        sendBroadcast(broadcastIntent)
+                                        val command = SessionCommand("h.lillie.ytplayer.service.timer", Bundle.EMPTY)
+                                        playerController.value!!.sendCustomCommand(command, bundle)
                                     }
                             ) {
                                 Column(
