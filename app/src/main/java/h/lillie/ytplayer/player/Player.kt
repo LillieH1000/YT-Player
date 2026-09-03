@@ -891,17 +891,17 @@ class Player: ComponentActivity(), Player.Listener {
                                     Checkbox(
                                         colors = CheckboxColors(
                                             checkedCheckmarkColor = Color.White,
-                                            uncheckedCheckmarkColor = Color.Unspecified,
-                                            checkedBoxColor = Color.Unspecified,
-                                            uncheckedBoxColor = Color.Unspecified,
-                                            disabledCheckedBoxColor = Color.Unspecified,
-                                            disabledUncheckedBoxColor = Color.Unspecified,
-                                            disabledIndeterminateBoxColor = Color.Unspecified,
-                                            checkedBorderColor = Color.Unspecified,
-                                            uncheckedBorderColor = Color.Unspecified,
-                                            disabledBorderColor = Color.Unspecified,
-                                            disabledUncheckedBorderColor = Color.Unspecified,
-                                            disabledIndeterminateBorderColor = Color.Unspecified
+                                            uncheckedCheckmarkColor = Color.Transparent,
+                                            checkedBoxColor = Color.Transparent,
+                                            uncheckedBoxColor = Color.Transparent,
+                                            disabledCheckedBoxColor = Color.Transparent,
+                                            disabledUncheckedBoxColor = Color.Transparent,
+                                            disabledIndeterminateBoxColor = Color.Transparent,
+                                            checkedBorderColor = Color.Transparent,
+                                            uncheckedBorderColor = Color.Transparent,
+                                            disabledBorderColor = Color.Transparent,
+                                            disabledUncheckedBorderColor = Color.Transparent,
+                                            disabledIndeterminateBorderColor = Color.Transparent
                                         ),
                                         checked = subtitlesCheckedState[index],
                                         onCheckedChange = null
@@ -1020,17 +1020,17 @@ class Player: ComponentActivity(), Player.Listener {
                                     Checkbox(
                                         colors = CheckboxColors(
                                             checkedCheckmarkColor = Color.White,
-                                            uncheckedCheckmarkColor = Color.Unspecified,
-                                            checkedBoxColor = Color.Unspecified,
-                                            uncheckedBoxColor = Color.Unspecified,
-                                            disabledCheckedBoxColor = Color.Unspecified,
-                                            disabledUncheckedBoxColor = Color.Unspecified,
-                                            disabledIndeterminateBoxColor = Color.Unspecified,
-                                            checkedBorderColor = Color.Unspecified,
-                                            uncheckedBorderColor = Color.Unspecified,
-                                            disabledBorderColor = Color.Unspecified,
-                                            disabledUncheckedBorderColor = Color.Unspecified,
-                                            disabledIndeterminateBorderColor = Color.Unspecified
+                                            uncheckedCheckmarkColor = Color.Transparent,
+                                            checkedBoxColor = Color.Transparent,
+                                            uncheckedBoxColor = Color.Transparent,
+                                            disabledCheckedBoxColor = Color.Transparent,
+                                            disabledUncheckedBoxColor = Color.Transparent,
+                                            disabledIndeterminateBoxColor = Color.Transparent,
+                                            checkedBorderColor = Color.Transparent,
+                                            uncheckedBorderColor = Color.Transparent,
+                                            disabledBorderColor = Color.Transparent,
+                                            disabledUncheckedBorderColor = Color.Transparent,
+                                            disabledIndeterminateBorderColor = Color.Transparent
                                         ),
                                         checked = sleepTimerCheckedState[index],
                                         onCheckedChange = null
