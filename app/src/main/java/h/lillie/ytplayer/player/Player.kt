@@ -91,6 +91,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.C
@@ -106,7 +107,6 @@ import androidx.media3.ui.PlayerView
 import androidx.media3.ui.SubtitleView
 import coil3.compose.AsyncImage
 import com.google.common.util.concurrent.ListenableFuture
-import com.google.common.util.concurrent.MoreExecutors
 import h.lillie.ytplayer.data.Subtitles
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -1390,7 +1390,7 @@ class Player: ComponentActivity(), Player.Listener {
             bundle.putLong("seekTime", TimeUnit.SECONDS.toMillis((seekTime ?: "0").toLong()))
             val command = SessionCommand("h.lillie.ytplayer.service.session", Bundle.EMPTY)
             playerController.value!!.sendCustomCommand(command, bundle)
-        }, MoreExecutors.directExecutor())
+        }, ContextCompat.getMainExecutor(this))
     }
 
     private fun optTime(time: Long): String {
