@@ -311,7 +311,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var showSleepTimer = MutableStateFlow(false)
     private var showPlaybackSpeed = MutableStateFlow(false)
     private val subtitlesChecked = mutableStateListOf<Boolean>()
-    private var sleepTimerChecked = MutableStateFlow(listOf(false, false, false, false, false))
+    private val sleepTimerChecked = mutableStateListOf(false, false, false, false, false)
 
     @Composable
     private fun CreatePlayerUI() {
@@ -332,7 +332,6 @@ class Player: ComponentActivity(), Player.Listener {
         val showSubtitlesState by showSubtitles.collectAsState()
         val showSleepTimerState by showSleepTimer.collectAsState()
         val showPlaybackSpeedState by showPlaybackSpeed.collectAsState()
-        val sleepTimerCheckedState by sleepTimerChecked.collectAsState()
 
         // Player View
 
@@ -949,12 +948,8 @@ class Player: ComponentActivity(), Player.Listener {
                                 modifier = Modifier
                                     .height(50.dp)
                                     .noRippleClickable {
-                                        Collections.replaceAll(sleepTimerChecked.value, true, false)
-                                        sleepTimerChecked.update { list ->
-                                            list.toMutableList().apply {
-                                                set(index, true)
-                                            }.toList()
-                                        }
+                                        Collections.replaceAll(sleepTimerChecked, true, false)
+                                        sleepTimerChecked[index] = true
 
                                         val bundle = Bundle()
                                         when (index) {
@@ -1008,7 +1003,7 @@ class Player: ComponentActivity(), Player.Listener {
                                             disabledUncheckedBorderColor = Color.Transparent,
                                             disabledIndeterminateBorderColor = Color.Transparent
                                         ),
-                                        checked = sleepTimerCheckedState[index],
+                                        checked = sleepTimerChecked[index],
                                         onCheckedChange = null
                                     )
                                 }
@@ -1345,12 +1340,8 @@ class Player: ComponentActivity(), Player.Listener {
             playerController.value!!.addListener(this)
             playbackSpeed.value = 1f
 
-            Collections.replaceAll(sleepTimerChecked.value, true, false)
-            sleepTimerChecked.update { list ->
-                list.toMutableList().apply {
-                    set(0, true)
-                }.toList()
-            }
+            Collections.replaceAll(sleepTimerChecked, true, false)
+            sleepTimerChecked[0] = true
 
             if (Build.VERSION.SDK_INT >= 31 && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
                 setPictureInPictureParams(
