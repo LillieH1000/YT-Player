@@ -59,9 +59,10 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -92,8 +93,6 @@ import androidx.media3.ui.SubtitleView
 import coil3.compose.AsyncImage
 import com.google.common.util.concurrent.ListenableFuture
 import h.lillie.ytplayer.data.Subtitles
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Collections
@@ -117,7 +116,7 @@ import h.lillie.ytplayer.icons.subtitles
 
 class Player: ComponentActivity(), Player.Listener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
-    private var playerController = MutableStateFlow<MediaController?>(null)
+    private var playerController = mutableStateOf<MediaController?>(null)
     private var playerHandler: Handler = Handler(Looper.getMainLooper())
     private var playerSubtitles: ArrayList<Subtitles>? = null
     @UnstableApi private var playerSubtitlesView: SubtitleView? = null
@@ -141,13 +140,13 @@ class Player: ComponentActivity(), Player.Listener {
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
                     if (!chromeOSDevice) {
-                        deviceRotation.value = 0
+                        deviceRotation.intValue = 0
                         WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                     }
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
                     if (!chromeOSDevice) {
-                        deviceRotation.value = 1
+                        deviceRotation.intValue = 1
                         WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                     }
                 }
@@ -185,13 +184,13 @@ class Player: ComponentActivity(), Player.Listener {
         when (newConfig.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
                 if (!chromeOSDevice) {
-                    deviceRotation.value = 0
+                    deviceRotation.intValue = 0
                     WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                 }
             }
             Configuration.ORIENTATION_LANDSCAPE -> {
                 if (!chromeOSDevice) {
-                    deviceRotation.value = 1
+                    deviceRotation.intValue = 1
                     WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                 }
             }
@@ -266,13 +265,13 @@ class Player: ComponentActivity(), Player.Listener {
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
                     if (!chromeOSDevice) {
-                        deviceRotation.value = 0
+                        deviceRotation.intValue = 0
                         WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                     }
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
                     if (!chromeOSDevice) {
-                        deviceRotation.value = 1
+                        deviceRotation.intValue = 1
                         WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                     }
                 }
@@ -296,43 +295,25 @@ class Player: ComponentActivity(), Player.Listener {
         })
     }
 
-    private var autoRotateEnabled = MutableStateFlow(false)
-    private var deviceRotation = MutableStateFlow(0)
-    private var isPlaying = MutableStateFlow(0)
-    private var loopChecked = MutableStateFlow(false)
-    private var playerDuration = MutableStateFlow(0f)
-    private var playerPosition = MutableStateFlow(0f)
-    private var playerSize = MutableStateFlow(false)
-    private var playbackSpeed = MutableStateFlow(1f)
-    private var playerTime = MutableStateFlow<String?>(null)
-    private var showOverlay = MutableStateFlow(true)
-    private var showInfo = MutableStateFlow(false)
-    private var showSubtitles = MutableStateFlow(false)
-    private var showSleepTimer = MutableStateFlow(false)
-    private var showPlaybackSpeed = MutableStateFlow(false)
+    private val autoRotateEnabled = mutableStateOf(false)
+    private val deviceRotation = mutableIntStateOf(0)
+    private val isPlaying = mutableIntStateOf(0)
+    private val loopChecked = mutableStateOf(false)
+    private val playerDuration = mutableFloatStateOf(0f)
+    private val playerPosition = mutableFloatStateOf(0f)
+    private val playerSize = mutableStateOf(false)
+    private val playbackSpeed = mutableFloatStateOf(1f)
+    private val playerTime = mutableStateOf<String?>(null)
+    private val showOverlay = mutableStateOf(true)
+    private val showInfo = mutableStateOf(false)
+    private val showSubtitles = mutableStateOf(false)
+    private val showSleepTimer = mutableStateOf(false)
+    private val showPlaybackSpeed = mutableStateOf(false)
     private val subtitlesChecked = mutableStateListOf<Boolean>()
     private val sleepTimerChecked = mutableStateListOf(false, false, false, false, false)
 
     @Composable
     private fun CreatePlayerUI() {
-        // States
-
-        val autoRotateEnabledState by autoRotateEnabled.collectAsState()
-        val deviceRotationState by deviceRotation.collectAsState()
-        val isPlayingState by isPlaying.collectAsState()
-        val loopCheckedState by loopChecked.collectAsState()
-        val playerControllerState by playerController.collectAsState()
-        val playerDurationState by playerDuration.collectAsState()
-        val playerPositionState by playerPosition.collectAsState()
-        val playerSizeState by playerSize.collectAsState()
-        val playbackSpeedState by playbackSpeed.collectAsState()
-        val playerTimeState by playerTime.collectAsState()
-        val showOverlayState by showOverlay.collectAsState()
-        val showInfoState by showInfo.collectAsState()
-        val showSubtitlesState by showSubtitles.collectAsState()
-        val showSleepTimerState by showSleepTimer.collectAsState()
-        val showPlaybackSpeedState by showPlaybackSpeed.collectAsState()
-
         // Player View
 
         @UnstableApi
@@ -356,8 +337,8 @@ class Player: ComponentActivity(), Player.Listener {
             },
             update = { playerView ->
                 playerView.apply {
-                    this.player = playerControllerState
-                    this.resizeMode = if (playerSizeState && deviceRotationState == 1) {
+                    this.player = playerController.value
+                    this.resizeMode = if (playerSize.value && deviceRotation.intValue == 1) {
                         AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                     } else {
                         AspectRatioFrameLayout.RESIZE_MODE_FIT
@@ -377,7 +358,7 @@ class Player: ComponentActivity(), Player.Listener {
                 FrameLayout(context)
             },
             update = { view ->
-                if (deviceRotationState == 1) {
+                if (deviceRotation.intValue == 1) {
                     playerSubtitlesViewParent?.removeView(playerSubtitlesView)
                     view.addView(playerSubtitlesView)
                 } else {
@@ -403,8 +384,8 @@ class Player: ComponentActivity(), Player.Listener {
                             playerController.value?.seekBack()
                         },
                         onClick = {
-                            if (playerControllerState?.mediaItemCount == 1) {
-                                showOverlay.value = !showOverlayState
+                            if (playerController.value?.mediaItemCount == 1) {
+                                showOverlay.value = !showOverlay.value
                                 showPlaybackSpeed.value = false
                                 showSubtitles.value = false
                                 showSleepTimer.value = false
@@ -420,8 +401,8 @@ class Player: ComponentActivity(), Player.Listener {
                     .noRippleClickable(
                         onDoubleClick = {},
                         onClick = {
-                            if (playerControllerState?.mediaItemCount == 1) {
-                                showOverlay.value = !showOverlayState
+                            if (playerController.value?.mediaItemCount == 1) {
+                                showOverlay.value = !showOverlay.value
                                 showPlaybackSpeed.value = false
                                 showSubtitles.value = false
                                 showSleepTimer.value = false
@@ -439,8 +420,8 @@ class Player: ComponentActivity(), Player.Listener {
                             playerController.value?.seekForward()
                         },
                         onClick = {
-                            if (playerControllerState?.mediaItemCount == 1) {
-                                showOverlay.value = !showOverlayState
+                            if (playerController.value?.mediaItemCount == 1) {
+                                showOverlay.value = !showOverlay.value
                                 showPlaybackSpeed.value = false
                                 showSubtitles.value = false
                                 showSleepTimer.value = false
@@ -453,9 +434,9 @@ class Player: ComponentActivity(), Player.Listener {
 
         // Overlay View
 
-        if (showOverlayState) {
+        if (showOverlay.value) {
             Box(
-                modifier = if (deviceRotationState == 1) {
+                modifier = if (deviceRotation.intValue == 1) {
                     Modifier
                         .background(
                             brush = SolidColor(Color.Black),
@@ -482,7 +463,7 @@ class Player: ComponentActivity(), Player.Listener {
                         .size(50.dp)
                         .clip(CircleShape)
                         .noRippleClickable {
-                            if (playerController.value != null && playerControllerState?.mediaItemCount == 1) {
+                            if (playerController.value != null && playerController.value?.mediaItemCount == 1) {
                                 if (!playerController.value!!.isPlaying) {
                                     playerController.value?.play()
                                 } else {
@@ -491,17 +472,17 @@ class Player: ComponentActivity(), Player.Listener {
                             }
                         }
                 ) {
-                    if (isPlayingState == 1) {
+                    if (isPlaying.intValue == 1) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(30.dp),
                             strokeWidth = 3.dp,
                             color = Color.White
                         )
                     }
-                    if (isPlayingState >= 2) {
+                    if (isPlaying.intValue >= 2) {
                         Icon(
                             modifier = Modifier.size(40.dp),
-                            imageVector = when (isPlayingState) {
+                            imageVector = when (isPlaying.intValue) {
                                 2 -> play_arrow
                                 3 -> pause
                                 else -> replay
@@ -521,7 +502,7 @@ class Player: ComponentActivity(), Player.Listener {
                 ) {
                     // Progress Slider
                     val sliderSource = remember { MutableInteractionSource() }
-                    if (playerControllerState?.mediaItemCount == 1) {
+                    if (playerController.value?.mediaItemCount == 1) {
                         @OptIn(ExperimentalMaterial3Api::class)
                         Slider(
                             modifier = Modifier
@@ -549,15 +530,15 @@ class Player: ComponentActivity(), Player.Listener {
                                     thumbTrackGapSize = 0.dp
                                 )
                             },
-                            value = playerPositionState,
-                            valueRange = 0f..playerDurationState,
+                            value = playerPosition.floatValue,
+                            valueRange = 0f..playerDuration.floatValue,
                             onValueChange = { newValue ->
                                 playerController.value?.seekTo(newValue.toLong())
                             }
                         )
                     }
                     // Reset To Live Button
-                    if (playerControllerState?.mediaItemCount == 1 && playerControllerState?.mediaMetadata?.extras?.getBoolean("live") == true) {
+                    if (playerController.value?.mediaItemCount == 1 && playerController.value?.mediaMetadata?.extras?.getBoolean("live") == true) {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
@@ -576,7 +557,7 @@ class Player: ComponentActivity(), Player.Listener {
                         }
                     }
                     // Fill Button
-                    if (!chromeOSDevice && deviceRotationState == 1 && playerControllerState?.mediaItemCount == 1) {
+                    if (!chromeOSDevice && deviceRotation.intValue == 1 && playerController.value?.mediaItemCount == 1) {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
@@ -584,7 +565,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 .align(Alignment.CenterVertically)
                                 .clip(CircleShape)
                                 .noRippleClickable {
-                                    playerSize.value = !playerSizeState
+                                    playerSize.value = !playerSize.value
                                 }
                         ) {
                             Icon(
@@ -595,7 +576,7 @@ class Player: ComponentActivity(), Player.Listener {
                         }
                     }
                     // Fullscreen Button
-                    if (!autoRotateEnabledState && !chromeOSDevice && playerControllerState?.mediaItemCount == 1) {
+                    if (!autoRotateEnabled.value && !chromeOSDevice && playerController.value?.mediaItemCount == 1) {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
@@ -611,7 +592,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 }
                         ) {
                             Icon(
-                                imageVector = if (deviceRotationState == 1) {
+                                imageVector = if (deviceRotation.intValue == 1) {
                                     fullscreen_exit
                                 } else {
                                     fullscreen
@@ -623,13 +604,13 @@ class Player: ComponentActivity(), Player.Listener {
                     }
                 }
                 // Player Time
-                if (playerTimeState != null) {
+                if (playerTime.value != null) {
                     Text(
                         modifier = Modifier
                             .align(Alignment.BottomStart)
                             .padding(start = 15.dp, end = 15.dp, bottom = 45.dp),
-                        text = if (playerControllerState?.mediaItemCount == 1) {
-                            playerTimeState!!
+                        text = if (playerController.value?.mediaItemCount == 1) {
+                            playerTime.value!!
                         } else {
                             ""
                         },
@@ -650,8 +631,8 @@ class Player: ComponentActivity(), Player.Listener {
                         modifier = Modifier
                             .weight(1f)
                             .align(Alignment.CenterVertically),
-                        text = if (playerControllerState?.mediaItemCount == 1) {
-                            playerControllerState?.mediaMetadata?.title.toString()
+                        text = if (playerController.value?.mediaItemCount == 1) {
+                            playerController.value?.mediaMetadata?.title.toString()
                         } else {
                             ""
                         },
@@ -665,7 +646,7 @@ class Player: ComponentActivity(), Player.Listener {
                             .wrapContentWidth()
                             .align(Alignment.CenterVertically)
                     ) {
-                        if (playerControllerState?.mediaItemCount == 1) {
+                        if (playerController.value?.mediaItemCount == 1) {
                             // Info Button
                             Box(
                                 contentAlignment = Alignment.Center,
@@ -701,7 +682,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 )
                             }
                             // Loop Button
-                            if (playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
+                            if (playerController.value?.mediaMetadata?.extras?.getBoolean("live") != true) {
                                 Box(
                                     contentAlignment = Alignment.Center,
                                     modifier = Modifier
@@ -717,7 +698,7 @@ class Player: ComponentActivity(), Player.Listener {
                                         }
                                 ) {
                                     Icon(
-                                        imageVector = if (!loopCheckedState) {
+                                        imageVector = if (!loopChecked.value) {
                                             repeat
                                         } else {
                                             repeat_one
@@ -728,7 +709,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 }
                             }
                             // Speed Button
-                            if (playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
+                            if (playerController.value?.mediaMetadata?.extras?.getBoolean("live") != true) {
                                 Box(
                                     contentAlignment = Alignment.Center,
                                     modifier = Modifier
@@ -747,7 +728,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 }
                             }
                             // Subtitles Button
-                            if (playerSubtitles != null && playerControllerState?.mediaMetadata?.extras?.getBoolean("live") != true) {
+                            if (playerSubtitles != null && playerController.value?.mediaMetadata?.extras?.getBoolean("live") != true) {
                                 Box(
                                     contentAlignment = Alignment.Center,
                                     modifier = Modifier
@@ -773,7 +754,7 @@ class Player: ComponentActivity(), Player.Listener {
 
         // Subtitles Sheet
 
-        if (showSubtitlesState) {
+        if (showSubtitles.value) {
             @OptIn(ExperimentalMaterial3Api::class)
             ModalBottomSheet(
                 containerColor = Color.DarkGray,
@@ -897,7 +878,7 @@ class Player: ComponentActivity(), Player.Listener {
 
         // Sleep Timer Sheet
 
-        if (showSleepTimerState) {
+        if (showSleepTimer.value) {
             @OptIn(ExperimentalMaterial3Api::class)
             ModalBottomSheet(
                 containerColor = Color.DarkGray,
@@ -1022,7 +1003,7 @@ class Player: ComponentActivity(), Player.Listener {
 
         // Playback Speed Sheet
 
-        if (showPlaybackSpeedState) {
+        if (showPlaybackSpeed.value) {
             @OptIn(ExperimentalMaterial3Api::class)
             ModalBottomSheet(
                 containerColor = Color.DarkGray,
@@ -1084,17 +1065,17 @@ class Player: ComponentActivity(), Player.Listener {
                                     sliderState = sliderState
                                 )
                             },
-                            value = playbackSpeedState,
+                            value = playbackSpeed.floatValue,
                             valueRange = 0.1f..2f,
                             onValueChange = { value ->
                                 val decimalFormat = DecimalFormat("#.#")
                                 playerController.value!!.playbackParameters = PlaybackParameters(decimalFormat.format(value).toFloat())
-                                playbackSpeed.value = decimalFormat.format(value).toFloat()
+                                playbackSpeed.floatValue = decimalFormat.format(value).toFloat()
                             }
                         )
                         Text(
                             modifier = Modifier.padding(start = 5.dp, end = 5.dp),
-                            text = "Speed: $playbackSpeedState",
+                            text = "Speed: ${playbackSpeed.floatValue}",
                             color = Color.White,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
@@ -1106,7 +1087,7 @@ class Player: ComponentActivity(), Player.Listener {
 
         // Info Sheet
 
-        if (showInfoState) {
+        if (showInfo.value) {
             @OptIn(ExperimentalMaterial3Api::class)
             ModalBottomSheet(
                 containerColor = Color.DarkGray,
@@ -1162,7 +1143,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 modifier = Modifier
                                     .align(Alignment.CenterHorizontally)
                                     .padding(start = 15.dp, end = 15.dp, top = 5.dp),
-                                text = NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getLong("views")),
+                                text = NumberFormat.getInstance().format(playerController.value?.mediaMetadata?.extras?.getLong("views")),
                                 color = Color.White,
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
@@ -1185,14 +1166,14 @@ class Player: ComponentActivity(), Player.Listener {
                                 modifier = Modifier
                                     .align(Alignment.CenterHorizontally)
                                     .padding(start = 15.dp, end = 15.dp, top = 5.dp),
-                                text = NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getLong("likes")),
+                                text = NumberFormat.getInstance().format(playerController.value?.mediaMetadata?.extras?.getLong("likes")),
                                 color = Color.White,
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1
                             )
                         }
                         // Dislikes
-                        if (playerControllerState?.mediaMetadata?.extras?.getLong("dislikes") != null) {
+                        if (playerController.value?.mediaMetadata?.extras?.getLong("dislikes") != null) {
                             Column(
                                 modifier = Modifier.weight(1f)
                             ) {
@@ -1209,7 +1190,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     modifier = Modifier
                                         .align(Alignment.CenterHorizontally)
                                         .padding(start = 15.dp, end = 15.dp, top = 5.dp),
-                                    text = NumberFormat.getInstance().format(playerControllerState?.mediaMetadata?.extras?.getLong("dislikes")),
+                                    text = NumberFormat.getInstance().format(playerController.value?.mediaMetadata?.extras?.getLong("dislikes")),
                                     color = Color.White,
                                     overflow = TextOverflow.Ellipsis,
                                     maxLines = 1
@@ -1230,12 +1211,12 @@ class Player: ComponentActivity(), Player.Listener {
                             modifier = Modifier
                                 .padding(start = 15.dp, end = 10.dp)
                                 .clip(CircleShape),
-                            model = playerControllerState?.mediaMetadata?.extras?.getString("artwork"),
+                            model = playerController.value?.mediaMetadata?.extras?.getString("artwork"),
                             contentDescription = null
                         )
                         Text(
                             modifier = Modifier.align(Alignment.CenterVertically),
-                            text = playerControllerState?.mediaMetadata?.artist.toString(),
+                            text = playerController.value?.mediaMetadata?.artist.toString(),
                             color = Color.White,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
@@ -1251,7 +1232,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 .padding(end = 10.dp)
                                 .border(1.dp, Color.LightGray, RoundedCornerShape(16.dp))
                                 .noRippleClickable {
-                                    uriHandler.openUri(playerControllerState?.mediaMetadata?.extras?.getString("channel")!!)
+                                    uriHandler.openUri(playerController.value?.mediaMetadata?.extras?.getString("channel")!!)
                                 },
                         ) {
                             Text(
@@ -1271,11 +1252,11 @@ class Player: ComponentActivity(), Player.Listener {
                                 .padding(end = 15.dp)
                                 .border(1.dp, Color.LightGray, RoundedCornerShape(16.dp))
                                 .noRippleClickable {
-                                    val type: String? = playerControllerState?.mediaMetadata?.extras?.getString("type")
+                                    val type: String? = playerController.value?.mediaMetadata?.extras?.getString("type")
                                     val url: String = when (type) {
-                                        "livestream" -> "https://youtube.com/live/${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
-                                        "short" -> "https://youtube.com/shorts/${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
-                                        else -> "https://youtube.com/watch?v=${playerControllerState?.mediaMetadata?.extras?.getString("id")}"
+                                        "livestream" -> "https://youtube.com/live/${playerController.value?.mediaMetadata?.extras?.getString("id")}"
+                                        "short" -> "https://youtube.com/shorts/${playerController.value?.mediaMetadata?.extras?.getString("id")}"
+                                        else -> "https://youtube.com/watch?v=${playerController.value?.mediaMetadata?.extras?.getString("id")}"
                                     }
                                     if (chromeOSDevice) {
                                         val clipManager: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
@@ -1301,7 +1282,7 @@ class Player: ComponentActivity(), Player.Listener {
                         }
                     }
                     // Description
-                    if (playerControllerState?.mediaMetadata?.extras?.getString("description") != null) {
+                    if (playerController.value?.mediaMetadata?.extras?.getString("description") != null) {
                         HorizontalDivider(
                             color = Color.LightGray,
                             modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 15.dp)
@@ -1310,7 +1291,7 @@ class Player: ComponentActivity(), Player.Listener {
                             item {
                                 Text(
                                     modifier = Modifier.padding(start = 15.dp, end = 15.dp),
-                                    text = playerControllerState?.mediaMetadata?.extras?.getString("description")!!,
+                                    text = playerController.value?.mediaMetadata?.extras?.getString("description")!!,
                                     color = Color.White
                                 )
                             }
@@ -1329,7 +1310,7 @@ class Player: ComponentActivity(), Player.Listener {
         showSubtitles.value = false
         showSleepTimer.value = false
         showInfo.value = false
-        isPlaying.value = 0
+        isPlaying.intValue = 0
 
         Toast.makeText(this, "Loading, please wait", Toast.LENGTH_SHORT).show()
 
@@ -1338,7 +1319,7 @@ class Player: ComponentActivity(), Player.Listener {
         playerControllerFuture.addListener({
             playerController.value = playerControllerFuture.get()
             playerController.value!!.addListener(this)
-            playbackSpeed.value = 1f
+            playbackSpeed.floatValue = 1f
 
             Collections.replaceAll(sleepTimerChecked, true, false)
             sleepTimerChecked[0] = true
@@ -1432,13 +1413,13 @@ class Player: ComponentActivity(), Player.Listener {
             val player: MediaController? = playerController.value
             if (player != null && player.mediaItemCount == 1) {
                 when (player.playbackState) {
-                    Player.STATE_BUFFERING -> isPlaying.value = 1
-                    Player.STATE_ENDED -> isPlaying.value = 4
+                    Player.STATE_BUFFERING -> isPlaying.intValue = 1
+                    Player.STATE_ENDED -> isPlaying.intValue = 4
                     else -> {
                         if (!player.isPlaying) {
-                            isPlaying.value = 2
+                            isPlaying.intValue = 2
                         } else {
-                            isPlaying.value = 3
+                            isPlaying.intValue = 3
                         }
                     }
                 }
@@ -1446,13 +1427,13 @@ class Player: ComponentActivity(), Player.Listener {
                 val duration = player.duration
                 val position = player.currentPosition
                 if (duration >= 0 && position >= 0) {
-                    playerDuration.value = duration.toFloat()
+                    playerDuration.floatValue = duration.toFloat()
 
                     if (position <= duration) {
-                        playerPosition.value = position.toFloat()
+                        playerPosition.floatValue = position.toFloat()
                     }
                     if (position > duration) {
-                        playerPosition.value = duration.toFloat()
+                        playerPosition.floatValue = duration.toFloat()
                     }
 
                     playerTime.value = "${optTime(position)} / ${optTime(duration)}"
