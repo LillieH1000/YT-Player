@@ -825,11 +825,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 modifier = Modifier
                                     .height(50.dp)
                                     .noRippleClickable {
-                                        Collections.replaceAll(
-                                            subtitlesChecked,
-                                            true,
-                                            false
-                                        )
+                                        Collections.replaceAll(subtitlesChecked, true, false)
                                         subtitlesChecked[index] = true
                                         when (index) {
                                             0 -> {
