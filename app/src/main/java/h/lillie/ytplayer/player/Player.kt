@@ -61,6 +61,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -309,7 +310,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var showSubtitles = MutableStateFlow(false)
     private var showSleepTimer = MutableStateFlow(false)
     private var showPlaybackSpeed = MutableStateFlow(false)
-    private var subtitlesChecked = MutableStateFlow(mutableListOf<Boolean>())
+    private val subtitlesChecked = mutableStateListOf<Boolean>()
     private var sleepTimerChecked = MutableStateFlow(listOf(false, false, false, false, false))
 
     @Composable
@@ -331,7 +332,6 @@ class Player: ComponentActivity(), Player.Listener {
         val showSubtitlesState by showSubtitles.collectAsState()
         val showSleepTimerState by showSleepTimer.collectAsState()
         val showPlaybackSpeedState by showPlaybackSpeed.collectAsState()
-        val subtitlesCheckedState by subtitlesChecked.collectAsState()
         val sleepTimerCheckedState by sleepTimerChecked.collectAsState()
 
         // Player View
@@ -826,11 +826,11 @@ class Player: ComponentActivity(), Player.Listener {
                                     .height(50.dp)
                                     .noRippleClickable {
                                         Collections.replaceAll(
-                                            subtitlesChecked.value,
+                                            subtitlesChecked,
                                             true,
                                             false
                                         )
-                                        subtitlesChecked.value[index] = true
+                                        subtitlesChecked[index] = true
                                         when (index) {
                                             0 -> {
                                                 playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
@@ -883,7 +883,7 @@ class Player: ComponentActivity(), Player.Listener {
                                             disabledUncheckedBorderColor = Color.Transparent,
                                             disabledIndeterminateBorderColor = Color.Transparent
                                         ),
-                                        checked = subtitlesCheckedState[index],
+                                        checked = subtitlesChecked[index],
                                         onCheckedChange = null
                                     )
                                 }
@@ -1374,8 +1374,8 @@ class Player: ComponentActivity(), Player.Listener {
             future.addListener({
                 val result = future.get()
                 if (result.resultCode == SessionResult.RESULT_SUCCESS) {
-                    if (subtitlesChecked.value.isNotEmpty()) {
-                        subtitlesChecked.value.clear()
+                    if (subtitlesChecked.isNotEmpty()) {
+                        subtitlesChecked.clear()
                     }
 
                     playerSubtitles = if (Build.VERSION.SDK_INT >= 33) {
@@ -1386,9 +1386,9 @@ class Player: ComponentActivity(), Player.Listener {
                     }
 
                     if (playerSubtitles != null) {
-                        subtitlesChecked.value.add(true)
+                        subtitlesChecked.add(true)
                         playerSubtitles!!.forEach { _ ->
-                            subtitlesChecked.value.add(false)
+                            subtitlesChecked.add(false)
                         }
                     }
                 }
