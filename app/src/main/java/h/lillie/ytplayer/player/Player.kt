@@ -46,20 +46,6 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FitScreen
-import androidx.compose.material.icons.filled.Fullscreen
-import androidx.compose.material.icons.filled.FullscreenExit
-import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Replay
-import androidx.compose.material.icons.outlined.Bedtime
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Repeat
-import androidx.compose.material.icons.outlined.RepeatOne
-import androidx.compose.material.icons.outlined.Speed
-import androidx.compose.material.icons.outlined.Subtitles
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
@@ -114,6 +100,19 @@ import java.util.concurrent.TimeUnit
 import androidx.core.net.toUri
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
+import h.lillie.ytplayer.icons.bedtime
+import h.lillie.ytplayer.icons.fit_screen
+import h.lillie.ytplayer.icons.fullscreen
+import h.lillie.ytplayer.icons.fullscreen_exit
+import h.lillie.ytplayer.icons.info
+import h.lillie.ytplayer.icons.pause
+import h.lillie.ytplayer.icons.play_arrow
+import h.lillie.ytplayer.icons.refresh
+import h.lillie.ytplayer.icons.repeat
+import h.lillie.ytplayer.icons.repeat_one
+import h.lillie.ytplayer.icons.replay
+import h.lillie.ytplayer.icons.speed
+import h.lillie.ytplayer.icons.subtitles
 
 class Player: ComponentActivity(), Player.Listener {
     private lateinit var playerControllerFuture: ListenableFuture<MediaController>
@@ -504,9 +503,9 @@ class Player: ComponentActivity(), Player.Listener {
                         Icon(
                             modifier = Modifier.size(40.dp),
                             imageVector = when (isPlayingState) {
-                                2 -> Icons.Default.PlayArrow
-                                3 -> Icons.Default.Pause
-                                else -> Icons.Default.Replay
+                                2 -> play_arrow
+                                3 -> pause
+                                else -> replay
                             },
                             tint = Color.White,
                             contentDescription = null
@@ -571,7 +570,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 }
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Refresh,
+                                imageVector = refresh,
                                 tint = Color.White,
                                 contentDescription = null
                             )
@@ -590,7 +589,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 }
                         ) {
                             Icon(
-                                imageVector = Icons.Default.FitScreen,
+                                imageVector = fit_screen,
                                 tint = Color.White,
                                 contentDescription = null
                             )
@@ -614,9 +613,9 @@ class Player: ComponentActivity(), Player.Listener {
                         ) {
                             Icon(
                                 imageVector = if (deviceRotationState == 1) {
-                                    Icons.Default.FullscreenExit
+                                    fullscreen_exit
                                 } else {
-                                    Icons.Default.Fullscreen
+                                    fullscreen
                                 },
                                 tint = Color.White,
                                 contentDescription = null
@@ -680,7 +679,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     }
                             ) {
                                 Icon(
-                                    imageVector = Icons.Outlined.Info,
+                                    imageVector = info,
                                     tint = Color.White,
                                     contentDescription = null
                                 )
@@ -697,7 +696,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     }
                             ) {
                                 Icon(
-                                    imageVector = Icons.Outlined.Bedtime,
+                                    imageVector = bedtime,
                                     tint = Color.White,
                                     contentDescription = null
                                 )
@@ -720,9 +719,9 @@ class Player: ComponentActivity(), Player.Listener {
                                 ) {
                                     Icon(
                                         imageVector = if (!loopCheckedState) {
-                                            Icons.Outlined.Repeat
+                                            repeat
                                         } else {
-                                            Icons.Outlined.RepeatOne
+                                            repeat_one
                                         },
                                         tint = Color.White,
                                         contentDescription = null
@@ -742,7 +741,7 @@ class Player: ComponentActivity(), Player.Listener {
                                         }
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Outlined.Speed,
+                                        imageVector = speed,
                                         tint = Color.White,
                                         contentDescription = null
                                     )
@@ -761,7 +760,7 @@ class Player: ComponentActivity(), Player.Listener {
                                         }
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Outlined.Subtitles,
+                                        imageVector = subtitles,
                                         tint = Color.White,
                                         contentDescription = null
                                     )
