@@ -45,6 +45,7 @@ import androidx.media3.session.SessionError
 import androidx.media3.session.SessionResult
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
+import h.lillie.ytplayer.R
 import h.lillie.ytplayer.data.Return
 import h.lillie.ytplayer.requests.Requests
 import kotlinx.coroutines.CoroutineScope
@@ -380,24 +381,28 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         }
 
         val mediaButtons: MutableList<CommandButton> = mutableListOf(
-            CommandButton.Builder(CommandButton.ICON_SKIP_BACK_10)
+            CommandButton.Builder(CommandButton.ICON_UNDEFINED)
                 .setDisplayName("Seek Back")
+                .setCustomIconResId(R.drawable.replay_10)
                 .setPlayerCommand(Player.COMMAND_SEEK_BACK)
                 .build(),
-            CommandButton.Builder(CommandButton.ICON_SKIP_FORWARD_10)
+            CommandButton.Builder(CommandButton.ICON_UNDEFINED)
                 .setDisplayName("Seek Forward")
+                .setCustomIconResId(R.drawable.forward_10)
                 .setPlayerCommand(Player.COMMAND_SEEK_FORWARD)
                 .build()
         )
 
         if (repeatMode == Player.REPEAT_MODE_OFF) {
-            mediaButtons.add(CommandButton.Builder(CommandButton.ICON_REPEAT_ALL)
+            mediaButtons.add(CommandButton.Builder(CommandButton.ICON_UNDEFINED)
                 .setDisplayName("Loop Off")
+                .setCustomIconResId(R.drawable.repeat)
                 .setPlayerCommand(Player.COMMAND_SET_REPEAT_MODE, Player.REPEAT_MODE_ONE)
                 .build())
         } else {
-            mediaButtons.add(CommandButton.Builder(CommandButton.ICON_REPEAT_ONE)
+            mediaButtons.add(CommandButton.Builder(CommandButton.ICON_UNDEFINED)
                 .setDisplayName("Loop On")
+                .setCustomIconResId(R.drawable.repeat_one)
                 .setPlayerCommand(Player.COMMAND_SET_REPEAT_MODE, Player.REPEAT_MODE_OFF)
                 .build())
         }
