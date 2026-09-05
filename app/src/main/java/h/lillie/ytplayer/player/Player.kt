@@ -1209,7 +1209,9 @@ class Player: ComponentActivity(), Player.Listener {
                         // Artwork
                         AsyncImage(
                             modifier = Modifier
+                                .align(Alignment.CenterVertically)
                                 .padding(start = 15.dp, end = 10.dp)
+                                .size(36.dp)
                                 .clip(CircleShape),
                             model = playerController.value?.mediaMetadata?.extras?.getString("artwork"),
                             contentDescription = null
