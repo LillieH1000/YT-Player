@@ -309,7 +309,7 @@ class Player: ComponentActivity(), Player.Listener {
     private var showSubtitles = MutableStateFlow(false)
     private var showSleepTimer = MutableStateFlow(false)
     private var showPlaybackSpeed = MutableStateFlow(false)
-    private var subtitlesChecked = MutableStateFlow<List<Boolean>>(listOf())
+    private var subtitlesChecked = MutableStateFlow(mutableListOf<Boolean>())
     private var sleepTimerChecked = MutableStateFlow(listOf(false, false, false, false, false))
 
     @Composable
@@ -830,11 +830,7 @@ class Player: ComponentActivity(), Player.Listener {
                                             true,
                                             false
                                         )
-                                        subtitlesChecked.update { list ->
-                                            list.toMutableList().apply {
-                                                set(index, true)
-                                            }.toList()
-                                        }
+                                        subtitlesChecked.value[index] = true
                                         when (index) {
                                             0 -> {
                                                 playerController.value?.trackSelectionParameters = playerController.value?.trackSelectionParameters!!.buildUpon()
@@ -1379,11 +1375,7 @@ class Player: ComponentActivity(), Player.Listener {
                 val result = future.get()
                 if (result.resultCode == SessionResult.RESULT_SUCCESS) {
                     if (subtitlesChecked.value.isNotEmpty()) {
-                        subtitlesChecked.update { list ->
-                            list.toMutableList().apply {
-                                clear()
-                            }.toList()
-                        }
+                        subtitlesChecked.value.clear()
                     }
 
                     playerSubtitles = if (Build.VERSION.SDK_INT >= 33) {
@@ -1394,17 +1386,9 @@ class Player: ComponentActivity(), Player.Listener {
                     }
 
                     if (playerSubtitles != null) {
-                        subtitlesChecked.update { list ->
-                            list.toMutableList().apply {
-                                add(true)
-                            }.toList()
-                        }
+                        subtitlesChecked.value.add(true)
                         playerSubtitles!!.forEach { _ ->
-                            subtitlesChecked.update { list ->
-                                list.toMutableList().apply {
-                                    add(false)
-                                }.toList()
-                            }
+                            subtitlesChecked.value.add(false)
                         }
                     }
                 }
