@@ -71,6 +71,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpSize
@@ -1214,6 +1215,7 @@ class Player: ComponentActivity(), Player.Listener {
                                 .size(36.dp)
                                 .clip(CircleShape),
                             model = playerController.value?.mediaMetadata?.extras?.getString("artwork"),
+                            contentScale = ContentScale.Crop,
                             contentDescription = null
                         )
                         Text(
