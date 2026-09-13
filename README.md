@@ -6,10 +6,10 @@ A simple YouTube video player for Android with features such as no ads, backgrou
 
 </div><br>
 
-Requires: Android version 11 and above
-
 Usage:
 - Press the "Share" button on any video in the YouTube app, press the "More" button and press "YT Player".
+
+<br>
 
 Features:
 - No Ads
