@@ -2,9 +2,14 @@
 
 # YT Player
 
-A simple YouTube video player for [Android](#android) and [ChromeOS](#chromeos) with features such as no ads, background playback and more!
+A simple YouTube video player for Android with features such as no ads, background playback and more!
 
 </div><br>
+
+Requires: Android version 11 and above
+
+Usage:
+- Press the "Share" button on any video in the YouTube app, press the "More" button and press "YT Player".
 
 Features:
 - No Ads
@@ -15,24 +20,6 @@ Features:
 - Playback Speed
 - Video Info (Views, likes, dislikes, channel, description)
 - [SponsorBlock](https://sponsor.ajay.app/) (Only auto skips sponsors)
-
-<br>
-
-## Android
-
-Requires: Android version 11 and above
-
-Usage:
-- Press the "Share" button on any video in the YouTube app, press the "More" button and press "YT Player".
-
-<br>
-
-## ChromeOS
-
-Requires: Android version 11 and above
-
-Usage:
-- Copy the YouTube video url to your clipboard then launch the "YT Player" app.
 
 <br>
 

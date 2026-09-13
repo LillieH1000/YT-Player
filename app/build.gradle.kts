@@ -21,7 +21,7 @@ android {
         applicationId = "h.lillie.ytplayer"
         minSdk = 30
         targetSdk = 37
-        versionCode = 203
+        versionCode = 204
         versionName = "4.6.6"
         ndk {
             abiFilters += listOf("arm64-v8a", "x86_64")
@@ -36,16 +36,6 @@ android {
         release {
             isMinifyEnabled = false
             isDebuggable = false
-        }
-    }
-
-    flavorDimensions += "os"
-    productFlavors {
-        create("androidos") {
-            dimension = "os"
-        }
-        create("chromeos") {
-            dimension = "os"
         }
     }
 

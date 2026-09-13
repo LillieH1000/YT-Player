@@ -2,8 +2,6 @@ package h.lillie.ytplayer.player
 
 import android.annotation.SuppressLint
 import android.app.PictureInPictureParams
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -122,14 +120,11 @@ class Player: ComponentActivity(), Player.Listener {
     private var playerSubtitles: ArrayList<Subtitles>? = null
     @UnstableApi private var playerSubtitlesView: SubtitleView? = null
     private var playerSubtitlesViewParent: ViewGroup? = null
-    private var chromeOSDevice: Boolean = false
-    private var isFirstLaunch: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        if (packageManager.hasSystemFeature("org.chromium.arc.device_management")) chromeOSDevice = true
-        if (!chromeOSDevice) WindowInsetsControllerCompat(window, window.decorView).systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        WindowInsetsControllerCompat(window, window.decorView).systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
         enableEdgeToEdge()
         setContent {
@@ -140,16 +135,12 @@ class Player: ComponentActivity(), Player.Listener {
             @SuppressLint("SwitchIntDef")
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
-                    if (!chromeOSDevice) {
-                        deviceRotation.intValue = 0
-                        WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
-                    }
+                    deviceRotation.intValue = 0
+                    WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    if (!chromeOSDevice) {
-                        deviceRotation.intValue = 1
-                        WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
-                    }
+                    deviceRotation.intValue = 1
+                    WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                 }
             }
         }
@@ -157,7 +148,6 @@ class Player: ComponentActivity(), Player.Listener {
         when {
             intent?.action == Intent.ACTION_SEND -> {
                 if (intent.type == "text/plain") {
-                    isFirstLaunch = true
                     val youtubeRegex = Regex("^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/|live/)|(?:(?:watch)?\\?vi?=|&vi?=))([^#&?]*).*")
                     val info: String = intent.getStringExtra(Intent.EXTRA_TEXT)!!
                     if (youtubeRegex.containsMatchIn(info)) createPlayer(youtubeRegex.findAll(info).joinToString { it.groupValues[1] }, info.toUri().getQueryParameter("t"))
@@ -184,16 +174,12 @@ class Player: ComponentActivity(), Player.Listener {
         @SuppressLint("SwitchIntDef")
         when (newConfig.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
-                if (!chromeOSDevice) {
-                    deviceRotation.intValue = 0
-                    WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
-                }
+                deviceRotation.intValue = 0
+                WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
             }
             Configuration.ORIENTATION_LANDSCAPE -> {
-                if (!chromeOSDevice) {
-                    deviceRotation.intValue = 1
-                    WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
-                }
+                deviceRotation.intValue = 1
+                WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
             }
         }
     }
@@ -250,31 +236,15 @@ class Player: ComponentActivity(), Player.Listener {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) {
-            if (!isFirstLaunch) {
-                isFirstLaunch = true
-                if (chromeOSDevice) {
-                    val clipManager: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                    val clipData: ClipData? = clipManager.primaryClip
-                    if (clipData != null && clipData.itemCount > 0) {
-                        val youtubeRegex = Regex("^.*(?:(?:youtu\\.be/|v/|vi/|u/\\w/|embed/|shorts/|live/)|(?:(?:watch)?\\?vi?=|&vi?=))([^#&?]*).*")
-                        val info: String = clipData.getItemAt(0).text.toString()
-                        if (youtubeRegex.containsMatchIn(info)) createPlayer(youtubeRegex.findAll(info).joinToString { it.groupValues[1] }, info.toUri().getQueryParameter("t"))
-                    }
-                }
-            }
             @SuppressLint("SwitchIntDef")
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
-                    if (!chromeOSDevice) {
-                        deviceRotation.intValue = 0
-                        WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
-                    }
+                    deviceRotation.intValue = 0
+                    WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    if (!chromeOSDevice) {
-                        deviceRotation.intValue = 1
-                        WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
-                    }
+                    deviceRotation.intValue = 1
+                    WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.systemBars())
                 }
             }
         }
@@ -558,7 +528,7 @@ class Player: ComponentActivity(), Player.Listener {
                         }
                     }
                     // Fill Button
-                    if (!chromeOSDevice && deviceRotation.intValue == 1 && playerController.value?.mediaItemCount == 1) {
+                    if (deviceRotation.intValue == 1 && playerController.value?.mediaItemCount == 1) {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
@@ -577,7 +547,7 @@ class Player: ComponentActivity(), Player.Listener {
                         }
                     }
                     // Fullscreen Button
-                    if (!autoRotateEnabled.value && !chromeOSDevice && playerController.value?.mediaItemCount == 1) {
+                    if (!autoRotateEnabled.value && playerController.value?.mediaItemCount == 1) {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
@@ -1262,18 +1232,11 @@ class Player: ComponentActivity(), Player.Listener {
                                         "short" -> "https://youtube.com/shorts/${playerController.value?.mediaMetadata?.extras?.getString("id")}"
                                         else -> "https://youtube.com/watch?v=${playerController.value?.mediaMetadata?.extras?.getString("id")}"
                                     }
-                                    if (chromeOSDevice) {
-                                        val clipManager: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                                        val clipData: ClipData = ClipData.newPlainText("", url)
-                                        clipManager.setPrimaryClip(clipData)
-                                        Toast.makeText(this@Player, "Copied to clipboard", Toast.LENGTH_SHORT).show()
-                                    } else {
-                                        val shareIntent = Intent()
-                                        shareIntent.action = Intent.ACTION_SEND
-                                        shareIntent.putExtra(Intent.EXTRA_TEXT, url)
-                                        shareIntent.type = "text/plain"
-                                        startActivity(Intent.createChooser(shareIntent, null))
-                                    }
+                                    val shareIntent = Intent()
+                                    shareIntent.action = Intent.ACTION_SEND
+                                    shareIntent.putExtra(Intent.EXTRA_TEXT, url)
+                                    shareIntent.type = "text/plain"
+                                    startActivity(Intent.createChooser(shareIntent, null))
                                 },
                         ) {
                             Text(
