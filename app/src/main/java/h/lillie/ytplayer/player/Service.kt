@@ -288,7 +288,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
 
         val request = Requests()
         val info: Return = request.extractor(this@Service, videoID) ?: return@withContext false
-        val dislikes = request.returnYouTubeDislike(this@Service, info.id)
+        val dislikes: Long? = request.returnYouTubeDislike(this@Service, info.id)
         sponsorBlock = request.sponsorBlock(this@Service, info.id)
 
         val playerExtraInfo = Bundle()
