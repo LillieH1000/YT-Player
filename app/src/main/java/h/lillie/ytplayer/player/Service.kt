@@ -33,7 +33,6 @@ import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlaybackException
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.session.CommandButton
@@ -256,11 +255,11 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                             .setUri(exoPlayer.mediaMetadata.extras?.getString("hlsUrl")!!.toUri())
                             .build()
 
-                        val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(playerDataSource)
-                            .setAllowChunklessPreparation(false)
+                        val defaultDataSource: DefaultDataSource.Factory = DefaultDataSource.Factory(this@Service, playerDataSource)
+                        val defaultMediaSource: MediaSource = DefaultMediaSourceFactory(defaultDataSource)
                             .createMediaSource(playerMediaItem)
 
-                        exoPlayer.setMediaSource(hlsMediaSource)
+                        exoPlayer.setMediaSource(defaultMediaSource)
                         exoPlayer.playWhenReady = true
                         exoPlayer.prepare()
                     } else {
@@ -340,11 +339,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         if (subtitles.isNotEmpty()) playerMediaItem.setSubtitleConfigurations(subtitles)
 
         val defaultDataSource: DefaultDataSource.Factory = DefaultDataSource.Factory(this@Service, playerDataSource)
-        val dashMediaSource: MediaSource = DefaultMediaSourceFactory(defaultDataSource)
-            .createMediaSource(playerMediaItem.build())
-
-        val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(playerDataSource)
-            .setAllowChunklessPreparation(false)
+        val defaultMediaSource: MediaSource = DefaultMediaSourceFactory(defaultDataSource)
             .createMediaSource(playerMediaItem.build())
 
         while (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) < info.availability) {
@@ -352,11 +347,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         }
 
         withContext(Dispatchers.Main) {
-            if (info.live && info.hlsUrl != null) {
-                exoPlayer.setMediaSource(hlsMediaSource)
-            } else {
-                exoPlayer.setMediaSource(dashMediaSource)
-            }
+            exoPlayer.setMediaSource(defaultMediaSource)
             playerMediaButtons(exoPlayer.repeatMode)
             exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
             exoPlayer.playbackParameters = PlaybackParameters(1.0f)
