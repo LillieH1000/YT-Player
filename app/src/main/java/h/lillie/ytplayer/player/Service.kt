@@ -266,7 +266,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     } else {
                         Toast.makeText(this@Service, "Source playback error", Toast.LENGTH_SHORT).show()
                     }
-                    return
                 }
                 if (exoPlayer.mediaMetadata.extras?.getLong("expiration")!! <= TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())) {
                     val seekTime: Long = if (exoPlayer.mediaMetadata.extras?.getBoolean("live") == false) {
@@ -277,7 +276,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     CoroutineScope(Dispatchers.IO).launch {
                         playerFetch(exoPlayer.mediaMetadata.extras?.getString("id")!!, seekTime)
                     }
-                    return
                 }
             }
         }
