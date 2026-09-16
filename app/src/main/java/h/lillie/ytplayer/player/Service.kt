@@ -267,13 +267,14 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     }
                 }
                 if (exoPlayer.mediaMetadata.extras?.getLong("expiration")!! <= TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())) {
+                    val videoID: String = exoPlayer.mediaMetadata.extras?.getString("id")!!
                     val seekTime: Long = if (exoPlayer.mediaMetadata.extras?.getBoolean("live") == false) {
                         exoPlayer.currentPosition
                     } else {
                         0L
                     }
                     CoroutineScope(Dispatchers.IO).launch {
-                        playerFetch(exoPlayer.mediaMetadata.extras?.getString("id")!!, seekTime)
+                        playerFetch(videoID, seekTime)
                     }
                 }
             }
