@@ -12,7 +12,8 @@ def getInfo(runtime, videoID):
                 "player_client": [
                     "default",
                     "tv_downgraded",
-                    "visionos"
+                    "visionos",
+                    "web_embedded"
                 ]
             }
         },
