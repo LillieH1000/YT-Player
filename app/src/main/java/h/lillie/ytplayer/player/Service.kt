@@ -144,7 +144,7 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
     }
 
     override fun onConnect(session: MediaSession, controller: MediaSession.ControllerInfo): MediaSession.ConnectionResult {
-        val connectionResult: MediaSession.ConnectionResult = MediaSession.ConnectionResult.AcceptedResultBuilder(session, controller)
+        return MediaSession.ConnectionResult.AcceptedResultBuilder(session, controller)
             .setAvailablePlayerCommands(
                 MediaSession.ConnectionResult.DEFAULT_PLAYER_COMMANDS.buildUpon()
                     .remove(Player.COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
@@ -160,8 +160,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
                     .add(SessionCommand("h.lillie.ytplayer.service.timer", Bundle.EMPTY))
                     .build()
             ).build()
-
-        return connectionResult
     }
 
     override fun onGetLibraryRoot(session: MediaLibrarySession, browser: MediaSession.ControllerInfo, params: LibraryParams?): ListenableFuture<LibraryResult<MediaItem>> {
