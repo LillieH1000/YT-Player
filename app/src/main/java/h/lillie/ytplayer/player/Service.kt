@@ -1,7 +1,6 @@
 package h.lillie.ytplayer.player
 
 import android.annotation.SuppressLint
-import android.net.Uri
 import android.net.http.HttpEngine
 import android.os.Build
 import android.os.Bundle
@@ -243,27 +242,6 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         @SuppressLint("SwitchIntDef")
         when ((error as ExoPlaybackException).type) {
             ExoPlaybackException.TYPE_SOURCE -> {
-                if (exoPlayer.mediaMetadata.extras?.getBoolean("live") == false && exoPlayer.currentPosition == 0L) {
-                    if (exoPlayer.mediaMetadata.extras?.getString("hlsUrl") != null) {
-                        val playerMediaItem: MediaItem = MediaItem.Builder()
-                            .setMediaId("root")
-                            .setMediaMetadata(exoPlayer.currentMediaItem!!.mediaMetadata)
-                            .setMimeType(MimeTypes.APPLICATION_M3U8)
-                            .setSubtitleConfigurations(exoPlayer.currentMediaItem!!.localConfiguration!!.subtitleConfigurations)
-                            .setUri(exoPlayer.mediaMetadata.extras?.getString("hlsUrl")!!.toUri())
-                            .build()
-
-                        val defaultDataSource: DefaultDataSource.Factory = DefaultDataSource.Factory(this@Service, playerDataSource)
-                        val defaultMediaSource: MediaSource = DefaultMediaSourceFactory(defaultDataSource)
-                            .createMediaSource(playerMediaItem)
-
-                        exoPlayer.setMediaSource(defaultMediaSource)
-                        exoPlayer.playWhenReady = true
-                        exoPlayer.prepare()
-                    } else {
-                        Toast.makeText(this@Service, "Source playback error", Toast.LENGTH_SHORT).show()
-                    }
-                }
                 if (exoPlayer.mediaMetadata.extras?.getLong("expiration")!! <= TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())) {
                     val videoID: String = exoPlayer.mediaMetadata.extras?.getString("id")!!
                     val seekTime: Long = if (exoPlayer.mediaMetadata.extras?.getBoolean("live") == false) {
@@ -295,13 +273,12 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         playerExtraInfo.putBoolean("live", info.live)
         playerExtraInfo.putLong("views", info.views)
         playerExtraInfo.putLong("likes", info.likes)
-        playerExtraInfo.putString("hlsUrl", info.hlsUrl)
         playerExtraInfo.putString("description", info.description)
         playerExtraInfo.putString("artwork", info.artwork)
         playerExtraInfo.putString("channel", info.channel)
         playerExtraInfo.putLong("time", seekTime)
         playerExtraInfo.putParcelableArrayList("subtitles", info.subtitles)
-        if (info.expiration != null) playerExtraInfo.putLong("expiration", info.expiration)
+        playerExtraInfo.putLong("expiration", info.hls.expiration)
         if (dislikes != null) playerExtraInfo.putLong("dislikes", dislikes)
 
         val playerMediaMetadata: MediaMetadata = MediaMetadata.Builder()
@@ -316,14 +293,8 @@ class Service: MediaLibraryService(), MediaLibraryService.MediaLibrarySession.Ca
         val playerMediaItem: MediaItem.Builder = MediaItem.Builder()
             .setMediaId("root")
             .setMediaMetadata(playerMediaMetadata)
-
-        if (info.live && info.hlsUrl != null) {
-            playerMediaItem.setMimeType(MimeTypes.APPLICATION_M3U8)
-            playerMediaItem.setUri(info.hlsUrl.toUri())
-        } else {
-            playerMediaItem.setMimeType(MimeTypes.APPLICATION_MPD)
-            playerMediaItem.setUri(Uri.fromFile(File(info.manifestPath!!)))
-        }
+            .setMimeType(MimeTypes.APPLICATION_M3U8)
+            .setUri(info.hls.url.toUri())
 
         val subtitles = mutableListOf<MediaItem.SubtitleConfiguration>()
         info.subtitles?.forEach { subtitle ->
