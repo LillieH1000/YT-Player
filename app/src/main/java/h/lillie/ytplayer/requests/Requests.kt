@@ -16,10 +16,8 @@ import okhttp3.Request
 import okhttp3.Response
 import org.json.JSONArray
 import org.json.JSONObject
-import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
-import kotlin.time.Duration.Companion.seconds
 
 class Requests {
     suspend fun extractor(context: Context, videoID: String): Return? = withContext(Dispatchers.IO) {
@@ -28,55 +26,6 @@ class Requests {
         val info: YTdlp = runCatching {
             Json.decodeFromString<YTdlp>(py.getModule("ytdlp").callAttr("getInfo", "${context.applicationInfo.nativeLibraryDir}/libqjs.so", videoID).toString())
         }.getOrNull() ?: return@withContext null
-
-        val base: String = buildString {
-            append("""
-                <?xml version="1.0" encoding="UTF-8"?>
-                <MPD xmlns="urn:mpeg:dash:schema:mpd:2011" profiles="urn:mpeg:dash:profile:isoff-on-demand:2011" type="static" mediaPresentationDuration="${(info.duration ?: 0).seconds.toIsoString()}" minBufferTime="PT2S">
-                    <Period start="PT0S">
-            """.trimIndent())
-
-            append("\n")
-            var count: Long = 0
-
-            info.video?.forEach { video ->
-                append("""
-                    <AdaptationSet id="$count" contentType="video" mimeType="video/mp4" segmentAlignment="true" startWithSAP="1">
-                        <Representation id="$count" bandwidth="3000000" width="${video.width}" height="${video.height}" codecs="${video.codec}">
-                            <BaseURL>${video.url.replace("&", "&amp;")}</BaseURL>
-                            <SegmentBase indexRange="${video.indexRange.start}-${video.indexRange.end}">
-                                <Initialization range="${video.initRange.start}-${video.initRange.end}" />
-                            </SegmentBase>
-                        </Representation>
-                    </AdaptationSet>
-                """.trimIndent().prependIndent("\t\t"))
-                append("\n")
-                count++
-            }
-
-            info.audio?.forEach { audio ->
-                append("""
-                    <AdaptationSet id="$count" contentType="audio" mimeType="audio/m4a" segmentAlignment="true" startWithSAP="1">
-                        <Representation id="$count" bandwidth="128000" audioSamplingRate="48000" codecs="${audio.codec}">
-                            <BaseURL>${audio.url.replace("&", "&amp;")}</BaseURL>
-                            <SegmentBase indexRange="${audio.indexRange.start}-${audio.indexRange.end}">
-                                <Initialization range="${audio.initRange.start}-${audio.initRange.end}" />
-                            </SegmentBase>
-                        </Representation>
-                    </AdaptationSet>
-                """.trimIndent().prependIndent("\t\t"))
-                append("\n")
-                count++
-            }
-
-            append("""
-                    </Period>
-                </MPD>
-            """.trimIndent())
-        }
-
-        val manifest = File(context.filesDir, "manifest.mpd")
-        manifest.writeText(base)
 
         return@withContext Return(
             info.id,
@@ -90,11 +39,9 @@ class Requests {
             info.views,
             info.likes,
             info.type,
-            info.hls?.url,
-            info.hls?.expiration,
+            info.hls,
             info.availability,
-            info.subtitles,
-            manifest.absolutePath
+            info.subtitles
         )
     }
 
