@@ -15,9 +15,7 @@ data class Return(
     val views: Long,
     val likes: Long,
     val type: String,
-    val hlsUrl: String?,
-    val expiration: Long?,
+    val hls: Hls,
     val availability: Long,
-    val subtitles: ArrayList<Subtitles>?,
-    val manifestPath: String?
+    val subtitles: ArrayList<Subtitles>?
 )
