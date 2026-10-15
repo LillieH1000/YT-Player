@@ -13,9 +13,7 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import android.view.KeyEvent
-import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
@@ -118,8 +116,6 @@ class Player: ComponentActivity(), Player.Listener {
     private var playerController = mutableStateOf<MediaController?>(null)
     private var playerHandler: Handler = Handler(Looper.getMainLooper())
     private var playerSubtitles: ArrayList<Subtitles>? = null
-    @UnstableApi private var playerSubtitlesView: SubtitleView? = null
-    private var playerSubtitlesViewParent: ViewGroup? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -302,7 +298,7 @@ class Player: ComponentActivity(), Player.Listener {
             }
         )
 
-        // Subtitles Landscape View
+        // Subtitles View
 
         @UnstableApi
         AndroidView(
@@ -310,16 +306,12 @@ class Player: ComponentActivity(), Player.Listener {
                 .systemBarsPadding()
                 .fillMaxSize(),
             factory = { context ->
-                FrameLayout(context)
-            },
-            update = { view ->
-                if (deviceRotation.intValue == 1) {
-                    playerSubtitlesViewParent?.removeView(playerSubtitlesView)
-                    view.addView(playerSubtitlesView)
-                } else {
-                    view.removeView(playerSubtitlesView)
-                    playerSubtitlesViewParent?.addView(playerSubtitlesView)
+                SubtitleView(context).apply {
+                    this.setApplyEmbeddedStyles(false)
                 }
+            },
+            update = { subtitlesView ->
+                subtitlesView.setCues(playerCues.value)
             }
         )
 
