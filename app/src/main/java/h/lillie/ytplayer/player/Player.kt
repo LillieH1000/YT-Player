@@ -258,12 +258,12 @@ class Player: ComponentActivity(), Player.Listener {
     override fun onCues(cueGroup: CueGroup) {
         super.onCues(cueGroup)
         @UnstableApi
-        playerSubtitlesView?.setCues(cueGroup.cues.map { cue ->
+        playerCues.value = cueGroup.cues.map { cue ->
             cue.buildUpon()
                 .setLine(Cue.DIMEN_UNSET, Cue.TYPE_UNSET)
                 .setPosition(Cue.DIMEN_UNSET)
                 .build()
-        })
+        }
     }
 
     private val autoRotateEnabled = mutableStateOf(false)
@@ -274,6 +274,7 @@ class Player: ComponentActivity(), Player.Listener {
     private val playerPosition = mutableFloatStateOf(0f)
     private val playerSize = mutableStateOf(false)
     private val playbackSpeed = mutableFloatStateOf(1f)
+    private var playerCues = mutableStateOf(emptyList<Cue>())
     private val playerTime = mutableStateOf<String?>(null)
     private val showOverlay = mutableStateOf(true)
     private val showInfo = mutableStateOf(false)
