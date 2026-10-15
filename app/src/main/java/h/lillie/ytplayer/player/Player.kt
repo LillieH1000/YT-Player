@@ -97,6 +97,8 @@ import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
 import androidx.media3.ui.compose.ContentFrame
 import androidx.media3.ui.compose.SURFACE_TYPE_SURFACE_VIEW
+import androidx.media3.ui.compose.modifiers.resizeWithContentScale
+import androidx.media3.ui.compose.state.rememberPresentationState
 import h.lillie.ytplayer.icons.bedtime
 import h.lillie.ytplayer.icons.fit_screen
 import h.lillie.ytplayer.icons.fullscreen
@@ -300,11 +302,16 @@ class Player: ComponentActivity(), Player.Listener {
 
         // Subtitles View
 
+        @androidx.annotation.OptIn(UnstableApi::class)
+        val presentationState = rememberPresentationState(playerController.value)
         @UnstableApi
         AndroidView(
             modifier = Modifier
                 .systemBarsPadding()
-                .fillMaxSize(),
+                .resizeWithContentScale(
+                    contentScale = ContentScale.Fit,
+                    sourceSizeDp = presentationState.videoSizeDp
+                ),
             factory = { context ->
                 SubtitleView(context).apply {
                     this.setApplyEmbeddedStyles(false)
