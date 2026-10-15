@@ -69,7 +69,7 @@ kotlin {
 
 chaquopy {
     defaultConfig {
-        version = "3.14"
+        version = "3.15"
         pip {
             install("yt-dlp")
             install("yt-dlp-ejs")
