@@ -86,8 +86,6 @@ import androidx.media3.common.text.CueGroup
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
-import androidx.media3.ui.AspectRatioFrameLayout
-import androidx.media3.ui.PlayerView
 import androidx.media3.ui.SubtitleView
 import coil3.compose.AsyncImage
 import com.google.common.util.concurrent.ListenableFuture
@@ -99,6 +97,8 @@ import java.util.concurrent.TimeUnit
 import androidx.core.net.toUri
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
+import androidx.media3.ui.compose.ContentFrame
+import androidx.media3.ui.compose.SURFACE_TYPE_SURFACE_VIEW
 import h.lillie.ytplayer.icons.bedtime
 import h.lillie.ytplayer.icons.fit_screen
 import h.lillie.ytplayer.icons.fullscreen
@@ -287,34 +287,17 @@ class Player: ComponentActivity(), Player.Listener {
     private fun CreatePlayerUI() {
         // Player View
 
-        @UnstableApi
-        AndroidView(
+        ContentFrame(
             modifier = Modifier
                 .background(Color.Black)
                 .systemBarsPadding()
                 .fillMaxSize(),
-            factory = { context ->
-                PlayerView(context).apply {
-                    this.useController = false
-                    playerSubtitlesView = SubtitleView(context).apply {
-                        this.setApplyEmbeddedStyles(false)
-                    }
-                    this.subtitleView?.apply {
-                        playerSubtitlesViewParent = this
-                        this.setApplyEmbeddedStyles(false)
-                        this.setFractionalTextSize(0f)
-                    }
-                }
-            },
-            update = { playerView ->
-                playerView.apply {
-                    this.player = playerController.value
-                    this.resizeMode = if (playerSize.value && deviceRotation.intValue == 1) {
-                        AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-                    } else {
-                        AspectRatioFrameLayout.RESIZE_MODE_FIT
-                    }
-                }
+            player = playerController.value,
+            surfaceType = SURFACE_TYPE_SURFACE_VIEW,
+            contentScale = if (playerSize.value && deviceRotation.intValue == 1) {
+                ContentScale.Crop
+            } else {
+                ContentScale.Fit
             }
         )
 
