@@ -1173,13 +1173,14 @@ class Player: ComponentActivity(), Player.Listener {
                             contentDescription = null
                         )
                         Text(
-                            modifier = Modifier.align(Alignment.CenterVertically),
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .weight(1f),
                             text = playerController.value?.mediaMetadata?.artist.toString(),
                             color = Color.White,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
                         )
-                        Box(modifier = Modifier.weight(1f))
                         // View Channel
                         val uriHandler = LocalUriHandler.current
                         Box(
