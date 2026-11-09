@@ -1215,7 +1215,7 @@ class Player: ComponentActivity(), Player.Listener {
                                     val url: String = when (type) {
                                         "livestream" -> "https://youtube.com/live/${playerController.value?.mediaMetadata?.extras?.getString("id")}"
                                         "short" -> "https://youtube.com/shorts/${playerController.value?.mediaMetadata?.extras?.getString("id")}"
-                                        else -> "https://youtube.com/watch?v=${playerController.value?.mediaMetadata?.extras?.getString("id")}"
+                                        else -> "https://youtube.com/watch?v=${playerController.value?.mediaMetadata?.extras?.getString("id")}&t=${TimeUnit.MILLISECONDS.toSeconds(playerController.value?.currentPosition ?: 0L)}"
                                     }
                                     val shareIntent = Intent()
                                     shareIntent.action = Intent.ACTION_SEND
