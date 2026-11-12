@@ -4,16 +4,8 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    groups:
-      dependencies:
-        patterns:
-          - "*"
 
   - package-ecosystem: "gradle"
     directory: "/"
     schedule:
       interval: "daily"
-    groups:
-      dependencies:
-        patterns:
-          - "*"
