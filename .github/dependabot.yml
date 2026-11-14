@@ -5,8 +5,10 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    cooldown: 0
 
   - package-ecosystem: "gradle"
     directory: "/"
     schedule:
       interval: "daily"
+    cooldown: 0
