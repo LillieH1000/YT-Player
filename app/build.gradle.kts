@@ -21,7 +21,7 @@ android {
         applicationId = "h.lillie.ytplayer"
         minSdk = 30
         targetSdk = 37
-        versionCode = 211
+        versionCode = 212
         versionName = "4.7.3"
         ndk {
             abiFilters += listOf("arm64-v8a", "x86_64")
@@ -80,7 +80,6 @@ chaquopy {
 
 dependencies {
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.concurrent.futures)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.foundation)
