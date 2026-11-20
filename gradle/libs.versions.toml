@@ -14,7 +14,7 @@ media3 = "1.11.1"
 okhttp = "5.5.1"
 runtime = "1.12.1"
 serialization = "1.13.0"
-ui = "1.12.1"
+ui = "1.13.0"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
