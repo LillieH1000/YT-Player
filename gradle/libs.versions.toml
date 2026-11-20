@@ -12,7 +12,7 @@ lifecycle = "2.11.0"
 material3 = "1.4.0"
 media3 = "1.11.1"
 okhttp = "5.5.1"
-runtime = "1.12.1"
+runtime = "1.13.0"
 serialization = "1.13.0"
 ui = "1.12.1"
 
